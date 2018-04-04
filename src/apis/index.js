@@ -4,7 +4,7 @@ let app = window.app
 class Find extends Vue {
   init () {
     app.keyEvent = data => {
-      this.$emit('pianoClick', data.keys[0])
+      this.$emit('pianoClick', `KEY${data.keys[0]}`)
     }
   }
 }

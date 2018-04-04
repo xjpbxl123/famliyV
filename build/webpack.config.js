@@ -2,11 +2,11 @@ process.noDeprecation = true /// remove deprecation warning of webpack loader,se
 let shell = require('shelljs')
 let path = require('path')
 let webpack = require('webpack')
-let config = require('./config')
 let assist = require('./assist')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 const NODE_ENV = process.env.NODE_ENV
-config = config[NODE_ENV]
+const BUILD_ENV = process.env.BUILD_ENV
+const config = assist.getEnvConfig()
 module.exports = {
   entry: ['./build/polyfill.js', './src/main.js'],
   output: {
@@ -26,7 +26,7 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-          loaders: assist.generate.cssLoader({publicPath: assist.assetConfig.publicPath})
+          loaders: assist.cssLoader()
         }
       },
       {
@@ -54,7 +54,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'components': path.posix.join(__dirname, '../src/components'),
-      'javascripts': path.posix.join(__dirname, '../src/javascripts'),
+      'scripts': path.posix.join(__dirname, '../src/scripts'),
       'styles': path.posix.join(__dirname, '../src/styles'),
       'images': path.posix.join(__dirname, '../src/images')
     },
@@ -66,7 +66,7 @@ module.exports = {
     noInfo: false,
     compress: true
   },
-  devtool: '#eval',
+  devtool: '#cheap-eval-source-map',
   performance: {
     hints: false
   },
@@ -76,7 +76,7 @@ module.exports = {
 };
 
 /// add style loaders for .js files
-[].push.apply(module.exports.module.rules, assist.generate.stylesLoader({publicPath: assist.assetConfig.publicPath}))
+[].push.apply(module.exports.module.rules, assist.stylesLoader())
 switch (NODE_ENV) {
   case 'development':
     [].push.apply(module.exports.plugins, [
@@ -89,19 +89,15 @@ switch (NODE_ENV) {
       })
     ])
     break
-  case 'devTest':
-    /// Test mode, Mocking actual production environment
-    module.exports.devtool = '#source-map'
-    break
   case 'production':
     // http://vue-loader.vuejs.org/en/workflow/production.html
-    module.exports.devtool = false
+    module.exports.devtool = BUILD_ENV ? '#source-map' : false
     break
 }
 if (NODE_ENV !== 'development') {
   module.exports.output.filename = assist.assetPath('javascript/[name].[chunkhash].js')
   module.exports.output.chunkFilename = assist.assetPath('javascript/[name].[chunkhash].js')
-  module.exports.plugins = (module.exports.plugins || []).concat(assist.generate.productionPlugins())
+  module.exports.plugins = (module.exports.plugins || []).concat(assist.productionPlugins())
   module.exports.module.rules.push({
     test: /\.(png|jpg|gif|svg)$/,
     loader: 'image-webpack-loader'

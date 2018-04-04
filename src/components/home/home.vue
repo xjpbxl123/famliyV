@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>Home</span>
+    <span @click="click">Home</span>
   </div>
 </template>
 
@@ -8,12 +8,20 @@
   export default {
     name: 'home',
     data () {
-      return {name: 'Moersing'}
+      return { list: [] }
     },
-    components: {}
+    methods: {
+      click () {
+        this.list.extend()
+      }
+    },
+    components: {},
+    created () {}
   }
 </script>
 
 <style lang="scss" scoped>
-
+body {
+  background: #ddd;
+}
 </style>

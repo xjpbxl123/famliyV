@@ -1,28 +1,34 @@
 <template>
   <div>
-
+    <span>pianoKey demo</span>
   </div>
 </template>
-<style lang="scss">
-
+<style lang="scss" scoped>
+span {
+  color: red;
+  font-size: 1.5rem;
+}
 </style>
 <script type="text/javascript">
-  import Find from '../../javascripts/apis/index'
+  import _ from 'lodash'
+  import Find from '../../apis/index'
+  import { KEY80 } from '../../scripts/find/pianokeys'
   export default {
     data () {
       return {}
     },
-    methods: {},
+    methods: {
+      [KEY80] (key) {
+        alert(key)
+      }
+    },
     components: {},
     created () {
       Find.$on('pianoClick', key => {
-        if (key === 37) {
-          this.index++
+        if (_.isFunction(this[key])) {
+          return this[key](key)
         }
       })
-    },
-    destroyed () {
-      Find.$off('pianoClick')
     }
   }
 </script>
