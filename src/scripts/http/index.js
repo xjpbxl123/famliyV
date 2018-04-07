@@ -4,7 +4,7 @@
  */
 let config = {
   _timeout: 5000,
-  root: process.env.http.root
+  root: process.env.HTTP_ROOT
 }
 let assign = Object.assign
 /**

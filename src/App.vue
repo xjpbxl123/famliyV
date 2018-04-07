@@ -11,7 +11,10 @@
         msg: ''
       }
     },
-    created () {}
+    components: {},
+    created () {
+      console.log(this.$find)
+    }
   }
 </script>
 
@@ -23,8 +26,8 @@
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  display: flex;
 }
-
 h1,
 h2 {
   font-weight: normal;
