@@ -5,8 +5,9 @@ let webpack = require('webpack')
 let assist = require('./assist')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 const NODE_ENV = process.env.NODE_ENV
-const BUILD_ENV = process.env.BUILD_ENV
-const config = assist.getEnvConfig()
+const env = require('./env')()
+let shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
+console.log(env)
 module.exports = {
   entry: ['./build/polyfill.js', './src/main.js'],
   output: {
@@ -56,7 +57,9 @@ module.exports = {
       'components': path.posix.join(__dirname, '../src/components'),
       'scripts': path.posix.join(__dirname, '../src/scripts'),
       'styles': path.posix.join(__dirname, '../src/styles'),
-      'images': path.posix.join(__dirname, '../src/images')
+      'images': path.posix.join(__dirname, '../src/images'),
+      'plugins': path.posix.join(__dirname, '../src/plugins'),
+      'vue-find': path.posix.join(__dirname, '../src/plugins/vue-find')
     },
     extensions: ['.js', '.vue']
   },
@@ -66,17 +69,17 @@ module.exports = {
     noInfo: false,
     compress: true
   },
-  devtool: '#cheap-eval-source-map',
+  devtool: 'cheap-module-source-map',
   performance: {
     hints: false
   },
   plugins: [
-    new webpack.DefinePlugin({'process.env': config})
+    new webpack.DefinePlugin({'process.env': env})
   ]
 };
 
 /// add style loaders for .js files
-[].push.apply(module.exports.module.rules, assist.stylesLoader())
+[].push.apply(module.exports.module.rules, assist.stylesLoader({sourceMap: shouldUseSourceMap}))
 switch (NODE_ENV) {
   case 'development':
     [].push.apply(module.exports.plugins, [
@@ -91,7 +94,10 @@ switch (NODE_ENV) {
     break
   case 'production':
     // http://vue-loader.vuejs.org/en/workflow/production.html
-    module.exports.devtool = BUILD_ENV ? '#source-map' : false
+    module.exports.devtool = false
+    break
+  default:
+    module.exports.devtool = shouldUseSourceMap && 'source-map'
     break
 }
 if (NODE_ENV !== 'development') {

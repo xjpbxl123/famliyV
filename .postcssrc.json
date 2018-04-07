@@ -1,0 +1,7 @@
+{
+  "postcss": {
+    "autoprefixer": {
+      "browser": ["last 3 versions", "not ie < 9"]
+    }
+  }
+}

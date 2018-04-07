@@ -1,5 +1,4 @@
 {
-  "globals": {"Find":true},
   "extends": [
     "plugin:vue/essential",
     "standard"

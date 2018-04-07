@@ -6,7 +6,6 @@ let path = require('path')
 let webpack = require('webpack')
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
-let config = require('./config')
 let assetConfig = {
   assertRoot: path.resolve(__dirname, '../dist'),
   assertPath: 'static',
@@ -70,6 +69,7 @@ const cssLoader = ({sourceMap = true, publicPath = assetConfig.publicPath} = {})
   }
   return loaders
 }
+
 /**
  * @desc Parse common styles(css/sass)
  * */
@@ -85,21 +85,10 @@ const stylesLoader = (options = {}) => {
   }
   return stylesLoaders
 }
-/**
- * @desc Return a config of env, When BUILD_ENV is exist, Use it take precedence  getting config.
- * */
-const getEnvConfig = () => {
-  let BUILD_ENV = process.env.BUILD_ENV
-  if (config[BUILD_ENV]) {
-    return config[BUILD_ENV]
-  }
-  return config[NODE_ENV]
-}
 module.exports = {
   assetConfig,
   assetPath,
   productionPlugins,
   cssLoader,
-  stylesLoader,
-  getEnvConfig
+  stylesLoader
 }
