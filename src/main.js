@@ -18,9 +18,8 @@ let app = window.app
 let isInFindClient = isObject(app) && isFunction(app.setup)
 if (isInFindClient) {
   let find = {}
-  app.setup(() => {
-    let sdk = new SDK()
-    sdk.init()
+  let sdk = new SDK()
+  sdk.init().then(() => {
     Vue.use(Find)
     find = new Find({
       globalKeyEvents: {
@@ -30,7 +29,8 @@ if (isInFindClient) {
         [KEY70] (key) {
           alert(key)
         }
-      }
+      },
+      message: {}
     })
     vue = new Vue({
       el: '#app',

@@ -2274,6 +2274,10 @@ domutils@1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
+dotenv-json@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/dotenv-json/download/dotenv-json-1.0.0.tgz#fc7f672aafea04bed33818733b9f94662332815c"
+
 dotenv@^5.0.1:
   version "5.0.1"
   resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"

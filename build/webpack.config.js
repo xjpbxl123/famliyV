@@ -6,7 +6,7 @@ let assist = require('./assist')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 const NODE_ENV = process.env.NODE_ENV
 const env = require('./env')()
-let shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
+let shouldUseSourceMap = NODE_ENV === 'development' || env[NODE_ENV].shouldUseSourceMap
 console.log(env)
 module.exports = {
   entry: ['./build/polyfill.js', './src/main.js'],

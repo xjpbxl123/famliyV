@@ -13,7 +13,7 @@
     },
     components: {},
     created () {
-      console.log(this.$find)
+      console.log(process.env)
     }
   }
 </script>
