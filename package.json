@@ -1,6 +1,6 @@
 {
-  "name": "find",
-  "description": "Family  version of piano",
+  "name": "piano-family",
+  "description": "钢琴家庭版",
   "version": "1.0.0",
   "author": "Moersing",
   "private": true,
