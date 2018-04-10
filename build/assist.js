@@ -34,9 +34,9 @@ const productionPlugins = () => {
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'index.html',
+      template: 'src/index.html',
       inject: true,
-      favicon: './favicon.ico',
+      favicon: './src/favicon.ico',
       minify: {
         removeComments: true,
         collapseWhitespace: true,

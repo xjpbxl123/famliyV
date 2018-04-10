@@ -1,97 +1,28 @@
 /**
- * Created by moersing on 11/9/2016.
- * @desc 预处理http请求
+ * Created by Tommy on 2018/4/3 .
  */
-let config = {
-  _timeout: 5000,
-  root: process.env.HTTP_ROOT
-}
-let assign = Object.assign
-/**
- * @desc vue resource 预设处理，包括超时,预设参数,错误等
- * @desc vue resource HTTP
- * */
-function HttpFetch (http) {
-  if (http && http.interceptors) {
-    http.interceptors.push(_errorHandle, _timeout, _setRequest)
-  }
-  http.options.root = config.root // root of http request
-  let overWriteMethods = {get: http.get, post: http.post, put: http.put}
-  ;['get'].forEach(value => {
-    /// overwrite get method of http
-    http[value] = (url, options) => {
-      return overWriteMethods[value].call(
-        http,
-        url,
-        assign(_defaultOptions(), options)
-      )
+import axios from 'axios'
+import {config, getDefaultParams} from './config'
+let http = axios.create(config)
+
+http.interceptors.request.use(async function (config) {
+  try {
+    if (Reflect.has(config.data || {}, 'cmd')) {
+      let defaultParams = await getDefaultParams()
+      let header = {...defaultParams, ...{cmd: config.data.cmd}}
+      Reflect.deleteProperty(config.data, 'cmd')
+      config.data = JSON.stringify({header, body: config.data})
     }
-  })
-  ;['post', 'put'].forEach(value => {
-    /// overwrite post/put method of http
-    http[value] = (url, body = {}, options) => {
-      return overWriteMethods[value].call(
-        http,
-        url,
-        body,
-        assign(_defaultOptions(), options)
-      )
-    }
-  })
-}
-/**
- * @desc  处理默认参数
- * */
-function _defaultOptions () {
-  return {
-    headers: {}
+    return config
+  } catch (error) {
+    /// For more errors handler of request go here,such as tip or console.
+    return Promise.reject(error)
   }
-}
-
-/**
- * @desc  超时处理
- * */
-function _timeout (request, next) {
-  let timeSeed
-  let timeout = typeof request.timeout === 'number' ? request.timeout : config._timeout
-  delete request.timeout
-
-  timeSeed = setTimeout(() => {
-    request.abort && request.abort()
-    _timeoutHandle()
-  }, timeout)
-  next(function () {
-    clearTimeout(timeSeed)
-  })
-}
-
-/**
- * @desc  超时处理函数
- * */
-function _timeoutHandle () {
-
-}
-
-/**
- *@desc 预设参数
- * */
-function _setRequest (request, next) {
-  if (request.method === 'GET') {
-    request.params._ = Date.now() // prevent cache
-  }
-  request._timeout = config._timeout
-  next()
-}
-
-/**
- * @desc 错误处理，可以根据code设置相应的处理方式
- * */
-function _errorHandle (request, next) {
-  next(function (response) {
-    if (response.status === 500) {
-      /// do something
-    }
-  })
-}
-
-export default HttpFetch
+})
+http.interceptors.response.use(function (response) {
+  return response.data
+}, function (error) {
+  /// For more errors handler of response go here,such as tip or console.
+  return Promise.reject(error)
+})
+export default http

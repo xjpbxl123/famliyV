@@ -1,4 +1,4 @@
-{
+module.exports={
   "extends": [
     "plugin:vue/essential",
     "standard"
@@ -15,6 +15,7 @@
     "browser":true
   },
   "rules": {
+    "no-debugger": process.env.NODE_ENV==='development'?'off':'error',
     "indent": "off",
     "vue/script-indent": [
       "error",

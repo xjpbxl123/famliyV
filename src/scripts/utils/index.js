@@ -1,7 +1,8 @@
 /**
  * Created by moersing on 07/02/2018.
  */
-let os = (function () {
+import {isString} from 'lodash'
+const os = (function () {
   return (function () {
     let
       u = navigator.userAgent
@@ -18,4 +19,39 @@ let os = (function () {
     }
   })()
 }())
-export { os }
+/**
+ * @desc 日期格式化
+ * @param {Date|String} date - 需要格式化的时间,如果是字符串 date的含义等价于format,date将会重新赋值为new Date
+ * @param {String} [format] - 格式化字符串
+ * Y:年
+ * M:月
+ * q:季度
+ * d:日
+ * h:时
+ * m:分
+ * s:秒
+ * S:毫秒
+ * */
+const formatDate = function (date, format) {
+  if (isString(date)) {
+    format = date
+    date = new Date()
+  }
+  let o = {
+    'M+': date.getMonth() + 1, // month
+    'd+': date.getDate(), // day
+    'h+': date.getHours(), // hour
+    'm+': date.getMinutes(), // minute
+    's+': date.getSeconds(), // second
+    'S': date.getMilliseconds() // millisecond
+  }
+  if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  for (let k in o) {
+    if (new RegExp('(' + k + ')').test(format)) {
+      format = format.replace(RegExp.$1,
+                              RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+    }
+  }
+  return format
+}
+export { os, formatDate }

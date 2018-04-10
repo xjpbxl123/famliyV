@@ -1,16 +1,11 @@
-
-class SDK {
-  constructor () {
-    /**
-     * @desc 初始化SDK
-     * @return Promise
-     * */
-    this.init = () => {
-      let app = window.app
-      return new Promise(resolve => {
-        return app.setup(resolve)
-      })
+import {KEY108, KEY70} from 'vue-find'
+export default {
+  globalKeyEvents: {
+    [KEY108] (key) {
+      alert(key)
+    },
+    [KEY70] (key) {
+      alert(key)
     }
   }
 }
-export default SDK

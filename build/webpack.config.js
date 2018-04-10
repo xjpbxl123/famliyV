@@ -5,9 +5,8 @@ let webpack = require('webpack')
 let assist = require('./assist')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 const NODE_ENV = process.env.NODE_ENV
-const env = require('./env')()
-let shouldUseSourceMap = NODE_ENV === 'development' || env[NODE_ENV].shouldUseSourceMap
-console.log(env)
+let envConfig = require('./env')()
+let shouldUseSourceMap = NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap
 module.exports = {
   entry: ['./build/polyfill.js', './src/main.js'],
   output: {
@@ -48,6 +47,13 @@ module.exports = {
           limit: 10000,
           name: assist.assetPath(`/images/[name].[ext]?${NODE_ENV !== 'development' && '[hash]'}`)
         }
+      },
+      {
+        test: /\.(eot|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: assist.assetPath(`/fonts/[name].[ext]?${NODE_ENV !== 'development' && '[hash]'}`)
+        }
       }
     ]
   },
@@ -59,7 +65,8 @@ module.exports = {
       'styles': path.posix.join(__dirname, '../src/styles'),
       'images': path.posix.join(__dirname, '../src/images'),
       'plugins': path.posix.join(__dirname, '../src/plugins'),
-      'vue-find': path.posix.join(__dirname, '../src/plugins/vue-find')
+      'vue-find': path.posix.join(__dirname, '../src/plugins/vue-find'),
+      'find-sdk': path.posix.join(__dirname, '../src/scripts/findSDK')
     },
     extensions: ['.js', '.vue']
   },
@@ -74,7 +81,7 @@ module.exports = {
     hints: false
   },
   plugins: [
-    new webpack.DefinePlugin({'process.env': env})
+    new webpack.DefinePlugin({'process.env': envConfig.stringify})
   ]
 };
 
@@ -87,7 +94,7 @@ switch (NODE_ENV) {
       new webpack.NamedModulesPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: 'index.html',
+        template: 'src/index.html',
         inject: true
       })
     ])

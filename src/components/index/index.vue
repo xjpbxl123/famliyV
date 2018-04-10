@@ -1,24 +1,24 @@
 <template>
-  <div>
-    <span @click="goTo">pianoKey demo</span>
+  <div class="banner-wrapper">
+   <banner-left></banner-left>
   </div>
 </template>
 <style lang="scss" scoped>
-span {
-  color: red;
-  font-size: 1.5rem;
+.banner-wrapper {
+  height: 100%;
 }
 </style>
 <script type="text/javascript">
+  import bannerLeft from './index-banner-left/index-banner-left'
   export default {
     data () {
       return {}
     },
-    methods: {
-      goTo () {
-        this.$router.push('/home')
-      }
+    methods: {},
+    created () {
+      // this.$store.dispatch('getRecentBooks')
+      // this.$store.dispatch('getHotBooks')
     },
-    created () {}
+    components: { bannerLeft }
   }
 </script>
