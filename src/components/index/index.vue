@@ -2,16 +2,17 @@
   <div class="banner-wrapper">
     <banner-left :buttonActions="buttonActions"/>
     <find-button-banner className="button-banner">
-      <find-button v-for="button in buttons"
+      <find-button v-for="button in userActionButtons"
                    :className="button.className"
+                   :iconClass="button.icon"
                    :meta="button.meta"
-                   :icon-text="button.text"
-                   :icon-class="button.icon"
+                   :text="button.text"
                    :key="button.text"
                    :action="buttonActions"
       />
     </find-button-banner>
-    <div class="help-banner" :class="{'show-help-banner':showHelpBanner}" :style="{'background-image':`url(${helpImg[helpIndex]})`}"></div>
+    <div class="help-banner" :class="{'show-help-banner':showHelpBanner}"
+         :style="{'background-image':`url(${helpImg[helpIndex]})`}"></div>
   </div>
 </template>
 <script type="text/javascript">
@@ -25,8 +26,8 @@
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
-        helpImg: [require('./help-1.png'), require('./help-2.png')],
-        buttons: [
+        helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
+        userActionButtons: [
           {
             text: '帮助',
             icon: 'icon-help',
@@ -44,6 +45,44 @@
             icon: 'icon-settings',
             className: 'settings',
             meta: { type: 'settings' }
+          }
+        ],
+        courseButtons: [
+          {
+            text: '我的曲谱',
+            icon: 'score',
+            className: 'index-custom-button custom-score',
+            meta: { type: 'score' }
+          },
+          {
+            text: '弹奏录制',
+            icon: 'recording',
+            className: 'index-custom-button custom-recording',
+            meta: { type: 'recording' }
+          },
+          {
+            text: '教材系列',
+            icon: 'material',
+            className: 'index-custom-button custom-material',
+            meta: { type: 'material' }
+          },
+          {
+            text: '流行经典',
+            icon: 'popular',
+            className: 'index-custom-button custom-popular',
+            meta: { type: 'popular' }
+          },
+          {
+            text: '名师课程',
+            icon: 'master',
+            className: 'index-custom-button custom-master',
+            meta: { type: 'master' }
+          },
+          {
+            text: '游戏应用',
+            icon: 'game',
+            className: 'index-custom-button custom-game',
+            meta: { type: 'game' }
           }
         ]
       }
@@ -94,6 +133,41 @@
     components: { bannerLeft, findButtonBanner, findButton }
   }
 </script>
+<style lang="scss">
+/// 这里的css 是全局的，加上 [moduleName] 来区分,如：当前模块是index,则可以使用 index-xxx-xxx的方式
+.index-custom-button {
+  i {
+    width: 80px;
+    height: 72px;
+  }
+  .text {
+    width: auto !important;
+  }
+  .score {
+    background: transparent url("./images/my-score.png") center /cover no-repeat;
+  }
+
+  .recording {
+    background: transparent url("./images/recording.png") center /cover no-repeat;
+  }
+
+  .popular {
+    background: transparent url("./images/popular.png") center /cover no-repeat;
+  }
+
+  .material {
+    background: transparent url("./images/material.png") center /cover no-repeat;
+  }
+
+  .master {
+    background: transparent url("./images/master.png") center /cover no-repeat;
+  }
+
+  .game {
+    background: transparent url("./images/game.png") center /cover no-repeat;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .banner-wrapper {
   height: 100%;
@@ -105,7 +179,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background: transparent url("./help-1.png") no-repeat center;
+  background: transparent url("./images/help-1.png") no-repeat center;
 }
 
 .show-help-banner {
@@ -122,5 +196,28 @@
 
 .settings {
   margin-left: 50px;
+}
+
+.index-custom-button {
+  position: absolute;
+  bottom: 5px;
+  &.custom-score {
+    left: 545px;
+  }
+  &.custom-recording {
+    left: 647px;
+  }
+  &.custom-popular {
+    left: 798px;
+  }
+  &.custom-material {
+    left: 895px;
+  }
+  &.custom-master {
+    left: 995px;
+  }
+  &.custom-game {
+    left: 1147px;
+  }
 }
 </style>
