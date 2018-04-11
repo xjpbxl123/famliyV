@@ -7,7 +7,7 @@ import find from './scripts/find'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import routes from './routers'
-import SDK from './scripts/findSDK'
+import SDK from './scripts/findSDK/src/index'
 import 'normalize.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
@@ -31,12 +31,7 @@ if (isInFindClient) {
     })
   })
 } else {
-  vue = new Vue({
-    el: '#app',
-    render: h => h(App),
-    router,
-    store: new Vuex.Store(store)
-  })
+  console.log('%c请在Find客户端中打开', 'color:green')
 }
 export default vue
 window.app.sendEvent = () => {

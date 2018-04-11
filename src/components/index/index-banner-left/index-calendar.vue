@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="title">
-      <span class="current-month" v-text="month"></span>
+      <span class="current-month" v-text="month+'月'"></span>
       <span class="description">练琴日历</span>
     </div>
     <div class="content">
@@ -29,20 +29,30 @@
         month: ''
       }
     },
-    created () {
-      let date = new Date()
-      let totalDays = new Date(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        0
-      ).getDate() // 获取当前月有多少天
-      this.month = `${date.getMonth() + 1}月`
-      /// 生成当前月的所有日期
-      while (totalDays--) {
-        this.dateText.push(totalDays + 1)
+    methods: {
+      /**
+       *@desc 生成练琴日期
+       * */
+      generateDate () {
+        let date = new Date()
+        let totalDays = new Date(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          0
+        ).getDate() // 获取当前月有多少天
+        this.month = `${date.getMonth() + 1}`
+        /// 生成当前月的所有日期
+        while (totalDays--) {
+          this.dateText.push(totalDays + 1)
+        }
+        this.dateText.reverse()
       }
-      this.dateText.reverse()
-      this.$store.dispatch('setNativeStorage', { playCalendar: this.dateText })
+    },
+    created () {
+      this.generateDate()
+      this.$store.dispatch('setNativeStorage', {
+        playCalendar: { [this.month]: this.dateText }
+      })
     }
   }
 </script>

@@ -25,12 +25,12 @@ const os = (function () {
  * @param {String} [format] - 格式化字符串
  * Y:年
  * M:月
- * q:季度
  * d:日
  * h:时
  * m:分
  * s:秒
  * S:毫秒
+ * @example formatDate(new Date(),'YYYY-MM-dd')
  * */
 const formatDate = function (date, format) {
   if (isString(date)) {
