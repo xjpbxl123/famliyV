@@ -3,6 +3,43 @@
 *::after {
   box-sizing: border-box;
 }
+/**
+* 设配大小
+*/
+@media screen and (max-width: 3840px) {
+  html {
+    transform: scale(1);
+  }
+}
+
+@media screen and (max-width: 1920px) {
+  html {
+    transform: scale(0.5);
+  }
+}
+@media screen and (max-width: 1440px) {
+  html {
+    transform: scale(0.375);
+  }
+}
+@media screen and (max-width: 1366px) {
+  html {
+    transform: scale(0.356);
+  }
+}
+@media screen and (max-width: 1280px) {
+  html {
+    transform: scale(0.333);
+  }
+}
+@media screen and (max-width: 1024px) {
+  html {
+    transform: scale(0.267);
+  }
+}
+html {
+  transform-origin: 0 0;
+}
 body {
   position: relative;
   width: 3840px;
@@ -10,7 +47,7 @@ body {
   font-family: "pingfang SC", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url("./images/bg_background2.png") center center no-repeat;
+  background: url("./images/bg_background2.png") 0 0 / cover no-repeat;
 }
 h1,
 h2 {

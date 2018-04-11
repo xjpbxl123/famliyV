@@ -1,13 +1,15 @@
 import createLogger from 'vuex/dist/logger'
 import http from '../scripts/http'
 import {nativeStorage} from 'find-sdk'
-const SET_STORAGE = 'SET_STORAGE' // 设置练琴日历
+const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const CREATE_SESSION = 'CREATE_SESSION' /// 创建会话id,用于生成二维码
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 最近更新
 export default {
   state: {
-    storage: {},
+    storage: {
+      playCalendar: {} // 练琴日期
+    },
     sessionId: null,
     recentBooks: {},
     hotBooks: {}

@@ -1,5 +1,5 @@
 <template>
-  <div class="canvas-wrapper">
+  <div class="qr-wrapper">
     <canvas></canvas>
   </div>
 </template>
