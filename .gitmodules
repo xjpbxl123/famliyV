@@ -1,6 +1,6 @@
 [submodule "src/plugins/vue-find"]
 	path = src/plugins/vue-find
-	url = git@192.168.200.211:moersing/vue-find.git
+	url = git@192.168.200.211:FindVue/vue-find.git
 [submodule "src/scripts/findSDK"]
 	path = src/scripts/findSDK
 	url = git@192.168.200.211:FindVue/find-sdk.git
