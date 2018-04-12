@@ -36,7 +36,7 @@
           return state.storage.playCalendar[this.month].map(value => {
             return {
               date: value.date,
-              practiced: value.date > day - 1
+              practiced: value.date > day - 1 /// 如果
             }
           })
         }

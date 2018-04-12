@@ -1,5 +1,4 @@
 import {getDeviceInfo} from 'find-sdk'
-console.log(process.env)
 let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params

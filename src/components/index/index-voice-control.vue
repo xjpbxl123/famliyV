@@ -3,7 +3,7 @@
     <div class="voice-control" v-for="control in controls" :key="control.icon">
       <span>
         <span v-if="control.text" v-text="control.text"></span>
-        <i  v-else class="iconfont" :class="control.icon" ></i>
+        <i v-else class="iconfont" :class="control.icon"></i>
       </span>
       <find-dot v-if="control.dot" class-name="find-dot"/>
     </div>
@@ -36,7 +36,8 @@
 .voice-wrapper {
   display: flex;
   position: relative;
-  left: 1200px;
+  top: 20px;
+  left: 1177px;
   border-radius: 16px;
   width: 250px;
   height: 50px;
@@ -83,7 +84,7 @@ span {
 
 .find-dot {
   background-color: #40baa7;
-  bottom: -30px;
+  bottom: -18px;
   left: 20px;
 }
 </style>
