@@ -1,5 +1,5 @@
 <template>
-  <div :class="className">
+  <div class="button-banner-wrapper" :class="className">
     <slot></slot>
   </div>
 </template>
@@ -13,7 +13,7 @@
 </script>
 
 <style lang="scss" scoped>
-div {
+.button-banner-wrapper {
   display: flex;
   position: absolute;
   bottom: 10px;
