@@ -39,7 +39,7 @@ button {
   border: none;
   color: #fff;
   &.require-dot {
-    padding-bottom: 30px;
+    padding-bottom: 24px;
   }
   .iconfont {
     padding-bottom: 5px;

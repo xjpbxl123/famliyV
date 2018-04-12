@@ -68,7 +68,7 @@
 
 .control-buttons {
   position: absolute;
-  bottom: 5px;
+  bottom: -4px;
   transform: translateX(-50%);
   .iconfont {
     width: 50px;
