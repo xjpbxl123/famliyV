@@ -1,8 +1,11 @@
 <template>
   <div class="banner-wrapper">
-    <banner-left
-      :setCalendarData="setCalendarData"
-      :buttonActions="buttonActions"/>
+    <div class="banner-content">
+      <banner-left
+        :setCalendarData="setCalendarData"
+        :buttonActions="buttonActions"/>
+      <contentCenter :recentBooks="recentBooks"></contentCenter>
+    </div>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
       <voice-control/>
@@ -26,8 +29,11 @@
   import voiceControl from './index-voice-control'
   import { KEY27, KEY108 } from 'vue-find'
   import bannerLeft from './index-banner-left'
+  import mixins from './mixins'
+  import contentCenter from './index-content-center'
 
   export default {
+    mixins: [mixins],
     data () {
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
@@ -89,7 +95,12 @@
         }
       }
     },
-    created () {},
+    created () {
+      this.initializeData()
+      setTimeout(() => {
+        console.log(this.recentBooks)
+      }, 3000)
+    },
     components: {
       bannerLeft,
       findButtonBanner,
@@ -98,13 +109,18 @@
       voiceControl,
       userButtons,
       courseButton,
-      controlButton
+      controlButton,
+      contentCenter
     }
   }
 </script>
 <style lang="scss" scoped>
 .banner-wrapper {
   height: 100%;
+  .banner-content {
+    display: flex;
+    height: 100%;
+  }
 }
 
 .help-banner {
