@@ -5,15 +5,19 @@
       <qr-code ref="qrCode"/>
     </div>
     <span>扫描二维码登陆</span>
-    <calendar/>
+    <calendar :setCalendarData="setCalendarData"/>
   </div>
 </template>
 
 <script>
   import qrCode from './index-qrcode'
   import calendar from './index-calendar'
+
   export default {
     name: 'index-banner-left',
+    props: {
+      setCalendarData: Function
+    },
     data () {
       return {}
     },

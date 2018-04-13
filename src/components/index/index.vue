@@ -1,14 +1,19 @@
 <template>
   <div class="banner-wrapper">
-    <banner-left :buttonActions="buttonActions"/>
+    <banner-left
+      :setCalendarData="setCalendarData"
+      :buttonActions="buttonActions"/>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
       <voice-control/>
       <course-button :action="buttonActions"/>
-      <control-button :action="buttonActions" />
+      <control-button :action="buttonActions"/>
     </find-button-banner>
-    <div class="help-banner" :class="{'show-help-banner':showHelpBanner}"
-         :style="{'background-image':`url(${helpImg[helpIndex]})`}"></div>
+    <div class="help-banner"
+         :class="{'show-help-banner':showHelpBanner}"
+         :style="{'background-image':`url(${helpImg[helpIndex]})`}"
+         @click="buttonActions({type:'help'})"
+    ></div>
   </div>
 </template>
 <script type="text/javascript">
@@ -39,6 +44,18 @@
       }
     },
     methods: {
+      /**
+       * @desc 设置练琴数据
+       * @param {object} playCalendar - 练琴数据
+       * */
+      setCalendarData (playCalendar) {
+        this.$store.dispatch('setNativeStorage', {
+          playCalendar
+        })
+      },
+      /**
+       * @desc 显示帮助
+       * */
       showHelp () {
         if (this.showHelpBanner) {
           if (this.helpIndex < this.helpImg.length - 1) {

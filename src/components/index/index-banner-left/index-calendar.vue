@@ -6,7 +6,7 @@
     </div>
     <div class="content">
       <ul>
-        <li v-for="text in weekText"  :key="text">
+        <li v-for="text in weekText" :key="text">
           <span v-text="text"></span>
         </li>
       </ul>
@@ -21,8 +21,12 @@
 
 <script>
   import { mapState } from 'vuex'
+
   export default {
     name: 'index-calendar',
+    props: {
+      setCalendarData: Function
+    },
     data () {
       return {
         weekText: ['日', '一', '二', '三', '四', '五', '六'],
@@ -31,12 +35,21 @@
     },
     computed: mapState({
       dateText (state) {
-        let day = new Date().getDate()
+        let now = new Date()
+        let day = now.getDate()
+        let weekDay = new Date(now.setDate(1)).getDay() // 获取当前月的1号是星期几
         if (state.storage.playCalendar[this.month]) {
-          return state.storage.playCalendar[this.month].map(value => {
+          let placeholderDay = Array.from({ length: weekDay }).map(() => ({
+            date: ''
+          })) /// 生成日期占位符，用于对应星期几
+          let playCalendar = [
+            ...placeholderDay,
+            ...state.storage.playCalendar[this.month]
+          ]
+          return playCalendar.map(value => {
             return {
               date: value.date,
-              practiced: value.date > day - 1 /// 如果
+              practiced: value.date > day - 1 /// 如果不是今天，设置为false ,即没有练习过
             }
           })
         }
@@ -67,9 +80,7 @@
       let { storage } = this.$store.state
       if (!storage.playCalendar[this.month]) {
         let dateText = this.generateDate()
-        this.$store.dispatch('setNativeStorage', {
-          playCalendar: { [this.month]: dateText }
-        })
+        this.setCalendarData({ [this.month]: dateText })
       }
     }
   }
@@ -81,19 +92,25 @@
   padding-left: 70px;
   text-align: left;
 }
+
 .title {
+  padding-bottom: 10px;
   color: #fff;
 }
+
 .current-month {
   font-size: 50px;
 }
+
 .description {
   font-size: 24px;
 }
+
 .content {
   @extend .title;
   font-size: 20px;
 }
+
 ul {
   display: flex;
   align-content: center;
@@ -104,6 +121,7 @@ ul {
     margin-right: 30px;
   }
 }
+
 .date-text {
   width: 96%;
   text-align: center;

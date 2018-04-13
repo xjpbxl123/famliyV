@@ -3,6 +3,7 @@
 *::after {
   box-sizing: border-box;
 }
+
 /**
 * 设配大小
 */
@@ -17,29 +18,36 @@
     transform: scale(0.5);
   }
 }
+
 @media screen and (max-width: 1440px) {
   html {
     transform: scale(0.375);
   }
 }
+
 @media screen and (max-width: 1366px) {
   html {
     transform: scale(0.356);
   }
 }
+
 @media screen and (max-width: 1280px) {
   html {
     transform: scale(0.333);
   }
 }
+
 @media screen and (max-width: 1024px) {
   html {
     transform: scale(0.267);
   }
 }
+
 html {
   transform-origin: 0 0;
+  -webkit-tap-highlight-color: transparent;
 }
+
 body {
   position: relative;
   width: 3840px;
@@ -49,14 +57,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: url("./images/bg_background2.png") 0 0 / cover no-repeat;
 }
+
 h1,
 h2 {
   font-weight: normal;
 }
 
 ul {
-  list-style-type: none;
+  margin: 0;
   padding: 0;
+  list-style-type: none;
 }
 
 li {
@@ -65,4 +75,8 @@ li {
 
 a {
   color: #42b983;
+}
+
+button {
+  outline: none;
 }

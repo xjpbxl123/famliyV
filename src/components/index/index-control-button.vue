@@ -50,6 +50,16 @@
             icon: 'icon-ok',
             className: 'ok',
             meta: { type: 'ok' }
+          },
+          {
+            icon: 'icon-search',
+            className: 'search',
+            meta: { type: 'search' }
+          },
+          {
+            icon: 'icon-tone-change',
+            className: 'tone-change',
+            meta: { type: 'toneChange' }
           }
         ]
       }
@@ -128,6 +138,29 @@
     }
     .icon-ok {
       background-image: linear-gradient(-180deg, #6de4d9 30%, #109892 97%);
+    }
+  }
+  &.search {
+    left: 2932px;
+    .dot {
+      background: #d58846;
+    }
+    .icon-search {
+      background-image: linear-gradient(
+        0deg,
+        #bf5e18 0%,
+        #d58846 50%,
+        #ffb54d 100%
+      );
+    }
+  }
+  &.tone-change {
+    left: 3032px;
+    .dot {
+      background: #e92e66;
+    }
+    .icon-tone-change {
+      background-image: linear-gradient(-180deg, #fc777e 30%, #e92e66 97%);
     }
   }
 }
