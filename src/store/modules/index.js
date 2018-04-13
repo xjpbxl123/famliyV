@@ -3,7 +3,7 @@ import http from '../../scripts/http'
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 最近更新
 export default {
-  namespace: true,
+  namespaced: true,
   state: {
     recentBooks: {},
     hotBooks: {}

@@ -1,7 +1,7 @@
 <template>
   <div class="keyboard">
     <ul>
-      <li v-for="(item,index) in keys" :key="index" :class="item.className">
+      <li v-for="(item,index) in keys" :key="index" :class="item.className" @click="clickKeyboard(index)">
         <span v-text="item.text"></span>
       </li>
     </ul>
@@ -11,6 +11,9 @@
 <script>
   export default {
     name: 'keyboard',
+    props: {
+      setValue: Function
+    },
     data () {
       return {
         keys: [
@@ -257,23 +260,40 @@
       }
     },
     methods: {
-      clickKeyboard (key) {
+      /**
+       * @desc 处理钢琴按下按键对应的文本
+       * @param {Number} index - 按下按键对应的文本索引
+       * */
+      clickKeyboard (index) {
         let keys = this.keys
         let len = keys.length
-        switch (key) {
-          case 40:
-            while (++key < len) {
-              let temp = keys[key].text
-              keys[key].text = keys[key].symbolText
-              keys[key].symbolText = temp
+        switch (index) {
+          /// switch lower-case/upper-case
+          case 0:
+            let switchCase = String.prototype.toUpperCase
+            index = index + 1 // 0是切换大小写,从1开始是英文
+            if (/[A-Z]/.test(keys[index].text)) {
+              switchCase = String.prototype.toLowerCase
             }
-            break
+            while (index <= 26) {
+              keys[index].text = switchCase.call(keys[index].text)
+              index++
+            }
+            return ''
+          case 40:
+            /// 切换符号
+            while (index < len) {
+              let temp = keys[index].text
+              keys[index].text = keys[index].symbolText
+              keys[index].symbolText = temp
+              index++
+            }
+            return ''
           case 64:
           case 65:
             return ''
-          default:
-            return this.keys[key].text
         }
+        this.setValue(keys[index].text)
       }
     }
   }

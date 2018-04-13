@@ -2,10 +2,9 @@
   <div>
     <find-button v-for="buttons in courseButtons"
                  :className="`${buttons.className} course-buttons`"
-                 :meta="buttons.meta"
                  :text="buttons.text"
                  :key="buttons.text"
-                 :action="action">
+                 :action="()=>action(button.className)">
       <i :class="`${buttons.className} icon`"></i>
       <span v-text="buttons.text"></span>
       <find-dot/>
@@ -29,40 +28,27 @@
         courseButtons: [
           {
             text: '我的曲谱',
-            className: 'score',
-            meta: { type: 'score' }
+            className: 'score'
           },
           {
             text: '弹奏录制',
-            className: 'recording',
-            meta: { type: 'recording' }
+            className: 'recording'
           },
           {
             text: '教材系列',
-            className: 'material',
-            meta: { type: 'material' }
+            className: 'material'
           },
           {
             text: '流行经典',
-            className: 'popular',
-            meta: { type: 'popular' }
+            className: 'popular'
           },
           {
             text: '名师课程',
-            className: 'master',
-            meta: { type: 'master' }
+            className: 'master'
           },
           {
             text: '游戏应用',
-            className: 'game',
-            meta: { type: 'game' }
-          }
-        ],
-        controlsButtons: [
-          {
-            icon: 'icon-shutdown',
-            className: 'shutdown',
-            meta: { type: 'shutdown' }
+            className: 'game'
           }
         ]
       }
@@ -105,27 +91,27 @@
     height: 72px;
   }
   .score {
-    background: transparent url("./images/my-score.png") center /cover no-repeat;
+    background: transparent url("images/my-score.png") center /cover no-repeat;
   }
 
   .recording {
-    background: transparent url("./images/recording.png") center /cover no-repeat;
+    background: transparent url("images/recording.png") center /cover no-repeat;
   }
 
   .popular {
-    background: transparent url("./images/popular.png") center /cover no-repeat;
+    background: transparent url("images/popular.png") center /cover no-repeat;
   }
 
   .material {
-    background: transparent url("./images/material.png") center /cover no-repeat;
+    background: transparent url("images/material.png") center /cover no-repeat;
   }
 
   .master {
-    background: transparent url("./images/master.png") center /cover no-repeat;
+    background: transparent url("images/master.png") center /cover no-repeat;
   }
 
   .game {
-    background: transparent url("./images/game.png") center /cover no-repeat;
+    background: transparent url("images/game.png") center /cover no-repeat;
   }
 }
 </style>

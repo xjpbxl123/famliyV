@@ -1,12 +1,11 @@
 <template>
   <div class="user-buttons-wrapper">
-    <find-button v-for="buttons in userActionButtons"
-                 :className="buttons.className"
-                 :iconClass="buttons.icon"
-                 :text="buttons.text"
-                 :meta="buttons.meta"
-                 :key="buttons.text"
-                 :action="action"/>
+    <find-button v-for="button in userActionButtons"
+                 :className="button.className"
+                 :iconClass="button.icon"
+                 :text="button.text"
+                 :key="button.text"
+                 :action="()=>action(button.className)"/>
   </div>
 </template>
 
@@ -26,20 +25,17 @@
           {
             text: '帮助',
             icon: 'icon-help',
-            className: 'help',
-            meta: { type: 'help' }
+            className: 'help'
           },
           {
             text: '登录',
             icon: 'icon-username',
-            className: 'user',
-            meta: { type: 'user' }
+            className: 'user'
           },
           {
             text: '设置',
             icon: 'icon-settings',
-            className: 'settings',
-            meta: { type: 'settings' }
+            className: 'settings'
           }
         ]
       }

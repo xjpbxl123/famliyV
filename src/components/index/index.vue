@@ -12,7 +12,7 @@
     <div class="help-banner"
          :class="{'show-help-banner':showHelpBanner}"
          :style="{'background-image':`url(${helpImg[helpIndex]})`}"
-         @click="buttonActions({type:'help'})"
+         @click="buttonActions('help')"
     ></div>
   </div>
 </template>
@@ -25,7 +25,7 @@
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
   import { KEY27, KEY108 } from 'vue-find'
-  import bannerLeft from './index-banner-left/index-banner-left'
+  import bannerLeft from './index-banner-left'
 
   export default {
     data () {
@@ -78,7 +78,7 @@
       /**
        * @desc 按钮组件按钮事件
        * */
-      buttonActions ({ type }) {
+      buttonActions (type) {
         switch (type) {
           case 'help':
             return this.showHelp()

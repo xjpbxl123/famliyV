@@ -4,6 +4,7 @@
 
 <script>
   import mixin from '../style-mixins'
+
   export default {
     name: 'find-dot',
     mixins: [mixin]

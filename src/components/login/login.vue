@@ -1,21 +1,22 @@
 <template>
   <div class="login">
-    <login-keyboard ref="keyboard"/>
-    <login-banner :user-name="userName" :password="password"/>
+    <login-keyboard ref="keyboard" :setValue="setValue"/>
+    <login-banner ref="banner"/>
+    <login-button :action="buttonActions" />
   </div>
 </template>
 
 <script>
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
-  import { KEY_ANY } from 'vue-find'
+  import loginButton from './login-button'
+  import { KEY_ANY, KEY85, KEY90, KEY92, KEY94 } from 'vue-find'
 
   export default {
     name: 'login',
     data () {
       return {
-        userName: '',
-        password: ''
+        value: ''
       }
     },
     find: {
@@ -28,11 +29,46 @@
           key = key - 27
           this.$refs.keyboard.clickKeyboard(key)
         }
+      },
+      /// delete
+      [KEY85] () {
+        this.buttonActions('delete')
+      },
+      /// up
+      [KEY90] () {
+        this.buttonActions('up')
+      },
+      /// down
+      [KEY92] () {
+        this.buttonActions('down')
+      },
+      /// ok
+      [KEY94] () {}
+    },
+    methods: {
+      setValue (value) {
+        this.$refs.banner.setValue(value)
+      },
+      buttonActions (type) {
+        switch (type) {
+          case 'delete':
+            this.$refs.banner.delete()
+            break
+          case 'up':
+            this.$refs.banner.setFocus('account')
+            break
+          case 'down':
+            this.$refs.banner.setFocus('password')
+            break
+          case 'ok':
+            break
+        }
       }
     },
     components: {
       loginKeyboard,
-      loginBanner
+      loginBanner,
+      loginButton
     }
   }
 </script>

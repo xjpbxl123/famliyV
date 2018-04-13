@@ -1,9 +1,11 @@
 <template>
   <div class="control-buttons-wrapper">
-    <find-button v-for="buttons in controlsButtons"
-                 :key="buttons.icon"
-                 :class-name="`${buttons.className} control-buttons`">
-      <i class="iconfont" :class="buttons.icon"> </i>
+    <find-button v-for="button in controlsButtons"
+                 :key="button.icon"
+                 :class-name="`${button.className} control-button`"
+                  :action="()=>action(button.className)"
+    >
+      <i class="iconfont" :class="button.icon"> </i>
       <findDot class-name="dot"/>
     </find-button>
   </div>
@@ -16,50 +18,42 @@
   export default {
     name: 'control-buttons',
     props: {
-      action: Function
+      action: { type: Function, default: () => {} }
     },
     data () {
       return {
         controlsButtons: [
           {
             icon: 'icon-shutdown',
-            className: 'shutdown',
-            meta: { type: 'shutdown' }
+            className: 'shutdown'
           },
           {
             icon: 'icon-left',
-            className: 'left',
-            meta: { type: 'left' }
+            className: 'left'
           },
           {
             icon: 'icon-right',
-            className: 'right',
-            meta: { type: 'right' }
+            className: 'right'
           },
           {
             icon: 'icon-up',
-            className: 'up',
-            meta: { type: 'up' }
+            className: 'up'
           },
           {
             icon: 'icon-down',
-            className: 'down',
-            meta: { type: 'down' }
+            className: 'down'
           },
           {
             icon: 'icon-ok',
-            className: 'ok',
-            meta: { type: 'ok' }
+            className: 'ok'
           },
           {
             icon: 'icon-search',
-            className: 'search',
-            meta: { type: 'search' }
+            className: 'search'
           },
           {
             icon: 'icon-tone-change',
-            className: 'tone-change',
-            meta: { type: 'toneChange' }
+            className: 'tone-change'
           }
         ]
       }
@@ -76,7 +70,7 @@
   display: flex;
 }
 
-.control-buttons {
+.control-button {
   position: absolute;
   bottom: -4px;
   transform: translateX(-50%);

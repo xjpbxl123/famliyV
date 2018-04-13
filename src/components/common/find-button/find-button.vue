@@ -1,5 +1,5 @@
 <template>
-  <button :class="[className,{'require-dot':requireDot}]" @click="action(meta)">
+  <button :class="[className,{'require-dot':requireDot}]" @click="action">
     <slot>
       <i class="iconfont" :class="iconClass"></i>
       <span class="text" v-text="text"></span>
@@ -21,8 +21,7 @@
       action: {
         type: Function,
         default: () => {}
-      },
-      meta: { type: Object }
+      }
     },
     components: {
       findDot
