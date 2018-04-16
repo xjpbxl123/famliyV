@@ -4,7 +4,8 @@
       <banner-left
         :setCalendarData="setCalendarData"
         :buttonActions="buttonActions"/>
-      <contentCenter :recentBooks="recentBooks"></contentCenter>
+      <contentCenter :recentBooks="recentBooks" :hotBooks="hotBooks"></contentCenter>
+
     </div>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
