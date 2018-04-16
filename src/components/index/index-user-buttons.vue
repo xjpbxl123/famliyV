@@ -30,7 +30,7 @@
           {
             text: '登录',
             icon: 'icon-username',
-            className: 'user'
+            className: 'login'
           },
           {
             text: '设置',
@@ -50,7 +50,7 @@
 .user-buttons-wrapper {
   display: flex;
 }
-.user {
+.login {
   margin-left: 107px;
 }
 

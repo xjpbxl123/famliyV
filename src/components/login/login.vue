@@ -1,8 +1,8 @@
 <template>
   <div class="login">
     <login-keyboard ref="keyboard" :setValue="setValue"/>
-    <login-banner ref="banner"/>
-    <login-button :action="buttonActions" />
+    <login-banner ref="banner" :login="login"/>
+    <login-button :action="buttonActions"/>
   </div>
 </template>
 
@@ -43,11 +43,16 @@
         this.buttonActions('down')
       },
       /// ok
-      [KEY94] () {}
+      [KEY94] () {
+        this.buttonActions('ok')
+      }
     },
     methods: {
       setValue (value) {
         this.$refs.banner.setValue(value)
+      },
+      login (userName, password) {
+        this.$store.dispatch('login/login', { userName, password })
       },
       buttonActions (type) {
         switch (type) {
@@ -61,6 +66,7 @@
             this.$refs.banner.setFocus('password')
             break
           case 'ok':
+            this.$refs.banner.toLogin()
             break
         }
       }

@@ -4,8 +4,12 @@
       <banner-left
         :setCalendarData="setCalendarData"
         :buttonActions="buttonActions"/>
-      <contentCenter :endIndex.sync="endIndex" :recentBooks="recentBooks" :hotBooks="hotBooks" :activeIndex="activeIndex"></contentCenter>
-      <bannerRight></bannerRight>
+      <contentCenter :endIndex.sync="endIndex"
+                     :recentBooks="recentBooks"
+                     :hotBooks="hotBooks"
+                     :activeIndex="activeIndex">
+      </contentCenter>
+      <bannerRight />
     </div>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
@@ -28,12 +32,11 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import { KEY27, KEY108 } from 'vue-find'
+  import { KEY27, KEY108, KEY30, KEY75, KEY73 } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import mixins from './mixins'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
-  import { KEY75, KEY73 } from 'vue-find/src/pianoKeys.js'
 
   export default {
     mixins: [mixins],
@@ -47,11 +50,14 @@
       }
     },
     find: {
+      [KEY30] () {
+        this.buttonActions('login')
+      },
       [KEY27] () {
-        this.showHelp()
+        this.buttonActions('help')
       },
       [KEY108] () {
-        this.goBack()
+        this.buttonActions()
       },
       [KEY75] () {
         this.keyIndex()
@@ -85,6 +91,9 @@
           this.showHelpBanner = true
         }
       },
+      go (params) {
+        this.$router.push(params)
+      },
       goBack () {
         if (this.showHelpBanner) {
           this.showHelpBanner = false
@@ -100,9 +109,11 @@
           case 'help':
             return this.showHelp()
           case 'login':
-            return false
+            return this.go('/login')
           case 'settings':
             return false
+          default:
+            this.goBack()
         }
       }
     },

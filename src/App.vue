@@ -1,13 +1,10 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <transition name="fade">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
-<style lang="scss" scoped>
-#app {
-  height: 100%;
-}
-</style>
 <script type="text/javascript">
   export default {
     name: 'app',

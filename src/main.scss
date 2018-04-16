@@ -81,3 +81,22 @@ a {
 button {
   outline: none;
 }
+
+#app {
+  height: 100%;
+  > div {
+    position: relative;
+    height: 100%;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-to {
+  transition: all 0.5s ease-in;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 1200px, 0);
+}

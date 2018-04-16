@@ -25,6 +25,9 @@
         passwordActive: false
       }
     },
+    props: {
+      login: Function
+    },
     methods: {
       /**
        * @desc 设置焦点
@@ -46,6 +49,12 @@
         } else {
           this.password = this.password + newValue
         }
+      },
+      /**
+       * @desc 登录,调用父组件的方法
+       * */
+      toLogin () {
+        this.login(this.account, this.password)
       },
       delete () {
         if (this.accountActive) {

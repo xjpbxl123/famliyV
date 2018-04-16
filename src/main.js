@@ -9,6 +9,7 @@ import VueRouter from 'vue-router'
 import routes from './routers'
 import SDK from './scripts/findSDK/src/index'
 import 'normalize.css'
+import 'animation.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
 Vue.use(VueRouter)
