@@ -4,8 +4,8 @@
       <banner-left
         :setCalendarData="setCalendarData"
         :buttonActions="buttonActions"/>
-      <contentCenter :recentBooks="recentBooks" :hotBooks="hotBooks"></contentCenter>
-
+      <contentCenter :endIndex.sync="endIndex" :recentBooks="recentBooks" :hotBooks="hotBooks" :activeIndex="activeIndex"></contentCenter>
+      <bannerRight></bannerRight>
     </div>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
@@ -32,6 +32,8 @@
   import bannerLeft from './index-banner-left'
   import mixins from './mixins'
   import contentCenter from './index-content-center'
+  import bannerRight from './index-banner-right'
+  import { KEY75, KEY73 } from 'vue-find/src/pianoKeys.js'
 
   export default {
     mixins: [mixins],
@@ -39,7 +41,9 @@
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
-        helpImg: [require('./images/help-1.png'), require('./images/help-2.png')]
+        helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
+        activeIndex: 0,
+        endIndex: -1
       }
     },
     find: {
@@ -48,6 +52,12 @@
       },
       [KEY108] () {
         this.goBack()
+      },
+      [KEY75] () {
+        this.keyIndex()
+      },
+      [KEY73] () {
+        this.keyBack()
       }
     },
     methods: {
@@ -100,6 +110,7 @@
       this.initializeData()
       setTimeout(() => {
         console.log(this.recentBooks)
+        console.log(this.endIndex)
       }, 3000)
     },
     components: {
@@ -111,7 +122,8 @@
       userButtons,
       courseButton,
       controlButton,
-      contentCenter
+      contentCenter,
+      bannerRight
     }
   }
 </script>

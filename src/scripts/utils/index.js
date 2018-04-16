@@ -30,7 +30,7 @@ const os = (function () {
  * m:分
  * s:秒
  * S:毫秒
- * @example formatDate(new Date(),'YYYY-MM-dd')
+ * @example formatDate(new Date(),'yyyy-MM-dd')
  * */
 const formatDate = function (date, format) {
   if (isString(date)) {

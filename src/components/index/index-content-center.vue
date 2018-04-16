@@ -4,7 +4,7 @@
       <contentLine :name="'热门歌曲'"></contentLine>
       <div class="book-content">
         <div :class="{marginNone:(index==3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
-          <contentBook :bookData="data"></contentBook>
+          <contentBook :bookData="data" :class="{active:(index===activeIndex)}"></contentBook>
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
             <div class="star-empty iconfont icon-star-empty" v-for="(nums) in parseInt(5-data.starNum)" :key="nums+7"></div>
@@ -13,7 +13,7 @@
           <div class="date">{{ data.time | format}}</div>
         </div>
         <div class="marginNone">
-          <contentBook :bookData="moreData"></contentBook>
+          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===activeIndex)}"></contentBook>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
       <contentLine :name="'热门曲谱'"></contentLine>
       <div class="book-content">
         <div :class="{marginNone:(index==2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
-          <contentBook :bookData="data"></contentBook>
+          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===activeIndex}"></contentBook>
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
             <div class="star-empty iconfont icon-star-empty" v-for="(nums) in parseInt(5-data.starNum)" :key="nums+7"></div>
@@ -31,7 +31,7 @@
           <div class="date">{{ data.time | format}}</div>
         </div>
         <div class="marginNone">
-          <contentBook :bookData="moreData"></contentBook>
+          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===activeIndex)}"></contentBook>
         </div>
       </div>
     </div>
@@ -50,6 +50,12 @@
       },
       hotBooks: {
         type: Object
+      },
+      activeIndex: {
+        type: Number
+      },
+      endIndex: {
+        type: Number
       }
     },
     components: {
@@ -60,7 +66,10 @@
       return {
         moreData: {
           coverSmall: require('./images/more.png')
-        }
+        },
+        recentMoreindex: -1,
+        hotMoreindex: -1,
+        hotbookIndex: -1
       }
     },
     filters: {
@@ -69,11 +78,22 @@
         return formatDate(t, 'yyyy-MM-dd')
       }
     },
+    methods: {
+      getIndex () {}
+    },
+    watch: {
+      recentBooks (to) {
+        this.recentMoreindex = this.recentBooks.bookList.length
+        this.hotbookIndex = this.recentMoreindex + 1
+      },
+      hotBooks (to) {
+        this.hotMoreindex =
+          this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
+        this.$emit('update:endIndex', this.hotMoreindex)
+      }
+    },
     created () {
-      console.dir(this.recentBooks)
-      setTimeout(() => {
-        console.dir(this.hotBooks)
-      }, 3000)
+      this.getIndex()
     }
   }
 </script>
@@ -154,5 +174,16 @@
       rgba(255, 255, 255, 0)
     )
     30 30;
+}
+.active {
+  animation: shadowRepeat 1.2s linear 0s infinite alternate;
+}
+@keyframes shadowRepeat {
+  0% {
+    box-shadow: 0px 0px 80px 10px rgba(255, 255, 255, 1);
+  }
+  100% {
+    box-shadow: 0px 0px 100px 30px rgba(255, 255, 255, 1);
+  }
 }
 </style>
