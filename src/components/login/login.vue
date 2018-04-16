@@ -52,7 +52,16 @@
         this.$refs.banner.setValue(value)
       },
       login (userName, password) {
-        this.$store.dispatch('login/login', { userName, password })
+        let env = process.env[process.env.NODE_ENV]
+        userName = userName || env.default_user_name
+        password = password || env.default_password
+        this.$store
+          .dispatch('login/login', { userName, password })
+          .then(({ header }) => {
+            if (!header.code) {
+              return this.$router.push('/')
+            }
+          })
       },
       buttonActions (type) {
         switch (type) {

@@ -9,7 +9,7 @@
                      :hotBooks="hotBooks"
                      :activeIndex="activeIndex">
       </contentCenter>
-      <bannerRight />
+      <bannerRight/>
     </div>
     <find-button-banner className="button-banner">
       <user-buttons :action="buttonActions"/>
@@ -25,6 +25,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import { mapState } from 'vuex'
   import findButton from '../common/find-button/find-button'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import userButtons from './index-user-buttons'
@@ -66,7 +67,25 @@
         this.keyBack()
       }
     },
+    computed: mapState({
+      isSynced (state) {
+        return state.storage.isSynced
+      },
+      isLogin (state) {
+        if (
+          state.storage.isSynced &&
+          !state.storage.isLogin &&
+          !state.storage.sessionId
+        ) {
+          this.createSession()
+        }
+        return state.storage.isLogin
+      }
+    }),
     methods: {
+      createSession () {
+        return this.$store.dispatch('setSession')
+      },
       /**
        * @desc 设置练琴数据
        * @param {object} playCalendar - 练琴数据

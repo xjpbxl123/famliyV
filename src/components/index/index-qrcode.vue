@@ -7,6 +7,9 @@
 <script>
   export default {
     name: 'index-qr-code',
+    props: {
+      createSession: Function
+    },
     methods: {
       /**
        * @desc 生成二维码
@@ -15,8 +18,7 @@
       generateQrCode (qrCodeOptions) {
       /// 异步获取qrcode模块，生成二维码
       import(/* webpackChunkName:"qr-code" */ 'qrcode').then(qrCode => {
-        this.$store.dispatch('createSession').then(() => {
-          let sessionId = this.$store.state.sessionId
+        this.createSession().then(sessionId => {
           qrCode.toCanvas(
             document.querySelector('canvas'),
             `http://spapi.findpiano.cn/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=sessionId=${sessionId}&ct=LoginFindPiano&ip=''port=''`,

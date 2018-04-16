@@ -1,4 +1,5 @@
 import {getDeviceInfo} from 'find-sdk'
+import store from '../../store'
 let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params
@@ -12,7 +13,7 @@ export const getDefaultParams = (() => {
       type: 2,
       ver: 512,
       lang: 'zh_cn',
-      sess: '',
+      sess: store.state.storage.sessionId || '',
       seq: 0,
       code: 0,
       desc: '',

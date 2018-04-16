@@ -1,11 +1,20 @@
 <template>
   <div class="banner-left">
     <i class="iconfont icon-logo"></i>
-    <div class="qr-code">
-      <qr-code ref="qrCode"/>
+    <div class="hide" :class="{show:isSynced}">
+      <div v-if="!isLogin">
+        <div class="qr-code">
+          <qr-code ref="qrCode" :createSession="createSession"/>
+        </div>
+        <span>扫描二维码登陆</span>
+        <calendar :setCalendarData="setCalendarData"/>
+      </div>
+      <div v-else>
+        <div>
+          <img :src="userInfo.imgUrl" alt="">
+        </div>
+      </div>
     </div>
-    <span>扫描二维码登陆</span>
-    <calendar :setCalendarData="setCalendarData"/>
   </div>
 </template>
 
@@ -16,17 +25,19 @@
   export default {
     name: 'index-banner-left',
     props: {
-      setCalendarData: Function
+      setCalendarData: Function,
+      createSession: Function,
+      isSynced: Boolean,
+      isLogin: Boolean,
+      userInfo: Object
     },
     data () {
       return {}
     },
     methods: {},
     mounted () {
-      /// 生成二维码
-      this.$refs.qrCode.generateQrCode({ width: 180 })
+      this.$refs.qrCode && this.$refs.qrCode.generateQrCode({ width: 180 })
     },
-    created () {},
     components: {
       qrCode,
       calendar
@@ -35,6 +46,13 @@
 </script>
 
 <style lang="scss" scoped>
+.hide {
+  display: none;
+  &.show {
+    display: block;
+  }
+}
+
 .icon-logo {
   height: 82px;
   font-size: 146px;

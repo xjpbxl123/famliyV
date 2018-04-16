@@ -6,14 +6,19 @@ export default {
   mutations: {},
   actions: {
     login ({dispatch}, {userName, password}) {
-      http.post('', {
+      return http.post('', {
         cmd: 'account.login',
         type: 0,
         clientType: 3,
         userName: userName,
         password: password
       }).then(data => {
-        dispatch('createSession', data.body.sess, {root: true})
+        if (data.body.sess) {
+          dispatch('setSession', data.body.sess, {root: true}).then(() => {
+            dispatch('getUserInfo', null, {root: true})
+          })
+        }
+        return data
       })
     }
   }

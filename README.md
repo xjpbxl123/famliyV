@@ -5,8 +5,7 @@
 ### Usage
 
 1. 配置 postcss,通过根目录的`.postssrc.json` ,详见 [postcss-load-config](https://github.com/michael-ciniawsky/postcss-load-config#postcssrc)
-2. 环境变量位于根目录,根据环境配置: `.env`,本地环境变量则是:`.env.local`,由于环境变量是可变的,所以,每个环境变量以相应的环境作为开头,如
-   development: `DEVELOPMENT_HTTP_ROOT`.
+2. 环境变量位于根目录,根据环境配置: `.env`,本地环境变量则是:`.env.local`.
 3. 由于个人习惯不同,使用的编辑器也不同,editorConfig 是一个 coding style 的标准,这能使我们在 coding style 上达到统一的风格,相关编辑器插件可以到[(http://editorconfig.org/](http://editorconfig.org/)上查找.
 4. esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
 
