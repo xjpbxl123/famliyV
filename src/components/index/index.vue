@@ -2,8 +2,10 @@
   <div class="banner-wrapper">
     <div class="banner-content">
       <banner-left
-        :setCalendarData="setCalendarData"
-        :buttonActions="buttonActions"/>
+        :isSynced="isSynced"
+        :isLogin="isLogin"
+        :createSession="createSession"
+        :setCalendarData="setCalendarData"/>
       <contentCenter :endIndex.sync="endIndex"
                      :recentBooks="recentBooks"
                      :hotBooks="hotBooks"
@@ -35,12 +37,10 @@
   import voiceControl from './index-voice-control'
   import { KEY27, KEY108, KEY30, KEY75, KEY73 } from 'vue-find'
   import bannerLeft from './index-banner-left'
-  import mixins from './mixins'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
 
   export default {
-    mixins: [mixins],
     data () {
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
@@ -80,9 +80,34 @@
           this.createSession()
         }
         return state.storage.isLogin
-      }
+      },
+      recentBooks: state => state.index.recentBooks,
+      hotBooks: state => state.index.hotBooks
     }),
     methods: {
+      /// 初始化首页曲谱
+      initializeData () {
+        this.$store.dispatch({ type: 'index/getRecentBooks' })
+        this.$store.dispatch({ type: 'index/getHotBooks' })
+      },
+      /**
+       * @desc 下一个曲谱
+       * */
+      keyIndex () {
+        if (this.activeIndex === this.endIndex) {
+          return
+        }
+        this.activeIndex++
+      },
+      /**
+       * @desc 上一个曲谱
+       * */
+      keyBack () {
+        if (this.activeIndex === 0) {
+          return
+        }
+        this.activeIndex--
+      },
       createSession () {
         return this.$store.dispatch('setSession')
       },
@@ -138,10 +163,6 @@
     },
     created () {
       this.initializeData()
-      setTimeout(() => {
-        console.log(this.recentBooks)
-        console.log(this.endIndex)
-      }, 3000)
     },
     components: {
       bannerLeft,
