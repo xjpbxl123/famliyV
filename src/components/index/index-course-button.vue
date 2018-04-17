@@ -1,12 +1,12 @@
 <template>
   <div>
-    <find-button v-for="buttons in courseButtons"
-                 :className="`${buttons.className} course-buttons`"
-                 :text="buttons.text"
-                 :key="buttons.text"
+    <find-button v-for="button in courseButtons"
+                 :className="`${button.className} course-buttons`"
+                 :text="button.text"
+                 :key="button.text"
                  :action="()=>action(button.className)">
-      <i :class="`${buttons.className} icon`"></i>
-      <span v-text="buttons.text"></span>
+      <i :class="`${button.className} icon`"></i>
+      <span v-text="button.text"></span>
       <find-dot/>
     </find-button>
   </div>

@@ -9,13 +9,12 @@
           <div class="right">
             <span v-text="timeData"></span>
             <span>
-              <p v-text="mounthData"></p>
-              <p v-text="dayData">星期一</p>
+              <span v-text="mounthData"></span>
+              <span v-text="dayData">星期一</span>
             </span>
           </div>
         </div>
-        <div class="banner-bottom">
-          <div></div>
+        <div class="banner-list">
           <div>
             <div class="top">第一级 01.G大调钢琴小曲</div>
             <div class="bottom">上海音乐学院钢琴考级名师讲解</div>
@@ -169,7 +168,7 @@
   }
 }
 
-.banner-bottom {
+.banner-list {
   display: flex;
   height: 120px;
   background-image: -webkit-linear-gradient(
@@ -179,7 +178,9 @@
     rgba(255, 255, 255, 0)
   );
   align-items: center;
-  & > div:nth-child(1) {
+  &::before {
+    display: inline-block;
+    content: "";
     background: url("./images/icon_music_right.png") no-repeat center;
     width: 40px;
     height: 40px;

@@ -1,37 +1,36 @@
 <template>
   <div class="box">
     <div class="box-left">
-      <contentLine :name="'热门歌曲'"></contentLine>
+      <contentLine name="热门歌曲" />
       <div class="book-content">
-        <div :class="{marginNone:(index==3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
-          <contentBook :bookData="data" :class="{active:(index===activeIndex)}"></contentBook>
+        <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
+          <contentBook :bookData="data" :class="{active:(index===activeIndex)}" />
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
-            <div class="star-empty iconfont icon-star-empty" v-for="(nums) in parseInt(5-data.starNum)" :key="nums+7"></div>
+            <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)" :key="num+7"></div>
           </div>
           <div class="slip-line"></div>
           <div class="date">{{ data.time | format}}</div>
         </div>
-        <div class="marginNone">
-          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===activeIndex)}"></contentBook>
+        <div class="margin-none">
+          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===activeIndex)}" />
         </div>
       </div>
     </div>
-
     <div class="box-right">
-      <contentLine :name="'热门曲谱'"></contentLine>
+      <contentLine name="热门曲谱" />
       <div class="book-content">
-        <div :class="{marginNone:(index==2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
-          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===activeIndex}"></contentBook>
+        <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
+          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===activeIndex}" />
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
-            <div class="star-empty iconfont icon-star-empty" v-for="(nums) in parseInt(5-data.starNum)" :key="nums+7"></div>
+            <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)" :key="num+7"></div>
           </div>
           <div class="slip-line"></div>
           <div class="date">{{ data.time | format}}</div>
         </div>
-        <div class="marginNone">
-          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===activeIndex)}"></contentBook>
+        <div class="margin-none">
+          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===activeIndex)}" />
         </div>
       </div>
     </div>
@@ -78,22 +77,16 @@
         return formatDate(t, 'yyyy-MM-dd')
       }
     },
-    methods: {
-      getIndex () {}
-    },
     watch: {
-      recentBooks (to) {
+      recentBooks () {
         this.recentMoreindex = this.recentBooks.bookList.length
         this.hotbookIndex = this.recentMoreindex + 1
       },
-      hotBooks (to) {
+      hotBooks () {
         this.hotMoreindex =
           this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
         this.$emit('update:endIndex', this.hotMoreindex)
       }
-    },
-    created () {
-      this.getIndex()
     }
   }
 </script>
@@ -135,7 +128,7 @@
             margin-top: 10px;
           }
         }
-        .marginNone {
+        .margin-none {
           margin-right: 0;
         }
       }

@@ -4,17 +4,21 @@
       <banner-left
         :isSynced="isSynced"
         :isLogin="isLogin"
-        :createSession="createSession"
+        :userInfo="userInfo"
+        :sessionId="sessionId"
+        :usedTime="usedTime"
         :setCalendarData="setCalendarData"/>
-      <contentCenter :endIndex.sync="endIndex"
-                     :recentBooks="recentBooks"
-                     :hotBooks="hotBooks"
-                     :activeIndex="activeIndex">
-      </contentCenter>
+      <contentCenter
+        :endIndex.sync="endIndex"
+        :recentBooks="recentBooks"
+        :hotBooks="hotBooks"
+        :activeIndex="activeIndex" />
       <bannerRight/>
     </div>
     <find-button-banner className="button-banner">
-      <user-buttons :action="buttonActions"/>
+      <user-buttons
+        :isLogin="isLogin"
+        :action="buttonActions"/>
       <voice-control/>
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
@@ -51,63 +55,71 @@
       }
     },
     find: {
-      [KEY30] () {
-        this.buttonActions('login')
-      },
       [KEY27] () {
         this.buttonActions('help')
       },
-      [KEY108] () {
-        this.buttonActions()
-      },
-      [KEY75] () {
-        this.keyIndex()
+      [KEY30] () {
+        this.buttonActions('login')
       },
       [KEY73] () {
-        this.keyBack()
+        this.buttonActions('left')
+      },
+      [KEY75] () {
+        this.buttonActions('right')
+      },
+      [KEY108] () {
+        this.buttonActions()
       }
     },
     computed: mapState({
+      sessionId (state) {
+        return state.storage.sessionId
+      },
       isSynced (state) {
         return state.storage.isSynced
       },
       isLogin (state) {
-        if (
-          state.storage.isSynced &&
-          !state.storage.isLogin &&
-          !state.storage.sessionId
-        ) {
-          this.createSession()
-        }
-        return state.storage.isLogin
+        let { storage } = state
+        return storage.isLogin
+      },
+      userInfo (state) {
+        return state.storage.userInfo
       },
       recentBooks: state => state.index.recentBooks,
-      hotBooks: state => state.index.hotBooks
+      hotBooks: state => state.index.hotBooks,
+      usedTime: state => state.index.usedTime
     }),
+    watch: {
+      isSynced (val) {
+        if (val) {
+          if (!this.isLogin) {
+            this.createSession()
+          } else {
+            this.getUserStatus()
+          }
+        }
+      }
+    },
     methods: {
-      /// 初始化首页曲谱
+      /**
+       * @desc  初始化首页曲谱
+       * */
       initializeData () {
         this.$store.dispatch({ type: 'index/getRecentBooks' })
         this.$store.dispatch({ type: 'index/getHotBooks' })
       },
       /**
-       * @desc 下一个曲谱
+       * @desc 获取用户状态和用琴时间
        * */
-      keyIndex () {
-        if (this.activeIndex === this.endIndex) {
-          return
+      getUserStatus () {
+        if (this.isSynced) {
+          this.$store.dispatch('getUserInfo')
+          this.$store.dispatch('index/getPianoUsedTime')
         }
-        this.activeIndex++
       },
       /**
-       * @desc 上一个曲谱
+       * @desc 创建会话ID
        * */
-      keyBack () {
-        if (this.activeIndex === 0) {
-          return
-        }
-        this.activeIndex--
-      },
       createSession () {
         return this.$store.dispatch('setSession')
       },
@@ -156,6 +168,34 @@
             return this.go('/login')
           case 'settings':
             return false
+          case 'left':
+            if (this.activeIndex === 0) {
+              return
+            }
+            this.activeIndex--
+            break
+          case 'right':
+            if (this.activeIndex === this.endIndex) {
+              return
+            }
+            this.activeIndex++
+            break
+          case 'up':
+            /// 处理热门曲谱的index
+            if (this.activeIndex > 10) {
+              this.activeIndex -= 3
+            } else if (this.activeIndex >= 4 && this.activeIndex < 8) {
+              this.activeIndex -= 4
+            }
+            break
+          case 'down':
+            /// 处理热门曲谱的index
+            if (this.activeIndex > 7 && this.activeIndex <= 10) {
+              this.activeIndex += 3
+            } else if (this.activeIndex < 4) {
+              this.activeIndex += 4
+            }
+            break
           default:
             this.goBack()
         }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import store from './store'
+import createStore from './store'
 import {isObject, isFunction} from 'lodash'
 import VueFind from 'vue-find'
 import find from './scripts/find'
@@ -13,7 +13,6 @@ import './styles/iconfont/iconfont.css'
 import './main.scss'
 Vue.use(VueRouter)
 Vue.use(Vuex)
-const router = new VueRouter({ routes })
 let vue = {}
 
 /// In find client
@@ -23,18 +22,41 @@ if (isInFindClient) {
   let sdk = new SDK()
   sdk.init().then(() => {
     Vue.use(VueFind)
+    const store = createStore()
+    const router = new VueRouter({ routes })
     vue = new Vue({
       el: '#app',
       render: h => h(App),
       router,
-      store: new Vuex.Store(store),
+      store: store,
       find: new VueFind(find)
     })
-    // vue.$store.dispatch('initialNativeStorage')
+    store.dispatch('initialNativeStorage')
   })
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
 }
 export default vue
 window.app.sendEvent = () => {
+}
+/**
+ * @desc 实现Command+R 刷新
+ * */
+if (process.env.NODE_ENV !== 'production') {
+  let pressingCommand = false
+  document.addEventListener('keydown', (event) => {
+    let key = event.key.toLowerCase()
+    if (key === 'meta') {
+      pressingCommand = true
+    }
+    if (key === 'r' && pressingCommand) {
+      window.location.reload()
+    }
+  }, false)
+  document.addEventListener('keyup', (event) => {
+    let key = event.key.toLowerCase()
+    if (key === 'meta') {
+      pressingCommand = false
+    }
+  }, false)
 }

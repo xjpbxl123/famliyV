@@ -15,20 +15,23 @@
     name: 'index-user-buttons',
     props: {
       action: {
-        type: Function,
-        default: () => {}
-      }
+        type: Function
+      },
+      isLogin: Boolean
     },
     data () {
-      return {
-        userActionButtons: [
+      return {}
+    },
+    computed: {
+      userActionButtons () {
+        return [
           {
             text: '帮助',
             icon: 'icon-help',
             className: 'help'
           },
           {
-            text: '登录',
+            text: this.isLogin ? '注销' : '登录',
             icon: 'icon-username',
             className: 'login'
           },

@@ -1,5 +1,7 @@
-import {getDeviceInfo} from 'find-sdk'
-import store from '../../store'
+/**
+ * Created by Moersing on 2018/4/3 .
+ * */
+import {getDeviceInfo, nativeStorage} from 'find-sdk'
 let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params
@@ -13,21 +15,32 @@ export const getDefaultParams = (() => {
       type: 2,
       ver: 512,
       lang: 'zh_cn',
-      sess: store.state.storage.sessionId || '',
+      sess: '',
       seq: 0,
       code: 0,
       desc: '',
       stmp: Date.now(),
       ext: ''
     }
+    /**
+     * @desc Get session ID and merge to default params
+     * */
+    const mergeSessionId = () => {
+      if (!defaultParams.sess) {
+        return nativeStorage.get('sessionId').then(({value}) => {
+          return Object.assign(defaultParams, {sess: value || ''}, {orn})
+        })
+      }
+      return Object.assign(defaultParams, {orn})
+    }
+    /// orn is about device information,it's required.
     if (orn) {
-      return Promise.resolve(Object.assign(defaultParams, {orn}))
+      return mergeSessionId()
     }
     return getDeviceInfo().then(result => {
       /// only get once
       orn = result
-      return Object.assign(defaultParams, {orn})
-    })
+    }).then(mergeSessionId)
   }
 })()
 export const config = {

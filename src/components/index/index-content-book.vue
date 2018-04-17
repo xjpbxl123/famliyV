@@ -14,11 +14,7 @@
     data () {
       return {}
     },
-    created () {
-      setTimeout(() => {
-        console.dir(this.bookData)
-      }, 3000)
-    }
+    created () {}
   }
 </script>
 

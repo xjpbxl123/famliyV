@@ -19,8 +19,7 @@
       text: { type: String, default: '' },
       requireDot: { type: Boolean, default: true },
       action: {
-        type: Function,
-        default: () => {}
+        type: Function
       }
     },
     components: {
