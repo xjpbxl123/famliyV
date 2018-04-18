@@ -18,9 +18,12 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.vue$/,
+        test: /\.(js|vue)$/,
         loader: 'eslint-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
       },
       {
         test: /\.vue$/,
@@ -28,12 +31,6 @@ module.exports = {
         options: {
           loaders: assist.cssLoader()
         }
-      },
-      {
-        enforce: 'pre',
-        test: /\.js/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/
       },
       {
         test: /\.js$/,

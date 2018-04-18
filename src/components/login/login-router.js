@@ -3,5 +3,5 @@
  */
 export default {
   path: '/login',
-  component: () => import(/* webpackChunkName:login */ './login')
+  component: () => import(/* webpackChunkName:"login" */ './login')
 }

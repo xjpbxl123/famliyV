@@ -1599,6 +1599,10 @@ coa@~1.0.1:
   dependencies:
     q "^1.1.2"
 
+coalescy@1.0.0:
+  version "1.0.0"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/coalescy/-/coalescy-1.0.0.tgz#4b065846b836361ada6c4b4a4abf4bc1cac31bf1"
+
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/code-point-at/download/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
@@ -2525,6 +2529,17 @@ escope@^3.6.0:
 eslint-config-standard@10.2.1:
   version "10.2.1"
   resolved "﻿https://registry.npm.taobao.org/eslint-config-standard/-/eslint-config-standard-10.2.1.tgz#c061e4d066f379dc17cd562c64e819b4dd454591"
+
+eslint-friendly-formatter@^4.0.1:
+  version "4.0.1"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/eslint-friendly-formatter/-/eslint-friendly-formatter-4.0.1.tgz#27d504dc837f7caddbf201b2e84a4ee730ba3efa"
+  dependencies:
+    chalk "^2.0.1"
+    coalescy "1.0.0"
+    extend "^3.0.0"
+    minimist "^1.2.0"
+    strip-ansi "^4.0.0"
+    text-table "^0.2.0"
 
 eslint-import-resolver-node@^0.3.1:
   version "0.3.2"
@@ -7351,7 +7366,7 @@ tempfile@^2.0.0:
     temp-dir "^1.0.0"
     uuid "^3.0.1"
 
-text-table@0.2.0, text-table@~0.2.0:
+text-table@0.2.0, text-table@^0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/text-table/download/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 

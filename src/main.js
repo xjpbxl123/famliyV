@@ -48,6 +48,7 @@ if (process.env.NODE_ENV !== 'production') {
     let key = event.key.toLowerCase()
     if (key === 'meta') {
       pressingCommand = true
+      return
     }
     if (key === 'r' && pressingCommand) {
       window.location.reload()
