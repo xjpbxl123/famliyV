@@ -12,7 +12,7 @@
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
-        :activeIndex="activeIndex" />
+        :activeIndex="activeIndex"/>
       <bannerRight/>
     </div>
     <find-button-banner className="button-banner">
@@ -31,7 +31,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { mapState } from 'vuex'
+  import {mapState} from 'vuex'
   import findButton from '../common/find-button/find-button'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import userButtons from './index-user-buttons'
@@ -39,7 +39,7 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import { KEY27, KEY108, KEY30, KEY75, KEY73 } from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -79,7 +79,7 @@
         return state.storage.isSynced
       },
       isLogin (state) {
-        let { storage } = state
+        let {storage} = state
         return storage.isLogin
       },
       userInfo (state) {
@@ -105,14 +105,14 @@
        * @desc  初始化首页曲谱
        * */
       initializeData () {
-        this.$store.dispatch({ type: 'index/getRecentBooks' })
-        this.$store.dispatch({ type: 'index/getHotBooks' })
+        this.$store.dispatch({type: 'index/getRecentBooks'})
+        this.$store.dispatch({type: 'index/getHotBooks'})
       },
       /**
        * @desc 获取用户状态和用琴时间
        * */
       getUserStatus () {
-        if (this.isSynced) {
+        if (this.isSynced && this.isLogin) {
           this.$store.dispatch('getUserInfo')
           this.$store.dispatch('index/getPianoUsedTime')
         }
@@ -203,6 +203,7 @@
     },
     created () {
       this.initializeData()
+      this.getUserStatus()
     },
     components: {
       bannerLeft,
@@ -219,28 +220,28 @@
   }
 </script>
 <style lang="scss" scoped>
-.banner-wrapper {
-  height: 100%;
-  .banner-content {
-    display: flex;
+  .banner-wrapper {
     height: 100%;
+    .banner-content {
+      display: flex;
+      height: 100%;
+    }
   }
-}
 
-.help-banner {
-  display: none;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent url("./images/help-1.png") no-repeat center;
-}
+  .help-banner {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent url("./images/help-1.png") no-repeat center;
+  }
 
-.show-help-banner {
-  display: block;
-}
+  .show-help-banner {
+    display: block;
+  }
 
-.button-banner {
-  padding: 0 20px;
-}
+  .button-banner {
+    padding: 0 20px;
+  }
 </style>
