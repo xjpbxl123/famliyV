@@ -2,26 +2,7 @@
 
 > Find 家庭版
 
-### Usage
-
-1. 配置 postcss,通过根目录的`.postssrc.json` ,详见 [postcss-load-config](https://github.com/michael-ciniawsky/postcss-load-config#postcssrc)
-2. 环境变量位于根目录,根据环境配置: `.env.json`,本地环境变量则是:`.env.local.json`.
-3. 由于个人习惯不同,使用的编辑器也不同,editorConfig 是一个 coding style 的标准,这能使我们在 coding style 上达到统一的风格,相关编辑器插件可以到[(http://editorconfig.org/](http://editorconfig.org/)上查找.
-4. esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
-
-第一种:在`.eslintrc`中:
-
-    "globals": {
-        "jquery": true
-    }
-
-第二种:在<script></script>顶部使用注释:
-
-    /* global jquery:true */
-    或者
-    /* global jquery */
-
-## Install/Run
+## Get Start
 
 ```
 # 安装依赖
@@ -40,7 +21,24 @@ yarn run build
 yarn run lint
 ```
 
-访问 [vue-template-webpack](http://192.168.0.235/bblib-tools/vue-template-webpack) 查看更多详情
+### Usage
+
+1. 配置 postcss,通过根目录的`.postssrc.json` ,详见 [postcss-load-config](https://github.com/michael-ciniawsky/postcss-load-config#postcssrc)
+2. 环境变量位于根目录,根据环境配置: `.env.json`,本地环境变量则是:`.env.local.json`.
+3. 由于个人习惯不同,使用的编辑器也不同,editorConfig 是一个 coding style 的标准,这能使我们在 coding style 上达到统一的风格,相关编辑器插件可以到[(http://editorconfig.org/](http://editorconfig.org/)上查找.
+4. esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
+
+第一种:在`.eslintrc`中:
+
+    "globals": {
+        "jquery": true
+    }
+
+第二种:在<script></script>顶部使用注释:
+
+    /* global jquery:true */
+    或者
+    /* global jquery */
 
 ### Note
 
