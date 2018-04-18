@@ -47,4 +47,4 @@ yarn run lint
 3. **webpack 2.4** 新增语法 `()=> import (/* webpackChunkName:"index" */ 'component/index');`
    注意,`/**/` 是一个语法糖,不是一个注释, 其中 `webpackChunkName:"index"` 是打包后块的名字.详见 [dynamic-import-import](https://webpack.js.org/guides/code-splitting-async/#dynamic-import-import-)
 
-4. 如果需要真机测试,可以在`run`命令添加`--host`: `yarn run dev -- --host=yourIp --port=8080,注:如果您使用的yarn版本>1.0,可以直接使用`yarn run dev --host=yourIp``
+4. 如果需要真机测试,可以在`run`命令添加`--host`: `yarn run dev -- --host=yourIp --port=8080`,注:如果您使用的 yarn 版本>1.0,可以直接使用`yarn run dev --host=yourIp`
