@@ -1,27 +1,47 @@
 <template>
   <div>
-    <span @click="click">Home</span>
+    <button @click="click">Action</button>
+    <div v-text="text"></div>
   </div>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+  let count = 1
   export default {
     name: 'home',
     data () {
-      return { list: [] }
+      return {}
     },
+    computed: mapState({
+      text (state) {
+        return state.home.demoText
+      }
+    }),
     methods: {
       click () {
-        this.list.extend()
+        this.$store.dispatch('home/demo', {
+          text: `clicked:${count++}`
+        })
       }
-    },
-    components: {},
-    created () {}
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-body {
-  background: #ddd;
-}
+  div {
+    font-size: 30px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  button {
+    font-size: 40px;
+    background: transparent;
+    border-radius: 10px;
+    border: none;
+  }
 </style>

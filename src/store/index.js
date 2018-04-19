@@ -6,6 +6,7 @@ import createLogger from 'vuex/dist/logger'
 import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
+import home from './modules/home'
 import {nativeStorage} from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
@@ -52,12 +53,12 @@ export default function createStore () {
        * */
       setNativeStorage ({commit}, data) {
         return new Promise(resolve => {
-          Object.keys(data).forEach(key => {
-            nativeStorage.set(key, data[key]).then(() => {
+          for (let [key, value] of Object.entries(data)) {
+            nativeStorage.set(key, value).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
-          })
+          }
         })
       },
       /**
@@ -96,7 +97,8 @@ export default function createStore () {
     modules: {
       // Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
       index,
-      login
+      login,
+      home
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })
