@@ -23,17 +23,20 @@
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
     </find-button-banner>
-    <div class="help-banner"
-         :class="{'show-help-banner':showHelpBanner}"
-         :style="{'background-image':`url(${helpImg[helpIndex]})`}"
-         @click="buttonActions('help')"
-    ></div>
+    <banner-help
+      class="help-banner"
+      :showHelpBanner="showHelpBanner"
+      :helpImg="helpImg"
+      :helpIndex="helpIndex"
+      :buttonActions="buttonActions"
+    />
   </div>
 </template>
 <script type="text/javascript">
   import {mapState} from 'vuex'
   import findButton from '../common/find-button/find-button'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
+  import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
   import courseButton from './index-course-button'
   import controlButton from './index-control-button'
@@ -90,6 +93,9 @@
       usedTime: state => state.index.usedTime
     }),
     watch: {
+      /**
+       * @desc 是否已经从原生storage同步完成
+       * */
       isSynced (val) {
         if (val) {
           if (!this.isLogin) {
@@ -215,7 +221,8 @@
       courseButton,
       controlButton,
       contentCenter,
-      bannerRight
+      bannerRight,
+      bannerHelp
     }
   }
 </script>
@@ -226,19 +233,6 @@
       display: flex;
       height: 100%;
     }
-  }
-
-  .help-banner {
-    display: none;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent url("./images/help-1.png") no-repeat center;
-  }
-
-  .show-help-banner {
-    display: block;
   }
 
   .button-banner {
