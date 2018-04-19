@@ -57,13 +57,13 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'components': path.posix.join(__dirname, '../src/components'),
-      'scripts': path.posix.join(__dirname, '../src/scripts'),
-      'styles': path.posix.join(__dirname, '../src/styles'),
-      'images': path.posix.join(__dirname, '../src/images'),
-      'plugins': path.posix.join(__dirname, '../src/plugins'),
-      'vue-find': path.posix.join(__dirname, '../src/plugins/vue-find'),
-      'find-sdk': path.posix.join(__dirname, '../src/scripts/findSDK')
+      'components': path.posix.resolve(__dirname, '../src/components'),
+      'scripts': path.posix.resolve(__dirname, '../src/scripts'),
+      'styles': path.posix.resolve(__dirname, '../src/styles'),
+      'images': path.posix.resolve(__dirname, '../src/images'),
+      'plugins': path.posix.resolve(__dirname, '../src/plugins'),
+      'vue-find': path.posix.resolve(__dirname, '../src/plugins/vue-find'),
+      'find-sdk': path.posix.resolve(__dirname, '../src/scripts/findSDK')
     },
     extensions: ['.js', '.vue']
   },
@@ -80,8 +80,8 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({'process.env': envConfig.stringify})
   ]
-};
-
+}
+console.log(path.posix.resolve(__dirname, '../src/components'));
 /// add style loaders for .js files
 [].push.apply(module.exports.module.rules, assist.stylesLoader({sourceMap: shouldUseSourceMap}))
 switch (NODE_ENV) {
