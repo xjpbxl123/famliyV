@@ -34,7 +34,6 @@
 </template>
 <script type="text/javascript">
   import {mapState} from 'vuex'
-  import findButton from '../common/find-button/find-button'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -216,7 +215,6 @@
     components: {
       bannerLeft,
       findButtonBanner,
-      findButton,
       findDot,
       voiceControl,
       userButtons,
