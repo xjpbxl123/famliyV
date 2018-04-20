@@ -17,9 +17,9 @@ const getEnvironment = () => {
       let env = require(envPath)
       try {
         Object.assign(initial.env, env)
-        for (let [key, value] of Object.entries(initial.env)) {
-          initial.stringify[key] = JSON.stringify(value)
-        }
+        Object.keys(initial.env).forEach(key => {
+          initial.stringify[key] = JSON.stringify(initial.env[key])
+        })
       } catch (e) {
         console.log(e)
       }
