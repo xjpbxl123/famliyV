@@ -8,11 +8,11 @@
         :sessionId="sessionId"
         :usedTime="usedTime"
         :setCalendarData="setCalendarData"/>
-      <contentCenter
+      <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
-        :activeIndex="activeIndex"/>
+        :selectedIndex="selectedIndex"/>
       <bannerRight/>
     </div>
     <find-button-banner className="button-banner">
@@ -53,7 +53,6 @@
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
-        activeIndex: 0,
         endIndex: -1
       }
     },
@@ -88,6 +87,7 @@
       userInfo (state) {
         return state.storage.userInfo
       },
+      selectedIndex: state => state.index.selectedIndex,
       recentBooks: state => state.index.recentBooks,
       hotBooks: state => state.index.hotBooks,
       usedTime: state => state.index.usedTime
@@ -167,6 +167,7 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        let activeIndex = this.selectedIndex
         switch (type) {
           case 'help':
             return this.showHelp()
@@ -175,36 +176,37 @@
           case 'settings':
             return false
           case 'left':
-            if (this.activeIndex === 0) {
+            if (activeIndex === 0) {
               return
             }
-            this.activeIndex--
+            activeIndex--
             break
           case 'right':
-            if (this.activeIndex === this.endIndex) {
+            if (activeIndex === this.endIndex) {
               return
             }
-            this.activeIndex++
+            activeIndex++
             break
           case 'up':
             /// 处理热门曲谱的index
-            if (this.activeIndex > 10) {
-              this.activeIndex -= 3
-            } else if (this.activeIndex >= 4 && this.activeIndex < 8) {
-              this.activeIndex -= 4
+            if (activeIndex > 10) {
+              activeIndex -= 3
+            } else if (activeIndex >= 4 && activeIndex < 8) {
+              activeIndex -= 4
             }
             break
           case 'down':
             /// 处理热门曲谱的index
-            if (this.activeIndex > 7 && this.activeIndex <= 10) {
-              this.activeIndex += 3
-            } else if (this.activeIndex < 4) {
-              this.activeIndex += 4
+            if (activeIndex > 7 && activeIndex <= 10) {
+              activeIndex += 3
+            } else if (activeIndex < 4) {
+              activeIndex += 4
             }
             break
           default:
             this.goBack()
         }
+        this.$store.dispatch('index/setSelected', activeIndex)
       }
     },
     created () {

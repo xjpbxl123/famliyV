@@ -1,12 +1,13 @@
 import http from '../../scripts/http'
 import {getUsedTime} from 'find-sdk'
-
+const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
 export default {
   namespaced: true,
   state: {
+    selectedIndex: 0,
     recentBooks: {bookList: []},
     hotBooks: {bookList: []},
     usedTime: {
@@ -16,6 +17,9 @@ export default {
     }
   },
   mutations: {
+    [SELECTED_INDEX] (state, index) {
+      state.selectedIndex = index
+    },
     [RECENT_BOOKS] (state, recentBooks) {
       state.recentBooks = recentBooks
     },
@@ -27,6 +31,12 @@ export default {
     }
   },
   actions: {
+    /**
+     * @desc 设置选中的项
+     * */
+    setSelected ({commit}, num) {
+      commit(SELECTED_INDEX, num)
+    },
     /**
      * @desc 获取最近更新
      * */

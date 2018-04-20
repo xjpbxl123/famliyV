@@ -4,7 +4,7 @@
       <contentLine name="热门歌曲" />
       <div class="book-content">
         <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
-          <contentBook :bookData="data" :class="{active:(index===activeIndex)}" />
+          <contentBook :bookData="data" :class="{active:(index===selectedIndex)}" />
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
             <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)" :key="num+7"></div>
@@ -13,7 +13,7 @@
           <div class="date">{{ data.time | format}}</div>
         </div>
         <div class="margin-none">
-          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===activeIndex)}" />
+          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}" />
         </div>
       </div>
     </div>
@@ -21,7 +21,7 @@
       <contentLine name="热门曲谱" />
       <div class="book-content">
         <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
-          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===activeIndex}" />
+          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===selectedIndex}" />
           <div class="star">
             <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
             <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)" :key="num+7"></div>
@@ -30,7 +30,7 @@
           <div class="date">{{ data.time | format}}</div>
         </div>
         <div class="margin-none">
-          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===activeIndex)}" />
+          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===selectedIndex)}" />
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@
       hotBooks: {
         type: Object
       },
-      activeIndex: {
+      selectedIndex: {
         type: Number
       },
       endIndex: {
