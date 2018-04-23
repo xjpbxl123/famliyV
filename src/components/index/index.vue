@@ -7,7 +7,9 @@
         :userInfo="userInfo"
         :sessionId="sessionId"
         :usedTime="usedTime"
-        :setCalendarData="setCalendarData"/>
+        :setCalendarData="setCalendarData"
+        :dispatch="initializeData"
+      />
       <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
@@ -41,7 +43,7 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import {KEY27, KEY108, KEY30, KEY75, KEY73} from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -70,6 +72,8 @@
       },
       [KEY108] () {
         this.buttonActions()
+      },
+      [KEY_ANY] (keys) {
       }
     },
     computed: mapState({

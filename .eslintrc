@@ -1,4 +1,4 @@
-let rules = {
+{
   "extends": [
     "plugin:vue/essential",
     "standard"
@@ -13,6 +13,7 @@ let rules = {
   },
   "env": {
     "browser": true
+
   },
   "rules": {
     "no-debugger": "off",
@@ -28,7 +29,3 @@ let rules = {
     ]
   }
 }
-if (process.env.NODE_ENV !== 'development') {
-  rules.rules['no-debugger'] = "error"
-}
-module.exports = rules
