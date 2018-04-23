@@ -7,12 +7,14 @@
         :userInfo="userInfo"
         :sessionId="sessionId"
         :usedTime="usedTime"
-        :setCalendarData="setCalendarData"/>
-      <contentCenter
+        :setCalendarData="setCalendarData"
+        :dispatch="initializeData"
+      />
+      <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
-        :activeIndex="activeIndex"/>
+        :selectedIndex="selectedIndex"/>
       <bannerRight/>
     </div>
     <find-button-banner className="button-banner">
@@ -34,7 +36,6 @@
 </template>
 <script type="text/javascript">
   import {mapState} from 'vuex'
-  import findButton from '../common/find-button/find-button'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -42,7 +43,7 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import {KEY27, KEY108, KEY30, KEY75, KEY73} from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -53,7 +54,6 @@
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
-        activeIndex: 0,
         endIndex: -1
       }
     },
@@ -72,6 +72,8 @@
       },
       [KEY108] () {
         this.buttonActions()
+      },
+      [KEY_ANY] (keys) {
       }
     },
     computed: mapState({
@@ -88,6 +90,7 @@
       userInfo (state) {
         return state.storage.userInfo
       },
+      selectedIndex: state => state.index.selectedIndex,
       recentBooks: state => state.index.recentBooks,
       hotBooks: state => state.index.hotBooks,
       usedTime: state => state.index.usedTime
@@ -167,6 +170,7 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        let activeIndex = this.selectedIndex
         switch (type) {
           case 'help':
             return this.showHelp()
@@ -175,36 +179,37 @@
           case 'settings':
             return false
           case 'left':
-            if (this.activeIndex === 0) {
+            if (activeIndex === 0) {
               return
             }
-            this.activeIndex--
+            activeIndex--
             break
           case 'right':
-            if (this.activeIndex === this.endIndex) {
+            if (activeIndex === this.endIndex) {
               return
             }
-            this.activeIndex++
+            activeIndex++
             break
           case 'up':
             /// 处理热门曲谱的index
-            if (this.activeIndex > 10) {
-              this.activeIndex -= 3
-            } else if (this.activeIndex >= 4 && this.activeIndex < 8) {
-              this.activeIndex -= 4
+            if (activeIndex > 10) {
+              activeIndex -= 3
+            } else if (activeIndex >= 4 && activeIndex < 8) {
+              activeIndex -= 4
             }
             break
           case 'down':
             /// 处理热门曲谱的index
-            if (this.activeIndex > 7 && this.activeIndex <= 10) {
-              this.activeIndex += 3
-            } else if (this.activeIndex < 4) {
-              this.activeIndex += 4
+            if (activeIndex > 7 && activeIndex <= 10) {
+              activeIndex += 3
+            } else if (activeIndex < 4) {
+              activeIndex += 4
             }
             break
           default:
             this.goBack()
         }
+        this.$store.dispatch('index/setSelected', activeIndex)
       }
     },
     created () {
@@ -214,7 +219,6 @@
     components: {
       bannerLeft,
       findButtonBanner,
-      findButton,
       findDot,
       voiceControl,
       userButtons,
