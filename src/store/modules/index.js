@@ -1,9 +1,10 @@
 import http from '../../scripts/http'
-import {getUsedTime, storage} from 'find-sdk'
+import {getUsedTime, nativeStorage} from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
+const RECENT_OPEN = 'RECENT_OPEN' /// 最近打开
 export default {
   namespaced: true,
   state: {
@@ -14,7 +15,8 @@ export default {
       autoPlayTime: '', //  自动演奏时间
       openAppTime: '', //  累计开始使用时间
       scoringTime: '' //  评分时间
-    }
+    },
+    recentOpenList: {musicList: []}
   },
   mutations: {
     [SELECTED_INDEX] (state, index) {
@@ -28,7 +30,11 @@ export default {
     },
     [PIANO_USED_TIME] (state, data) {
       state.usedTime = data
+    },
+    [RECENT_OPEN] (state, data) {
+      state.recentOpen = data
     }
+
   },
   actions: {
     /**
@@ -62,7 +68,7 @@ export default {
         let imgArr = body.bookList.map(item => {
           return item.cover
         })
-        storage.getNetworkImageAll(imgArr).then((data) => {
+        nativeStorage.getNetworkImageAll(imgArr).then((data) => {
           body.bookList.forEach((item, index) => {
             item.coverSmall = data[index]
           })
@@ -80,6 +86,17 @@ export default {
         data.autoPlayerTime = `${Number.parseInt(data.autoPlayTime / 3600)}小时`
         data.ratePlayMoment = `${Number.parseInt(data.scoringTime / 3600)}小时`
         commit(PIANO_USED_TIME, data)
+      })
+    },
+    /**
+     * @desc 获取最近打开
+     * */
+    getRecentOpenList ({commit}, {tagId = 0} = {}) {
+      return http.post('', {
+        cmd: 'musicScore.getPracticeRecent',
+        tagId
+      }).then(res => {
+        commit(RECENT_OPEN, res.body)
       })
     }
   }

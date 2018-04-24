@@ -321,7 +321,28 @@ li {
   font-size: 30px;
   font-weight: 700;
   cursor: pointer;
-  color: #fff;
+  color: #000;
+    &:nth-child(12n+1){
+      color: #fff;
+    }
+    &:nth-child(12n+4){
+      color: #fff;
+    }
+    &:nth-child(12n+6){
+      color: #fff;
+    }
+    &:nth-child(12n+8){
+      color: #fff;
+    }
+    &:nth-child(12n+11){
+      color: #fff;
+    }
+    &:nth-child(12n+13){
+      color: #fff;
+    }
+    &:nth-child(12n+1){
+      color: #fff;
+    }
 }
 
 .lower {

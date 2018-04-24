@@ -6,7 +6,7 @@
         <div class="qr-code">
           <qr-code ref="qrCode" :sessionId="sessionId"/>
         </div>
-        <span class="scan">扫我一下</span>
+        <span class="scan">扫描二维码登录</span>
         <calendar :setCalendarData="setCalendarData"/>
       </div>
       <div v-else>
@@ -56,14 +56,37 @@
       dispatch: Function
     },
     data () {
-      return {}
+      return {
+        interval: null
+      }
     },
     watch: {
       sessionId () {
-        this.$nextTick(() => {
-          this.$refs.qrCode && this.$refs.qrCode.generateQrCode({width: 180})
-        })
+        if (!this.isLogin) {
+          console.log('unlogin')
+          this.$nextTick(() => {
+            if (this.$refs.qrCode) {
+              this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
+                this.interval = setInterval(() => {
+                  this.$store.dispatch('getUserInfo')
+                }, 2000)
+              })
+            }
+          })
+        }
+      },
+      isLogin (val) {
+        console.log(this.interval)
+        if (val) {
+          clearInterval(this.interval)
+        }
       }
+    },
+    created () {
+      console.log(process.env)
+    },
+    destroyed () {
+      clearInterval(this.interval)
     },
     components: {
       qrCode,
