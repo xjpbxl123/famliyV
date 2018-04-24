@@ -107,14 +107,21 @@ export default function createStore () {
        * @desc 获取用户信息
        * */
       getUserInfo ({dispatch}) {
-        return http.post('', {
+        let root = process.env.production.HTTP_ROOT
+        return http.post(root, {
           cmd: 'account.getInfo'
         }).then(({body, header}) => {
           if (!header.code) {
-            return dispatch('setNativeStorage', {userInfo: body})
+            return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
-          return dispatch('setNativeStorage', {userInfo: {}, sessionId: null, isLogin: false})
+          return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
         })
+      },
+      /**
+       * @desc 用户注销
+       * */
+      logout ({dispatch}) {
+        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
       }
     },
     modules: {

@@ -2,7 +2,6 @@
   <div class="help-banner"
        :class="{'show-help-banner':showHelpBanner}"
        :style="{'background-image':`url(${helpImg[helpIndex]})`}"
-       @click="()=>buttonActions('help')"
   ></div>
 </template>
 

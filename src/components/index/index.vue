@@ -7,9 +7,7 @@
         :userInfo="userInfo"
         :sessionId="sessionId"
         :usedTime="usedTime"
-        :setCalendarData="setCalendarData"
-        :dispatch="initializeData"
-      />
+        :setCalendarData="setCalendarData"/>
       <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
@@ -45,11 +43,12 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import { KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY } from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY, KEY66, KEY78, KEY80} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
-
+  const lefts = [11, 4, 8]
+  const rights = [7, 10, 3]
   export default {
     data () {
       return {
@@ -73,14 +72,23 @@
       [KEY75] () {
         this.buttonActions('right')
       },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
+      },
       [KEY108] () {
         this.buttonActions()
       },
       [KEY_ANY] (keys) {
       },
+      [KEY66] () {
+        this.buttonActions('logout')
+      },
       banner: {
-        [KEY27] () {
-          console.log(arguments)
+        [KEY_ANY] (key) {
+          this.clickHelp(key)
         }
       }
     },
@@ -131,8 +139,7 @@
        * @desc 获取用户状态和用琴时间
        * */
       getUserStatus () {
-        if (this.isSynced && this.isLogin) {
-          this.$store.dispatch('getUserInfo')
+        if (this.isSynced) {
           this.$store.dispatch('index/getPianoUsedTime')
         }
       },
@@ -152,18 +159,21 @@
         })
       },
       /**
-       * @desc 显示帮助
+       * @desc 帮助页点击事件
        * */
-      showHelp () {
+      clickHelp (key) {
         if (this.showHelpBanner) {
+          if (key === 108) {
+            this.helpIndex = 0
+            this.showHelpBanner = false
+            return
+          }
           if (this.helpIndex < this.helpImg.length - 1) {
             this.helpIndex = this.helpIndex + 1
           } else {
             this.helpIndex = 0
             this.showHelpBanner = false
           }
-        } else {
-          this.showHelpBanner = true
         }
       },
       go (params) {
@@ -180,26 +190,45 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        // 如果是帮助页
         let activeIndex = this.selectedIndex
         switch (type) {
-          case 'help':
+          case 'help' :
             this.namespace = 'banner'
-            return this.showHelp()
+            this.showHelpBanner = true
+            break
           case 'login':
-            return this.go('/login')
+            if (!this.isLogin) {
+              // 未登录进入登录页
+              return this.go('/login')
+            } else {
+              // 进入账户页
+              console.log('已登录')
+              return
+            }
           case 'settings':
             return false
           case 'left':
-            if (activeIndex === 0) {
+            if (activeIndex <= 0) {
               return
             }
-            activeIndex--
+            let leftIndex = lefts.indexOf(activeIndex)
+            if (leftIndex !== -1) {
+              activeIndex = rights[leftIndex]
+            } else {
+              activeIndex--
+            }
             break
           case 'right':
             if (activeIndex === this.endIndex) {
               return
             }
-            activeIndex++
+            let rightIndex = rights.indexOf(activeIndex)
+            if (rightIndex !== -1) {
+              activeIndex = lefts[rightIndex]
+            } else {
+              activeIndex++
+            }
             break
           case 'up':
             /// 处理热门曲谱的index
@@ -217,8 +246,15 @@
               activeIndex += 4
             }
             break
+          case 'logout':
+            // 临时写的用来注销账号
+            this.$store.dispatch('logout', {root: true}).then(() => {
+              this.$store.dispatch('setSession', '')
+            })
+            break
           default:
-            this.goBack()
+            console.log('108')
+            // this.goBack()
         }
         this.$store.dispatch('index/setSelected', activeIndex)
       }

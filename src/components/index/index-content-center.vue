@@ -29,7 +29,11 @@
                  :key="num+7"></div>
           </div>
           <div class="slip-line"></div>
-          <div class="date">{{ data.time | format}}</div>
+          <div class="date">
+            <span class="iconfont icon-popularity"></span>
+            <span>{{ data.hotNum }}</span>
+
+          </div>
         </div>
         <div class="margin-none">
           <contentBook :bookData="moreData" :class="{active:(hotMoreindex===selectedIndex)}"/>
@@ -136,6 +140,17 @@
           }
           .margin-none {
             margin-right: 0;
+          .date {
+            font-size: 22px;
+            color: #fff;
+            font-weight: 900;
+            text-align: center;
+            display: inline-block;
+            margin-top: 10px;
+            span:nth-child(1) {
+              font-size: 24px;
+            }
+          }
           }
         }
       }

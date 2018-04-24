@@ -123,7 +123,6 @@
 .banner-title {
   display: flex;
   height: 142px;
-  margin-top: 37px;
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
@@ -132,6 +131,7 @@
   }
   .banner-title-right {
     align-items: center;
+
   }
   .right {
     flex-direction: column;
@@ -139,6 +139,7 @@
       font-size: 65px;
       line-height: 48px;
       color: #ffffff;
+      margin-top: 40px;
     }
     & > span:nth-child(2) {
       font-size: 20px;
@@ -146,8 +147,9 @@
       font-weight: 900;
       display: flex;
       justify-content: center;
-      p:nth-child(1) {
-        margin-right: 6px;
+      margin-top: 10px;
+      span:nth-child(1) {
+        margin-right: 10px;
       }
     }
     span {
@@ -157,6 +159,7 @@
   .near {
     font-size: 34px;
     color: #fff;
+    margin-top: 56px;
   }
   .animate {
     margin-right: 50px;
@@ -165,6 +168,7 @@
     background: url(./images/icon_nearly_right.png) no-repeat;
     background-size: 200% 100%;
     animation: bgrepeat 2s linear 0s infinite alternate;
+    margin-top: 56px;
   }
 }
 
