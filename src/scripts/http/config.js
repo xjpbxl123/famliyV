@@ -1,7 +1,7 @@
 /**
  * Created by Moersing on 2018/4/3 .
  * */
-import {getDeviceInfo, nativeStorage} from 'find-sdk'
+import {device, nativeStorage} from 'find-sdk'
 let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params
@@ -37,7 +37,7 @@ export const getDefaultParams = (() => {
     if (orn) {
       return mergeSessionId()
     }
-    return getDeviceInfo().then(result => {
+    return device.getDeviceInfo().then(result => {
       /// only get once
       orn = result
     }).then(mergeSessionId)
