@@ -72,7 +72,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped type="text/scss">
   .banner-left {
     display: flex;
     flex-direction: column;

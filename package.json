@@ -72,6 +72,5 @@
     "vue-template-compiler": "^2.2.1",
     "webpack": "^3.7.1",
     "webpack-dev-server": "2.11.1"
-  },
-  "eslintIgnore": ["src/plugins/**/node_modules/*"]
+  }
 }

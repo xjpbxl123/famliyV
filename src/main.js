@@ -11,6 +11,7 @@ import SDK from './scripts/findSDK/src/index'
 import 'normalize.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
+
 Vue.use(VueRouter)
 Vue.use(Vuex)
 let vue = {}
@@ -21,17 +22,19 @@ let isInFindClient = isObject(app) && isFunction(app.setup)
 if (isInFindClient) {
   let sdk = new SDK()
   sdk.init().then(() => {
-    Vue.use(VueFind)
-    const store = createStore()
-    const router = new VueRouter({ routes })
-    vue = new Vue({
-      el: '#app',
-      render: h => h(App),
-      router,
-      store: store,
-      find: new VueFind(find)
-    })
-    store.dispatch('initialNativeStorage')
+    setTimeout(() => {
+      Vue.use(VueFind)
+      const store = createStore()
+      const router = new VueRouter({routes})
+      vue = new Vue({
+        el: '#app',
+        render: h => h(App),
+        router,
+        store: store,
+        find: new VueFind(find)
+      })
+      store.dispatch('initialNativeStorage')
+    }, 1000)
   })
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
