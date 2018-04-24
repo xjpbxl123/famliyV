@@ -35,7 +35,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import {mapState} from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -43,7 +43,7 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY} from 'vue-find'
+  import { KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -76,25 +76,27 @@
       [KEY_ANY] (keys) {
       }
     },
-    computed: mapState({
-      sessionId (state) {
-        return state.storage.sessionId
-      },
-      isSynced (state) {
-        return state.storage.isSynced
-      },
-      isLogin (state) {
-        let {storage} = state
-        return storage.isLogin
-      },
-      userInfo (state) {
-        return state.storage.userInfo
-      },
-      selectedIndex: state => state.index.selectedIndex,
-      recentBooks: state => state.index.recentBooks,
-      hotBooks: state => state.index.hotBooks,
-      usedTime: state => state.index.usedTime
-    }),
+    computed: {
+      ...mapState({
+        sessionId (state) {
+          return state.storage.sessionId
+        },
+        isSynced (state) {
+          return state.storage.isSynced
+        },
+        isLogin (state) {
+          let {storage} = state
+          return storage.isLogin
+        },
+        userInfo (state) {
+          return state.storage.userInfo
+        },
+        selectedIndex: state => state.index.selectedIndex,
+        recentBooks: state => state.index.recentBooks,
+        usedTime: state => state.index.usedTime
+      }),
+      ...mapGetters(['hotBooks'])
+    },
     watch: {
       /**
        * @desc 是否已经从原生storage同步完成
@@ -233,10 +235,12 @@
 <style lang="scss" scoped>
   .banner-wrapper {
     height: 100%;
-    .banner-content {
-      display: flex;
-      height: 100%;
-    }
+
+  .banner-content {
+    display: flex;
+    height: 100%;
+  }
+
   }
 
   .button-banner {

@@ -7,7 +7,7 @@ import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
 import home from './modules/home'
-import {nativeStorage} from 'find-sdk'
+import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 export default function createStore () {
@@ -19,7 +19,18 @@ export default function createStore () {
         playCalendar: {}, // 练琴日期
         userInfo: null, // 用户信息
         isLogin: false,
-        sessionId: null // 创建会话id,用于生成二维码或者登录之后获取用户信息
+        sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
+        cache: {} // 数据本地缓存
+      }
+    },
+    getters: {
+      /**
+       * 首页热门曲谱
+       * @param state
+       * @returns {*}
+       */
+      hotBooks: state => {
+        return state.storage.cache.hottest
       }
     },
     mutations: {
@@ -36,7 +47,8 @@ export default function createStore () {
           nativeStorage.get('playCalendar'),
           nativeStorage.get('isLogin'),
           nativeStorage.get('userInfo'),
-          nativeStorage.get('sessionId')
+          nativeStorage.get('sessionId'),
+          nativeStorage.get('cache')
         ])
           .then(data => {
             commit(SET_STORAGE, {
@@ -44,6 +56,7 @@ export default function createStore () {
               isLogin: data[1].value,
               userInfo: data[2].value,
               sessionId: data[3].value,
+              cache: data[4].value,
               isSynced: true
             })
           })
@@ -60,6 +73,16 @@ export default function createStore () {
             })
           }
         })
+      },
+      /**
+       * @desc 将需要缓存的数据写入原生中
+       * @param {Function} dispatch
+       * @param {Function} commit
+       * @param {Object} state
+       * @param {object} data
+       */
+      setCacheToStorage ({dispatch, commit, state}, data) {
+        return dispatch('setNativeStorage', {cache: {...state.cache, ...data}})
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
