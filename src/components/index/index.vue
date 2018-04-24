@@ -25,13 +25,15 @@
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
     </find-button-banner>
-    <banner-help
-      class="help-banner"
-      :showHelpBanner="showHelpBanner"
-      :helpImg="helpImg"
-      :helpIndex="helpIndex"
-      :buttonActions="buttonActions"
-    />
+    <find-cover :namespace="namespace">
+      <banner-help
+        class="help-banner"
+        :showHelpBanner="showHelpBanner"
+        :helpImg="helpImg"
+        :helpIndex="helpIndex"
+        :buttonActions="buttonActions"
+      />
+    </find-cover>
   </div>
 </template>
 <script type="text/javascript">
@@ -53,6 +55,7 @@
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
+        namespace: '',
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
         endIndex: -1
       }
@@ -74,6 +77,11 @@
         this.buttonActions()
       },
       [KEY_ANY] (keys) {
+      },
+      banner: {
+        [KEY27] () {
+          console.log(arguments)
+        }
       }
     },
     computed: {
@@ -175,6 +183,7 @@
         let activeIndex = this.selectedIndex
         switch (type) {
           case 'help':
+            this.namespace = 'banner'
             return this.showHelp()
           case 'login':
             return this.go('/login')
