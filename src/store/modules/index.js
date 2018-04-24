@@ -1,5 +1,5 @@
 import http from '../../scripts/http'
-import {getUsedTime} from 'find-sdk'
+import {getUsedTime, storage} from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
@@ -52,13 +52,23 @@ export default {
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({commit}, {tagId = 1, page = {'offset': 0, 'count': 5}} = {}) {
+    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 5}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
       }).then(res => {
-        commit(HOT_BOOKS, res.body)
+        let body = res.body
+        let imgArr = body.bookList.map(item => {
+          return item.cover
+        })
+        storage.getNetworkImageAll(imgArr).then((data) => {
+          body.bookList.forEach((item, index) => {
+            item.coverSmall = data[index]
+          })
+          dispatch('setCacheToStorage', {hottest: body}, {root: true})
+        })
+        // commit(HOT_BOOKS, res.body)
       })
     },
     /**
