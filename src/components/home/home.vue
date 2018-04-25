@@ -1,47 +1,52 @@
 <template>
   <div>
-    <button @click="click">Action</button>
-    <div v-text="text"></div>
+    <find-cover :activeNamespace="namespace">
+      <div>
+        demo
+      </div>
+    </find-cover>
+    <find-cover :activeNamespace="namespace1">
+      <div>
+        demo1
+      </div>
+    </find-cover>
+    <button @click="changeNamespace">changeNamespace</button>
   </div>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-  let count = 1
+  import {KEY108, KEY75} from 'vue-find'
   export default {
     name: 'home',
     data () {
-      return {}
-    },
-    computed: mapState({
-      text (state) {
-        return state.home.demoText
+      return {
+        namespace: '',
+        namespace1: ''
       }
-    }),
+    },
+    find: {
+      [KEY108] () {
+        console.log('Trigger in global')
+      },
+      demo: {
+        [KEY108] () {
+          console.log('Trigger in demo namespace')
+        },
+        [KEY75] () {
+          console.log('Trigger in demo namespace')
+        }
+      },
+      demo1: {
+        [KEY108] () {
+          console.log('Trigger in demo1 namespace')
+        }
+      }
+    },
     methods: {
-      click () {
-        this.$store.dispatch('home/demo', {
-          text: `clicked:${count++}`
-        })
+      changeNamespace () {
+        this.namespace = 'demo'
+        this.namespace1 = 'demo1'
       }
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  div {
-    font-size: 30px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  button {
-    font-size: 40px;
-    background: transparent;
-    border-radius: 10px;
-    border: none;
-  }
-</style>
