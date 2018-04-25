@@ -7,7 +7,7 @@ import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
 import home from './modules/home'
-import { nativeStorage } from 'find-sdk'
+import {nativeStorage} from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 export default function createStore () {
@@ -20,7 +20,7 @@ export default function createStore () {
         userInfo: null, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {} // 数据本地缓存
+        cache: {hottest: {}} // 数据本地缓存
       }
     },
     getters: {
@@ -42,7 +42,7 @@ export default function createStore () {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit}) {
+      initialNativeStorage ({commit, state}) {
         return Promise.all([
           nativeStorage.get('playCalendar'),
           nativeStorage.get('isLogin'),
@@ -56,7 +56,7 @@ export default function createStore () {
               isLogin: data[1].value,
               userInfo: data[2].value,
               sessionId: data[3].value,
-              cache: data[4].value,
+              cache: Object.assign({}, state.storage.cache, data[4].value),
               isSynced: true
             })
           })
