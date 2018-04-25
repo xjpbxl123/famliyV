@@ -54,4 +54,5 @@ const formatDate = function (date, format) {
   }
   return format
 }
+
 export { os, formatDate }

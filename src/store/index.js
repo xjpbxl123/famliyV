@@ -20,7 +20,10 @@ export default function createStore () {
         userInfo: null, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {hottest: {}} // 数据本地缓存
+        cache: {
+          hottest: {bookList: []},
+          recentUpdate: {bookList: []}
+        } // 数据本地缓存
       }
     },
     getters: {
@@ -31,6 +34,9 @@ export default function createStore () {
        */
       hotBooks: state => {
         return state.storage.cache.hottest
+      },
+      recentBooks: state => {
+        return state.storage.cache.recentUpdate
       }
     },
     mutations: {

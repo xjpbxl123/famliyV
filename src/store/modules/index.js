@@ -1,5 +1,5 @@
 import http from '../../scripts/http'
-import {getUsedTime, nativeStorage} from 'find-sdk'
+import {getUsedTime} from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
@@ -46,13 +46,25 @@ export default {
     /**
      * @desc 获取最近更新
      * */
-    getRecentBooks ({commit}, {tagId = 1, page = {'offset': 0, 'count': 7}} = {}) {
+    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 7}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
       }).then(res => {
-        commit(RECENT_BOOKS, res.body)
+        dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+        // let body = res.body
+        // let imgArr = body.bookList.map(item => {
+        //   return item.cover
+        // })
+        // storage.getNetworkImageAll(imgArr).then((data) => {
+        //   body.bookList.forEach((item, index) => {
+        //     item.coverSmall = data[index]
+        //   })
+        // }).finally(() => {
+        //   dispatch('setCacheToStorage', {recentUpdate: body}, {root: true})
+        // })
+        // commit(RECENT_BOOKS, res.body)
       })
     },
     /**
@@ -64,16 +76,18 @@ export default {
         tagId,
         page
       }).then(res => {
-        let body = res.body
-        let imgArr = body.bookList.map(item => {
-          return item.cover
-        })
-        nativeStorage.getNetworkImageAll(imgArr).then((data) => {
-          body.bookList.forEach((item, index) => {
-            item.coverSmall = data[index]
-          })
-          dispatch('setCacheToStorage', {hottest: body}, {root: true})
-        })
+        dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+        // let body = res.body
+        // let imgArr = body.bookList.map(item => {
+        //   return item.cover
+        // })
+        // storage.getNetworkImageAll(imgArr).then((data) => {
+        //   body.bookList.forEach((item, index) => {
+        //     item.coverSmall = data[index]
+        //   })
+        // }).finally(() => {
+        //   dispatch('setCacheToStorage', {hottest: body}, {root: true})
+        // })
         // commit(HOT_BOOKS, res.body)
       })
     },

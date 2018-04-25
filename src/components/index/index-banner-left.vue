@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <div>
-          <img class="avatar" :src="userInfo.imageUrl" alt="">
+          <img class="avatar" :src="userInfo.imageUrl" alt="" :onerror="imgError">
         </div>
         <span class="nick-name" v-text="userInfo.nickName"></span>
         <div class="used-time">
@@ -57,7 +57,8 @@
     },
     data () {
       return {
-        interval: null
+        interval: null,
+        imgError: 'this.src="' + require('./images/admin.png') + '"'
       }
     },
     watch: {

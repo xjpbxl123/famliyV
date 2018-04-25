@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="box-left">
-      <contentLine name="热门歌曲"/>
+      <contentLine name="最近更新"/>
       <div class="book-content">
         <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
@@ -30,7 +30,7 @@
           </div>
           <div class="slip-line"></div>
           <div class="date">
-            <span class="iconfont icon-popularity"></span>
+            <span class="viewIcon iconfont icon-popularity"></span>
             <span>{{ data.hotNum }}</span>
 
           </div>
@@ -137,6 +137,11 @@
               display: inline-block;
               margin-top: 10px;
             }
+            .viewIcon {
+              font-size: 24px;
+              display: inline-block;
+              transform: translateY(2px);
+            }
           }
           .margin-none {
             margin-right: 0;
@@ -146,7 +151,6 @@
             font-weight: 900;
             text-align: center;
             display: inline-block;
-            margin-top: 10px;
             span:nth-child(1) {
               font-size: 24px;
             }

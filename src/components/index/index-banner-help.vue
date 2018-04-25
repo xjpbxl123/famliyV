@@ -26,6 +26,7 @@
     width: 100%;
     height: 100%;
     background: transparent url("./images/help-1.png") no-repeat center;
+    background-size: cover;
   }
 
   .show-help-banner {

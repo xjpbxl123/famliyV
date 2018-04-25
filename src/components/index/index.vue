@@ -23,7 +23,7 @@
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
     </find-button-banner>
-    <find-cover :namespace="namespace">
+    <find-cover :activeNameSpace="namespace">
       <banner-help
         class="help-banner"
         :showHelpBanner="showHelpBanner"
@@ -54,8 +54,7 @@
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
-        namespace: '',
-        helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
+        helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1
       }
     },
@@ -88,6 +87,7 @@
       },
       banner: {
         [KEY_ANY] (key) {
+          console.log('clickAny')
           this.clickHelp(key)
         }
       }
@@ -108,10 +108,14 @@
           return state.storage.userInfo
         },
         selectedIndex: state => state.index.selectedIndex,
-        recentBooks: state => state.index.recentBooks,
-        usedTime: state => state.index.usedTime
+        // recentBooks: state => state.index.recentBooks,
+        usedTime: state => state.index.usedTime,
+        // hotBooks: state => state.index.hotBooks,
+        namespace () {
+          return this.showHelpBanner ? 'banner' : ''
+        }
       }),
-      ...mapGetters(['hotBooks'])
+      ...mapGetters(['hotBooks', 'recentBooks'])
     },
     watch: {
       /**
@@ -194,7 +198,6 @@
         let activeIndex = this.selectedIndex
         switch (type) {
           case 'help' :
-            this.namespace = 'banner'
             this.showHelpBanner = true
             break
           case 'login':
