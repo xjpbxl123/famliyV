@@ -82,7 +82,7 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        return dispatch('setNativeStorage', {cache: {...state.cache, ...data}})
+        return dispatch('setNativeStorage', {cache: {...state.storage.cache, ...data}})
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
