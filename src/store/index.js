@@ -7,7 +7,8 @@ import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
 import home from './modules/home'
-import {nativeStorage} from 'find-sdk'
+import famous from './modules/famous'
+import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 export default function createStore () {
@@ -20,7 +21,7 @@ export default function createStore () {
         userInfo: null, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {hottest: {}} // 数据本地缓存
+        cache: {hottest: {}, allArtists: {}, famousAuthor: {courseSetList: [{authorName: ''}]}} // 数据本地缓存
       }
     },
     getters: {
@@ -31,6 +32,12 @@ export default function createStore () {
        */
       hotBooks: state => {
         return state.storage.cache.hottest
+      },
+      allArtists: state => {
+        return state.storage.cache.allArtists
+      },
+      famousAuthor: state => {
+        return state.storage.cache.famousAuthor
       }
     },
     mutations: {
@@ -121,7 +128,8 @@ export default function createStore () {
       // Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
       index,
       login,
-      home
+      home,
+      famous
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

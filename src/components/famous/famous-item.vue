@@ -1,24 +1,29 @@
 <template>
   <li class="famous-item" :class="index == select && 'active'"
-      :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}">
-    <img src="https://r.findpiano.cn/author/artist/qinchuan.png?sign=ea7d72dfe0da4badfeef28f51c8f9b79&t=5ae0b0db"
-         alt="">
+      :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}"
+      @click="()=>gotoFamousBook(famous.authorId,famous.bgCover)">
+    <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage"/>
   </li>
 </template>
 <script>
   import { mapState } from 'vuex'
+  import findImg from 'components/common/find-img/find-img'
 
   export default {
     name: 'famous-item',
     props: {
       select: {type: Number, default: 0},
-      index: {type: Number, default: 0}
+      index: {type: Number, default: 0},
+      famous: {type: Object}
     },
     data () {
       return {
         famousItemStyle: {
           height: 100,
           width: 617
+        },
+        cover: {
+          beforeImage: require('./default.png')
         }
       }
     },
@@ -29,25 +34,26 @@
     methods: {
       changeSize (select) {
         let wag = this.index - select
-
         if (wag < 0) {
           this.famousItemStyle.width = 617 - 57 * (-wag)
-          console.log(57 * (-wag))
         }
         if (wag > 0) {
           this.famousItemStyle.width = 617 - 57 * (wag)
-          console.log(57 * (-wag))
         }
         if (wag === 0) {
           this.famousItemStyle.width = 617
         }
+      },
+      gotoFamousBook (id, cover) {
+        this.$router.push({path: '/famous-book', query: {authorId: id, cover}})
       }
     },
     watch: {
       select (val, oldValue) {
         this.changeSize(val)
       }
-    }
+    },
+    components: {findImg}
   }
 </script>
 
@@ -74,7 +80,7 @@
         height: 100%;
       }
     }
-    img {
+    .image {
       width: 100%;
       position: absolute;
       bottom: 0;

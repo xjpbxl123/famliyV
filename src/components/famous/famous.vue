@@ -1,20 +1,22 @@
 <template>
   <div>
-    <famous-swiper :famousList="famousList" :select="select" :defaultLeft="defaultLeft"></famous-swiper>
+    <famous-swiper :famousList="allArtists.authors" :select="select" :defaultLeft="defaultLeft"/>
+    <find-title title="名师课程"></find-title>
     <div class="bottom">
       <find-button v-for="button in famousButton"
                    :className="button.className"
                    :iconClass="button.icon"
                    :action="action.bind(this,button.className)"
-                   :key="button.icon"></find-button>
+                   :key="button.icon"/>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findButton from '../common/find-button/find-button'
   import famousSwiper from './famous-swiper'
+  import findTitle from 'components/common/find-title/find-title'
 
   export default {
     name: 'famous',
@@ -39,7 +41,14 @@
         defaultLeft: 1293
       }
     },
-    computed: mapState({}),
+    beforeCreate () {
+      this.$store.dispatch({type: 'famous/getAllArtistsToFamily'})
+    },
+    computed: {
+      ...mapState({
+      }),
+      ...mapGetters(['allArtists'])
+    },
     methods: {
       action (type) {
         switch (type[0]) {
@@ -49,14 +58,15 @@
             break
           case 'right':
             let sele = this.select + 1
-            this.select = sele >= this.famousList.length - 1 ? this.famousList.length - 1 : sele
+            this.select = sele >= this.famousList.length - 1 ? this.famousList.length : sele
             break
         }
       }
     },
     components: {
       findButton,
-      famousSwiper
+      famousSwiper,
+      findTitle
     }
   }
 </script>
