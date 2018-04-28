@@ -18,7 +18,7 @@ export default function createStore () {
       storage: {
         isSynced: false, // 数据是否同步完成,注意: 所有涉及到nativeStorage的操作,都应该基于这个标志来判断是否完成
         playCalendar: {}, // 练琴日期
-        userInfo: null, // 用户信息
+        userInfo: {}, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         cache: {} // 数据本地缓存
@@ -32,13 +32,15 @@ export default function createStore () {
        */
       hotBooks: state => {
         let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId].hottest
+        return state.storage.cache[userId] && state.storage.cache[userId].hottest
       },
       allArtists: state => {
-        return state.storage.cache.allArtists
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].allArtists
       },
       famousAuthor: state => {
-        return state.storage.cache.famousAuthor
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].famousAuthor
       }
     },
     mutations: {
