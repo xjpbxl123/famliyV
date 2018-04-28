@@ -6,7 +6,7 @@
       <find-button v-for="button in famousButton"
                    :className="button.className"
                    :iconClass="button.icon"
-                   :action="action.bind(this,button.className)"
+                   :action="action.bind(this,button.className[0])"
                    :key="button.icon"></find-button>
     </div>
   </div>
@@ -17,6 +17,7 @@
   import findButton from '../../common/find-button/find-button'
   import findTitle from '../../common/find-title/find-title'
   import famousBookSwiper from './famous-book-swiper'
+  import { KEY78, KEY80 } from 'vue-find'
 
   export default {
     name: 'famous-book',
@@ -55,7 +56,7 @@
         this.$store.dispatch('famous/getCourseSetByArtistToFamily', {artistId})
       },
       action (type) {
-        switch (type[0]) {
+        switch (type) {
           case 'left':
             let selectd = this.select - 1
             this.select = selectd < 0 ? 0 : selectd
@@ -65,6 +66,14 @@
             this.select = sele >= this.famousAuthor.courseSetList.length - 1 ? this.famousAuthor.courseSetList.length - 1 : sele
             break
         }
+      }
+    },
+    find: {
+      [KEY78] () {
+        this.action('left')
+      },
+      [KEY80] () {
+        this.action('right')
       }
     },
     components: {
