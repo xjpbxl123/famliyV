@@ -1,7 +1,6 @@
 <template>
   <li class="famous-item" :class="index == select && 'active'"
-      :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}"
-      @click="()=>gotoFamousBook(famous.authorId,famous.bgCover)">
+      :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}">
     <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage"/>
   </li>
 </template>
@@ -43,9 +42,6 @@
         if (wag === 0) {
           this.famousItemStyle.width = 617
         }
-      },
-      gotoFamousBook (id, cover) {
-        this.$router.push({path: '/famous-book', query: {authorId: id, cover}})
       }
     },
     watch: {
