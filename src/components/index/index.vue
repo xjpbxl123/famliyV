@@ -1,5 +1,6 @@
 <template>
   <div class="banner-wrapper">
+    <statusBar/>
     <div class="banner-content">
       <banner-left
         :isSynced="isSynced"
@@ -13,7 +14,11 @@
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
-      <bannerRight/>
+      <bannerRight
+      :recentOpenList="recentOpenList"
+      :rightSelectedIndex="rightSelectedIndex"
+      :collectList="collectList"
+      :rightType="rightType"/>
     </div>
     <find-button-banner className="button-banner">
       <user-buttons
@@ -23,7 +28,8 @@
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
     </find-button-banner>
-    <find-cover :activeNameSpace="namespace">
+    <div class="footBack"></div>
+    <find-cover :activeNamespace="namespace">
       <banner-help
         class="help-banner"
         :showHelpBanner="showHelpBanner"
@@ -43,10 +49,11 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY, KEY66, KEY78, KEY80} from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY, KEY66, KEY78, KEY80, KEY94, KEY97, KEY99, KEY102} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -77,17 +84,28 @@
       [KEY80] () {
         this.buttonActions('down')
       },
-      [KEY108] () {
-        this.buttonActions()
+      [KEY94] () {
+        this.buttonActions('changeRightData')
       },
-      [KEY_ANY] (keys) {
+      [KEY97] () {
+        this.buttonActions('right-up')
+      },
+      [KEY99] () {
+        this.buttonActions('right-down')
+      },
+      [KEY102] () {
+        this.buttonActions('right-play')
+      },
+      [KEY108] () {
+        console.log(this)
+        this.buttonActions()
       },
       [KEY66] () {
         this.buttonActions('logout')
       },
       banner: {
         [KEY_ANY] (key) {
-          console.log('clickAny')
+          console.log(this)
           this.clickHelp(key)
         }
       }
@@ -108,14 +126,14 @@
           return state.storage.userInfo
         },
         selectedIndex: state => state.index.selectedIndex,
-        // recentBooks: state => state.index.recentBooks,
+        rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
-        // hotBooks: state => state.index.hotBooks,
         namespace () {
           return this.showHelpBanner ? 'banner' : ''
-        }
+        },
+        rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
     },
     watch: {
       /**
@@ -125,9 +143,8 @@
         if (val) {
           if (!this.isLogin) {
             this.createSession()
-          } else {
-            this.getUserStatus()
           }
+          this.getUserStatus()
         }
       }
     },
@@ -146,6 +163,18 @@
         if (this.isSynced) {
           this.$store.dispatch('index/getPianoUsedTime')
         }
+      },
+      /**
+       * @desc 右侧最近打开数据
+       * */
+      getRecentOpenList () {
+        this.$store.dispatch({type: 'index/getRecentOpenList'})
+      },
+      /**
+       * @desc 右侧我的收藏数据
+       * */
+      getCollectList () {
+        this.$store.dispatch({type: 'index/getCollectList'})
       },
       /**
        * @desc 创建会话ID
@@ -196,6 +225,9 @@
       buttonActions (type) {
         // 如果是帮助页
         let activeIndex = this.selectedIndex
+        let recentOpenList = this.recentOpenList
+        let collectList = this.collectList
+        let rightActiveIndex = this.rightSelectedIndex
         switch (type) {
           case 'help' :
             this.showHelpBanner = true
@@ -255,6 +287,37 @@
               this.$store.dispatch('setSession', '')
             })
             break
+          case 'right-up':
+            // 右侧列表up事件
+            rightActiveIndex--
+            rightActiveIndex = Math.max(rightActiveIndex, 0)
+            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            break
+          case 'right-down':
+            // 右侧列表down事件
+            rightActiveIndex++
+            let data = []
+            if (this.rightType === 'myCollect') {
+              data = collectList
+            } else if (this.rightType === 'recentOpen') {
+              data = recentOpenList
+            }
+            rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
+            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            break
+          case 'right-play':
+            // 右侧列表play事件
+            console.log('去播放')
+            break
+          case 'changeRightData':
+            // 切换右侧数据
+            if (this.rightType === 'myCollect') {
+              this.$store.dispatch('index/setRightType', 'recentOpen')
+            } else if (this.rightType === 'recentOpen') {
+              this.$store.dispatch('index/setRightType', 'myCollect')
+            }
+            this.$store.dispatch('index/setRightSelect', 0)
+            break
           default:
             console.log('108')
             // this.goBack()
@@ -265,6 +328,9 @@
     created () {
       this.initializeData()
       this.getUserStatus()
+      this.getRecentOpenList()
+      this.getCollectList()
+      // this.getRightType()
     },
     components: {
       bannerLeft,
@@ -276,7 +342,8 @@
       controlButton,
       contentCenter,
       bannerRight,
-      bannerHelp
+      bannerHelp,
+      statusBar
     }
   }
 </script>
@@ -293,5 +360,13 @@
 
   .button-banner {
     padding: 0 20px;
+  }
+  .footBack {
+    position: absolute;
+    width: 2682px;
+    height: 7%;
+    left: 470px;
+    bottom: -2px;
+    background:url(./images/bottomBackground.png) no-repeat;
   }
 </style>

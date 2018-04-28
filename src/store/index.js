@@ -22,7 +22,9 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         cache: {
           hottest: {bookList: []},
-          recentUpdate: {bookList: []}
+          recentUpdate: {bookList: []},
+          recentOpen: [],
+          myCollect: []
         } // 数据本地缓存
       }
     },
@@ -37,6 +39,13 @@ export default function createStore () {
       },
       recentBooks: state => {
         return state.storage.cache.recentUpdate
+      },
+      recentOpenList: state => {
+        console.log(state.storage.cache.recentOpen, 'eee')
+        return state.storage.cache.recentOpen
+      },
+      collectList: state => {
+        return state.storage.cache.myCollect
       }
     },
     mutations: {
@@ -57,6 +66,7 @@ export default function createStore () {
           nativeStorage.get('cache')
         ])
           .then(data => {
+            console.log(data, 'oooo')
             commit(SET_STORAGE, {
               playCalendar: data[0].value,
               isLogin: data[1].value,
@@ -88,7 +98,7 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        return dispatch('setNativeStorage', {cache: {...state.cache, ...data}})
+        return dispatch('setNativeStorage', {cache: {...state.storage.cache, ...data}})
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息

@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <div>
-          <img class="avatar" :src="userInfo.imageUrl" alt="" :onerror="imgError">
+          <img class="avatar" :src="userInfo.imageUrl || require('./images/admin.png')" alt="" >
         </div>
         <span class="nick-name" v-text="userInfo.nickName"></span>
         <div class="used-time">
@@ -57,7 +57,6 @@
     },
     data () {
       return {
-        interval: null,
         imgError: 'this.src="' + require('./images/admin.png') + '"'
       }
     },
@@ -68,7 +67,8 @@
           this.$nextTick(() => {
             if (this.$refs.qrCode) {
               this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-                this.interval = setInterval(() => {
+                clearInterval(window.interval)
+                window.interval = window.setInterval(() => {
                   this.$store.dispatch('getUserInfo')
                 }, 2000)
               })
@@ -77,17 +77,24 @@
         }
       },
       isLogin (val) {
-        console.log(this.interval)
+        console.log(window.interval, 'ddd')
         if (val) {
-          clearInterval(this.interval)
+          clearInterval(window.interval)
         }
       }
     },
     created () {
       console.log(process.env)
-    },
-    destroyed () {
-      clearInterval(this.interval)
+      this.$nextTick(() => {
+        if (this.$refs.qrCode) {
+          this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
+            clearInterval(window.interval)
+            window.interval = window.setInterval(() => {
+              this.$store.dispatch('getUserInfo')
+            }, 2000)
+          })
+        }
+      })
     },
     components: {
       qrCode,

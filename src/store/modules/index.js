@@ -4,11 +4,13 @@ const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
-const RECENT_OPEN = 'RECENT_OPEN' /// 最近打开
+const RIGHT_SELECTED_INDEX = 'RIGHT_SELECT_INDEX' /// 最近打开索引
+const RIGHT_TYPE = 'RIGHT_TYPE'
 export default {
   namespaced: true,
   state: {
     selectedIndex: 0,
+    rightSelectedIndex: 0,
     recentBooks: {bookList: []},
     hotBooks: {bookList: []},
     usedTime: {
@@ -16,11 +18,14 @@ export default {
       openAppTime: '', //  累计开始使用时间
       scoringTime: '' //  评分时间
     },
-    recentOpenList: {musicList: []}
+    rightType: 'recentOpen'
   },
   mutations: {
     [SELECTED_INDEX] (state, index) {
       state.selectedIndex = index
+    },
+    [RIGHT_SELECTED_INDEX] (state, index) {
+      state.rightSelectedIndex = index
     },
     [RECENT_BOOKS] (state, recentBooks) {
       state.recentBooks = recentBooks
@@ -31,8 +36,8 @@ export default {
     [PIANO_USED_TIME] (state, data) {
       state.usedTime = data
     },
-    [RECENT_OPEN] (state, data) {
-      state.recentOpen = data
+    [RIGHT_TYPE] (state, data) {
+      state.rightType = data
     }
 
   },
@@ -44,6 +49,12 @@ export default {
       commit(SELECTED_INDEX, num)
     },
     /**
+     * @desc 设置右侧列表选中的项
+     * */
+    setRightSelect ({commit}, num) {
+      commit(RIGHT_SELECTED_INDEX, num)
+    },
+    /**
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 7}} = {}) {
@@ -52,7 +63,9 @@ export default {
         tagId,
         page
       }).then(res => {
-        dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+        if (res.header.code === 0) {
+          dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+        }
         // let body = res.body
         // let imgArr = body.bookList.map(item => {
         //   return item.cover
@@ -76,7 +89,9 @@ export default {
         tagId,
         page
       }).then(res => {
-        dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+        if (res.header.code === 0) {
+          dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+        }
         // let body = res.body
         // let imgArr = body.bookList.map(item => {
         //   return item.cover
@@ -105,13 +120,35 @@ export default {
     /**
      * @desc 获取最近打开
      * */
-    getRecentOpenList ({commit}, {tagId = 0} = {}) {
+    getRecentOpenList ({dispatch, commit}, {tagId = 0} = {}) {
       return http.post('', {
         cmd: 'musicScore.getPracticeRecent',
         tagId
       }).then(res => {
-        commit(RECENT_OPEN, res.body)
+        if (res.header.code === 0) {
+          dispatch('setCacheToStorage', {recentOpen: res.body}, {root: true})
+        }
       })
+    },
+    /**
+     * @desc 获取收藏列表
+     * */
+    getCollectList ({dispatch, commit}, {tagId = 0} = {}) {
+      return http.post('', {
+        cmd: 'musicScore.getPracticeMusic',
+        tagId
+      }).then(res => {
+        if (res.header.code === 0) {
+          dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
+        }
+      })
+    },
+    /**
+     * @desc 获取右侧列表状态
+     * */
+    setRightType ({commit} = {}, str) {
+      commit(RIGHT_TYPE, str)
     }
+
   }
 }

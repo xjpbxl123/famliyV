@@ -76,6 +76,8 @@
             break
           case 'ok':
             this.$refs.banner.toLogin()
+            console.log(window.interval)
+            clearInterval(window.interval)
             break
         }
       }
