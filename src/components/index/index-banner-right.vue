@@ -4,7 +4,7 @@
         <div class="banner-title">
           <div class="banner-title-right">
             <div class="animate"></div>
-            <div class='near'>最近打开</div>
+            <div class='near'>{{title}}</div>
           </div>
           <div class="right">
             <span v-text="timeData"></span>
@@ -14,10 +14,24 @@
             </span>
           </div>
         </div>
-        <div class="banner-list">
-          <div>
-            <div class="top">第一级 01.G大调钢琴小曲</div>
-            <div class="bottom">上海音乐学院钢琴考级名师讲解</div>
+        <div class="outBox">
+          <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
+            <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+              <div class="musicInfo">
+                <div class="musicName">{{data.musicName || data.name}}</div>
+                <div class="bookName">{{data.bookName}}</div>
+              </div>
+              <div class="styleType">{{data.styleName[0] || ''}}</div>
+            </div>
+          </div>
+          <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
+            <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+              <div class="musicInfo">
+                <div class="musicName">{{data.musicName || data.name}}</div>
+                <div class="bookName">{{data.bookName}}</div>
+              </div>
+              <div class="styleType">{{data.styleName[0] || ''}}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -26,12 +40,60 @@
 
 <script>
   export default {
+    props: {
+      recentOpenList: {
+        type: Array
+      },
+      collectList: {
+        type: Array
+      },
+      rightType: {
+        type: String
+      },
+      rightSelectedIndex: {
+        type: Number
+      }
+    },
+    watch: {
+      rightSelectedIndex (value, oldValue) {
+        // 控制列表位置
+        let rightData = []
+        this.rightType === 'recentOpen' ? rightData = this.recentOpenList : rightData = this.collectList
+        let height = value * 120 * -1
+        if (value < oldValue) {
+          // up
+          if (value <= 0) {
+            this.rightTop = 0
+          }
+          if (this.rightTop - height < 120) {
+            this.rightTop = height
+          }
+        } else if (value > oldValue) {
+          // down
+          if (value >= 7 && value < rightData.length) {
+            if (parseInt(this.rightTop) - height > 120 * 6) {
+              this.rightTop = (value - 6) * 120 * -1
+            }
+          }
+        }
+      },
+      rightType (value, oldValue) {
+        console.log(value)
+        if (value === 'recentOpen') {
+          this.title = '最近打开'
+        } else if (value === 'myCollect') {
+          this.title = '我的收藏'
+        }
+      }
+    },
     data () {
       return {
         timeData: '22:22',
         mounthData: '4月16日',
         lateMinute: -1,
-        dayData: '三'
+        dayData: '三',
+        rightTop: 0,
+        title: ''
       }
     },
     methods: {
@@ -94,6 +156,11 @@
     },
     created () {
       this.allTime()
+      if (this.rightType === 'recentOpen') {
+        this.title = '最近打开'
+      } else if (this.rightType === 'myCollect') {
+        this.title = '我的收藏'
+      }
     }
   }
 </script>
@@ -123,7 +190,6 @@
 .banner-title {
   display: flex;
   height: 142px;
-  margin-top: 37px;
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
@@ -132,6 +198,7 @@
   }
   .banner-title-right {
     align-items: center;
+
   }
   .right {
     flex-direction: column;
@@ -139,6 +206,7 @@
       font-size: 65px;
       line-height: 48px;
       color: #ffffff;
+      margin-top: 40px;
     }
     & > span:nth-child(2) {
       font-size: 20px;
@@ -146,8 +214,9 @@
       font-weight: 900;
       display: flex;
       justify-content: center;
-      p:nth-child(1) {
-        margin-right: 6px;
+      margin-top: 10px;
+      span:nth-child(1) {
+        margin-right: 10px;
       }
     }
     span {
@@ -157,6 +226,7 @@
   .near {
     font-size: 34px;
     color: #fff;
+    margin-top: 56px;
   }
   .animate {
     margin-right: 50px;
@@ -165,38 +235,74 @@
     background: url(./images/icon_nearly_right.png) no-repeat;
     background-size: 200% 100%;
     animation: bgrepeat 2s linear 0s infinite alternate;
+    margin-top: 56px;
   }
 }
+.outBox {
+  height: 840px;
+  overflow: hidden;
+  .banner-list {
+    align-items: center;
+    .item-list {
+      height: 120px;
+      color: #FFF;
+      position: relative;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.5),rgba(255,255,255,0)) 30 30;
+      &.active {
+        background-image: -webkit-linear-gradient(
+          left,
+          rgba(255, 255, 255, .3),
+          rgba(255, 255, 255, 0.1),
+          rgba(255, 255, 255, 0));
+      }
+      .musicInfo {
+        width: 406px;
+        height: 100%;
+        box-sizing: border-box;
+        padding-top: 30px;
+        position: absolute;
+        left: 106px;
+        .musicName {
+          width: 100%;
+          font-size: 30px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display: inline-block;
+          overflow: hidden;
+        }
+        .bookName {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display: inline-block;
+          opacity: 0.5;
+          font-size: 24px;
+          margin-top: 12px;
+          overflow: hidden;
+        }
+      }
+      .styleType {
+          position: absolute;
+          top:50%;
+          transform: translateY(-50%);
+          right: 40px;
+          opacity: 0.55;
+          font-size: 24px;
+        }
+      &::before {
+        position: absolute;
+        content: "";
+        background: url("./images/icon_music_right.png") no-repeat center;
+        width: 40px;
+        height: 40px;
+        background-size: 100% 100%;
+        left: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
 
-.banner-list {
-  display: flex;
-  height: 120px;
-  background-image: -webkit-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0)
-  );
-  align-items: center;
-  &::before {
-    display: inline-block;
-    content: "";
-    background: url("./images/icon_music_right.png") no-repeat center;
-    width: 40px;
-    height: 40px;
-    background-size: 100% 100%;
-    margin-left: 30px;
-    margin-right: 27px;
-  }
-  .top {
-    font-size: 30px;
-    color: #fff;
-  }
-  .bottom {
-    font-size: 24px;
-    opacity: 0.55;
-    margin-top: 10px;
-    color: #fff;
   }
 }
 </style>

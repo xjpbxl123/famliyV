@@ -2,7 +2,6 @@
   <div class="help-banner"
        :class="{'show-help-banner':showHelpBanner}"
        :style="{'background-image':`url(${helpImg[helpIndex]})`}"
-       @click="()=>buttonActions('help')"
   ></div>
 </template>
 
@@ -27,6 +26,7 @@
     width: 100%;
     height: 100%;
     background: transparent url("./images/help-1.png") no-repeat center;
+    background-size: cover;
   }
 
   .show-help-banner {

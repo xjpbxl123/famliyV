@@ -115,6 +115,7 @@ ul {
   display: flex;
   align-content: center;
   flex-wrap: wrap;
+  margin-top: 10px;
   li {
     display: inline-block;
     width: 20px;
@@ -125,6 +126,7 @@ ul {
 .date-text {
   width: 96%;
   text-align: center;
+  margin-top: 20px;
   li {
     margin-bottom: 20px;
   }
