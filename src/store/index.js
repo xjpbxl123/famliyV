@@ -24,7 +24,9 @@ export default function createStore () {
           hottest: {bookList: []},
           recentUpdate: {bookList: []},
           recentOpen: [],
-          myCollect: []
+          myCollect: [],
+          localRecentOpen: [],
+          localMyCollect: []
         } // 数据本地缓存
       }
     },
@@ -46,7 +48,14 @@ export default function createStore () {
       },
       collectList: state => {
         return state.storage.cache.myCollect
+      },
+      localRecentOpen: state => {
+        return state.storage.cache.localRecentOpen
+      },
+      localMyCollect: state => {
+        return state.storage.cache.localMyCollect
       }
+
     },
     mutations: {
       [SET_STORAGE] (state, data) {

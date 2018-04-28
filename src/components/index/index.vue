@@ -15,9 +15,9 @@
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
       <bannerRight
-      :recentOpenList="recentOpenList"
+      :recentOpenList="isLogin?recentOpenList:localRecentOpen"
       :rightSelectedIndex="rightSelectedIndex"
-      :collectList="collectList"
+      :collectList="isLogin?collectList:localMyCollect"
       :rightType="rightType"/>
     </div>
     <find-button-banner className="button-banner">
@@ -103,6 +103,9 @@
       [KEY66] () {
         this.buttonActions('logout')
       },
+      [KEY66] () {
+        this.buttonActions('logout')
+      },
       banner: {
         [KEY_ANY] (key) {
           console.log(this)
@@ -133,7 +136,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localRecentOpen', 'localMyCollect'])
     },
     watch: {
       /**
@@ -145,6 +148,12 @@
             this.createSession()
           }
           this.getUserStatus()
+        }
+      },
+      isLogin (val) {
+        if (val) {
+          this.getRecentOpenList()
+          this.getCollectList()
         }
       }
     },
@@ -330,7 +339,6 @@
       this.getUserStatus()
       this.getRecentOpenList()
       this.getCollectList()
-      // this.getRightType()
     },
     components: {
       bannerLeft,
