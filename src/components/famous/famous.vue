@@ -45,8 +45,7 @@
       this.$store.dispatch({type: 'famous/getAllArtistsToFamily'})
     },
     computed: {
-      ...mapState({
-      }),
+      ...mapState({}),
       ...mapGetters(['allArtists'])
     },
     methods: {
