@@ -7,7 +7,8 @@ import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
 import home from './modules/home'
-import {nativeStorage} from 'find-sdk'
+import famous from './modules/famous'
+import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 export default function createStore () {
@@ -17,10 +18,10 @@ export default function createStore () {
       storage: {
         isSynced: false, // 数据是否同步完成,注意: 所有涉及到nativeStorage的操作,都应该基于这个标志来判断是否完成
         playCalendar: {}, // 练琴日期
-        userInfo: null, // 用户信息
+        userInfo: {}, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {hottest: {}} // 数据本地缓存
+        cache: {} // 数据本地缓存
       }
     },
     getters: {
@@ -30,7 +31,16 @@ export default function createStore () {
        * @returns {*}
        */
       hotBooks: state => {
-        return state.storage.cache.hottest
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].hottest
+      },
+      allArtists: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].allArtists
+      },
+      famousAuthor: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].famousAuthor
       }
     },
     mutations: {
@@ -82,7 +92,15 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        return dispatch('setNativeStorage', {cache: {...state.cache, ...data}})
+        if (state.storage.isLogin) {
+          let userId = state.storage.userInfo.userId || '-1'
+          let loginCache = state.storage.cache[userId] || {}
+          let cache = {}
+          cache[userId] = {...loginCache, ...data}
+          return dispatch('setNativeStorage', {cache})
+        } else {
+          return dispatch('setNativeStorage', {logOutCache: {...state.storage.cache.logOutCache, ...data}})
+        }
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
@@ -121,7 +139,8 @@ export default function createStore () {
       // Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
       index,
       login,
-      home
+      home,
+      famous
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })
