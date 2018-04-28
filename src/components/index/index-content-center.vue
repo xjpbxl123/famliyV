@@ -52,7 +52,10 @@
   export default {
     props: {
       recentBooks: {
-        type: Object
+        type: Object,
+        default: () => {
+          return {bookList: []}
+        }
       },
       hotBooks: {
         type: Object,

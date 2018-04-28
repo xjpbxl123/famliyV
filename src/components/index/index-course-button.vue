@@ -7,7 +7,6 @@
                  :action="()=>action(button.className)">
       <i :class="`${button.className} icon`"></i>
       <span v-text="button.text"></span>
-      <find-dot/>
     </find-button>
   </div>
 </template>

@@ -84,13 +84,16 @@
 
 .control-button {
   position: absolute;
-  bottom: -4px;
+  bottom: 16px;
   transform: translateX(-50%);
   .iconfont {
     width: 50px;
     height: 50px;
     line-height: 50px;
     border-radius: 16px;
+  }
+  .dot {
+    bottom: -16px;
   }
   &.shutdown {
     left: 1982px;

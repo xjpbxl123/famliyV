@@ -34,6 +34,10 @@ export default function createStore () {
         let userId = state.storage.userInfo.userId || '-1'
         return state.storage.cache[userId] && state.storage.cache[userId].hottest
       },
+      recentBooks: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].recentUpdate
+      },
       allArtists: state => {
         let userId = state.storage.userInfo.userId || '-1'
         return state.storage.cache[userId] && state.storage.cache[userId].allArtists
@@ -41,6 +45,14 @@ export default function createStore () {
       famousAuthor: state => {
         let userId = state.storage.userInfo.userId || '-1'
         return state.storage.cache[userId] && state.storage.cache[userId].famousAuthor
+      },
+      recentOpenList: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].recentOpen
+      },
+      collectList: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].myCollect
       }
 
     },
@@ -94,15 +106,11 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        if (state.storage.isLogin) {
-          let userId = state.storage.userInfo.userId || '-1'
-          let loginCache = state.storage.cache[userId] || {}
-          let cache = {}
-          cache[userId] = {...loginCache, ...data}
-          return dispatch('setNativeStorage', {cache})
-        } else {
-          return dispatch('setNativeStorage', {logOutCache: {...state.storage.cache.logOutCache, ...data}})
-        }
+        let userId = state.storage.userInfo.userId || '-1'
+        let loginCache = state.storage.cache[userId] || {}
+        let cache = {}
+        cache[userId] = {...loginCache, ...data}
+        return dispatch('setNativeStorage', {cache})
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息

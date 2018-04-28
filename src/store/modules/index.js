@@ -127,6 +127,8 @@ export default {
       }).then(res => {
         if (res.header.code === 0) {
           dispatch('setCacheToStorage', {recentOpen: res.body}, {root: true})
+        } else if (res.header.code === 5) {
+          dispatch('setCacheToStorage', {recentOpen: []}, {root: true})
         }
       })
     },
@@ -140,6 +142,8 @@ export default {
       }).then(res => {
         if (res.header.code === 0) {
           dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
+        } else if (res.header.code === 5) {
+          dispatch('setCacheToStorage', {myCollect: []}, {root: true})
         }
       })
     },

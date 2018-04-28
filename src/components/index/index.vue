@@ -15,9 +15,9 @@
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
       <bannerRight
-      :recentOpenList="isLogin?recentOpenList:localRecentOpen"
+      :recentOpenList="recentOpenList"
       :rightSelectedIndex="rightSelectedIndex"
-      :collectList="isLogin?collectList:localMyCollect"
+      :collectList="collectList"
       :rightType="rightType"/>
     </div>
     <find-button-banner className="button-banner">
@@ -136,7 +136,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localRecentOpen', 'localMyCollect'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
     },
     watch: {
       /**
