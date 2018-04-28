@@ -21,7 +21,7 @@ export default function createStore () {
         userInfo: null, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {hottest: {}, allArtists: {}, famousAuthor: {courseSetList: [{authorName: ''}]}} // 数据本地缓存
+        cache: {} // 数据本地缓存
       }
     },
     getters: {
@@ -31,7 +31,8 @@ export default function createStore () {
        * @returns {*}
        */
       hotBooks: state => {
-        return state.storage.cache.hottest
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId].hottest
       },
       allArtists: state => {
         return state.storage.cache.allArtists
@@ -89,7 +90,15 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        return dispatch('setNativeStorage', {cache: {...state.storage.cache, ...data}})
+        if (state.storage.isLogin) {
+          let userId = state.storage.userInfo.userId || '-1'
+          let loginCache = state.storage.cache[userId] || {}
+          let cache = {}
+          cache[userId] = {...loginCache, ...data}
+          return dispatch('setNativeStorage', {cache})
+        } else {
+          return dispatch('setNativeStorage', {logOutCache: {...state.storage.cache.logOutCache, ...data}})
+        }
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
