@@ -59,7 +59,6 @@
           .dispatch('login/login', { userName, password })
           .then(({ header }) => {
             if (!header.code) {
-              return this.$router.push('/')
             }
           })
       },

@@ -11,6 +11,7 @@ import famous from './modules/famous'
 import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
+const LOGIN_OUT_CACHE = 'login_out_cache'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -39,8 +40,7 @@ export default function createStore () {
         return state.storage.cache.renderCache.hottest
       },
       recentBooks: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].recentUpdate
+        return state.storage.cache.renderCache.recentUpdate
       },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists
@@ -49,18 +49,19 @@ export default function createStore () {
         return state.storage.cache.renderCache.famousAuthor
       },
       recentOpenList: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].recentOpen
+        return state.storage.cache.renderCache.recentOpen
       },
       collectList: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].myCollect
+        return state.storage.cache.renderCache.myCollect
       }
 
     },
     mutations: {
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
+      },
+      [LOGIN_OUT_CACHE] (state) {
+        state.storage.cache.renderCache = state.storage.cache['-1']
       }
     },
     actions: {
@@ -108,7 +109,7 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        let userId = state.storage.userInfo.userId || '-1'
+        let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
         let loginCache = state.storage.cache[userId] || {}
         let renderCache = state.storage.cache.renderCache
         let cache = Object.assign({}, state.storage.cache)
@@ -153,6 +154,12 @@ export default function createStore () {
        * */
       logout ({dispatch}) {
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+      },
+      /**
+       * @desc 用户注销时的数据映射view
+       * */
+      logoutCache ({dispatch, commit}) {
+        commit(LOGIN_OUT_CACHE)
       }
     },
     modules: {
