@@ -15,10 +15,10 @@
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
       <bannerRight
-      :recentOpenList="recentOpenList"
-      :rightSelectedIndex="rightSelectedIndex"
-      :collectList="collectList"
-      :rightType="rightType"/>
+        :recentOpenList="recentOpenList"
+        :rightSelectedIndex="rightSelectedIndex"
+        :collectList="collectList"
+        :rightType="rightType"/>
     </div>
     <find-button-banner className="button-banner">
       <user-buttons
@@ -49,11 +49,26 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY, KEY66, KEY78, KEY80, KEY94, KEY97, KEY99, KEY102} from 'vue-find'
+  import {
+    KEY27,
+    KEY108,
+    KEY30,
+    KEY75,
+    KEY73,
+    KEY_ANY,
+    KEY66,
+    KEY78,
+    KEY80,
+    KEY94,
+    KEY97,
+    KEY99,
+    KEY102
+  } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
+
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -292,6 +307,7 @@
             break
           case 'logout':
             // 临时写的用来注销账号
+            this.$store.dispatch('logoutCache', {root: true})
             this.$store.dispatch('logout', {root: true}).then(() => {
               this.$store.dispatch('setSession', '')
             })
@@ -369,12 +385,13 @@
   .button-banner {
     padding: 0 20px;
   }
+
   .footBack {
     position: absolute;
     width: 2682px;
     height: 7%;
     left: 470px;
     bottom: -2px;
-    background:url(./images/bottomBackground.png) no-repeat;
+    background: url(./images/bottomBackground.png) no-repeat;
   }
 </style>
