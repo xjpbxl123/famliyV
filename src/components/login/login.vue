@@ -56,10 +56,11 @@
         userName = userName || env.default_user_name
         password = password || env.default_password
         this.$store
-          .dispatch('login/login', { userName, password })
-          .then(({ header }) => {
-            if (!header.code) {
-            }
+          .dispatch('login/login', {userName, password})
+          .then((data) => {
+            this.$store.dispatch('getUserInfo', {root: true}).then(() => {
+              this.$router.push('/')
+            })
           })
       },
       buttonActions (type) {
