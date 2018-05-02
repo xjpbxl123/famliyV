@@ -54,7 +54,7 @@
 <style lang="scss" scoped>
 .button-banner {
   position: absolute;
-  bottom: 10px;
+  bottom: 16px;
 }
 
 button {
@@ -70,6 +70,9 @@ button {
     line-height: 58px;
     font-size: 36px;
     border-radius: 16px;
+  }
+  .dot {
+    bottom: -16px;
   }
 }
 
