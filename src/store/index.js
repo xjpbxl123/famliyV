@@ -111,7 +111,7 @@ export default function createStore () {
         let userId = state.storage.userInfo.userId || '-1'
         let loginCache = state.storage.cache[userId] || {}
         let renderCache = state.storage.cache.renderCache
-        let cache = {}
+        let cache = Object.assign({}, state.storage.cache)
         cache[userId] = cache['renderCache'] = {...renderCache, ...loginCache, ...data}
         return dispatch('setNativeStorage', {cache})
       },
