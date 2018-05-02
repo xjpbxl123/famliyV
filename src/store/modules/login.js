@@ -14,7 +14,7 @@ export default {
         password: password
       }).then(data => {
         if (data.body.sess) {
-          dispatch('setSession', data.body.sess, {root: true})
+          return dispatch('setSession', data.body.sess, {root: true})
         }
         return data
       })
