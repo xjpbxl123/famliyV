@@ -21,7 +21,12 @@ export default function createStore () {
         userInfo: {}, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
-        cache: {} // 数据本地缓存
+        cache: {
+          renderCache: {
+            famousAuthor: {courseSetList: [{authorName: ''}]},
+            allArtists: {authors: []}
+          }
+        } // 数据本地缓存
       }
     },
     getters: {
@@ -31,16 +36,13 @@ export default function createStore () {
        * @returns {*}
        */
       hotBooks: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].hottest
+        return state.storage.cache.renderCache.hottest
       },
       allArtists: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].allArtists
+        return state.storage.cache.renderCache.allArtists
       },
       famousAuthor: state => {
-        let userId = state.storage.userInfo.userId || '-1'
-        return state.storage.cache[userId] && state.storage.cache[userId].famousAuthor
+        return state.storage.cache.renderCache.famousAuthor
       }
     },
     mutations: {
@@ -92,15 +94,12 @@ export default function createStore () {
        * @param {object} data
        */
       setCacheToStorage ({dispatch, commit, state}, data) {
-        if (state.storage.isLogin) {
-          let userId = state.storage.userInfo.userId || '-1'
-          let loginCache = state.storage.cache[userId] || {}
-          let cache = {}
-          cache[userId] = {...loginCache, ...data}
-          return dispatch('setNativeStorage', {cache})
-        } else {
-          return dispatch('setNativeStorage', {logOutCache: {...state.storage.cache.logOutCache, ...data}})
-        }
+        let userId = state.storage.userInfo.userId || '-1'
+        let loginCache = state.storage.cache[userId] || {}
+        let renderCache = state.storage.cache.renderCache
+        let cache = {}
+        cache[userId] = cache['renderCache'] = {...renderCache, ...loginCache, ...data}
+        return dispatch('setNativeStorage', {cache})
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
