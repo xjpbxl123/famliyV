@@ -83,8 +83,8 @@ span {
 }
 
 .find-dot {
-  background-color: #40baa7;
-  bottom: -18px;
+  background-color: #40baa7 !important;
+  bottom: -20px;
   left: 20px;
 }
 </style>
