@@ -1,5 +1,6 @@
 import http from '../../scripts/http'
 import {getUsedTime} from 'find-sdk'
+
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
@@ -141,6 +142,9 @@ export default {
         tagId
       }).then(res => {
         if (res.header.code === 0) {
+          res.body.forEach(value => {
+            value.desc = value.desc.replace(/[\n\r]/m, '')
+          })
           dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {myCollect: []}, {root: true})
