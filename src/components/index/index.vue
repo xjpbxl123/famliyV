@@ -1,5 +1,6 @@
 <template>
   <div class="banner-wrapper">
+    <statusBar/>
     <div class="banner-content">
       <banner-left
         :isSynced="isSynced"
@@ -7,15 +8,17 @@
         :userInfo="userInfo"
         :sessionId="sessionId"
         :usedTime="usedTime"
-        :setCalendarData="setCalendarData"
-        :dispatch="initializeData"
-      />
+        :setCalendarData="setCalendarData"/>
       <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
-      <bannerRight/>
+      <bannerRight
+      :recentOpenList="recentOpenList"
+      :rightSelectedIndex="rightSelectedIndex"
+      :collectList="collectList"
+      :rightType="rightType"/>
     </div>
     <find-button-banner className="button-banner">
       <user-buttons
@@ -25,7 +28,8 @@
       <course-button :action="buttonActions"/>
       <control-button :action="buttonActions"/>
     </find-button-banner>
-    <find-cover :namespace="namespace">
+    <div class="footBack"></div>
+    <find-cover :activeNamespace="namespace">
       <banner-help
         class="help-banner"
         :showHelpBanner="showHelpBanner"
@@ -45,18 +49,19 @@
   import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
-  import { KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY } from 'vue-find'
+  import {KEY27, KEY108, KEY30, KEY75, KEY73, KEY_ANY, KEY66, KEY78, KEY80, KEY94, KEY97, KEY99, KEY102} from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
-
+  import statusBar from '../common/find-status-bar/find-status-bar'
+  const lefts = [11, 4, 8]
+  const rights = [7, 10, 3]
   export default {
     data () {
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
-        namespace: '',
-        helpImg: [require('./images/help-1.png'), require('./images/help-2.png')],
+        helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1
       }
     },
@@ -73,14 +78,38 @@
       [KEY75] () {
         this.buttonActions('right')
       },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
+      },
+      [KEY94] () {
+        this.buttonActions('changeRightData')
+      },
+      [KEY97] () {
+        this.buttonActions('right-up')
+      },
+      [KEY99] () {
+        this.buttonActions('right-down')
+      },
+      [KEY102] () {
+        this.buttonActions('right-play')
+      },
       [KEY108] () {
+        console.log(this)
         this.buttonActions()
       },
-      [KEY_ANY] (keys) {
+      [KEY66] () {
+        this.buttonActions('logout')
+      },
+      [KEY66] () {
+        this.buttonActions('logout')
       },
       banner: {
-        [KEY27] () {
-          console.log(arguments)
+        [KEY_ANY] (key) {
+          console.log(this)
+          this.clickHelp(key)
         }
       }
     },
@@ -100,10 +129,14 @@
           return state.storage.userInfo
         },
         selectedIndex: state => state.index.selectedIndex,
-        recentBooks: state => state.index.recentBooks,
-        usedTime: state => state.index.usedTime
+        rightSelectedIndex: state => state.index.rightSelectedIndex,
+        usedTime: state => state.index.usedTime,
+        namespace () {
+          return this.showHelpBanner ? 'banner' : ''
+        },
+        rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
     },
     watch: {
       /**
@@ -113,9 +146,14 @@
         if (val) {
           if (!this.isLogin) {
             this.createSession()
-          } else {
-            this.getUserStatus()
           }
+          this.getUserStatus()
+        }
+      },
+      isLogin (val) {
+        if (val) {
+          this.getRecentOpenList()
+          this.getCollectList()
         }
       }
     },
@@ -131,10 +169,21 @@
        * @desc 获取用户状态和用琴时间
        * */
       getUserStatus () {
-        if (this.isSynced && this.isLogin) {
-          this.$store.dispatch('getUserInfo')
+        if (this.isSynced) {
           this.$store.dispatch('index/getPianoUsedTime')
         }
+      },
+      /**
+       * @desc 右侧最近打开数据
+       * */
+      getRecentOpenList () {
+        this.$store.dispatch({type: 'index/getRecentOpenList'})
+      },
+      /**
+       * @desc 右侧我的收藏数据
+       * */
+      getCollectList () {
+        this.$store.dispatch({type: 'index/getCollectList'})
       },
       /**
        * @desc 创建会话ID
@@ -152,18 +201,21 @@
         })
       },
       /**
-       * @desc 显示帮助
+       * @desc 帮助页点击事件
        * */
-      showHelp () {
+      clickHelp (key) {
         if (this.showHelpBanner) {
+          if (key === 108) {
+            this.helpIndex = 0
+            this.showHelpBanner = false
+            return
+          }
           if (this.helpIndex < this.helpImg.length - 1) {
             this.helpIndex = this.helpIndex + 1
           } else {
             this.helpIndex = 0
             this.showHelpBanner = false
           }
-        } else {
-          this.showHelpBanner = true
         }
       },
       go (params) {
@@ -180,26 +232,47 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        // 如果是帮助页
         let activeIndex = this.selectedIndex
+        let recentOpenList = this.recentOpenList
+        let collectList = this.collectList
+        let rightActiveIndex = this.rightSelectedIndex
         switch (type) {
-          case 'help':
-            this.namespace = 'banner'
-            return this.showHelp()
+          case 'help' :
+            this.showHelpBanner = true
+            break
           case 'login':
-            return this.go('/login')
+            if (!this.isLogin) {
+              // 未登录进入登录页
+              return this.go('/login')
+            } else {
+              // 进入账户页
+              console.log('已登录')
+              return
+            }
           case 'settings':
             return false
           case 'left':
-            if (activeIndex === 0) {
+            if (activeIndex <= 0) {
               return
             }
-            activeIndex--
+            let leftIndex = lefts.indexOf(activeIndex)
+            if (leftIndex !== -1) {
+              activeIndex = rights[leftIndex]
+            } else {
+              activeIndex--
+            }
             break
           case 'right':
             if (activeIndex === this.endIndex) {
               return
             }
-            activeIndex++
+            let rightIndex = rights.indexOf(activeIndex)
+            if (rightIndex !== -1) {
+              activeIndex = lefts[rightIndex]
+            } else {
+              activeIndex++
+            }
             break
           case 'up':
             /// 处理热门曲谱的index
@@ -217,8 +290,46 @@
               activeIndex += 4
             }
             break
+          case 'logout':
+            // 临时写的用来注销账号
+            this.$store.dispatch('logout', {root: true}).then(() => {
+              this.$store.dispatch('setSession', '')
+            })
+            break
+          case 'right-up':
+            // 右侧列表up事件
+            rightActiveIndex--
+            rightActiveIndex = Math.max(rightActiveIndex, 0)
+            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            break
+          case 'right-down':
+            // 右侧列表down事件
+            rightActiveIndex++
+            let data = []
+            if (this.rightType === 'myCollect') {
+              data = collectList
+            } else if (this.rightType === 'recentOpen') {
+              data = recentOpenList
+            }
+            rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
+            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            break
+          case 'right-play':
+            // 右侧列表play事件
+            console.log('去播放')
+            break
+          case 'changeRightData':
+            // 切换右侧数据
+            if (this.rightType === 'myCollect') {
+              this.$store.dispatch('index/setRightType', 'recentOpen')
+            } else if (this.rightType === 'recentOpen') {
+              this.$store.dispatch('index/setRightType', 'myCollect')
+            }
+            this.$store.dispatch('index/setRightSelect', 0)
+            break
           default:
-            this.goBack()
+            console.log('108')
+            // this.goBack()
         }
         this.$store.dispatch('index/setSelected', activeIndex)
       }
@@ -226,6 +337,8 @@
     created () {
       this.initializeData()
       this.getUserStatus()
+      this.getRecentOpenList()
+      this.getCollectList()
     },
     components: {
       bannerLeft,
@@ -237,7 +350,8 @@
       controlButton,
       contentCenter,
       bannerRight,
-      bannerHelp
+      bannerHelp,
+      statusBar
     }
   }
 </script>
@@ -254,5 +368,13 @@
 
   .button-banner {
     padding: 0 20px;
+  }
+  .footBack {
+    position: absolute;
+    width: 2682px;
+    height: 7%;
+    left: 470px;
+    bottom: -2px;
+    background:url(./images/bottomBackground.png) no-repeat;
   }
 </style>

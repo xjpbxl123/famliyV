@@ -54,6 +54,18 @@
           {
             icon: 'icon-tone-change',
             className: 'tone-change'
+          },
+          {
+            icon: 'icon-previous',
+            className: 'right-up'
+          },
+          {
+            icon: 'icon-next',
+            className: 'right-down'
+          },
+          {
+            icon: 'icon-video-stop',
+            className: 'right-play'
           }
         ]
       }
@@ -72,13 +84,16 @@
 
 .control-button {
   position: absolute;
-  bottom: -4px;
+  bottom: 16px;
   transform: translateX(-50%);
   .iconfont {
     width: 50px;
     height: 50px;
     line-height: 50px;
     border-radius: 16px;
+  }
+  .dot {
+    bottom: -16px;
   }
   &.shutdown {
     left: 1982px;
@@ -155,6 +170,33 @@
     }
     .icon-tone-change {
       background-image: linear-gradient(-180deg, #fc777e 30%, #e92e66 97%);
+    }
+  }
+  &.right-up {
+    left: 3527px;
+    .dot {
+      background: rgba(0,0,0,0.5);
+    }
+    .icon-previous {
+      background:rgba(0,0,0,0.5);
+    }
+  }
+  &.right-down {
+    left: 3638px;
+    .dot {
+      background: rgba(0,0,0,0.5);
+    }
+    .icon-next {
+      background:rgba(0,0,0,0.5);
+    }
+  }
+  &.right-play {
+    left: 3786px;
+    .dot {
+      background: rgba(0,0,0,0.5);
+    }
+    .icon-video-stop {
+      background:rgba(0,0,0,0.5);
     }
   }
 }

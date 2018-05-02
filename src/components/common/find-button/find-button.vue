@@ -3,7 +3,7 @@
     <slot>
       <i class="iconfont" :class="iconClass"></i>
       <span class="text" v-text="text"></span>
-      <find-dot v-if="requireDot"/>
+      <find-dot/>
     </slot>
   </button>
 </template>
@@ -51,6 +51,7 @@
   .text {
     width: 36px;
     font-size: 18px;
+    padding-bottom: 14px;
   }
 
   }

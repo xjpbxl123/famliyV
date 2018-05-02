@@ -36,7 +36,7 @@
 .voice-wrapper {
   display: flex;
   position: relative;
-  top: 20px;
+  top: 12px;
   left: 1177px;
   border-radius: 16px;
   width: 250px;
@@ -83,8 +83,8 @@ span {
 }
 
 .find-dot {
-  background-color: #40baa7;
-  bottom: -18px;
+  background-color: #40baa7 !important;
+  bottom: -20px;
   left: 20px;
 }
 </style>

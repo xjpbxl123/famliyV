@@ -38,12 +38,25 @@ export default function createStore () {
       hotBooks: state => {
         return state.storage.cache.renderCache.hottest
       },
+      recentBooks: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].recentUpdate
+      },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists
       },
       famousAuthor: state => {
         return state.storage.cache.renderCache.famousAuthor
+      },
+      recentOpenList: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].recentOpen
+      },
+      collectList: state => {
+        let userId = state.storage.userInfo.userId || '-1'
+        return state.storage.cache[userId] && state.storage.cache[userId].myCollect
       }
+
     },
     mutations: {
       [SET_STORAGE] (state, data) {
@@ -63,6 +76,7 @@ export default function createStore () {
           nativeStorage.get('cache')
         ])
           .then(data => {
+            console.log(data, 'oooo')
             commit(SET_STORAGE, {
               playCalendar: data[0].value,
               isLogin: data[1].value,
@@ -124,14 +138,21 @@ export default function createStore () {
        * @desc 获取用户信息
        * */
       getUserInfo ({dispatch}) {
-        return http.post('', {
+        let root = process.env.production.HTTP_ROOT
+        return http.post(root, {
           cmd: 'account.getInfo'
         }).then(({body, header}) => {
           if (!header.code) {
-            return dispatch('setNativeStorage', {userInfo: body})
+            return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
-          return dispatch('setNativeStorage', {userInfo: {}, sessionId: null, isLogin: false})
+          return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
         })
+      },
+      /**
+       * @desc 用户注销
+       * */
+      logout ({dispatch}) {
+        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
       }
     },
     modules: {

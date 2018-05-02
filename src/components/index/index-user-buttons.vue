@@ -31,7 +31,7 @@
             className: 'help'
           },
           {
-            text: this.isLogin ? '注销' : '登录',
+            text: this.isLogin ? '账户' : '登录',
             icon: 'icon-username',
             className: 'login'
           },
