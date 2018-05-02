@@ -62,7 +62,7 @@
 <style lang="scss" scoped>
 .course-buttons {
   position: absolute;
-  bottom: 5px;
+  bottom: -5px;
   transform: translateX(-50%);
   &.score {
     left: 545px;

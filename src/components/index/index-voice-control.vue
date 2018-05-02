@@ -36,7 +36,7 @@
 .voice-wrapper {
   display: flex;
   position: relative;
-  top: 0;
+  top: 12px;
   left: 1177px;
   border-radius: 16px;
   width: 250px;
