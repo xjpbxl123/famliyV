@@ -2,11 +2,6 @@
   <ul>
     <li v-for="(item,index) in differList" :key="index" :class="{active:(index === popularIndex)}">
       <img :src="(index === popularIndex)?item.sleCoverSmall:item.coverSmall" alt="">
-      <!-- <div class="starBox">
-        <span class="differLever">LV.{{index}}</span>
-        <div class="star-full" v-for="(num) in parseInt(item.starNum)" :key="num"></div>
-        <div class="star-empty" v-for="(num) in parseInt(5-item.starNum)" :key="num+7"></div>
-      </div> -->
       <popular-differ-year-eachItem
         :starNum="item.starNum"/>
     </li>

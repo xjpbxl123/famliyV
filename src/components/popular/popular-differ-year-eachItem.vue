@@ -1,6 +1,6 @@
 <template>
     <div class="starBox">
-        <span v-if="starNum" class="differLever">LV.{{index}}</span>
+        <span v-if="starNum" class="differLever">LV.{{starNum}}</span>
         <div v-if="starNum" class="star-full" v-for="(num) in parseInt(starNum)" :key="num"></div>
         <div v-if="starNum" class="star-empty" v-for="(num) in parseInt(5-starNum)" :key="num+7"></div>
         <div v-if="!starNum" class="year">1970年代</div>
