@@ -5,11 +5,7 @@
       <div class="book-content">
         <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
-          <div class="star">
-            <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
-            <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)"
-                 :key="num+7"></div>
-          </div>
+          <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
           <div class="date">{{ data.time | format}}</div>
         </div>
@@ -23,11 +19,7 @@
       <div class="book-content">
         <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
           <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===selectedIndex}"/>
-          <div class="star">
-            <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(data.starNum)" :key="num"></div>
-            <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-data.starNum)"
-                 :key="num+7"></div>
-          </div>
+          <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
           <div class="date">
             <span class="viewIcon iconfont icon-popularity"></span>
@@ -48,7 +40,7 @@
   import contentBook from './index-content-book'
   import contentLine from './index-content-line'
   import { formatDate } from 'scripts/utils/index'
-
+  import findStar from '../common/find-star/find-star'
   export default {
     props: {
       recentBooks: {
@@ -72,7 +64,8 @@
     },
     components: {
       contentBook,
-      contentLine
+      contentLine,
+      findStar
     },
     data () {
       return {
@@ -174,19 +167,11 @@
     margin-right: 8px;
   }
 
-  .icon-star-full:before {
-    content: "\e64b";
-  }
-
   .star-empty {
     font-size: 22px;
     transform: rotateZ(-45deg);
     color: #fff;
     margin-right: 8px;
-  }
-
-  .icon-star-empty:before {
-    content: "\e628";
   }
 
   .slip-line {
