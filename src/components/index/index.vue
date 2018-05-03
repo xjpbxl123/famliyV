@@ -62,7 +62,8 @@
     KEY94,
     KEY97,
     KEY99,
-    KEY102
+    KEY102,
+    KEY44
   } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
@@ -86,6 +87,9 @@
       },
       [KEY30] () {
         this.buttonActions('login')
+      },
+      [KEY44] () {
+        this.buttonActions('popular')
       },
       [KEY73] () {
         this.buttonActions('left')
@@ -267,6 +271,8 @@
             }
           case 'settings':
             return false
+          case 'popular':
+            return this.go('/popular')
           case 'left':
             if (activeIndex <= 0) {
               return

@@ -7,9 +7,9 @@ import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
 import home from './modules/home'
+import popular from './modules/popular'
 import famous from './modules/famous'
 import { nativeStorage } from 'find-sdk'
-
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 export default function createStore () {
@@ -25,7 +25,12 @@ export default function createStore () {
         cache: {
           renderCache: {
             famousAuthor: {courseSetList: [{authorName: ''}]},
-            allArtists: {authors: []}
+            allArtists: {authors: []},
+            hottest: {bookList: []},
+            recentUpdate: {bookList: []},
+            recentOpen: [],
+            myCollect: [],
+            differList: []
           }
         } // 数据本地缓存
       }
@@ -53,6 +58,9 @@ export default function createStore () {
       },
       collectList: state => {
         return state.storage.cache.renderCache.myCollect
+      },
+      differList: state => {
+        return state.storage.cache.renderCache.differList
       }
 
     },
@@ -143,7 +151,8 @@ export default function createStore () {
         return http.post(root, {
           cmd: 'account.getInfo'
         }).then(({body, header}) => {
-          if (!header.code) {
+          if (header.code === 0) {
+            clearInterval(window.interval)
             return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
           return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
@@ -167,7 +176,8 @@ export default function createStore () {
       index,
       login,
       home,
-      famous
+      famous,
+      popular
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

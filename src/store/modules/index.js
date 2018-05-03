@@ -67,18 +67,6 @@ export default {
         if (res.header.code === 0) {
           dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
         }
-        // let body = res.body
-        // let imgArr = body.bookList.map(item => {
-        //   return item.cover
-        // })
-        // storage.getNetworkImageAll(imgArr).then((data) => {
-        //   body.bookList.forEach((item, index) => {
-        //     item.coverSmall = data[index]
-        //   })
-        // }).finally(() => {
-        //   dispatch('setCacheToStorage', {recentUpdate: body}, {root: true})
-        // })
-        // commit(RECENT_BOOKS, res.body)
       })
     },
     /**
@@ -93,18 +81,6 @@ export default {
         if (res.header.code === 0) {
           dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
         }
-        // let body = res.body
-        // let imgArr = body.bookList.map(item => {
-        //   return item.cover
-        // })
-        // storage.getNetworkImageAll(imgArr).then((data) => {
-        //   body.bookList.forEach((item, index) => {
-        //     item.coverSmall = data[index]
-        //   })
-        // }).finally(() => {
-        //   dispatch('setCacheToStorage', {hottest: body}, {root: true})
-        // })
-        // commit(HOT_BOOKS, res.body)
       })
     },
     /**

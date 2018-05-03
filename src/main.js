@@ -11,6 +11,7 @@ import SDK from './scripts/findSDK/src/index'
 import 'normalize.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
+import './styles/button/button.scss'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
