@@ -7,11 +7,12 @@ import home from 'components/home/home-router'
 import login from 'components/login/login-router'
 import famous from 'components/famous/famous-router'
 import famousBook from 'components/famous/famous-book/famousBook-router'
-
+import popular from 'components/popular/popular-router'
 export default [
   index,
   home,
   login,
   famous,
-  famousBook
+  famousBook,
+  popular
 ]

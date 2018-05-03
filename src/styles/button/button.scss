@@ -6,6 +6,7 @@
   bottom: 0;
   button {
     position: absolute;
+    border: 0;
     &.key-27 {
       left: 40px;
       transform: translateX(-50%);
