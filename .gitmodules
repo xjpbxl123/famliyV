@@ -1,8 +1,8 @@
 [submodule "src/plugins/vue-find"]
 	path = src/plugins/vue-find
-	url = git@192.168.200.211:FindVue/vue-find.git
+	url = git@192.168.200.211:FindH5Lib/FindVue.git
 	ignore = dirty
 [submodule "src/scripts/findSDK"]
 	path = src/scripts/findSDK
-	url = git@192.168.200.211:FindVue/find-sdk.git
+	url = git@192.168.200.211:FindH5Lib/FindSDK.git
 	ignore = dirty
