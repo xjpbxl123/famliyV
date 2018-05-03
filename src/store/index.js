@@ -10,7 +10,6 @@ import home from './modules/home'
 import popular from './modules/popular'
 import famous from './modules/famous'
 import {nativeStorage} from 'find-sdk'
-
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 export default function createStore () {

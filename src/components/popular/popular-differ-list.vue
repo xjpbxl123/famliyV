@@ -8,14 +8,14 @@
         <div class="star-empty" v-for="(num) in parseInt(5-item.starNum)" :key="num+7"></div>
       </div> -->
       <popular-differ-year-eachItem
-      :starNum="item.starNum"/>
+        :starNum="item.starNum"/>
     </li>
   </ul>
 </template>
 <script type="text/javascript">
   import popularDifferYearEachItem from './popular-differ-year-eachItem'
-  import {
-  } from 'vue-find'
+  import {} from 'vue-find'
+
   export default {
     name: 'popular-differ-list',
     props: {
@@ -28,13 +28,10 @@
       }
     },
     data () {
-      return {
-      }
+      return {}
     },
-    computed: {
-    },
-    methods: {
-    },
+    computed: {},
+    methods: {},
     created () {
     },
     components: {
@@ -43,30 +40,30 @@
   }
 </script>
 <style lang="scss" scoped>
-    ul {
-        position: absolute;
-        top: 260px;
-        left: 430px;
-        li {
-        width: 404px;
-        height: 574px;
-        margin-right: 115px;
-        &.active {
-            .starBox  {
-            .star-empty{
-                background: url('./images/icon_star_white.png') no-repeat !important;
-                background-size: cover;
-            }
-            .differLever {
-                color: #fff;
-            }
+  ul {
+    position: absolute;
+    top: 260px;
+    left: 430px;
+    li {
+      width: 404px;
+      height: 574px;
+      margin-right: 115px;
+      &.active {
+        .starBox {
+          .star-empty {
+            background: url('./images/icon_star_white.png') no-repeat !important;
+            background-size: cover;
+          }
+          .differLever {
+            color: #fff;
+          }
 
-            }
         }
-        img {
-            width: 100%;
-            height: 100%;
-        }
-        }
+      }
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
+  }
 </style>
