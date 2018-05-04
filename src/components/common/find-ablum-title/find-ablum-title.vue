@@ -4,7 +4,7 @@
     <span class="num"><span>5册</span><span>36篇</span></span>
   </div>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   .find-ablum-title {
     .name {
       font-size: 36px;

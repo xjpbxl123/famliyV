@@ -3,7 +3,7 @@
     <slot></slot>
   </li>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   .famous-book-item {
     position: relative;
     height: 345px;

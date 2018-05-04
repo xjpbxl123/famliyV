@@ -10,7 +10,7 @@
     </ul>
   </div>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   .famous-book-wrap {
     overflow: hidden;
     position: absolute;

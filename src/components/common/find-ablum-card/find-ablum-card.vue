@@ -1,10 +1,10 @@
 <template>
-  <div class='find-ablum-card'>
+  <div class='find-ablum-card' :class="{active:select===index}">
     <findAblumTitle></findAblumTitle>
     <findAlbum :albumArr="ablumArr"></findAlbum>
   </div>
 </template>
-<style lang=scss scope type=text/scss>
+<style lang=scss scoped type=text/scss>
   .find-ablum-card {
     width: 800px;
     height: 330px;
@@ -13,6 +13,11 @@
     background-size: 100% 100%;
     display: flex;
     position: relative;
+    &.active{
+      background: url("./bg_qupuxilie_choose.png") no-repeat;
+      -webkit-background-size: 100% 100%;
+      background-size: 100% 100%;
+    }
     ul {
       position: absolute;
       height: 246px;
@@ -34,11 +39,17 @@
   export default {
     name: 'popular',
     props: {
-      ablumArr: Object
+      ablumArr: Array,
+      index: Number,
+      select: {
+        type: Number,
+        default: () => {
+          return 0
+        }
+      }
     },
     data () {
-      return {
-      }
+      return {}
     },
     components: {
       findAlbum,

@@ -5,7 +5,7 @@
     </li>
   </ul>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   ul {
     width: 360px;
     position: relative;
