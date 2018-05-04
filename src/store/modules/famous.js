@@ -20,7 +20,7 @@ export default {
         ...data,
         cmd: 'artist.getCourseSetByArtistToFamily'
       }).then(({body}) => {
-        body && dispatch('setCacheToStorage', {famousAuthor: body}, {root: true})
+        body && dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
       })
     }
   }

@@ -9,7 +9,8 @@ import login from './modules/login'
 import home from './modules/home'
 import popular from './modules/popular'
 import famous from './modules/famous'
-import {nativeStorage} from 'find-sdk'
+import { nativeStorage } from 'find-sdk'
+
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 export default function createStore () {
@@ -24,7 +25,7 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         cache: {
           renderCache: {
-            famousAuthor: {courseSetList: [{authorName: ''}]},
+            famousAuthor: {},
             allArtists: {authors: []},
             hottest: {bookList: []},
             recentUpdate: {bookList: []},
@@ -49,9 +50,6 @@ export default function createStore () {
       },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists
-      },
-      famousAuthor: state => {
-        return state.storage.cache.renderCache.famousAuthor
       },
       recentOpenList: state => {
         return state.storage.cache.renderCache.recentOpen
@@ -110,19 +108,38 @@ export default function createStore () {
         })
       },
       /**
-       * @desc 将需要缓存的数据写入原生中
+       * @desc 根据用户分层缓存数据
        * @param {Function} dispatch
        * @param {Function} commit
        * @param {Object} state
        * @param {object} data
        */
-      setCacheToStorage ({dispatch, commit, state}, data) {
+      setUserCache ({dispatch, state}, data) {
         let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
         let loginCache = state.storage.cache[userId] || {}
         let renderCache = state.storage.cache.renderCache
         let cache = Object.assign({}, state.storage.cache)
         cache[userId] = cache['renderCache'] = {...renderCache, ...loginCache, ...data}
         return dispatch('setNativeStorage', {cache})
+      },
+      /**
+       * 多数据缓存
+       * @param {Function} dispatch
+       * @param {Object} state
+       * @param {object} data
+       */
+      setCacheToStorage ({dispatch, state}, data) {
+        if (Reflect.has(data, 'id')) {
+          let key = Object.keys(data)[0]
+          let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
+          let loginCache = Object.assign({}, state.storage.cache[userId] && (state.storage.cache[userId][key] || {}))
+          let cache = {}
+          loginCache[data.id] = data[key]
+          cache[key] = loginCache
+          dispatch('setUserCache', cache)
+        } else {
+          dispatch('setUserCache', data)
+        }
       },
       /**
        * @desc 创建会话id,用于生成二维码或者登录之后获取用户信息
