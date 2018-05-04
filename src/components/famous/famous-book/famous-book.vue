@@ -41,19 +41,38 @@
           }
         ],
         select: 0,
-        cover: ''
+        cover: '',
+        authorList: {courseSetList: [{authorName: ''}]}
       }
     },
-    computed: {...mapState({}), ...mapGetters(['famousAuthor'])},
+    computed: {
+      ...mapState({
+        'famousAuthor': function (state) {
+          return state.storage.cache.renderCache.famousAuthor[this.$route.query.authorId] || {courseSetList: [{authorName: ''}]}
+        }
+      }),
+      ...mapGetters([])
+    },
     created () {
       this.getAnthor()
     },
+    // watch: {
+    //   famousAuthor (val) {
+    //     if (val[this.getId()]) {
+    //       this.authorList = val[this.getId()]
+    //     }
+    //   }
+    // },
     methods: {
       getAnthor () {
-        let artistId = JSON.parse(this.$route.query.authorId)
         let cover = this.$route.query.cover
+        let artistId = this.getId()
         this.cover = cover
         this.$store.dispatch('famous/getCourseSetByArtistToFamily', {artistId})
+      },
+      getId () {
+        let artistId = JSON.parse(this.$route.query.authorId)
+        return artistId
       },
       action (type) {
         switch (type) {
