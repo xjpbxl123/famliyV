@@ -31,17 +31,19 @@ export default {
     /**
      * @desc 获取难度列表
      * */
-    getDiffer ({dispatch, commit} = {}) {
-      //   return http.post('', {
-      //     cmd: 'musicScore.getPracticeMusic',
-      //     tagId
-      //   }).then(res => {
-      //     if (res.header.code === 0) {
-      //       dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
-      //     } else if (res.header.code === 5) {
-      //       dispatch('setCacheToStorage', {myCollect: []}, {root: true})
-      //     }
-      //   })
+    getDiffer ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 100}} = {}) {
+      // return http.post('', {
+      //   cmd: 'musicScore.getLevels',
+      //   page,
+      //   tagId
+      // }).then(res => {
+      //   if (res.header.code === 0) {
+      //     debugger
+      //     dispatch('setCacheToStorage', {differList: res.body}, {root: true})
+      //   } else if (res.header.code === 5) {
+      //     dispatch('setCacheToStorage', {differList: []}, {root: true})
+      //   }
+      // })
       let data = [{
         coverSmall: require('../../components/popular/images/pic_01.png'),
         sleCoverSmall: require('../../components/popular/images/pic_01_sle.png'),

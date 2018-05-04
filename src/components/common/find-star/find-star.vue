@@ -28,13 +28,16 @@
       starNum: {
         type: Number,
         default: () => {
-          return '0'
+          return 0
         }
       }
     },
     data () {
       return {}
     },
-    method: {}
+    method: {},
+    created () {
+      console.log(this.starNum, 'starNum')
+    }
   }
 </script>

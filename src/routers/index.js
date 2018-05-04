@@ -9,7 +9,7 @@ import famous from 'components/famous/famous-router'
 import famousBook from 'components/famous/famous-book/famousBook-router'
 import popular from 'components/popular/popular-router'
 import scoreSetList from 'components/scoreSetList/scoreSetList-router'
-
+import scoreList from 'components/scoreList/scoreList-router'
 export default [
   index,
   home,
@@ -17,5 +17,6 @@ export default [
   famous,
   famousBook,
   popular,
-  scoreSetList
+  scoreSetList,
+  scoreList
 ]

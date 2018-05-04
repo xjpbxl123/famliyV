@@ -63,7 +63,8 @@
     KEY97,
     KEY99,
     KEY102,
-    KEY44
+    KEY44,
+    KEY82
   } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
@@ -102,6 +103,9 @@
       },
       [KEY80] () {
         this.buttonActions('down')
+      },
+      [KEY82] () {
+        this.buttonActions('ok')
       },
       [KEY94] () {
         this.buttonActions('changeRightData')
@@ -318,6 +322,8 @@
               this.$store.dispatch('setSession', '')
             })
             break
+          case 'ok':
+            return this.go('/scoreList')
           case 'right-up':
             // 右侧列表up事件
             rightActiveIndex--
