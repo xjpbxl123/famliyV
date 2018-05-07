@@ -2,9 +2,11 @@
  * Created by moersing on 04/05/2017.
  */
 let NODE_ENV = process.env.NODE_ENV
+let isPro = NODE_ENV === 'production'
 let path = require('path')
 let webpack = require('webpack')
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
+let UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 let assetConfig = {
   assertRoot: path.resolve(__dirname, '../dist'),
@@ -22,6 +24,19 @@ const productionPlugins = () => {
   return [
     new webpack.HashedModuleIdsPlugin(),
     new ExtractTextPlugin({filename: assetPath('/style/[name].[chunkhash].css')}),
+    new UglifyJsPlugin({
+      // Compression specific options
+      uglifyOptions: {
+        compress: {
+          // remove warnings
+          warnings: false,
+          // Drop console statements
+          drop_console: true
+        }
+      },
+      sourceMap: !isPro,
+      parallel: true
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: function (module) {
