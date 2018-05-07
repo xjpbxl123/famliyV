@@ -31,7 +31,7 @@ const productionPlugins = () => {
           // remove warnings
           warnings: false,
           // Drop console statements
-          drop_console: true
+          drop_console: isPro
         }
       },
       sourceMap: !isPro,
