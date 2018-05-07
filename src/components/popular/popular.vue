@@ -1,7 +1,7 @@
 <template>
   <div class="popular">
+    <contentLine name="流行经典" class="title"/>
     <div class="differ" v-show="(popularTapIndex===1)">
-      <contentLine name="热门曲谱" class="title"/>
       <popular-differ-list
       :differList="differList"
       :popularIndex="popularIndex"/>
@@ -109,7 +109,7 @@
   }
 </script>
 <style lang="scss" scoped>
-  .differ {
+  .popular {
     .title {
       position: absolute;
       top: 46px;
