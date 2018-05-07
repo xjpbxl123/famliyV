@@ -38,7 +38,10 @@ export default function createStore () {
             scoreList: [],
             differList: [{
               differC: ''
-            }]
+            }],
+            materialList: {
+              body: [], sumPage: 1
+            }
           }
         } // 数据本地缓存
       },

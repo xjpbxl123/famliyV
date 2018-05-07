@@ -5,6 +5,7 @@
       <div class="find-wrap-list" :scroll-top.prop="scrollTop">
         <slot></slot>
       </div>
+      <find-pagination :pagination="pagination" :sumPage="sumPage" :activePage="activePage"/>
     </div>
   </div>
 </template>
@@ -24,6 +25,7 @@
       border-radius: 10px;
       box-shadow: 0 8px 10px rgba(0, 0, 0, .5);
       .find-wrap-list {
+        position: relative;
         height: 100%;
         width: 100%;
         overflow-y: auto;
@@ -33,6 +35,7 @@
 </style>
 <script type="es6">
   import findTitle from 'components/common/find-title/find-title'
+  import findPagination from 'components/common/find-pagination/find-pagination'
 
   export default {
     name: 'find-wrap',
@@ -43,10 +46,22 @@
           return 'find'
         }
       },
-      scrollTop: {
+      activePage: {
         type: Number,
         default: () => {
-          return 0
+          return 1
+        }
+      },
+      sumPage: {
+        type: Number,
+        default: () => {
+          return 1
+        }
+      },
+      pagination: {
+        type: Boolean,
+        default: () => {
+          return true
         }
       }
     },
@@ -61,12 +76,20 @@
           'border-radius': '10px 10px 0 0',
           background: 'rgba(255,255,255,.2)',
           'font-size': '48px'
-        }
+        },
+        scrollTop: 0,
+        defaultScrollTop: 806
+      }
+    },
+    watch: {
+      activePage (val) {
+        this.scrollTop = this.defaultScrollTop * (val - 1)
       }
     },
     method: {},
     components: {
-      findTitle
+      findTitle,
+      findPagination
     }
   }
 </script>

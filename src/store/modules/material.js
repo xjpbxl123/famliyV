@@ -11,7 +11,9 @@ export default {
     getAllBookSets ({dispatch, commit} = {}) {
       http.post('', {cmd: 'musicScore.getAllBookSets'}).then(({body, header}) => {
         if (!header.code) {
-          dispatch('setCacheToStorage', {materialList: body}, {root: true})
+          let sumPage = Math.ceil(body.length / 8)
+          let materialList = {body, sumPage}
+          dispatch('setCacheToStorage', {materialList}, {root: true})
         }
       })
     }

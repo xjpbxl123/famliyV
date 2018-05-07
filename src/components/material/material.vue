@@ -1,6 +1,6 @@
 <template>
-  <find-wrap title="教材系列" :scrollTop="materialScrollTop">
-    <find-ablum-card v-for="(item,index) in materialList" class="find-ablum-card" :key="index"
+  <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
+    <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
                      :index="index" :select="materialSelect"></find-ablum-card>
   </find-wrap>
 </template>
@@ -17,34 +17,58 @@
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
   import {
     KEY75,
-    KEY78
+    KEY78,
+    KEY73,
+    KEY80
   } from 'vue-find'
 
   export default {
     name: 'material',
     data () {
       return {
-        materialScrollTop: 0,
-        materialSelect: 0
+        materialPage: 1,
+        materialSelect: 0,
+        pagination: true
       }
     },
     find: {
-      [KEY75] () {
+      [KEY73] () {
         this.buttonActions('left')
       },
-      [KEY78] () {
+      [KEY75] () {
         this.buttonActions('right')
+      },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
       }
     },
     methods: {
       buttonActions (type) {
+        let activeIndex = this.materialSelect
+        let materialLen = this.materialList.body.length - 1
         switch (type) {
           case 'right':
-            this.materialSelect++
+            materialLen > activeIndex && activeIndex++
             break
           case 'left':
-            this.materialSelect--
+            activeIndex > 0 && activeIndex--
+            break
+          case 'down':
+            if (materialLen >= activeIndex + 4) activeIndex += 4
+            break
+          case 'up':
+            if (activeIndex - 4 >= 0) activeIndex -= 4
+            break
         }
+        this.materialSelect = activeIndex
+      }
+    },
+    watch: {
+      materialSelect (val, oldVal) {
+        this.materialPage = Math.ceil((val + 1) / 8)
       }
     },
     beforeCreate () {
