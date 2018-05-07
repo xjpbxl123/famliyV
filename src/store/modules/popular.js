@@ -2,17 +2,23 @@
 import http from '../../scripts/http'
 
 const POPULAY_INDEX = 'POPULAR_INDEX' /// 流行经典选中index
+const YEAR_INDEX = 'YEAR_INDEX' /// 年代选中index
 const POPULAY_TAP_TYPE = 'POPULAY_TAP_TYPE' /// 流行经典选中index
+
 export default {
   namespaced: true,
   state: {
     popularIndex: 0,
+    yearIndex: 0,
     popularTapIndex: 2
   },
   getters: {},
   mutations: {
     [POPULAY_INDEX] (state, index) {
       state.popularIndex = index
+    },
+    [YEAR_INDEX] (state, index) {
+      state.yearIndex = index
     },
     [POPULAY_TAP_TYPE] (state, num) {
       state.popularTapIndex = num
@@ -24,6 +30,9 @@ export default {
      * */
     setPopularSelected ({commit}, num) {
       commit(POPULAY_INDEX, num)
+    },
+    setYearSelected ({commit}, num) {
+      commit(YEAR_INDEX, num)
     },
     /**
      * @desc 流行经典选中tapIndex
@@ -92,6 +101,41 @@ export default {
           return dispatch('setCacheToStorage', {popularGenre: body}, {root: true})
         }
       })
+      dispatch('setCacheToStorage', {differList: data}, {root: true})
+    },
+    getCenturys ({dispatch, commit}) {
+      // http.post('', {
+      //   cmd: 'musicScore.getCenturys',
+      //   page: {
+      //     offset: 0,
+      //     count: 100
+      //   }
+      // }).then((res) => {
+      //   console.log(res)
+      // })
+      let data = [
+        {
+          name: '1970年代',
+          coverSmall: require('../../components/popular/images/pic_1970.png'),
+          sleCoverSmall: require('../../components/popular/images/pic_1970_sle.png')
+        },
+        {
+          name: '1980年代',
+          coverSmall: require('../../components/popular/images/pic_1980.png'),
+          sleCoverSmall: require('../../components/popular/images/pic_1980_sle.png')
+        },
+        {
+          name: '1990年代',
+          coverSmall: require('../../components/popular/images/pic_1990.png'),
+          sleCoverSmall: require('../../components/popular/images/pic_1990_sle.png')
+        },
+        {
+          name: '2000~2010年代',
+          coverSmall: require('../../components/popular/images/pic_2000.png'),
+          sleCoverSmall: require('../../components/popular/images/pic_2000_sle.png')
+        }
+      ]
+      return dispatch('setCacheToStorage', {yearList: data}, {root: true})
     }
   }
 }

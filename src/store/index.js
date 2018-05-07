@@ -36,6 +36,7 @@ export default function createStore () {
             recentUpdate: {bookList: []},
             recentOpen: [],
             myCollect: [],
+            yearList: [],
             scoreSetList: [],
             scoreList: [],
             differList: [{
@@ -85,6 +86,9 @@ export default function createStore () {
       },
       popularGenre: state => {
         return state.storage.cache.renderCache.popularGenre
+      },
+      yearList: state => {
+        return state.storage.cache.renderCache.yearList
       }
     },
     mutations: {

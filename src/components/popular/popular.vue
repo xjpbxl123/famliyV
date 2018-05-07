@@ -9,7 +9,7 @@
         :differList="differList"
         :popularIndex="popularIndex"/>
     </div>
-    <div class="year" v-show="(popularTapIndex===0)">year</div>
+    <div class="year" v-show="(popularTapIndex===0)" :yearList="yearList" :yearIndex="yearIndex">year</div>
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
@@ -28,6 +28,7 @@
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
+  import popularYearList from './popular-year-list'
   import {
     KEY73,
     KEY75,
@@ -73,13 +74,20 @@
       ...mapState({
         popularIndex: state => state.popular.popularIndex,
         popularTapIndex: state => state.popular.popularTapIndex,
+        yearIndex: state => state.popular.yearIndex,
         popularGenreSelect: state => state.popularGenreSelect
       }),
-      ...mapGetters(['differList', 'popularGenre'])
+      ...mapGetters(['differList', 'popularGenre', 'yearList'])
     },
     methods: {
       getDiffer () {
         return this.$store.dispatch({type: 'popular/getDiffer'})
+      },
+      /**
+       * @desc 获取年代数据
+       */
+      getCenturys () {
+        this.$store.dispatch({type: 'popular/getCenturys'})
       },
       getStyles () {
         return this.$store.dispatch('popular/getStyles')
@@ -127,6 +135,7 @@
     created () {
       this.getDiffer().then(() => {
         this.getStyles()
+        this.getCenturys()
       })
     },
     components: {
@@ -135,7 +144,8 @@
       popularControlButton,
       popularDifferList,
       popularDifferDetail,
-      popularGenre
+      popularGenre,
+      popularYearList
     }
   }
 </script>
