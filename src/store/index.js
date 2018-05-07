@@ -11,7 +11,8 @@ import popular from './modules/popular'
 import famous from './modules/famous'
 import scoreSetList from './modules/scoreSetList'
 import scoreList from './modules/scoreList'
-import {nativeStorage} from 'find-sdk'
+import material from './modules/material'
+import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
@@ -33,12 +34,18 @@ export default function createStore () {
             recentUpdate: {bookList: []},
             recentOpen: [],
             myCollect: [],
-            differList: [],
             scoreSetList: [],
-            scoreList: []
+            scoreList: [],
+            differList: [{
+              differC: ''
+            }],
+            materialList: {
+              body: [], sumPage: 1
+            }
           }
         } // 数据本地缓存
-      }
+      },
+      materialSelect: 0
     },
     getters: {
       /**
@@ -69,6 +76,9 @@ export default function createStore () {
       },
       scoreList: state => {
         return state.storage.cache.renderCache.scoreList
+      },
+      materialList: state => {
+        return state.storage.cache.renderCache.materialList
       }
     },
     mutations: {
@@ -205,7 +215,8 @@ export default function createStore () {
       famous,
       popular,
       scoreSetList,
-      scoreList
+      scoreList,
+      material
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

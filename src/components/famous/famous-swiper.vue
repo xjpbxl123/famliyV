@@ -5,7 +5,7 @@
     </ul>
   </div>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   .famous-wrap {
     height: 100%;
     overflow: hidden;

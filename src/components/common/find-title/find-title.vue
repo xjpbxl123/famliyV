@@ -3,7 +3,7 @@
       {{title}}
     </span>
 </template>
-<style lang="scss" scope type=text/scss>
+<style lang="scss" scoped type=text/scss>
   .find-title {
     padding: 29px 38px 29px 38px;
     position: absolute;

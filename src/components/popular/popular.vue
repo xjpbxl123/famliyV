@@ -3,17 +3,19 @@
     <contentLine name="流行经典" class="title"/>
     <div class="differ" v-show="(popularTapIndex===1)">
       <popular-differ-list
-      :differList="differList"
-      :popularIndex="popularIndex"/>
+        :differList="differList"
+        :popularIndex="popularIndex"/>
       <popular-differ-detail
-      :differList="differList"
-      :popularIndex="popularIndex"/>
+        :differList="differList"
+        :popularIndex="popularIndex"/>
     </div>
-    <div class="year">year</div>
-    <div class="style">style</div>
+    <div class="year" v-show="(popularTapIndex===0)">year</div>
+    <div class="style" v-show="(popularTapIndex===2)">
+      <popular-genre></popular-genre>
+    </div>
     <div class="bottom">
-        <popular-tap-button :popularTapIndex="popularTapIndex"/>
-        <popular-control-button />
+      <popular-tap-button :popularTapIndex="popularTapIndex"/>
+      <popular-control-button/>
     </div>
   </div>
 
@@ -25,6 +27,7 @@
   import popularControlButton from './popular-control-buttons'
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
+  import popularGenre from './popular-genre/popular-genre'
   import {
     KEY73,
     KEY75,
@@ -33,10 +36,10 @@
     KEY49,
     KEY54
   } from 'vue-find'
+
   export default {
     data () {
-      return {
-      }
+      return {}
     },
     find: {
       [KEY46] () {
@@ -92,7 +95,6 @@
             break
           default:
             console.log('108')
-            // this.goBack()
         }
       }
     },
@@ -104,17 +106,19 @@
       popularTapButton,
       popularControlButton,
       popularDifferList,
-      popularDifferDetail
+      popularDifferDetail,
+      popularGenre
     }
   }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" scoped type=text/scss>
   .popular {
-    .title {
-      position: absolute;
-      top: 46px;
-      left: 248px
+    .differ {
+      .title {
+        position: absolute;
+        top: 46px;
+        left: 248px
+      }
     }
-
   }
 </style>
