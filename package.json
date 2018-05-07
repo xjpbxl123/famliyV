@@ -9,10 +9,10 @@
     "dev":
       "cross-env NODE_ENV=development webpack-dev-server --config=./build/webpack.config.js  --hot",
     "build:test":
-      "npm run lint&&cross-env NODE_ENV=buildTest webpack --progress --hide-modules -p --config=./build/webpack.config.js",
+      "npm run lint&&cross-env NODE_ENV=buildTest webpack --progress --hide-modules --config=./build/webpack.config.js",
     "build":
-      "npm run lint&&cross-env NODE_ENV=production webpack --progress --hide-modules -p --config=./build/webpack.config.js",
-    "lint": "eslint --fix --ext js,vue  src build --rule no-debugger:error"
+      "npm run lint&&cross-env NODE_ENV=production webpack --progress --hide-modules --config=./build/webpack.config.js",
+    "lint": "eslint --fix --ext js,vue  src build"
   },
   "lint-staged": {
     "*.{json,scss,css,md}": ["prettier --write", "git add"],
@@ -66,6 +66,7 @@
     "react-dev-utils": "^5.0.0",
     "sass-loader": "^6.0.6",
     "shelljs": "^0.8.1",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^0.5.8",
     "vue-loader": "^14.1.1",
     "vue-style-loader": "^3.0.1",

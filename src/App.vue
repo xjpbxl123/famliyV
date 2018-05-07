@@ -15,7 +15,6 @@
     },
     components: {},
     created () {
-
     }
   }
 </script>

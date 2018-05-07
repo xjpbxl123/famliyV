@@ -80,8 +80,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({'process.env': envConfig.stringify})
   ]
-}
-console.log(path.posix.resolve(__dirname, '../src/components'));
+};
 /// add style loaders for .js files
 [].push.apply(module.exports.module.rules, assist.stylesLoader({sourceMap: shouldUseSourceMap}))
 switch (NODE_ENV) {
