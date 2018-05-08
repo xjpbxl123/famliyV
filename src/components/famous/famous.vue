@@ -57,7 +57,7 @@
             break
           case 'right':
             let sele = this.select + 1
-            this.select = sele >= this.allArtists.authors.length ? this.allArtists.authors.length : sele
+            this.select = sele >= this.allArtists.authors.length ? this.allArtists.authors.length - 1 : sele
             break
         }
       },

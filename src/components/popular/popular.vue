@@ -1,7 +1,7 @@
 <template>
   <div class="popular">
     <contentLine name="流行经典" class="title"/>
-    <div class="year" v-show="(popularTapIndex===0)" >
+    <div class="year" v-show="(popularTapIndex===0)">
       <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
     </div>
     <div class="differ" v-show="(popularTapIndex===1)">
@@ -113,8 +113,49 @@
         }
         this.$store.dispatch('setSelect', {popularGenreSelect: activeIndex}, {root: true})
       },
-      yearButtonAction (type) {},
-      differButtonAction (type) {},
+      yearButtonAction (type) {
+        let yearIndex = this.yearIndex
+        let len = this.yearList.length
+        switch (type) {
+          case 'left':
+            console.log('left')
+            void (yearIndex > 0 ? yearIndex-- : 0)
+            this.$store.dispatch('popular/setYearSelected', yearIndex)
+            break
+          case 'right':
+            console.log('right')
+            void (yearIndex < len - 1 ? yearIndex++ : len - 1)
+            this.$store.dispatch('popular/setYearSelected', yearIndex)
+            break
+          case 'ok':
+            console.log('ok')
+            break
+          default:
+            break
+        }
+      },
+      differButtonAction (type) {
+        let popularIndex = this.popularIndex
+        switch (type) {
+          case 'left' :
+            console.log('left')
+            popularIndex--
+            popularIndex = Math.max(popularIndex, 0)
+            this.$store.dispatch('popular/setPopularSelected', popularIndex)
+            break
+          case 'right':
+            console.log('right')
+            popularIndex++
+            popularIndex = Math.min(popularIndex, 4)
+            this.$store.dispatch('popular/setPopularSelected', popularIndex)
+            break
+          case 'ok':
+            console.log('ok')
+            break
+          default:
+            console.log('108')
+        }
+      },
       /**
        * @desc 按钮组件按钮事件
        * */
@@ -122,52 +163,13 @@
         let popularTapIndex = this.popularTapIndex
         switch (popularTapIndex) {
           case 0:
-            let yearIndex = this.yearIndex
-            let len = this.yearList.length
-            switch (type) {
-              case 'left':
-                console.log('left')
-                void (yearIndex > 0 ? yearIndex-- : 0)
-                this.$store.dispatch('popular/setYearSelected', yearIndex)
-                break
-              case 'right':
-                console.log('right')
-                void (yearIndex < len - 1 ? yearIndex++ : len - 1)
-                this.$store.dispatch('popular/setYearSelected', yearIndex)
-                break
-              case 'ok':
-                console.log('ok')
-                break
-              default:
-                break
-            }
+            this.yearButtonAction(type)
             break
           case 1:
-            let popularIndex = this.popularIndex
-            switch (type) {
-              case 'left' :
-                console.log('left')
-                popularIndex--
-                popularIndex = Math.max(popularIndex, 0)
-                this.$store.dispatch('popular/setPopularSelected', popularIndex)
-                break
-              case 'right':
-                console.log('right')
-                popularIndex++
-                popularIndex = Math.min(popularIndex, 4)
-                this.$store.dispatch('popular/setPopularSelected', popularIndex)
-                break
-              case 'ok':
-                console.log('ok')
-                break
-              default:
-                console.log('108')
-            }
+            this.differButtonAction(type)
             break
           case 2:
-
-            break
-          default:
+            this.stylesButtonAction(type)
             break
         }
       }
