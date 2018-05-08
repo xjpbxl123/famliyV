@@ -6,8 +6,8 @@
         <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div>
       </div>
       <div class="text">本次难度包括：</div>
-      <div class="text">节奏型：{{differList[popularIndex].differC}}</div>
-      <div class="text">技巧：{{differList[popularIndex].skills}}</div>
+      <div class="text">节奏型：{{differList[popularIndex]&&differList[popularIndex].differC}}</div>
+      <div class="text">技巧：{{differList[popularIndex]&&differList[popularIndex].skills}}</div>
   </div>
 </template>
 <script type="text/javascript">

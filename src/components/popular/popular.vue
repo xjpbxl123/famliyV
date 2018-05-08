@@ -1,6 +1,9 @@
 <template>
   <div class="popular">
     <contentLine name="流行经典" class="title"/>
+    <div class="year" v-show="(popularTapIndex===0)" >
+      <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
+    </div>
     <div class="differ" v-show="(popularTapIndex===1)">
       <popular-differ-list
         :differList="differList"
@@ -9,7 +12,6 @@
         :differList="differList"
         :popularIndex="popularIndex"/>
     </div>
-    <div class="year" v-show="(popularTapIndex===0)">year</div>
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
@@ -28,6 +30,7 @@
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
+  import popularYearList from './popular-year-list'
   import {
     KEY73,
     KEY75,
@@ -73,13 +76,20 @@
       ...mapState({
         popularIndex: state => state.popular.popularIndex,
         popularTapIndex: state => state.popular.popularTapIndex,
+        yearIndex: state => state.popular.yearIndex,
         popularGenreSelect: state => state.popularGenreSelect
       }),
-      ...mapGetters(['differList', 'popularGenre'])
+      ...mapGetters(['differList', 'popularGenre', 'yearList'])
     },
     methods: {
       getDiffer () {
         return this.$store.dispatch({type: 'popular/getDiffer'})
+      },
+      /**
+       * @desc 获取年代数据
+       */
+      getCenturys () {
+        this.$store.dispatch({type: 'popular/getCenturys'})
       },
       getStyles () {
         return this.$store.dispatch('popular/getStyles')
@@ -112,13 +122,52 @@
         let popularTapIndex = this.popularTapIndex
         switch (popularTapIndex) {
           case 0:
-            this.yearButtonAction(type)
+            let yearIndex = this.yearIndex
+            let len = this.yearList.length
+            switch (type) {
+              case 'left':
+                console.log('left')
+                void (yearIndex > 0 ? yearIndex-- : 0)
+                this.$store.dispatch('popular/setYearSelected', yearIndex)
+                break
+              case 'right':
+                console.log('right')
+                void (yearIndex < len - 1 ? yearIndex++ : len - 1)
+                this.$store.dispatch('popular/setYearSelected', yearIndex)
+                break
+              case 'ok':
+                console.log('ok')
+                break
+              default:
+                break
+            }
             break
           case 1:
-            this.differButtonAction(type)
+            let popularIndex = this.popularIndex
+            switch (type) {
+              case 'left' :
+                console.log('left')
+                popularIndex--
+                popularIndex = Math.max(popularIndex, 0)
+                this.$store.dispatch('popular/setPopularSelected', popularIndex)
+                break
+              case 'right':
+                console.log('right')
+                popularIndex++
+                popularIndex = Math.min(popularIndex, 4)
+                this.$store.dispatch('popular/setPopularSelected', popularIndex)
+                break
+              case 'ok':
+                console.log('ok')
+                break
+              default:
+                console.log('108')
+            }
             break
           case 2:
-            this.stylesButtonAction(type)
+
+            break
+          default:
             break
         }
       }
@@ -127,6 +176,7 @@
     created () {
       this.getDiffer().then(() => {
         this.getStyles()
+        this.getCenturys()
       })
     },
     components: {
@@ -135,7 +185,8 @@
       popularControlButton,
       popularDifferList,
       popularDifferDetail,
-      popularGenre
+      popularGenre,
+      popularYearList
     }
   }
 </script>
