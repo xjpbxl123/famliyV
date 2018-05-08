@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 3 versions",
+            "not ie <=8"
+          ]
+        }
+      }
+    ],
+    "stage-2",
+    "stage-3"
+  ]
+}
