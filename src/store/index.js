@@ -16,6 +16,8 @@ import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
+const SET_SELECT = 'set_select'
+const DEL_SELECT = 'del_select'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -45,7 +47,8 @@ export default function createStore () {
           }
         } // 数据本地缓存
       },
-      materialSelect: 0
+      materialSelect: 0,
+      popularGenreSelect: 0
     },
     getters: {
       /**
@@ -79,6 +82,9 @@ export default function createStore () {
       },
       materialList: state => {
         return state.storage.cache.renderCache.materialList
+      },
+      popularGenre: state => {
+        return state.storage.cache.renderCache.popularGenre
       }
     },
     mutations: {
@@ -87,6 +93,12 @@ export default function createStore () {
       },
       [LOGIN_OUT_CACHE] (state) {
         state.storage.cache.renderCache = state.storage.cache['-1']
+      },
+      [SET_SELECT] (state, data) {
+        Object.assign(state, data)
+      },
+      [DEL_SELECT] (state, key) {
+        Reflect.deleteProperty(state, key)
       }
     },
     actions: {
@@ -155,9 +167,9 @@ export default function createStore () {
           let cache = {}
           loginCache[data.id] = data[key]
           cache[key] = loginCache
-          dispatch('setUserCache', cache)
+          return dispatch('setUserCache', cache)
         } else {
-          dispatch('setUserCache', data)
+          return dispatch('setUserCache', data)
         }
       },
       /**
@@ -205,6 +217,15 @@ export default function createStore () {
        * */
       logoutCache ({dispatch, commit}) {
         commit(LOGIN_OUT_CACHE)
+      },
+      setSelect ({commit, state}, data) {
+        commit(SET_SELECT, data)
+      },
+      delSelect ({commit, state}, key) {
+        if (!Reflect.has(state, key)) {
+          console.error(`${key} is Can't find`)
+        }
+        commit(SET_SELECT, key)
       }
     },
     modules: {

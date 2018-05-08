@@ -62,4 +62,5 @@ import findWrap from 'components/common/find-wrap/find-wrap'
 2.slide 切换是 scroll 值在更改
 
 ###author
+
 胡建伟

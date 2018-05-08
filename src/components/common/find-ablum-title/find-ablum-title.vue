@@ -1,7 +1,7 @@
 <template>
   <div class="find-ablum-title">
-    <p class="name">约翰·汤普森</p>
-    <span class="num"><span>5册</span><span>36篇</span></span>
+    <p class="name" v-text="name"></p>
+    <span class="num"><span></span><span></span></span>
   </div>
 </template>
 <style lang="scss" scoped type=text/scss>
@@ -9,6 +9,7 @@
     .name {
       font-size: 36px;
       color: #334866;
+      width: 300px;
       border-bottom: 1px solid #597399;
       padding-bottom: 10px;
       margin: 0;
@@ -27,6 +28,9 @@
 <script type="es6">
   export default {
     name: 'find-ablum-title',
+    props: {
+      name: String
+    },
     data () {
       return {}
     }

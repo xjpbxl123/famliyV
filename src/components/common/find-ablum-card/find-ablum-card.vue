@@ -1,7 +1,7 @@
 <template>
   <div class='find-ablum-card' :class="{active:select===index}">
-    <findAblumTitle></findAblumTitle>
-    <findAlbum :albumArr="ablumArr"></findAlbum>
+    <findAblumTitle :name="ablum.name"></findAblumTitle>
+    <findAlbum :albumArr="ablum.bookCover"></findAlbum>
   </div>
 </template>
 <style lang=scss scoped type=text/scss>
@@ -39,7 +39,7 @@
   export default {
     name: 'popular',
     props: {
-      ablumArr: Array,
+      ablum: Object,
       index: Number,
       select: {
         type: Number,

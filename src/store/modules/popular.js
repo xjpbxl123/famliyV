@@ -1,4 +1,6 @@
 // import http from '../../scripts/http'
+import http from '../../scripts/http'
+
 const POPULAY_INDEX = 'POPULAR_INDEX' /// 流行经典选中index
 const POPULAY_TAP_TYPE = 'POPULAY_TAP_TYPE' /// 流行经典选中index
 export default {
@@ -7,6 +9,7 @@ export default {
     popularIndex: 0,
     popularTapIndex: 2
   },
+  getters: {},
   mutations: {
     [POPULAY_INDEX] (state, index) {
       state.popularIndex = index
@@ -75,7 +78,20 @@ export default {
         skills: '单手演奏/hehheh',
         starNum: 5
       }]
-      dispatch('setCacheToStorage', {differList: data}, {root: true})
+      return dispatch('setCacheToStorage', {differList: data}, {root: true})
+    },
+    getStyles ({dispatch}, page = {'offset': 0, 'count': 100}) {
+      http.post('', {
+        cmd: 'musicScore.getStyles',
+        page
+      }).then(({header, body}) => {
+        if (!header.code) {
+          if (body.length > 8) {
+            body = body.slice(0, 8)
+          }
+          return dispatch('setCacheToStorage', {popularGenre: body}, {root: true})
+        }
+      })
     }
   }
 }
