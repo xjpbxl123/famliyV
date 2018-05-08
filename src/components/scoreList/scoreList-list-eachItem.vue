@@ -2,7 +2,7 @@
     <li :class="{active:(index===scoreIndex)}">
         <span class="price sales" v-if="music.sales">限时免费</span>
         <span class="price free" v-else-if="music.isFree">免费</span>
-        <span class="price hasBought" v-else-if="music.have.base">已购买</span>
+        <span class="price hasBought" v-else-if="music.have&&music.have.base">已购买</span>
         <span class="price buy" v-else>{{music.payment}}</span>
         <span class="video iconfont icon-with-video"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
@@ -20,7 +20,7 @@
       },
       data: {
         type: Object,
-        default: () => ({})
+        default: () => ({name: '', have: {base: 0}})
       },
       scoreIndex: {
         type: Number,
@@ -72,6 +72,7 @@
       border-bottom-width: 1px;
       transition: all 0.2s ease;
       box-sizing: border-box;
+      display: block;
       border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,0)) 30 30;
       &.active {
         background-image: -webkit-linear-gradient(left,rgba(255,255,255,0.1),rgba(255,255,255,0.2),rgba(255,255,255,0.3));
@@ -86,12 +87,12 @@
           line-height: 30px;
           font-size: 16px;
           color: #fff;
-          background: #d9a122;
+          background: #33b759;
           border-radius: 16px;
           font-weight: 600;
           text-align: center;
           &.buy {
-              background: #33b759;
+              background: #d9a122;
           }
       }
       .video {

@@ -3,6 +3,13 @@
       <div class="left"></div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
+      <div class="bottom">
+        <scoreList-control-buttons :collect="collect"/>
+      </div>
+      <find-cover :activeNamespace="namespace" v-if="chooseType">
+        <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>
+        <scoreList-choose-button :files="files" />
+      </find-cover>
   </div>
 
 </template>
@@ -10,18 +17,49 @@
   import { mapState, mapGetters } from 'vuex'
   import scoreListCenter from './scoreList-center'
   import scoreListMusicDetail from './scoreList-music-detail'
+  import scoreListControlButtons from './scoreList-control-buttons'
+  import scoreListChooseType from './scoreList-choose-type'
+  import scoreListChooseButton from './scoreList-choose-button'
   import {
+    KEY67,
+    KEY68,
+    KEY69,
+    KEY70,
+    KEY71,
+    KEY72,
     KEY73,
+    KEY74,
     KEY75,
+    KEY76,
+    KEY77,
     KEY78,
+    KEY79,
     KEY80,
+    KEY81,
     KEY82,
+    KEY83,
+    KEY84,
     KEY85,
-    KEY90
+    KEY86,
+    KEY88,
+    KEY89,
+    KEY90,
+    KEY91,
+    KEY92,
+    KEY93,
+    KEY95,
+    KEY96,
+    KEY97,
+    KEY98,
+    KEY99,
+    KEY100,
+    KEY108
   } from 'vue-find'
   export default {
     data () {
       return {
+        chooseType: false,
+        bannerType: ''
       }
     },
     find: {
@@ -43,40 +81,188 @@
       [KEY85] () {
         this.buttonActions('collect')
       },
-      [KEY90] () {
-        this.buttonActions('favo')
+      [KEY108] () {
+        this.buttonActions('back')
+      },
+      chooseType: {
+        [KEY67] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY68] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY69] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY70] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY71] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY72] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY74] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY75] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY76] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY77] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY78] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY79] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY81] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY82] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY83] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY84] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY85] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY86] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY88] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY89] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY90] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY91] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY92] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY93] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY95] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY96] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY97] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY98] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY99] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY100] () {
+          this.buttonActions('choseType', 5)
+        },
+        [KEY108] () {
+          console.log('108')
+          this.chooseType = false
+        }
       }
     },
     computed: {
       ...mapState({
-        scoreIndex: state => state.scoreList.scoreIndex
+        scoreIndex: state => state.scoreList.scoreIndex,
+        scoreList: function (state) {
+          return state.storage.cache.renderCache.scoreList[this.$route.query.bookId] || [{name: ''}]
+        }
       }),
-      ...mapGetters(['scoreList'])
+      ...mapGetters([]),
+      files () {
+        return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].files : []
+      },
+      collect () {
+        return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+      },
+      namespace () {
+        return this.chooseType ? 'chooseType' : ''
+      }
     },
     methods: {
       getScoreList () {
-        this.$store.dispatch({type: 'scoreList/getScoreList', bookId: 334})
+        let bookId = this.$route.query.bookId
+        console.log(this.$route.query.bookId)
+        this.$store.dispatch({type: 'scoreList/getScoreList', bookId: bookId})
       },
       /**
        * @desc 按钮组件按钮事件
        * */
-      buttonActions (type) {
-        let popularIndex = this.popularIndex
+      buttonActions (type, typeNum) {
+        let scoreIndex = this.scoreIndex
+        let scoreList = this.scoreList
         switch (type) {
-          case 'left' :
-            console.log('left')
-            popularIndex--
-            popularIndex = Math.max(popularIndex, 0)
-            this.$store.dispatch('popular/setPopularSelected', popularIndex)
+          case 'prevPage' :
+            console.log('prevPage')
+            scoreIndex -= 10
+            scoreIndex = Math.max(scoreIndex, 0)
+            this.$store.dispatch('scoreList/setScoreListIndex', scoreIndex)
             break
-          case 'right':
-            console.log('right')
-            popularIndex++
-            popularIndex = Math.min(popularIndex, 4)
-            this.$store.dispatch('popular/setPopularSelected', popularIndex)
+          case 'nextPage':
+            console.log('nextPage')
+            scoreIndex += 10
+            scoreIndex = Math.min(scoreIndex, scoreList.length - 1)
+            this.$store.dispatch('scoreList/setScoreListIndex', scoreIndex)
+            break
+          case 'up' :
+            console.log('up')
+            scoreIndex--
+            scoreIndex = Math.max(scoreIndex, 0)
+            this.$store.dispatch('scoreList/setScoreListIndex', scoreIndex)
+            break
+          case 'down':
+            console.log('down')
+            scoreIndex++
+            scoreIndex = Math.min(scoreIndex, scoreList.length - 1)
+            this.$store.dispatch('scoreList/setScoreListIndex', scoreIndex)
             break
           case 'ok':
             console.log('ok')
+            if (scoreList[scoreIndex].files.length > 1) {
+              this.chooseType = true
+              this.bannerType = 'play'
+              return
+            }
+            console.log('直接去播放曲谱')
+            break
+          case 'back':
+            this.$router.push('/')
+            break
+          case 'collect':
+            this.chooseType = true
+            this.bannerType = 'collect'
+            break
+          case 'choseType':
+            console.log('choseType')
+            if (this.files.length >= typeNum) {
+              if (this.bannerType === 'collect') {
+                console.log('按版本收藏')
+                console.log(typeNum)
+                // this.$store.dispatch('scoreList/addToCollect')
+              } else {
+                console.log('去播放')
+              }
+            }
             break
           default:
             console.log('108')
@@ -89,8 +275,10 @@
     },
     components: {
       scoreListCenter,
-      scoreListMusicDetail
-
+      scoreListMusicDetail,
+      scoreListControlButtons,
+      scoreListChooseType,
+      scoreListChooseButton
     }
   }
 </script>

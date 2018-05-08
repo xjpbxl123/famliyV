@@ -7,14 +7,14 @@ export default {
   },
   mutations: {
     [SCORE_INDEX] (state, index) {
-      state.popularIndex = index
+      state.scoreIndex = index
     }
   },
   actions: {
     /**
      * @desc 流行经典选中index
      * */
-    setScoreIndex ({commit}, num) {
+    setScoreListIndex ({commit}, num) {
       commit(SCORE_INDEX, num)
     },
     /**
@@ -27,9 +27,23 @@ export default {
         bookId
       }).then(res => {
         if (res.header.code === 0) {
-          dispatch('setCacheToStorage', {scoreList: res.body.musicList}, {root: true})
-        } else if (res.header.code === 5) {
-          dispatch('setCacheToStorage', {scoreList: []}, {root: true})
+          let musicIdList = []
+          res.body.musicList.forEach((item) => {
+            item.files.forEach((value, index) => {
+              musicIdList.push(value.musicId)
+            })
+            http.post('', {
+              cmd: 'musicScore.checkPracticeMusic',
+              musicList: musicIdList
+            }).then(res => {
+              item.collect = res.body.musicList
+              console.log(res, '收藏结果')
+            })
+            console.log(musicIdList)
+            musicIdList = []
+          })
+          console.log(res.body.musicList, 'musicList')
+          res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: bookId}, {root: true})
         }
       })
     }
