@@ -102,7 +102,8 @@ export default function createStore () {
         Object.assign(state, data)
       },
       [DEL_SELECT] (state, key) {
-        Reflect.deleteProperty(state, key)
+        // Reflect.deleteProperty(state, key)
+        state[key] = 0
       }
     },
     actions: {
@@ -226,10 +227,13 @@ export default function createStore () {
         commit(SET_SELECT, data)
       },
       delSelect ({commit, state}, key) {
-        if (!Reflect.has(state, key)) {
-          console.error(`${key} is Can't find`)
-        }
-        commit(SET_SELECT, key)
+        return new Promise((resolve) => {
+          if (!Reflect.has(state, key)) {
+            console.error(`${key} is Can't find`)
+          }
+          commit(DEL_SELECT, key)
+          resolve(key)
+        })
       }
     },
     modules: {

@@ -1,7 +1,8 @@
 <template>
   <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
     <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
-                     :index="index" :select="materialSelect" :ablum="item" :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
+                     :index="index" :select="materialSelect" :ablum="item"
+                     :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
   </find-wrap>
 </template>
 <style lang="scss" scoped type=text/scss>
@@ -9,7 +10,7 @@
     margin-right: 30px;
     float: left;
     margin-bottom: 30px;
-    &.maxMargin{
+    &.maxMargin {
       margin-right: 90px;
     }
   }
@@ -22,7 +23,9 @@
     KEY75,
     KEY78,
     KEY73,
-    KEY80
+    KEY80,
+    KEY82,
+    KEY108
   } from 'vue-find'
 
   export default {
@@ -45,6 +48,12 @@
       },
       [KEY80] () {
         this.buttonActions('down')
+      },
+      [KEY82] () {
+        this.buttonActions('ok')
+      },
+      [KEY108] () {
+        this.buttonActions('back')
       }
     },
     methods: {
@@ -64,6 +73,13 @@
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
+          case 'ok':
+            return this.$router.push('/popular')
+          case 'back':
+            this.$router.back(-1)
+            return setTimeout(() => {
+              this.$store.dispatch('delSelect', 'materialSelect', {root: true})
+            }, 200)
         }
         this.$store.dispatch('setSelect', {materialSelect: activeIndex}, {root: true})
       }
@@ -75,9 +91,6 @@
     },
     beforeCreate () {
       this.$store.dispatch('material/getAllBookSets')
-    },
-    beforeDestroy () {
-      this.$store.dispatch('delSelect', 'materialSelect')
     },
     components: {
       findWrap,

@@ -101,7 +101,6 @@ export default {
           return dispatch('setCacheToStorage', {popularGenre: body}, {root: true})
         }
       })
-      dispatch('setCacheToStorage', {differList: data}, {root: true})
     },
     getCenturys ({dispatch, commit}) {
       // http.post('', {

@@ -36,10 +36,10 @@
         if (wag < 0) {
           this.famousItemStyle.width = 617 - 57 * (-wag)
         }
-        if (wag > 0) {
+        if (wag > 1) {
           this.famousItemStyle.width = 617 - 57 * (wag)
         }
-        if (wag === 0) {
+        if (wag === 0 || wag === 1) {
           this.famousItemStyle.width = 617
         }
       }
@@ -69,11 +69,14 @@
       position: absolute;
       z-index: 10;
     }
-    &.active:after {
-      border: 6px solid #00A2E7;
-      img {
-        display: block;
-        height: 100%;
+    &.active{
+      margin-right: 15px;
+      &:after {
+        border: 6px solid #00A2E7;
+        img {
+          display: block;
+          height: 100%;
+        }
       }
     }
     .image {
