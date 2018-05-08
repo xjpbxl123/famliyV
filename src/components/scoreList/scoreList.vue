@@ -210,7 +210,8 @@
        * */
       buttonActions (type, typeNum) {
         let scoreIndex = this.scoreIndex
-        let scoreList = this.scoreList
+        let scoreList = [].concat(JSON.parse(JSON.stringify(this.scoreList)))
+        let files = this.files
         switch (type) {
           case 'prevPage' :
             console.log('prevPage')
@@ -254,11 +255,13 @@
             break
           case 'choseType':
             console.log('choseType')
-            if (this.files.length >= typeNum) {
+            let bookId = scoreList[scoreIndex].bookId
+            let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
+            let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+            if (files.length >= typeNum) {
               if (this.bannerType === 'collect') {
-                console.log('按版本收藏')
-                console.log(typeNum)
-                // this.$store.dispatch('scoreList/addToCollect')
+                scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
+                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
                 console.log('去播放')
               }

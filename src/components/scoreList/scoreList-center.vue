@@ -4,7 +4,7 @@
         <score-list-list-eachItem v-for="(item,index) in scoreList"
         :key="index"
         :index="index"
-        :data="item"
+        :data="item || {}"
         :scoreIndex="scoreIndex"/>
     </ul>
   </div>

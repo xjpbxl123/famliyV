@@ -37,6 +37,7 @@
     created () {
       let value = this.data
       this.music = this.data
+      console.log(this.data)
       let payment = ''
       let subParts = {base: '0', accompany: '0', video: '0'}
       if (!value.isFree && !value.sales && !value.have.base) {
