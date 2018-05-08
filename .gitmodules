@@ -2,7 +2,9 @@
 	path = src/plugins/vue-find
 	url = git@192.168.200.211:FindH5Lib/FindVue.git
 	ignore = dirty
+	branch = develop
 [submodule "src/scripts/findSDK"]
 	path = src/scripts/findSDK
 	url = git@192.168.200.211:FindH5Lib/FindSDK.git
 	ignore = dirty
+	branch = develop
