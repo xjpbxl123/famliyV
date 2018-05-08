@@ -1,13 +1,11 @@
-const path = require('path')
 const fs = require('fs-extra')
-const webpack = require('webpack')
 const config = require('./config')
 const helper = require('./helper')
 const pluginConfigPath = helper.rootNode(config.pluginConfigPath)
 const outputPath = helper.rootNode(config.pluginFilePath)
 
 const toLowerCamelCase = key => {
-  return key.replace(/\b\-\w+\b/g, function (word) {
+  return key.replace(/\b\w+\b/g, function (word) {
     return word.substring(1, 2).toUpperCase() + word.substring(2)
   })
 }

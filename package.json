@@ -6,17 +6,20 @@
   "private": true,
   "scripts": {
     "precommit": "lint-staged",
-    "dev":
-      "cross-env NODE_ENV=development webpack-dev-server --config=./build/webpack.config.js  --hot",
-    "build:test":
-      "npm run lint&&cross-env NODE_ENV=buildTest webpack --progress --hide-modules --config=./build/webpack.config.js",
-    "build":
-      "npm run lint&&cross-env NODE_ENV=production webpack --progress --hide-modules --config=./build/webpack.config.js",
-    "lint": "eslint --fix --ext js,vue  src build --rule no-debugger:error"
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config=./build/webpack.config.js  --hot",
+    "build:test": "npm run lint&&cross-env NODE_ENV=buildTest webpack --progress --hide-modules --config=./build/webpack.config.js",
+    "build": "npm run lint&&cross-env NODE_ENV=production webpack --progress --hide-modules --config=./build/webpack.config.js",
+    "lint": "eslint  --fix --ext js,vue  src build --ignore-pattern '!.eslintrc.js' --rule 'no-debugger:error'"
   },
   "lint-staged": {
-    "*.{json,scss,css,md}": ["prettier --write", "git add"],
-    "*.{js,vue}": ["npm run lint", "git add"]
+    "*.{json,scss,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,vue}": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -77,7 +80,9 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {
-        "browsers": ["last 4 Chrome versions"]
+        "browsers": [
+          "last 4 Chrome versions"
+        ]
       }
     }
   }

@@ -23,8 +23,8 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'vue/no-parsing-error':  [2, {
-      "x-invalid-end-tag": false
+    'vue/no-parsing-error': [2, {
+      'x-invalid-end-tag': false
     }],
     // allow async-await
     'generator-star-spacing': 'off',
