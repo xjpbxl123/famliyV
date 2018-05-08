@@ -1,7 +1,7 @@
 <template>
   <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
     <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
-                     :index="index" :select="materialSelect"></find-ablum-card>
+                     :index="index" :select="materialSelect" :ablum="item" :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
   </find-wrap>
 </template>
 <style lang="scss" scoped type=text/scss>
@@ -9,6 +9,9 @@
     margin-right: 30px;
     float: left;
     margin-bottom: 30px;
+    &.maxMargin{
+      margin-right: 90px;
+    }
   }
 </style>
 <script type="es6">
@@ -27,7 +30,6 @@
     data () {
       return {
         materialPage: 1,
-        materialSelect: 0,
         pagination: true
       }
     },
@@ -63,7 +65,7 @@
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
         }
-        this.materialSelect = activeIndex
+        this.$store.dispatch('setSelect', {materialSelect: activeIndex}, {root: true})
       }
     },
     watch: {
@@ -74,12 +76,19 @@
     beforeCreate () {
       this.$store.dispatch('material/getAllBookSets')
     },
+    beforeDestroy () {
+      this.$store.dispatch('delSelect', 'materialSelect')
+    },
     components: {
       findWrap,
       findAblumCard
     },
     computed: {
-      ...mapState({}),
+      ...mapState({
+        materialSelect: (state) => {
+          return state.materialSelect
+        }
+      }),
       ...mapGetters(['materialList'])
     }
   }
