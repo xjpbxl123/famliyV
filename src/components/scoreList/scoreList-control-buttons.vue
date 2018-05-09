@@ -48,17 +48,18 @@
         ]
       }
     },
-    components: {
+    watch: {
+      collect: function (value) {
+        let icon = 'icon-favorite'
+        value.forEach((item) => {
+          if (item.collection === 1) {
+            icon = 'icon-favorite-on'
+          }
+        })
+        this.controlsButtons[5].icon = icon
+      }
     },
-    created () {
-      console.log(this.collect, 'collect')
-      this.collect.forEach((item) => {
-        if (item.collection === 1) {
-          this.controlsButtons[5].icon = 'icon-favorite-on'
-        } else {
-          this.controlsButtons[5].icon = 'icon-favorite'
-        }
-      })
+    components: {
     }
   }
 </script>
