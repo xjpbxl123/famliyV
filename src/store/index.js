@@ -18,6 +18,7 @@ const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
+const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -35,6 +36,7 @@ export default function createStore () {
             hottest: {bookList: []},
             recentUpdate: {bookList: []},
             recentOpen: [],
+            popularGenre: [],
             myCollect: [],
             yearList: [],
             scoreSetList: [],
@@ -104,6 +106,14 @@ export default function createStore () {
       [DEL_SELECT] (state, key) {
         // Reflect.deleteProperty(state, key)
         state[key] = 0
+      },
+      [SET_CACHE_STORAGE] (state, data) {
+        let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
+        let key = Object.keys(data)[0]
+        let loginCache = state.storage.cache[userId] || {}
+        loginCache[key] = data[key]
+        state.storage.cache.renderCache[key] = data[key]
+        state.storage.cache[userId] = loginCache
       }
     },
     actions: {
@@ -125,7 +135,6 @@ export default function createStore () {
               isLogin: data[1] ? JSON.parse(data[1].value) : false,
               userInfo: data[2] ? JSON.parse(data[2].value) : {},
               sessionId: data[3] ? JSON.parse(data[3].value) : null,
-              cache: Object.assign({}, state.storage.cache, data[4] ? JSON.parse(data[4].value) : {}),
               isSynced: true
             })
           })
@@ -153,10 +162,9 @@ export default function createStore () {
       setUserCache ({dispatch, state}, data) {
         let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
         let loginCache = state.storage.cache[userId] || {}
-        let renderCache = state.storage.cache.renderCache
         let cache = Object.assign({}, state.storage.cache)
-        cache[userId] = cache['renderCache'] = {...renderCache, ...loginCache, ...data}
-        return dispatch('setNativeStorage', {cache})
+        cache[userId] = {...loginCache, ...data}
+        return dispatch('setCacheStorage', {cache})
       },
       /**
        * 多数据缓存
@@ -164,7 +172,7 @@ export default function createStore () {
        * @param {Object} state
        * @param {object} data
        */
-      setCacheToStorage ({dispatch, state}, data) {
+      setCacheToStorage ({dispatch, state, commit}, data) {
         if (Reflect.has(data, 'id')) {
           let key = Object.keys(data)[0]
           let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
@@ -172,9 +180,9 @@ export default function createStore () {
           let cache = {}
           loginCache[data.id] = data[key]
           cache[key] = loginCache
-          return dispatch('setUserCache', cache)
+          commit(SET_CACHE_STORAGE, cache)
         } else {
-          return dispatch('setUserCache', data)
+          commit(SET_CACHE_STORAGE, data)
         }
       },
       /**
