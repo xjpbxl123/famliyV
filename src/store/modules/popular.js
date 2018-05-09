@@ -44,50 +44,46 @@ export default {
      * @desc 获取难度列表
      * */
     getDiffer ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 100}} = {}) {
-      // return http.post('', {
-      //   cmd: 'musicScore.getLevels',
-      //   page,
-      //   tagId
-      // }).then(res => {
-      //   if (res.header.code === 0) {
-      //     debugger
-      //     dispatch('setCacheToStorage', {differList: res.body}, {root: true})
-      //   } else if (res.header.code === 5) {
-      //     dispatch('setCacheToStorage', {differList: []}, {root: true})
-      //   }
-      // })
-      let data = [{
-        coverSmall: require('../../components/popular/images/pic_01.png'),
-        sleCoverSmall: require('../../components/popular/images/pic_01_sle.png'),
-        differC: '全音符/lala/idnex/idf、idnex、的九分裤来得及发动机首付款见识到了房间里的',
-        skills: '单手演奏/hehidf、idnex、的九分裤来得及发动机首付款见识到了房间里的heh',
-        starNum: 1
-      }, {
-        coverSmall: require('../../components/popular/images/pic_02.png'),
-        sleCoverSmall: require('../../components/popular/images/pic_02_sle.png'),
-        differC: '全音符/lala/idnex/idfidf、idnex、的九分裤来得及发动机首付款见识到了房间里的',
-        skills: '单手演奏/heidf、idnex、的九分裤来得及发动机首付款见识到了房间里的hheh',
-        starNum: 2
-      }, {
-        coverSmall: require('../../components/popular/images/pic_03.png'),
-        sleCoverSmall: require('../../components/popular/images/pic_03_sle.png'),
-        differC: '全音符/lala/idneidf、idnex、的九分裤来得及发动机首付款见识到了房间里的x/idf',
-        skills: '单手演奏/hehidf、idnex、的九分裤来得及发动机首付款见识到了房间里的heh',
-        starNum: 3
-      }, {
-        coverSmall: require('../../components/popular/images/pic_04.png'),
-        sleCoverSmall: require('../../components/popular/images/pic_04_sle.png'),
-        differC: '全音符/lala/idneidf、idnex、的九分裤来得及发动机首付款见识到了房间里的x/idf',
-        skills: '单手演奏/hehheidf、idnex、的九分裤来得及发动机首付款见识到了房间里的h',
-        starNum: 4
-      }, {
-        coverSmall: require('../../components/popular/images/pic_05.png'),
-        sleCoverSmall: require('../../components/popular/images/pic_05_sle.png'),
-        differC: '全音符/lala/idnex/idf',
-        skills: '单手演奏/hehheh',
-        starNum: 5
-      }]
-      return dispatch('setCacheToStorage', {differList: data}, {root: true})
+      return http.post('', {
+        cmd: 'musicScore.getLevels',
+        page,
+        tagId
+      }).then(res => {
+        if (res.header.code === 0) {
+          let data = [{
+            coverSmall: require('../../components/popular/images/pic_01.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_01_sle.png'),
+            differC: res.body[0].desc,
+            skills: res.body[0].desc,
+            starNum: 1
+          }, {
+            coverSmall: require('../../components/popular/images/pic_02.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_02_sle.png'),
+            differC: res.body[1].desc,
+            skills: res.body[1].desc,
+            starNum: 2
+          }, {
+            coverSmall: require('../../components/popular/images/pic_03.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_03_sle.png'),
+            differC: res.body[2].desc,
+            skills: res.body[2].desc,
+            starNum: 3
+          }, {
+            coverSmall: require('../../components/popular/images/pic_04.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_04_sle.png'),
+            differC: res.body[3].desc,
+            skills: res.body[3].desc,
+            starNum: 4
+          }, {
+            coverSmall: require('../../components/popular/images/pic_05.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_05_sle.png'),
+            differC: res.body[4].desc,
+            skills: res.body[4].desc,
+            starNum: 5
+          }]
+          dispatch('setCacheToStorage', {differList: data}, {root: true})
+        }
+      })
     },
     getStyles ({dispatch}, page = {'offset': 0, 'count': 100}) {
       return http.post('', {
@@ -103,15 +99,15 @@ export default {
       })
     },
     getCenturys ({dispatch, commit}) {
-      // http.post('', {
-      //   cmd: 'musicScore.getCenturys',
-      //   page: {
-      //     offset: 0,
-      //     count: 100
-      //   }
-      // }).then((res) => {
-      //   console.log(res)
-      // })
+      http.post('', {
+        cmd: 'musicScore.getCenturys',
+        page: {
+          offset: 0,
+          count: 100
+        }
+      }).then((res) => {
+        console.log(res)
+      })
       let data = [
         {
           name: '1970年代',
