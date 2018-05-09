@@ -4,7 +4,9 @@
 import URL from 'url-parse'
 
 /**
- * @desc 获取weex bundle 绝对路径
+ * @desc 获取weex bundle 绝对路径,如果使用 weex debug src ,路径是http://{yourIp}/weex, 如果是 npm run start ,则是 http://{yourIp}/dist
+ * @example
+ * getBundleRoot() => http://{yourIp}/{dist|weex}
  * */
 export const getBundleRoot = () => {
   let fileName = /(\w+).\w+$/

@@ -270,9 +270,7 @@
       },
       openWeex () {
         this.showWeex = false
-        this.$refs.weex.openUrl(
-          'http://10.0.1.7:8081/dist/index.js'
-        )
+        this.$refs.weex.openUrl(`${process.env.weex_url}dist/index.js`)
       },
       /**
        * @desc 按钮组件按钮事件
