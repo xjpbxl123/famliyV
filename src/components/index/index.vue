@@ -1,6 +1,6 @@
 <template>
   <div class="banner-wrapper">
-    <statusBar/>
+    <!--<statusBar/>-->
     <div class="banner-content">
       <banner-left
         :isSynced="isSynced"
@@ -69,7 +69,7 @@
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
-  import statusBar from '../common/find-status-bar/find-status-bar'
+  // import statusBar from '../common/find-status-bar/find-status-bar'
 
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
@@ -357,7 +357,6 @@
             break
           default:
             console.log('108')
-            // this.goBack()
         }
         this.$store.dispatch('index/setSelected', activeIndex)
       }
@@ -378,8 +377,8 @@
       controlButton,
       contentCenter,
       bannerRight,
-      bannerHelp,
-      statusBar
+      bannerHelp
+      // statusBar
     }
   }
 </script>

@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createStore from './store'
-import {isObject, isFunction} from 'lodash'
+import { isObject } from 'lodash'
 import VueFind from 'vue-find'
 import find from './scripts/find'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import routes from './routers'
-import SDK from './scripts/findSDK/src/index'
 import 'normalize.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
@@ -18,25 +17,20 @@ Vue.use(Vuex)
 let vue = {}
 
 /// In find client
-let app = window.app
-let isInFindClient = isObject(app) && isFunction(app.setup)
+let fp = window.fp
+let isInFindClient = isObject(fp)
 if (isInFindClient) {
-  let sdk = new SDK()
-  sdk.init().then(() => {
-    setTimeout(() => {
-      Vue.use(VueFind)
-      const store = createStore()
-      const router = new VueRouter({routes})
-      vue = new Vue({
-        el: '#app',
-        render: h => h(App),
-        router,
-        store: store,
-        find: new VueFind(find)
-      })
-      store.dispatch('initialNativeStorage')
-    }, 1000)
+  Vue.use(VueFind)
+  const store = createStore()
+  const router = new VueRouter({routes})
+  vue = new Vue({
+    el: '#app',
+    render: h => h(App),
+    router,
+    store: store,
+    find: new VueFind(find)
   })
+  store.dispatch('initialNativeStorage')
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
 }

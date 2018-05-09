@@ -57,7 +57,9 @@ body {
   font-family: "pingfang SC", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url("./images/bg_background2.png") 0 0 / cover no-repeat;
+  #app {
+    background: url("./images/bg_background2.png") 0 0 / cover no-repeat;
+  }
 }
 
 h1,
