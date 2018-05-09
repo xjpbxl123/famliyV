@@ -6,8 +6,9 @@
             <li v-for="(item,index) in files" :key="index"
             :class="{type1:(item.styleName==='钢琴独奏版'),
                     type2:(item.styleName==='钢琴弹唱版'),
-                    type3:(item.styleName==='器乐合奏版'),
-                    type4:(item.styleName==='器乐弹唱版')}">
+                    type3:(item.styleName==='初练版'),
+                    type4:(item.styleName==='器乐合奏版'),
+                    type5:(item.styleName==='器乐弹唱版')}">
               <span class="styleName">{{item.styleName}}</span>
               <span class="styleDesc">{{item.styleDescription}}</span>
               <span class="collectIcon iconfont" :class="collect[index].collection?'icon-favorite-on':'icon-favorite'" v-if="bannerType==='collect'"></span>
@@ -110,6 +111,10 @@
           }
           &.type4 {
             background: url('./images/type4.png');
+            background-size: cover;
+          }
+          &.type5 {
+            background: url('./images/type5.png');
             background-size: cover;
           }
           .styleName {

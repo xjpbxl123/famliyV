@@ -193,9 +193,14 @@
         scoreIndex: state => state.scoreList.scoreIndex,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList[this.$route.query.bookId] || [{name: ''}]
+        },
+        isLogin (state) {
+          let {storage} = state
+          console.log(storage.isLogin, 'isLogin')
+          return storage.isLogin
         }
       }),
-      ...mapGetters([]),
+      ...mapGetters(['localCollect']),
       files () {
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].files : []
       },
@@ -219,6 +224,7 @@
         let scoreIndex = this.scoreIndex
         let scoreList = [].concat(JSON.parse(JSON.stringify(this.scoreList)))
         let files = this.files
+        let isLogin = this.isLogin
         switch (type) {
           case 'prevPage' :
             console.log('prevPage')
@@ -255,6 +261,7 @@
             break
           case 'back':
             this.$router.push('/')
+            this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
             this.chooseType = true
@@ -263,10 +270,44 @@
           case 'choseType':
             console.log('choseType')
             let bookId = scoreList[scoreIndex].bookId
-            let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
-            let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+            let hasCollected = false
             if (files.length >= typeNum) {
+              let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
+              let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+              let musicData = {
+                musicId: musicId,
+                bookId: bookId,
+                musicName: scoreList[scoreIndex].name,
+                bookName: scoreList[scoreIndex].bookName,
+                time: new Date().getTime(),
+                styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName]
+              }
               if (this.bannerType === 'collect') {
+                if (!isLogin) {
+                  // 没有登录的话 操作本地收藏列表
+                  let localCollect = [].concat(JSON.parse(JSON.stringify(this.localCollect)))
+                  let localCollectIndex = 0
+                  localCollect.forEach((value, index) => {
+                    if (value.musicId === files[typeNum - 1].musicId) {
+                      hasCollected = true
+                      localCollectIndex = index
+                    }
+                  })
+                  if (!scoreList[scoreIndex].collect[typeNum - 1].collection) {
+                    // 加入收藏
+                    localCollect.push(musicData)
+                  } else {
+                    if (hasCollected) {
+                      // 删除这一条数据
+                      localCollect.splice(localCollectIndex, 1)
+                    }
+                  }
+                  this.$store.dispatch('index/localCollectList', localCollect).then(() => {
+                    scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
+                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId})
+                  })
+                  return
+                }
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                 this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
@@ -276,6 +317,7 @@
             break
           default:
             console.log('108')
+
             // this.goBack()
         }
       }

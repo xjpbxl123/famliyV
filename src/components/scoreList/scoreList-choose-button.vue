@@ -4,8 +4,9 @@
         :key="index"
         :class="{type1:(item.styleName==='钢琴独奏版'),
         type2:(item.styleName==='钢琴弹唱版'),
-        type3:(item.styleName==='器乐合奏版'),
-        type4:(item.styleName==='器乐弹唱版')}">
+        type3:(item.styleName==='初练版'),
+        type4:(item.styleName==='器乐合奏版'),
+        type5:(item.styleName==='器乐弹唱版')}">
        </div>
    </div>
 
@@ -56,6 +57,10 @@
         }
         &.type4 {
           background: url('./images/type4_b.png');
+          background-size: cover;
+        }
+        &.type5 {
+          background: url('./images/type5_b.png');
           background-size: cover;
         }
     }

@@ -309,7 +309,15 @@
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
+<<<<<<< HEAD
         this.$store.dispatch({type: 'index/getCollectList'})
+=======
+        if (this.isLogin) {
+          return this.$store.dispatch({type: 'index/getCollectList'})
+        } else {
+          return this.$store.dispatch('index/localCollectList', this.localCollect || [])
+        }
+>>>>>>> findh5-60
       },
       /**
        * @desc 创建会话ID

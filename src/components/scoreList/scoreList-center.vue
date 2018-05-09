@@ -4,7 +4,7 @@
         <score-list-list-eachItem v-for="(item,index) in scoreList"
         :key="index"
         :index="index"
-        :data="item || {}"
+        :item="item"
         :scoreIndex="scoreIndex"/>
     </ul>
   </div>
@@ -58,6 +58,9 @@
           }
           this.rightTop = height
         }
+      },
+      scoreList: (val, old) => {
+        console.log(val, 'scoreListscoreListscoreListscoreList')
       }
     },
     data () {
