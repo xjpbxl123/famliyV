@@ -38,7 +38,6 @@ const config = {
     devtool: 'eval-source-map',
     env: JSON.stringify('development'),
     // Navigator jumping root path
-    WEEX_ROOT: JSON.stringify('weex'),
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
@@ -79,9 +78,8 @@ const config = {
     productionSourceMap: true,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
-    cssSourceMap: true,
+    cssSourceMap: true
     // Navigator jumping root path
-    WEEX_ROOT: JSON.stringify('dist')
   },
   nodeConfiguration: {
     global: false,

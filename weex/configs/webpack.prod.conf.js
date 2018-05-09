@@ -94,8 +94,7 @@ const webConfig = webpackMerge(commonConfig[0], {
      */
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': config.prod.env,
-        'WEEX_ROOT': config.prod.WEEX_ROOT
+        'NODE_ENV': config.prod.env
       }
     }),
     /*

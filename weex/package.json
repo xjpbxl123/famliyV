@@ -14,7 +14,7 @@
     "clean:ios": "rimraf ./release/ios",
     "clean:android": "rimraf ./release/android",
     "dev": "webpack --env.NODE_ENV=common --progress --watch",
-    "lint": "eslint --ext .js,.vue src  --fix",
+    "lint": "eslint --ext .js,.vue src  --fix --rule 'no-debugger:error'",
     "serve": "webpack-dev-server --env.NODE_ENV=development --progress",
     "ios": "weex run ios",
     "web": "npm run serve",
@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "phantom-limb": "0.0.1",
+    "url-parse": "^1.4.0",
     "vue": "^2.5.11",
     "weex-vue-render": "^0.12.26"
   },

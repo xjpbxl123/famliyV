@@ -1,8 +1,6 @@
 const commonConfig = require('./webpack.common.conf')
 const webpackMerge = require('webpack-merge') // used to merge webpack configs
 // tools
-const chalk = require('chalk')
-const path = require('path')
 const webpack = require('webpack')
 const ip = require('ip').address()
 
@@ -95,8 +93,7 @@ const devWebpackConfig = webpackMerge(commonConfig[0], {
      */
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': config.dev.env,
-        'WEEX_ROOT': config.dev.WEEX_ROOT
+        'NODE_ENV': config.dev.env
       }
     }),
     /*

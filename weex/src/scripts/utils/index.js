@@ -1,11 +1,14 @@
 /**
  * Create by Moersing on 2018/5/8
  */
+import URL from 'url-parse'
+
 /**
- * @desc 获取weex 域名
+ * @desc 获取weex bundle 绝对路径
  * */
 export const getBundleRoot = () => {
-  let reg = /^http(s)?:\/\/(.*?)\//
-  console.log(weex)
-  return reg.exec(weex.config.bundleUrl)[0] + process.env.WEEX_ROOT
+  let fileName = /(\w+).\w+$/
+  let bundleUrl = weex.config.bundleUrl
+  let url = new URL(bundleUrl)
+  return url.origin + url.pathname.replace(fileName.exec(url.pathname)[0], '')
 }

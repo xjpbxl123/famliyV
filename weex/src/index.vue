@@ -23,7 +23,6 @@
     },
     methods: {
       goTo () {
-        console.log(`${getBundleRoot()}/components/HelloWorld.js`)
         navigator.push({url: `${getBundleRoot()}/components/HelloWorld.js`})
       }
     }

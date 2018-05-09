@@ -6154,7 +6154,7 @@ url-parse@1.0.x:
     querystringify "0.0.x"
     requires-port "1.0.x"
 
-url-parse@^1.1.8:
+url-parse@^1.1.8, url-parse@^1.4.0:
   version "1.4.0"
   resolved "http://registry.npm.taobao.org/url-parse/download/url-parse-1.4.0.tgz#6bfdaad60098c7fe06f623e42b22de62de0d3d75"
   dependencies:
