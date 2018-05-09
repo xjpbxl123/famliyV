@@ -16,14 +16,8 @@
       "eslint  --fix --ext js,vue  src build --ignore-pattern '!.eslintrc.js' --rule 'no-debugger:error'"
   },
   "lint-staged": {
-    "*.{json,scss,css,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,vue}": [
-      "npm run lint",
-      "git add"
-    ]
+    "*.{json,scss,css,md}": ["prettier --write", "git add"],
+    "*.{js,vue}": ["npm run lint", "git add"]
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -86,9 +80,7 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {
-        "browsers": [
-          "last 4 Chrome versions"
-        ]
+        "browsers": ["last 4 Chrome versions"]
       }
     }
   }
