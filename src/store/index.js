@@ -121,11 +121,11 @@ export default function createStore () {
           .then(data => {
             console.log(data, 'oooo')
             commit(SET_STORAGE, {
-              playCalendar: data[0] ? data[0].value : {},
-              isLogin: data[1] ? data[1].value : false,
-              userInfo: data[2] ? data[2].value : {},
-              sessionId: data[3] ? data[3].value : null,
-              cache: Object.assign({}, state.storage.cache, data[4] ? data[4].value : {}),
+              playCalendar: data[0] ? JSON.parse(data[0].value) : {},
+              isLogin: data[1] ? JSON.parse(data[1].value) : false,
+              userInfo: data[2] ? JSON.parse(data[2].value) : {},
+              sessionId: data[3] ? JSON.parse(data[3].value) : null,
+              cache: Object.assign({}, state.storage.cache, data[4] ? JSON.parse(data[4].value) : {}),
               isSynced: true
             })
           })
@@ -136,7 +136,7 @@ export default function createStore () {
       setNativeStorage ({commit}, data) {
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.setDefault(key, value).then(() => {
+            nativeStorage.setDefault(key, {value: JSON.stringify(value)}).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
