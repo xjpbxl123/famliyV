@@ -114,13 +114,14 @@ export default function createStore () {
         loginCache[key] = data[key]
         state.storage.cache.renderCache[key] = data[key]
         state.storage.cache[userId] = loginCache
+        nativeStorage.setDefault('cache', {value: JSON.stringify(state.storage.cache)})
       }
     },
     actions: {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, state}) {
+      initialNativeStorage ({commit}) {
         return Promise.all([
           nativeStorage.getDefault('playCalendar'),
           nativeStorage.getDefault('isLogin'),
