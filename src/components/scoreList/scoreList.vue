@@ -1,6 +1,10 @@
 <template>
   <div class="scoreList">
-      <div class="left"></div>
+      <div class="left">
+        <!-- <scoreListLeftDeffer></scoreListLeftDeffer> -->
+        <!-- <scoreListLeftYear></scoreListLeftYear> -->
+        <scoreListLeftStyle></scoreListLeftStyle>
+      </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <div class="bottom">
@@ -20,6 +24,9 @@
   import scoreListControlButtons from './scoreList-control-buttons'
   import scoreListChooseType from './scoreList-choose-type'
   import scoreListChooseButton from './scoreList-choose-button'
+  import scoreListLeftDeffer from './scoreList-left-deffer'
+  import scoreListLeftYear from './scoreList-left-year'
+  import scoreListLeftStyle from './scoreList-left-style'
   import {
     KEY67,
     KEY68,
@@ -281,7 +288,10 @@
       scoreListMusicDetail,
       scoreListControlButtons,
       scoreListChooseType,
-      scoreListChooseButton
+      scoreListChooseButton,
+      scoreListLeftDeffer,
+      scoreListLeftYear,
+      scoreListLeftStyle
     }
   }
 </script>
