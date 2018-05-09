@@ -20,14 +20,14 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <find-button-banner className="button-banner">
-      <user-buttons
-        :isLogin="isLogin"
-        :action="buttonActions"/>
-      <voice-control/>
-      <course-button :action="buttonActions"/>
-      <control-button :action="buttonActions"/>
-    </find-button-banner>
+    <!--<find-button-banner className="button-banner">-->
+    <!--<user-buttons-->
+    <!--:isLogin="isLogin"-->
+    <!--:action="buttonActions"/>-->
+    <!--<voice-control/>-->
+    <!--<course-button :action="buttonActions"/>-->
+    <!--<control-button :action="buttonActions"/>-->
+    <!--</find-button-banner>-->
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -38,10 +38,15 @@
         :buttonActions="buttonActions"
       />
     </find-cover>
+    <toolbar>
+      <icon-item id="300" pianoKey="27" icon="0xe671" longClick="true"/>
+      <icon-item id="301" pianoKey="56" icon="0xe671" longClick="true"/>
+    </toolbar>
+    <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
 </template>
 <script type="text/javascript">
-  import { mapState, mapGetters } from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -79,12 +84,25 @@
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
-        endIndex: -1
+        endIndex: -1,
+        weexStyle: {
+          left: 400,
+          top: 100,
+          width: 2000,
+          height: 900,
+          backgroundColor: '#30000000',
+          float: 'left',
+          borderWidth: 3,
+          borderColor: '#ef9900',
+          borderRadius: 20
+        },
+        showWeex: true
       }
     },
     find: {
       [KEY27] () {
-        this.buttonActions('help')
+        this.openWeex()
+        // this.buttonActions('help')
       },
       [KEY30] () {
         this.buttonActions('login')
@@ -131,7 +149,6 @@
       },
       banner: {
         [KEY_ANY] (key) {
-          console.log(this)
           this.clickHelp(key)
         }
       }
@@ -250,6 +267,12 @@
         } else {
           this.$router.back()
         }
+      },
+      openWeex () {
+        this.showWeex = false
+        this.$refs.weex.openUrl(
+          'http://10.0.1.7:8081/dist/index.js'
+        )
       },
       /**
        * @desc 按钮组件按钮事件
@@ -386,10 +409,10 @@
   .banner-wrapper {
     height: 100%;
 
-  .banner-content {
-    display: flex;
-    height: 100%;
-  }
+    .banner-content {
+      display: flex;
+      height: 100%;
+    }
 
   }
 

@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createStore from './store'
-import { isObject } from 'lodash'
+import {isObject} from 'lodash'
 import VueFind from 'vue-find'
+import vueFindHybrid from 'vue-find-hybrid'
 import find from './scripts/find'
 import App from './App.vue'
 import VueRouter from 'vue-router'
@@ -12,6 +13,7 @@ import './styles/iconfont/iconfont.css'
 import './main.scss'
 import './styles/button/button.scss'
 
+Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 let vue = {}
