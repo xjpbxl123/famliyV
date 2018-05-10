@@ -462,9 +462,9 @@
             rightActiveIndex++
             let data = []
             if (this.rightType === 'myCollect') {
-              data = collectList
+              data = this.isLogin ? collectList : this.localCollect
             } else if (this.rightType === 'recentOpen') {
-              data = recentOpenList
+              data = this.isLogin ? recentOpenList : this.localRecent
             }
             rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
