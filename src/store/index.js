@@ -109,10 +109,11 @@ export default function createStore () {
       },
       [SET_CACHE_STORAGE] (state, data) {
         let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-        let key = Object.keys(data)[0]
-        let loginCache = state.storage.cache[userId] || {}
-        loginCache[key] = data[key]
-        state.storage.cache.renderCache[key] = data[key]
+        let loginCache = state.storage.cache[userId] || state.storage.cache.renderCache
+        for (let [key, value] of Object.entries(data)) {
+          loginCache[key] = value
+          state.storage.cache.renderCache[key] = value
+        }
         state.storage.cache[userId] = loginCache
         nativeStorage.setDefault('cache', {value: JSON.stringify(state.storage.cache)})
       }
@@ -121,7 +122,7 @@ export default function createStore () {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit}) {
+      initialNativeStorage ({commit, state}) {
         return Promise.all([
           nativeStorage.getDefault('playCalendar'),
           nativeStorage.getDefault('isLogin'),
@@ -130,12 +131,15 @@ export default function createStore () {
           nativeStorage.getDefault('cache')
         ])
           .then(data => {
-            console.log(data, 'oooo')
+            let userId = data[2].value && JSON.parse(data[2].value).userId ? JSON.parse(data[2].value).userId : '-1'
+            let cache = data[4].value && JSON.parse(data[4].value) ? JSON.parse(data[4].value) : {}
+            cache['renderCache'] = cache[userId] || Object.assign({}, state.storage.cache.renderCache)
             commit(SET_STORAGE, {
-              playCalendar: data[0] ? JSON.parse(data[0].value) : {},
-              isLogin: data[1] ? JSON.parse(data[1].value) : false,
-              userInfo: data[2] ? JSON.parse(data[2].value) : {},
-              sessionId: data[3] ? JSON.parse(data[3].value) : null,
+              playCalendar: data[0].value ? JSON.parse(data[0].value) : {},
+              isLogin: data[1].value ? JSON.parse(data[1].value) : false,
+              userInfo: data[2].value ? JSON.parse(data[2].value) : {},
+              sessionId: data[3].value ? JSON.parse(data[3].value) : null,
+              cache,
               isSynced: true
             })
           })
@@ -152,20 +156,6 @@ export default function createStore () {
             })
           }
         })
-      },
-      /**
-       * @desc 根据用户分层缓存数据
-       * @param {Function} dispatch
-       * @param {Function} commit
-       * @param {Object} state
-       * @param {object} data
-       */
-      setUserCache ({dispatch, state}, data) {
-        let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-        let loginCache = state.storage.cache[userId] || {}
-        let cache = Object.assign({}, state.storage.cache)
-        cache[userId] = {...loginCache, ...data}
-        return dispatch('setCacheStorage', {cache})
       },
       /**
        * 多数据缓存
