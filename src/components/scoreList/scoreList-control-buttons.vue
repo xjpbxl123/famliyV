@@ -52,7 +52,7 @@
       collect: function (value) {
         let icon = 'icon-favorite'
         value.forEach((item) => {
-          if (item.collection === 1) {
+          if (item.collection) {
             icon = 'icon-favorite-on'
           }
         })
