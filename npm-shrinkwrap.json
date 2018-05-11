@@ -232,7 +232,15 @@
       "dev": true
     },
     "ansi-regex": {
+<<<<<<< HEAD
       "version": "2.1.1"
+=======
+      "version": "2.1.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/ansi-regex/-/ansi-regex-2.1.1.tgz",
+      "integrity": "sha1-w7M6te42DYbg5ijwRorn7yfWVN8=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "ansi-styles": {
       "version": "3.2.1",
@@ -459,6 +467,12 @@
     },
     "array-differ": {
       "version": "1.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/array-differ/-/array-differ-1.0.0.tgz",
+      "integrity": "sha1-7/UuN1gknTO+QCuLuOVkuytdQDE=",
+>>>>>>> 按钮组件定义
       "dev": true
     },
     "array-find-index": {
@@ -1643,7 +1657,15 @@
       "dev": true
     },
     "builtin-modules": {
+<<<<<<< HEAD
       "version": "1.1.1"
+=======
+      "version": "1.1.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/builtin-modules/-/builtin-modules-1.1.1.tgz",
+      "integrity": "sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "builtin-status-codes": {
       "version": "3.0.0",
@@ -1730,7 +1752,14 @@
       }
     },
     "camelcase": {
+<<<<<<< HEAD
       "version": "3.0.0",
+=======
+      "version": "4.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/camelcase/-/camelcase-4.1.0.tgz",
+      "integrity": "sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=",
+>>>>>>> 按钮组件定义
       "dev": true
     },
     "camelcase-keys": {
@@ -1933,10 +1962,35 @@
     },
     "cliui": {
       "version": "3.2.0",
+<<<<<<< HEAD
       "requires": {
         "string-width": "^1.0.1",
         "strip-ansi": "^3.0.1",
         "wrap-ansi": "^2.0.0"
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/cliui/-/cliui-3.2.0.tgz",
+      "integrity": "sha1-EgYBU3qRbSmUD5NNo7SNWFo5IT0=",
+      "dev": true,
+      "requires": {
+        "string-width": "1.0.2",
+        "strip-ansi": "3.0.1",
+        "wrap-ansi": "2.1.0"
+      },
+      "dependencies": {
+        "string-width": {
+          "version": "1.0.2",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/string-width/-/string-width-1.0.2.tgz",
+          "integrity": "sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M=",
+          "dev": true,
+          "requires": {
+            "code-point-at": "1.1.0",
+            "is-fullwidth-code-point": "1.0.0",
+            "strip-ansi": "3.0.1"
+          }
+        }
+>>>>>>> 按钮组件定义
       }
     },
     "clone": {
@@ -1992,7 +2046,15 @@
       "dev": true
     },
     "code-point-at": {
+<<<<<<< HEAD
       "version": "1.1.0"
+=======
+      "version": "1.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/code-point-at/-/code-point-at-1.1.0.tgz",
+      "integrity": "sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "collection-visit": {
       "version": "1.0.0",
@@ -2254,6 +2316,13 @@
     },
     "cross-spawn": {
       "version": "5.1.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/cross-spawn/-/cross-spawn-5.1.0.tgz",
+      "integrity": "sha1-6L0O/uWPz/b4+UUQoKVUu/ojVEk=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "lru-cache": "^4.0.1",
         "shebang-command": "^1.2.0",
@@ -2477,7 +2546,15 @@
       }
     },
     "decamelize": {
+<<<<<<< HEAD
       "version": "1.2.0"
+=======
+      "version": "1.2.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/decamelize/-/decamelize-1.2.0.tgz",
+      "integrity": "sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "decode-uri-component": {
       "version": "0.2.0"
@@ -3030,6 +3107,13 @@
     },
     "error-ex": {
       "version": "1.3.1",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/error-ex/-/error-ex-1.3.1.tgz",
+      "integrity": "sha1-+FWobOYa3E6GIcPNoh56dhLDqNw=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "is-arrayish": "^0.2.1"
       }
@@ -3468,6 +3552,13 @@
     },
     "execa": {
       "version": "0.7.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/execa/-/execa-0.7.0.tgz",
+      "integrity": "sha1-lEvs00zEHuMqY6n68nrVpl/Fl3c=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "cross-spawn": "^5.0.1",
         "get-stream": "^3.0.0",
@@ -3498,6 +3589,7 @@
     },
     "expand-range": {
       "version": "1.8.2",
+<<<<<<< HEAD
       "dev": true,
       "requires": {
         "fill-range": "^2.1.0"
@@ -3528,6 +3620,14 @@
             "isarray": "1.0.0"
           }
         }
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/expand-range/-/expand-range-1.8.2.tgz",
+      "integrity": "sha1-opnv/TNf4nIeuujiV+x5ZE/IUzc=",
+      "dev": true,
+      "requires": {
+        "fill-range": "2.2.3"
+>>>>>>> 按钮组件定义
       }
     },
     "express": {
@@ -3779,6 +3879,7 @@
       "version": "0.3.0",
       "dev": true
     },
+<<<<<<< HEAD
     "find-sdk": {
       "requires": {
         "lodash": "^4.17.10"
@@ -3791,6 +3892,14 @@
     },
     "find-up": {
       "version": "2.1.0",
+=======
+    "find-up": {
+      "version": "2.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/find-up/-/find-up-2.1.0.tgz",
+      "integrity": "sha1-RdG35QbHF93UgndaK3eSCjwMV6c=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "locate-path": "^2.0.0"
       }
@@ -4659,7 +4768,15 @@
       }
     },
     "get-caller-file": {
+<<<<<<< HEAD
       "version": "1.0.2"
+=======
+      "version": "1.0.2",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/get-caller-file/-/get-caller-file-1.0.2.tgz",
+      "integrity": "sha1-9wLmMSfn4jHBYKgMFVSstw1QR+U=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "get-own-enumerable-property-symbols": {
       "version": "2.0.1",
@@ -4856,7 +4973,15 @@
       }
     },
     "graceful-fs": {
+<<<<<<< HEAD
       "version": "4.1.11"
+=======
+      "version": "4.1.11",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/graceful-fs/-/graceful-fs-4.1.11.tgz",
+      "integrity": "sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "graceful-readlink": {
       "version": "1.0.1",
@@ -4930,7 +5055,11 @@
       "version": "1.0.0",
       "dev": true,
       "requires": {
+<<<<<<< HEAD
         "glogg": "^1.0.0"
+=======
+        "glogg": "1.0.1"
+>>>>>>> 按钮组件定义
       }
     },
     "handle-thing": {
@@ -5069,6 +5198,7 @@
     },
     "home-or-tmp": {
       "version": "2.0.0",
+<<<<<<< HEAD
       "dev": true,
       "requires": {
         "os-homedir": "^1.0.0",
@@ -5077,6 +5207,23 @@
     },
     "hosted-git-info": {
       "version": "2.6.0"
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/home-or-tmp/-/home-or-tmp-2.0.0.tgz",
+      "integrity": "sha1-42w/LSyufXRqhX440Y1fMqeILbg=",
+      "dev": true,
+      "requires": {
+        "os-homedir": "1.0.2",
+        "os-tmpdir": "1.0.2"
+      }
+    },
+    "hosted-git-info": {
+      "version": "2.6.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/hosted-git-info/-/hosted-git-info-2.6.0.tgz",
+      "integrity": "sha1-IyNbKasjDFdqqw1PE/wEawsDgiI=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "hpack.js": {
       "version": "2.1.6",
@@ -5607,7 +5754,15 @@
       }
     },
     "invert-kv": {
+<<<<<<< HEAD
       "version": "1.0.0"
+=======
+      "version": "1.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/invert-kv/-/invert-kv-1.0.0.tgz",
+      "integrity": "sha1-EEqOSqym09jNFXqO+L+rLXo//bY=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "ip": {
       "version": "1.1.5",
@@ -5646,7 +5801,15 @@
       }
     },
     "is-arrayish": {
+<<<<<<< HEAD
       "version": "0.2.1"
+=======
+      "version": "0.2.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/is-arrayish/-/is-arrayish-0.2.1.tgz",
+      "integrity": "sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "is-binary-path": {
       "version": "1.0.1",
@@ -5660,6 +5823,13 @@
     },
     "is-builtin-module": {
       "version": "1.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/is-builtin-module/-/is-builtin-module-1.0.0.tgz",
+      "integrity": "sha1-VAVy0096wxGfj3bDDLwbHgN6/74=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "builtin-modules": "^1.0.0"
       }
@@ -5755,7 +5925,18 @@
       }
     },
     "is-fullwidth-code-point": {
+<<<<<<< HEAD
       "version": "2.0.0"
+=======
+      "version": "1.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/is-fullwidth-code-point/-/is-fullwidth-code-point-1.0.0.tgz",
+      "integrity": "sha1-754xOG8DGn8NZDr4L95QxFfvAMs=",
+      "dev": true,
+      "requires": {
+        "number-is-nan": "1.0.1"
+      }
+>>>>>>> 按钮组件定义
     },
     "is-gif": {
       "version": "1.0.0",
@@ -5907,10 +6088,24 @@
       "dev": true
     },
     "is-retry-allowed": {
+<<<<<<< HEAD
       "version": "1.1.0"
     },
     "is-stream": {
       "version": "1.1.0"
+=======
+      "version": "1.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/is-retry-allowed/-/is-retry-allowed-1.1.0.tgz",
+      "integrity": "sha1-EaBgVotnM5REAz0BJaYaINVk+zQ="
+    },
+    "is-stream": {
+      "version": "1.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/is-stream/-/is-stream-1.1.0.tgz",
+      "integrity": "sha1-EtSj3U5o4Lec6428hBc66A2RykQ=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "is-svg": {
       "version": "2.1.0",
@@ -6119,6 +6314,13 @@
     },
     "lcid": {
       "version": "1.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/lcid/-/lcid-1.0.0.tgz",
+      "integrity": "sha1-MIrMr6C8SDo4Z7S28rlQYlHRuDU=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "invert-kv": "^1.0.0"
       }
@@ -6294,7 +6496,14 @@
       }
     },
     "load-json-file": {
+<<<<<<< HEAD
       "version": "1.1.0",
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/load-json-file/-/load-json-file-2.0.0.tgz",
+      "integrity": "sha1-eUfkIUmvgNaWy/eXvKq8/h/inKg=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "graceful-fs": "^4.1.2",
@@ -6338,6 +6547,13 @@
     },
     "locate-path": {
       "version": "2.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/locate-path/-/locate-path-2.0.0.tgz",
+      "integrity": "sha1-K1aLJl7slExtnA3pw9u7ygNUzY4=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "p-locate": "^2.0.0",
         "path-exists": "^3.0.0"
@@ -6541,6 +6757,13 @@
     },
     "lru-cache": {
       "version": "4.1.2",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/lru-cache/-/lru-cache-4.1.2.tgz",
+      "integrity": "sha1-RSNLLm4vKzPaElYkxGZJKaAiTD8=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "pseudomap": "^1.0.2",
         "yallist": "^2.1.2"
@@ -6605,6 +6828,13 @@
     },
     "mem": {
       "version": "1.1.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/mem/-/mem-1.1.0.tgz",
+      "integrity": "sha1-Xt1StIXKHZAP5kiVUFOZoN+kX3Y=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "mimic-fn": "^1.0.0"
       }
@@ -6713,7 +6943,15 @@
       }
     },
     "mimic-fn": {
+<<<<<<< HEAD
       "version": "1.2.0"
+=======
+      "version": "1.2.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/mimic-fn/-/mimic-fn-1.2.0.tgz",
+      "integrity": "sha1-ggyGo5M0ZA6ZUWkovQP8qIBX0CI=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "mimic-response": {
       "version": "1.0.0"
@@ -7233,6 +7471,13 @@
     },
     "normalize-package-data": {
       "version": "2.4.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/normalize-package-data/-/normalize-package-data-2.4.0.tgz",
+      "integrity": "sha1-EvlaMH1YNSB1oEkHuErIvpisAS8=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "hosted-git-info": "^2.1.4",
         "is-builtin-module": "^1.0.0",
@@ -7314,6 +7559,13 @@
     },
     "npm-run-path": {
       "version": "2.0.2",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/npm-run-path/-/npm-run-path-2.0.2.tgz",
+      "integrity": "sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "path-key": "^2.0.0"
       }
@@ -7348,7 +7600,15 @@
       "dev": true
     },
     "number-is-nan": {
+<<<<<<< HEAD
       "version": "1.0.1"
+=======
+      "version": "1.0.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/number-is-nan/-/number-is-nan-1.0.1.tgz",
+      "integrity": "sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "oauth-sign": {
       "version": "0.8.2",
@@ -7518,7 +7778,14 @@
       "version": "1.0.2"
     },
     "os-locale": {
+<<<<<<< HEAD
       "version": "1.4.0",
+=======
+      "version": "2.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/os-locale/-/os-locale-2.1.0.tgz",
+      "integrity": "sha1-QrwpAKa1uL0XN2yOiCtlr8zyS/I=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "lcid": "^1.0.0"
@@ -7552,12 +7819,26 @@
     },
     "p-limit": {
       "version": "1.2.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/p-limit/-/p-limit-1.2.0.tgz",
+      "integrity": "sha1-DpK2vty1nwIsE9DxlJ3ILRWQnxw=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "p-try": "^1.0.0"
       }
     },
     "p-locate": {
       "version": "2.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/p-locate/-/p-locate-2.0.0.tgz",
+      "integrity": "sha1-IKAQOyIqcMj9OcwuWAaA893l7EM=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "p-limit": "^1.1.0"
       }
@@ -7589,7 +7870,15 @@
       }
     },
     "p-try": {
+<<<<<<< HEAD
       "version": "1.0.0"
+=======
+      "version": "1.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/p-try/-/p-try-1.0.0.tgz",
+      "integrity": "sha1-y8ec26+P1CKOE/Yh8rGiN8GyB7M=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "pako": {
       "version": "1.0.6",
@@ -7634,6 +7923,13 @@
     },
     "parse-json": {
       "version": "2.2.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/parse-json/-/parse-json-2.2.0.tgz",
+      "integrity": "sha1-9ID0BDTvgHQfhGkJn43qGPVaTck=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "error-ex": "^1.2.0"
       }
@@ -7655,11 +7951,19 @@
       "dev": true
     },
     "path-exists": {
+<<<<<<< HEAD
       "version": "2.1.0",
       "dev": true,
       "requires": {
         "pinkie-promise": "^2.0.0"
       }
+=======
+      "version": "3.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/path-exists/-/path-exists-3.0.0.tgz",
+      "integrity": "sha1-zg6+ql94yxiSXqfYENe1mwEP1RU=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "path-is-absolute": {
       "version": "1.0.1"
@@ -7680,7 +7984,14 @@
       "dev": true
     },
     "path-type": {
+<<<<<<< HEAD
       "version": "1.1.0",
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/path-type/-/path-type-2.0.0.tgz",
+      "integrity": "sha1-8BLMuEFbcJb8LaoQVMPXI4lZTHM=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "graceful-fs": "^4.1.2",
@@ -7708,7 +8019,15 @@
       "dev": true
     },
     "pify": {
+<<<<<<< HEAD
       "version": "2.3.0"
+=======
+      "version": "2.3.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/pify/-/pify-2.3.0.tgz",
+      "integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "pinkie": {
       "version": "2.0.4",
@@ -8570,7 +8889,15 @@
       "dev": true
     },
     "pseudomap": {
+<<<<<<< HEAD
       "version": "1.0.2"
+=======
+      "version": "1.0.2",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/pseudomap/-/pseudomap-1.0.2.tgz",
+      "integrity": "sha1-8FKijacOYYkX7wqKw0wa5aaChrM=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "public-encrypt": {
       "version": "4.0.2",
@@ -8611,6 +8938,7 @@
     "qrcode": {
       "version": "1.2.0",
       "requires": {
+<<<<<<< HEAD
         "can-promise": "^0.0.1",
         "dijkstrajs": "^1.0.1",
         "isarray": "^2.0.1",
@@ -8708,6 +9036,12 @@
             "camelcase": "^4.1.0"
           }
         }
+=======
+        "can-promise": "0.0.1",
+        "dijkstrajs": "1.0.1",
+        "isarray": "2.0.4",
+        "pngjs": "3.3.2"
+>>>>>>> 按钮组件定义
       }
     },
     "qs": {
@@ -8807,10 +9141,26 @@
     "rc": {
       "version": "1.2.7",
       "requires": {
+<<<<<<< HEAD
         "deep-extend": "^0.5.1",
         "ini": "~1.3.0",
         "minimist": "^1.2.0",
         "strip-json-comments": "~2.0.1"
+=======
+        "deep-extend": "0.4.2",
+        "ini": "1.3.5",
+        "minimist": "1.2.0",
+        "strip-json-comments": "2.0.1"
+      },
+      "dependencies": {
+        "minimist": {
+          "version": "1.2.0",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/minimist/-/minimist-1.2.0.tgz",
+          "integrity": "sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=",
+          "dev": true
+        }
+>>>>>>> 按钮组件定义
       }
     },
     "read-all-stream": {
@@ -8822,7 +9172,14 @@
       }
     },
     "read-pkg": {
+<<<<<<< HEAD
       "version": "1.1.0",
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/read-pkg/-/read-pkg-2.0.0.tgz",
+      "integrity": "sha1-jvHAYjxqbbDcZxPEv6xGMysjaPg=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "load-json-file": "^1.0.0",
@@ -8831,7 +9188,14 @@
       }
     },
     "read-pkg-up": {
+<<<<<<< HEAD
       "version": "1.0.1",
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/read-pkg-up/-/read-pkg-up-2.0.0.tgz",
+      "integrity": "sha1-a3KoBImE4MQeeVEP1en6mbO1Sb4=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "find-up": "^1.0.0",
@@ -8878,6 +9242,7 @@
         "set-immediate-shim": "^1.0.1"
       }
     },
+<<<<<<< HEAD
     "rechoir": {
       "version": "0.6.2",
       "dev": true,
@@ -8885,6 +9250,8 @@
         "resolve": "^1.1.6"
       }
     },
+=======
+>>>>>>> 按钮组件定义
     "redent": {
       "version": "1.0.0",
       "dev": true,
@@ -9067,14 +9434,30 @@
       }
     },
     "require-directory": {
+<<<<<<< HEAD
       "version": "2.1.1"
+=======
+      "version": "2.1.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/require-directory/-/require-directory-2.1.1.tgz",
+      "integrity": "sha1-jGStX9MNqxyXbiNE/+f3kqam30I=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "require-from-string": {
       "version": "1.2.1",
       "dev": true
     },
     "require-main-filename": {
+<<<<<<< HEAD
       "version": "1.0.1"
+=======
+      "version": "1.0.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/require-main-filename/-/require-main-filename-1.0.1.tgz",
+      "integrity": "sha1-l/cXtp1IeE9fUmpsWqj/3aBVpNE=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "require-uncached": {
       "version": "1.0.3",
@@ -9389,7 +9772,15 @@
       }
     },
     "set-blocking": {
+<<<<<<< HEAD
       "version": "2.0.0"
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/set-blocking/-/set-blocking-2.0.0.tgz",
+      "integrity": "sha1-BF+XgtARrppoA93TgrJDkrPYkPc=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "set-immediate-shim": {
       "version": "1.0.1",
@@ -9443,7 +9834,14 @@
       }
     },
     "shebang-regex": {
+<<<<<<< HEAD
       "version": "1.0.0"
+=======
+      "version": "1.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/shebang-regex/-/shebang-regex-1.0.0.tgz",
+      "integrity": "sha1-2kL0l0DAtC2yypcoVxyxkMmO/qM="
+>>>>>>> 按钮组件定义
     },
     "shelljs": {
       "version": "0.8.1",
@@ -9455,7 +9853,15 @@
       }
     },
     "signal-exit": {
+<<<<<<< HEAD
       "version": "3.0.2"
+=======
+      "version": "3.0.2",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/signal-exit/-/signal-exit-3.0.2.tgz",
+      "integrity": "sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "slash": {
       "version": "1.0.0",
@@ -9599,23 +10005,53 @@
     },
     "spdx-correct": {
       "version": "3.0.0",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/spdx-correct/-/spdx-correct-3.0.0.tgz",
+      "integrity": "sha1-BaW01xU6GVvJLDxCW2nzsqlSTII=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "spdx-expression-parse": "^3.0.0",
         "spdx-license-ids": "^3.0.0"
       }
     },
     "spdx-exceptions": {
+<<<<<<< HEAD
       "version": "2.1.0"
     },
     "spdx-expression-parse": {
       "version": "3.0.0",
+=======
+      "version": "2.1.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/spdx-exceptions/-/spdx-exceptions-2.1.0.tgz",
+      "integrity": "sha1-LHrmEFbHFKW5ubKyr30xHvXHj+k=",
+      "dev": true
+    },
+    "spdx-expression-parse": {
+      "version": "3.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/spdx-expression-parse/-/spdx-expression-parse-3.0.0.tgz",
+      "integrity": "sha1-meEZt6XaAOBUkcn6M4t5BII7QdA=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "spdx-exceptions": "^2.1.0",
         "spdx-license-ids": "^3.0.0"
       }
     },
     "spdx-license-ids": {
+<<<<<<< HEAD
       "version": "3.0.0"
+=======
+      "version": "3.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/spdx-license-ids/-/spdx-license-ids-3.0.0.tgz",
+      "integrity": "sha1-enzShHDMbToc/m1miG9rxDDTrIc=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "spdy": {
       "version": "3.4.7",
@@ -9781,15 +10217,46 @@
       "version": "1.1.0"
     },
     "string-width": {
+<<<<<<< HEAD
       "version": "1.0.2",
+=======
+      "version": "2.1.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/string-width/-/string-width-2.1.1.tgz",
+      "integrity": "sha1-q5Pyeo3BPSjKyBXEYhQ6bZASrp4=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "code-point-at": "^1.0.0",
         "is-fullwidth-code-point": "^1.0.0",
         "strip-ansi": "^3.0.0"
       },
       "dependencies": {
+<<<<<<< HEAD
         "is-fullwidth-code-point": {
           "version": "1.0.0",
+=======
+        "ansi-regex": {
+          "version": "3.0.0",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/ansi-regex/-/ansi-regex-3.0.0.tgz",
+          "integrity": "sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=",
+          "dev": true
+        },
+        "is-fullwidth-code-point": {
+          "version": "2.0.0",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz",
+          "integrity": "sha1-o7MKXE8ZkYMWeqq5O+764937ZU8=",
+          "dev": true
+        },
+        "strip-ansi": {
+          "version": "4.0.0",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/strip-ansi/-/strip-ansi-4.0.0.tgz",
+          "integrity": "sha1-qEeQIusaw2iocTibY1JixQXuNo8=",
+          "dev": true,
+>>>>>>> 按钮组件定义
           "requires": {
             "number-is-nan": "^1.0.0"
           }
@@ -9815,16 +10282,31 @@
     },
     "strip-ansi": {
       "version": "3.0.1",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/strip-ansi/-/strip-ansi-3.0.1.tgz",
+      "integrity": "sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "ansi-regex": "^2.0.0"
       }
     },
     "strip-bom": {
+<<<<<<< HEAD
       "version": "2.0.0",
       "dev": true,
       "requires": {
         "is-utf8": "^0.2.0"
       }
+=======
+      "version": "3.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/strip-bom/-/strip-bom-3.0.0.tgz",
+      "integrity": "sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "strip-bom-stream": {
       "version": "1.0.0",
@@ -9847,7 +10329,15 @@
       }
     },
     "strip-eof": {
+<<<<<<< HEAD
       "version": "1.0.0"
+=======
+      "version": "1.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/strip-eof/-/strip-eof-1.0.0.tgz",
+      "integrity": "sha1-u0P/VZim6wXYm1n80SnJgzE2Br8=",
+      "dev": true
+>>>>>>> 按钮组件定义
     },
     "strip-indent": {
       "version": "2.0.0",
@@ -10509,6 +10999,13 @@
     },
     "validate-npm-package-license": {
       "version": "3.0.3",
+<<<<<<< HEAD
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/validate-npm-package-license/-/validate-npm-package-license-3.0.3.tgz",
+      "integrity": "sha1-gWQ7y+8b3+zUYjeT3EZIlIupgzg=",
+      "dev": true,
+>>>>>>> 按钮组件定义
       "requires": {
         "spdx-correct": "^3.0.0",
         "spdx-expression-parse": "^3.0.0"
@@ -10614,8 +11111,26 @@
       }
     },
     "vue-find-hybrid": {
+<<<<<<< HEAD
       "requires": {
         "vue": "^2.5.2"
+=======
+      "version":
+        "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#fc3af35406fce84ca91b7143eb8b3c140239e515",
+      "requires": {
+        "find-toolbar":
+          "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#17db47d2f8bd79d29edd3fc3c3435352d2d13f49",
+        "vue": "2.5.16"
+      },
+      "dependencies": {
+        "find-toolbar": {
+          "version":
+            "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#17db47d2f8bd79d29edd3fc3c3435352d2d13f49",
+          "requires": {
+            "deep-diff": "0.3.8"
+          }
+        }
+>>>>>>> 按钮组件定义
       }
     },
     "vue-hot-reload-api": {
@@ -10942,6 +11457,7 @@
         },
         "yargs": {
           "version": "8.0.2",
+<<<<<<< HEAD
           "dev": true,
           "requires": {
             "camelcase": "^4.1.0",
@@ -10964,6 +11480,61 @@
           "dev": true,
           "requires": {
             "camelcase": "^4.1.0"
+=======
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/yargs/-/yargs-8.0.2.tgz",
+          "integrity": "sha1-YpmpBVsc78lp/355wdkY3Osiw2A=",
+          "dev": true,
+          "requires": {
+            "camelcase": "4.1.0",
+            "cliui": "3.2.0",
+            "decamelize": "1.2.0",
+            "get-caller-file": "1.0.2",
+            "os-locale": "2.1.0",
+            "read-pkg-up": "2.0.0",
+            "require-directory": "2.1.1",
+            "require-main-filename": "1.0.1",
+            "set-blocking": "2.0.0",
+            "string-width": "2.1.1",
+            "which-module": "2.0.0",
+            "y18n": "3.2.1",
+            "yargs-parser": "7.0.0"
+          },
+          "dependencies": {
+            "camelcase": {
+              "version": "4.1.0",
+              "resolved":
+                "http://192.168.200.235:8282/repository/findnpmgroup/camelcase/-/camelcase-4.1.0.tgz",
+              "integrity": "sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=",
+              "dev": true
+            },
+            "cliui": {
+              "version": "3.2.0",
+              "resolved":
+                "http://192.168.200.235:8282/repository/findnpmgroup/cliui/-/cliui-3.2.0.tgz",
+              "integrity": "sha1-EgYBU3qRbSmUD5NNo7SNWFo5IT0=",
+              "dev": true,
+              "requires": {
+                "string-width": "1.0.2",
+                "strip-ansi": "3.0.1",
+                "wrap-ansi": "2.1.0"
+              },
+              "dependencies": {
+                "string-width": {
+                  "version": "1.0.2",
+                  "resolved":
+                    "http://192.168.200.235:8282/repository/findnpmgroup/string-width/-/string-width-1.0.2.tgz",
+                  "integrity": "sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M=",
+                  "dev": true,
+                  "requires": {
+                    "code-point-at": "1.1.0",
+                    "is-fullwidth-code-point": "1.0.0",
+                    "strip-ansi": "3.0.1"
+                  }
+                }
+              }
+            }
+>>>>>>> 按钮组件定义
           }
         }
       }
@@ -11055,9 +11626,18 @@
     },
     "webpack-merge": {
       "version": "4.1.2",
+<<<<<<< HEAD
       "dev": true,
       "requires": {
         "lodash": "^4.17.5"
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/webpack-merge/-/webpack-merge-4.1.2.tgz",
+      "integrity": "sha1-XTct3dPh5fiHT1v1qOkp2wn+shY=",
+      "dev": true,
+      "requires": {
+        "lodash": "4.17.5"
+>>>>>>> 按钮组件定义
       }
     },
     "webpack-sources": {
@@ -11097,7 +11677,14 @@
       }
     },
     "which-module": {
+<<<<<<< HEAD
       "version": "1.0.0",
+=======
+      "version": "2.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/which-module/-/which-module-2.0.0.tgz",
+      "integrity": "sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=",
+>>>>>>> 按钮组件定义
       "dev": true
     },
     "wide-align": {
@@ -11126,9 +11713,33 @@
     },
     "wrap-ansi": {
       "version": "2.1.0",
+<<<<<<< HEAD
       "requires": {
         "string-width": "^1.0.1",
         "strip-ansi": "^3.0.1"
+=======
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/wrap-ansi/-/wrap-ansi-2.1.0.tgz",
+      "integrity": "sha1-2Pw9KE3QV5T+hJc8rs3Rz4JP3YU=",
+      "dev": true,
+      "requires": {
+        "string-width": "1.0.2",
+        "strip-ansi": "3.0.1"
+      },
+      "dependencies": {
+        "string-width": {
+          "version": "1.0.2",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/string-width/-/string-width-1.0.2.tgz",
+          "integrity": "sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M=",
+          "dev": true,
+          "requires": {
+            "code-point-at": "1.1.0",
+            "is-fullwidth-code-point": "1.0.0",
+            "strip-ansi": "3.0.1"
+          }
+        }
+>>>>>>> 按钮组件定义
       }
     },
     "wrap-fn": {
@@ -11159,6 +11770,7 @@
       "dev": true
     },
     "y18n": {
+<<<<<<< HEAD
       "version": "3.2.1"
     },
     "yallist": {
@@ -11180,14 +11792,55 @@
         "which-module": "^2.0.0",
         "y18n": "^3.2.1",
         "yargs-parser": "^9.0.2"
+=======
+      "version": "3.2.1",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/y18n/-/y18n-3.2.1.tgz",
+      "integrity": "sha1-bRX7qITAhnnA136I53WegR4H+kE=",
+      "dev": true
+    },
+    "yallist": {
+      "version": "2.1.2",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/yallist/-/yallist-2.1.2.tgz",
+      "integrity": "sha1-HBH5IY8HYImkfdUS+TxmmaaoHVI=",
+      "dev": true
+    },
+    "yargs": {
+      "version": "11.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/yargs/-/yargs-11.0.0.tgz",
+      "integrity": "sha1-wFKTEAbF7udGEOX8A1S+39CKIBs=",
+      "dev": true,
+      "requires": {
+        "cliui": "4.1.0",
+        "decamelize": "1.2.0",
+        "find-up": "2.1.0",
+        "get-caller-file": "1.0.2",
+        "os-locale": "2.1.0",
+        "require-directory": "2.1.1",
+        "require-main-filename": "1.0.1",
+        "set-blocking": "2.0.0",
+        "string-width": "2.1.1",
+        "which-module": "2.0.0",
+        "y18n": "3.2.1",
+        "yargs-parser": "9.0.2"
+>>>>>>> 按钮组件定义
       },
       "dependencies": {
         "ansi-regex": {
           "version": "3.0.0",
+<<<<<<< HEAD
+=======
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/ansi-regex/-/ansi-regex-3.0.0.tgz",
+          "integrity": "sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=",
+>>>>>>> 按钮组件定义
           "dev": true
         },
         "cliui": {
           "version": "4.1.0",
+<<<<<<< HEAD
           "dev": true,
           "requires": {
             "string-width": "^2.1.1",
@@ -11222,11 +11875,49 @@
         "which-module": {
           "version": "2.0.0",
           "dev": true
+=======
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/cliui/-/cliui-4.1.0.tgz",
+          "integrity": "sha1-NIQi2+gtgAswIu709qwQvy5NG0k=",
+          "dev": true,
+          "requires": {
+            "string-width": "2.1.1",
+            "strip-ansi": "4.0.0",
+            "wrap-ansi": "2.1.0"
+          }
+        },
+        "strip-ansi": {
+          "version": "4.0.0",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/strip-ansi/-/strip-ansi-4.0.0.tgz",
+          "integrity": "sha1-qEeQIusaw2iocTibY1JixQXuNo8=",
+          "dev": true,
+          "requires": {
+            "ansi-regex": "3.0.0"
+          }
+        },
+        "yargs-parser": {
+          "version": "9.0.2",
+          "resolved":
+            "http://192.168.200.235:8282/repository/findnpmgroup/yargs-parser/-/yargs-parser-9.0.2.tgz",
+          "integrity": "sha1-nM9qQ0YP5O1Aqbto9I1DuKaMwHc=",
+          "dev": true,
+          "requires": {
+            "camelcase": "4.1.0"
+          }
+>>>>>>> 按钮组件定义
         }
       }
     },
     "yargs-parser": {
+<<<<<<< HEAD
       "version": "9.0.2",
+=======
+      "version": "7.0.0",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/yargs-parser/-/yargs-parser-7.0.0.tgz",
+      "integrity": "sha1-jQrELxbqVd69MyyvTEA4s+P139k=",
+>>>>>>> 按钮组件定义
       "dev": true,
       "requires": {
         "camelcase": "^4.1.0"

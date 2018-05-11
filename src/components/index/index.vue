@@ -21,12 +21,12 @@
         :rightType="rightType"/>
     </div>
     <!--<find-button-banner>-->
-      <!--<user-buttons-->
-        <!--:isLogin="isLogin"-->
-        <!--:action="buttonActions"/>-->
-      <!--<voice-control/>-->
-      <!--<course-button :action="buttonActions"/>-->
-      <!--<control-button :action="buttonActions"/>-->
+    <!--<user-buttons-->
+    <!--:isLogin="isLogin"-->
+    <!--:action="buttonActions"/>-->
+    <!--<voice-control/>-->
+    <!--<course-button :action="buttonActions"/>-->
+    <!--<control-button :action="buttonActions"/>-->
     <!--</find-button-banner>-->
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
@@ -39,12 +39,14 @@
       />
     </find-cover>
     <toolbar>
-      <icon-item v-for="(button,index) in userActionButtons"
-                 :key="index" :id="index"
-                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
-
+      <text-icon-item v-for="(button,index) in userActionButtons"
+      :key="index" :id="index" :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"
+      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
+      longClick="true"/>
+      <image-item text="收拾" titlePosition="below" :image="require('./images/game.png')"  id="405" pianoKey="60" imageType="big"/>
       <group id="501">
-        <icon-item id="400" pianoKey="54" text="" icon="0xe62b"/>
+        <icon-item id="400" pianoKey="54" text="街拍街拍" titlePosition="below" icon="0xe62b"
+                   :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"/>
         <icon-item id="401" pianoKey="55" text="" icon="0xe601"/>
         <icon-item id="402" pianoKey="56" text="120" icon=""/>
         <icon-item id="403" pianoKey="57" text="" icon="0xe605"/>
