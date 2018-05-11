@@ -176,10 +176,9 @@
 
     },
     created () {
-      this.getDiffer().then(() => {
-        this.getStyles()
-        this.getCenturys()
-      })
+      this.getDiffer()
+      this.getStyles()
+      this.getCenturys()
     },
     components: {
       contentLine,

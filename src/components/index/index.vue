@@ -20,7 +20,7 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <find-button-banner className="button-banner">
+    <find-button-banner>
       <user-buttons
         :isLogin="isLogin"
         :action="buttonActions"/>
@@ -38,6 +38,12 @@
         :buttonActions="buttonActions"
       />
     </find-cover>
+    <toolbar>
+      <icon-item v-for="(button,index) in userActionButtons"
+                 :key="index" :id="index"
+                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
+    </toolbar>
+    <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
 </template>
 <script type="text/javascript">
@@ -79,7 +85,72 @@
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
-        endIndex: -1
+        endIndex: -1,
+        weexStyle: {
+          left: 400,
+          top: 100,
+          width: 2000,
+          height: 900,
+          backgroundColor: '#30000000',
+          float: 'left',
+          borderWidth: 3,
+          borderColor: '#ef9900',
+          borderRadius: 20
+        },
+        showWeex: true,
+        userActionButtons: [
+          {
+            pianoKey: 27,
+            text: '帮助',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 30,
+            text: '登陆',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 32,
+            text: '设置',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 34,
+            text: '关机',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 37,
+            text: '我的曲谱',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 39,
+            text: '弹奏录制',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 42,
+            text: '教材练习',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 44,
+            text: '流行经典',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 46,
+            text: '名师课程',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 49,
+            text: '音乐王国',
+            icon: '0xe69c'
+          }
+
+        ]
       }
     },
     find: {
@@ -126,12 +197,8 @@
       [KEY66] () {
         this.buttonActions('logout')
       },
-      [KEY66] () {
-        this.buttonActions('logout')
-      },
       banner: {
         [KEY_ANY] (key) {
-          console.log(this)
           this.clickHelp(key)
         }
       }
@@ -251,6 +318,10 @@
           this.$router.back()
         }
       },
+      openWeex () {
+        this.showWeex = false
+        this.$refs.weex.openUrl(`${process.env.weex_url}dist/index.js`)
+      },
       /**
        * @desc 按钮组件按钮事件
        * */
@@ -357,7 +428,6 @@
             break
           default:
             console.log('108')
-            // this.goBack()
         }
         this.$store.dispatch('index/setSelected', activeIndex)
       }

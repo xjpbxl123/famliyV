@@ -1,5 +1,5 @@
 import http from '../../scripts/http'
-import {getUsedTime} from 'find-sdk'
+import { getUsedTime } from 'find-sdk'
 
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
@@ -65,7 +65,7 @@ export default {
         page
       }).then(res => {
         if (res.header.code === 0) {
-          dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+          return dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
         }
       })
     },
@@ -79,7 +79,7 @@ export default {
         page
       }).then(res => {
         if (res.header.code === 0) {
-          dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+          return dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
         }
       })
     },

@@ -1,7 +1,8 @@
 /**
  * Created by Moersing on 2018/4/3 .
  * */
-import {device, nativeStorage} from 'find-sdk'
+import { device, nativeStorage } from 'find-sdk'
+
 let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params
@@ -27,8 +28,8 @@ export const getDefaultParams = (() => {
      * */
     const mergeSessionId = () => {
       if (!defaultParams.sess) {
-        return nativeStorage.get('sessionId').then(({value}) => {
-          return Object.assign(defaultParams, {sess: value || ''}, {orn})
+        return nativeStorage.getDefault('sessionId').then((data) => {
+          return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
         })
       }
       return Object.assign(defaultParams, {orn})
@@ -37,7 +38,7 @@ export const getDefaultParams = (() => {
     if (orn) {
       return mergeSessionId()
     }
-    return device.getDeviceInfo().then(result => {
+    return device.getOrn().then(result => {
       /// only get once
       orn = result
     }).then(mergeSessionId)

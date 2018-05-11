@@ -38,7 +38,7 @@
         let now = new Date()
         let day = now.getDate()
         let weekDay = new Date(now.setDate(1)).getDay() // 获取当前月的1号是星期几
-        if (state.storage.playCalendar[this.month]) {
+        if (state.storage.playCalendar && state.storage.playCalendar[this.month]) {
           let placeholderDay = Array.from({ length: weekDay }).map(() => ({
             date: ''
           })) /// 生成日期占位符，用于对应星期几

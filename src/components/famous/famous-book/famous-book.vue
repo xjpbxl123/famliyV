@@ -2,13 +2,14 @@
   <div :style="{background:`url(${cover})`}">
     <find-title :title="famousAuthor.courseSetList[0].authorName" :style="styles"></find-title>
     <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="select"></famous-book-swiper>
-    <div class="bottom">
-      <find-button v-for="button in famousButton"
-                   :className="button.className"
-                   :iconClass="button.icon"
-                   :action="action.bind(this,button.className[0])"
-                   :key="button.icon"></find-button>
-    </div>
+    <toolbar>
+      <icon-item v-for="button in famousButton"
+                 :pianoKey="button.pianoKey"
+                 :key="button.icon"
+                 longClick="true"
+                 :id="button.id"
+                 :icon="button.icon"/>
+    </toolbar>
   </div>
 </template>
 
@@ -28,16 +29,19 @@
         },
         famousButton: [
           {
-            icon: 'icon-left',
-            className: ['left', 'key-78']
+            pianoKey: 78,
+            icon: '0xe660',
+            id: 201
           },
           {
-            icon: 'icon-right',
-            className: ['right', 'key-80']
+            pianoKey: 80,
+            icon: '0xe65b',
+            id: 202
           },
           {
-            icon: 'icon-ok',
-            className: ['ok', 'key-82']
+            pianoKey: 82,
+            icon: '0xe69a',
+            id: 203
           }
         ],
         select: 0,

@@ -90,7 +90,7 @@ export default {
       return dispatch('setCacheToStorage', {differList: data}, {root: true})
     },
     getStyles ({dispatch}, page = {'offset': 0, 'count': 100}) {
-      http.post('', {
+      return http.post('', {
         cmd: 'musicScore.getStyles',
         page
       }).then(({header, body}) => {

@@ -18,6 +18,7 @@ const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
+const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -35,6 +36,7 @@ export default function createStore () {
             hottest: {bookList: []},
             recentUpdate: {bookList: []},
             recentOpen: [],
+            popularGenre: [],
             myCollect: [],
             yearList: [],
             scoreSetList: [],
@@ -95,39 +97,43 @@ export default function createStore () {
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
       },
-      [LOGIN_OUT_CACHE] (state) {
-        state.storage.cache.renderCache = state.storage.cache['-1']
+      [LOGIN_OUT_CACHE] (state, data) {
+        state.storage.cache.renderCache = data
       },
       [SET_SELECT] (state, data) {
         Object.assign(state, data)
       },
       [DEL_SELECT] (state, key) {
-        // Reflect.deleteProperty(state, key)
         state[key] = 0
+      },
+      [SET_CACHE_STORAGE] (state, data) {
+        let userId = state.storage.isLogin ? state.storage.userInfo.userId : -1
+        for (let [key, value] of Object.entries(data)) {
+          state.storage.cache.renderCache[key] = value
+        }
+        nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
       }
     },
     actions: {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, state}) {
+      initialNativeStorage ({commit, dispatch}) {
         return Promise.all([
-          nativeStorage.get('playCalendar'),
-          nativeStorage.get('isLogin'),
-          nativeStorage.get('userInfo'),
-          nativeStorage.get('sessionId'),
-          nativeStorage.get('cache')
+          nativeStorage.getDefault('playCalendar'),
+          nativeStorage.getDefault('isLogin'),
+          nativeStorage.getDefault('userInfo'),
+          nativeStorage.getDefault('sessionId')
         ])
           .then(data => {
-            console.log(data, 'oooo')
             commit(SET_STORAGE, {
-              playCalendar: data[0].value,
-              isLogin: data[1].value,
-              userInfo: data[2].value,
-              sessionId: data[3].value,
-              cache: Object.assign({}, state.storage.cache, data[4].value),
+              playCalendar: data[0] && data[0].value ? data[0].value : {},
+              isLogin: data[1] && data[1].value ? data[1].value : false,
+              userInfo: data[2] && data[2].value ? data[2].value : {},
+              sessionId: data[3] && data[3].value ? data[3].value : null,
               isSynced: true
             })
+            dispatch('initCacheStorage', data)
           })
       },
       /**
@@ -136,7 +142,7 @@ export default function createStore () {
       setNativeStorage ({commit}, data) {
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.set(key, value).then(() => {
+            nativeStorage.setDefault(key, {value}).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
@@ -144,19 +150,21 @@ export default function createStore () {
         })
       },
       /**
-       * @desc 根据用户分层缓存数据
-       * @param {Function} dispatch
-       * @param {Function} commit
-       * @param {Object} state
-       * @param {object} data
+       * @desc 初始化缓存数据
+       * @param dispatch
+       * @param state
+       * @param commit
+       * @param data
        */
-      setUserCache ({dispatch, state}, data) {
-        let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-        let loginCache = state.storage.cache[userId] || {}
-        let renderCache = state.storage.cache.renderCache
-        let cache = Object.assign({}, state.storage.cache)
-        cache[userId] = cache['renderCache'] = {...renderCache, ...loginCache, ...data}
-        return dispatch('setNativeStorage', {cache})
+      initCacheStorage ({dispatch, state, commit}, data) {
+        let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
+        nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
+          let cache = {}
+          cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+          commit(SET_STORAGE, {
+            cache
+          })
+        })
       },
       /**
        * 多数据缓存
@@ -164,17 +172,16 @@ export default function createStore () {
        * @param {Object} state
        * @param {object} data
        */
-      setCacheToStorage ({dispatch, state}, data) {
+      setCacheToStorage ({dispatch, state, commit}, data) {
         if (Reflect.has(data, 'id')) {
           let key = Object.keys(data)[0]
-          let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-          let loginCache = Object.assign({}, state.storage.cache[userId] && (state.storage.cache[userId][key] || {}))
+          let loginCache = Object.assign({}, state.storage.cache.renderCache[key] || {})
           let cache = {}
           loginCache[data.id] = data[key]
           cache[key] = loginCache
-          return dispatch('setUserCache', cache)
+          commit(SET_CACHE_STORAGE, cache)
         } else {
-          return dispatch('setUserCache', data)
+          commit(SET_CACHE_STORAGE, data)
         }
       },
       /**
@@ -220,8 +227,11 @@ export default function createStore () {
       /**
        * @desc 用户注销时的数据映射view
        * */
-      logoutCache ({dispatch, commit}) {
-        commit(LOGIN_OUT_CACHE)
+      logoutCache ({dispatch, commit, state}) {
+        nativeStorage.getDefault('-1').then(param => {
+          let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+          commit(LOGIN_OUT_CACHE, data)
+        })
       },
       setSelect ({commit, state}, data) {
         commit(SET_SELECT, data)

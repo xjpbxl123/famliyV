@@ -8,7 +8,8 @@
 </template>
 
 <script>
-  import {status} from 'find-sdk'
+  import { notification, global } from 'find-sdk'
+
   export default {
     name: 'find-status-bar',
     data () {
@@ -25,11 +26,11 @@
         }
       }
     },
-    created () {
-      status.create().progress((data) => {
+    methods: {
+      status (data) {
         for (let key in data) {
           let value = data[key]
-          switch (value.id) {
+          switch (key) {
             case 'localname':
               let pianoTypeClassList = ['icon-grand-piano', 'icon-ufind', 'icon-xfind', 'icon-efind']
               if (value.status === 0) {
@@ -79,41 +80,55 @@
               value.showIcon = false
               break
           }
-          this.statusData[value.id] = value
+          this.statusData[key] = value
         }
+      }
+    },
+    created () {
+      global.getStatusBarItem().then((data) => {
+        this.status(data)
+      })
+      notification.regist('statusBarChange', data => {
+        let changeData = {}
+        changeData[data.id] = data
+        this.status(changeData)
       })
     },
     destroyed () {
-      status.close()
+      notification.remove('statusBarChange')
     }
-
   }
 
 </script>
 
-<style lang="scss" scoped>
-ul {
-  width: 50%;
-  position: absolute;
-  top: 0;
-  right: 1%;
-  text-align: right;
-  color: rgba(255,255,255,0.8);
-  font-size: 22px;
-  height: 40px;
-  line-height: 40px;
-  li{
-    margin-right: 6px;
-    span {
-      display: inline-block;
-    }
-    .iconfont {
-      font-size: 22px
-    }
-    &:nth-child(4) .iconfont{
-      font-size: 20px;
-    }
-  }
+<style lang="scss" scoped type=text/scss>
+  ul {
+    width: 50%;
+    position: absolute;
+    top: 0;
+    right: 1%;
+    text-align: right;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 22px;
+    height: 40px;
+    line-height: 40px;
 
-}
+    li {
+      margin-right: 6px;
+
+      span {
+        display: inline-block;
+      }
+
+      .iconfont {
+        font-size: 22px
+      }
+
+      &:nth-child(4) .iconfont {
+        font-size: 20px;
+      }
+
+    }
+
+  }
 </style>
