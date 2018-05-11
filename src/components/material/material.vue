@@ -1,9 +1,20 @@
 <template>
-  <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
-    <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
-                     :index="index" :select="materialSelect" :ablum="item"
-                     :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
-  </find-wrap>
+  <div>
+    <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
+      <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
+                       :index="index" :select="materialSelect" :ablum="item"
+                       :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
+    </find-wrap>
+    <toolbar>
+      <icon-item v-for="button in materialButton"
+                 :pianoKey="button.pianoKey"
+                 :key="button.icon"
+                 longClick="true"
+                 :id="button.id"
+                 :icon="button.icon"/>
+    </toolbar>
+  </div>
+
 </template>
 <style lang="scss" scoped type=text/scss>
   .find-ablum-card {
@@ -33,7 +44,34 @@
     data () {
       return {
         materialPage: 1,
-        pagination: true
+        pagination: true,
+        materialButton: [
+          {
+            pianoKey: 73,
+            icon: '0xe660',
+            id: 201
+          },
+          {
+            pianoKey: 75,
+            icon: '0xe65b',
+            id: 202
+          },
+          {
+            pianoKey: 78,
+            icon: '0xe63b',
+            id: 203
+          },
+          {
+            pianoKey: 80,
+            icon: '0xe650',
+            id: 204
+          },
+          {
+            pianoKey: 82,
+            icon: '0xe69a',
+            id: 205
+          }
+        ]
       }
     },
     find: {
@@ -74,7 +112,7 @@
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
           case 'ok':
-            return this.$router.push('/popular')
+            return this.$router.push({path: '/scoreSetList', query: {setId: this.materialList.body[activeIndex].id}})
           case 'back':
             this.$router.back(-1)
             return setTimeout(() => {

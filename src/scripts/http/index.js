@@ -2,14 +2,17 @@
  * Created by Tommy on 2018/4/3 .
  */
 import axios from 'axios'
-import {config, getDefaultParams} from './config'
-let http = axios.create(config)
+import { config, getDefaultParams } from './config'
 
+let http = axios.create(config)
+let CancelToken = axios.CancelToken
+let source = CancelToken.source()
+source.cancel()
 http.interceptors.request.use(async function (config) {
   try {
     if (Reflect.has(config.data || {}, 'cmd')) {
       let defaultParams = await getDefaultParams()
-      let header = {...defaultParams, ...{cmd: config.data.cmd}}
+      let header = {...defaultParams, ...{cmd: config.data.cmd}, ...{cancelToken: source.token}}
       Reflect.deleteProperty(config.data, 'cmd')
       config.data = JSON.stringify({header, body: config.data})
     }
