@@ -141,6 +141,19 @@ const webConfig = {
 
           })
         }]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name][hash].[ext]',
+              outputPath: 'images/',
+              publicPath: '/images/'
+            }
+          }
+        ]
       }
     ])
   },
@@ -187,6 +200,19 @@ const weexConfig = {
           loader: 'weex-loader',
           options: vueLoaderConfig({useVue: false})
         }]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name][hash].[ext]',
+              outputPath: 'images/',
+              publicPath: '/images/'
+            }
+          }
+        ]
       }
     ]
   },

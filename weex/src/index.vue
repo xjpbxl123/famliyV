@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <image :src="logo" class="logo"/>
+    <text class="logo-text">{{logo}}</text>
     <text class="greeting" @click="goTo">The environment is ready!</text>
     <HelloWorld/>
   </div>
@@ -8,7 +9,7 @@
 
 <script>
   import HelloWorld from './components/HelloWorld.vue'
-  import {getBundleRoot} from './scripts/utils'
+  import {getBundleRoot, getLocalUrl} from './scripts/utils'
 
   let navigator = weex.requireModule('navigator')
   export default {
@@ -18,13 +19,17 @@
     },
     data () {
       return {
-        logo: 'https://gw.alicdn.com/tfs/TB1yopEdgoQMeJjy1XaXXcSsFXa-640-302.png'
+        logo: require('./images/default.jpg'),
+        text: JSON.stringify(weex.config)
       }
     },
     methods: {
       goTo () {
         navigator.push({url: `${getBundleRoot()}/components/HelloWorld.js`})
       }
+    },
+    created () {
+      getLocalUrl()
     }
   }
 </script>

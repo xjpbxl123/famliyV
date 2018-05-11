@@ -14,3 +14,6 @@ export const getBundleRoot = () => {
   let url = new URL(bundleUrl)
   return url.origin + url.pathname.replace(fileName.exec(url.pathname)[0], '')
 }
+export const getLocalUrl = () => {
+  // alert(__dirname)
+}

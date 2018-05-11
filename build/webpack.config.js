@@ -1,16 +1,16 @@
 process.noDeprecation = true /// remove deprecation warning of webpack loader,see https://github.com/webpack/loader-utils/issues/56
-let shell = require('shelljs')
-let path = require('path')
-let webpack = require('webpack')
-let assist = require('./assist')
-let HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const webpack = require('webpack')
+const assist = require('./assist')
+const config = require('./config')
 const NODE_ENV = process.env.NODE_ENV
-let envConfig = require('./env')()
-let shouldUseSourceMap = NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap
+const envConfig = require('./env')()
+const shouldUseSourceMap = NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap
 module.exports = {
+  context: process.cwd(),
   entry: ['./build/polyfill.js', './src/main.js'],
   output: {
-    path: assist.assetConfig.assertRoot,
+    path: config.assertRoot,
     publicPath: NODE_ENV !== 'development' ? './' : '',
     filename: '[name].js'
   },
@@ -83,33 +83,3 @@ module.exports = {
 };
 /// add style loaders for .js files
 [].push.apply(module.exports.module.rules, assist.stylesLoader({sourceMap: shouldUseSourceMap}))
-switch (NODE_ENV) {
-  case 'development':
-    [].push.apply(module.exports.plugins, [
-      /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.
-      new webpack.NamedModulesPlugin(),
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'src/index.html',
-        inject: true
-      })
-    ])
-    break
-  case 'production':
-    // http://vue-loader.vuejs.org/en/workflow/production.html
-    module.exports.devtool = false
-    break
-  default:
-    module.exports.devtool = shouldUseSourceMap && 'source-map'
-    break
-}
-if (NODE_ENV !== 'development') {
-  module.exports.output.filename = assist.assetPath('javascript/[name].[chunkhash].js')
-  module.exports.output.chunkFilename = assist.assetPath('javascript/[name].[chunkhash].js')
-  module.exports.plugins = (module.exports.plugins || []).concat(assist.productionPlugins())
-  module.exports.module.rules.push({
-    test: /\.(png|jpg|gif|svg)$/,
-    loader: 'image-webpack-loader'
-  })
-  shell.rm('-rf', assist.assetConfig.assertRoot)
-}

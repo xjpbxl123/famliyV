@@ -9,17 +9,22 @@
 git clone --recurse-submodules git@192.168.200.211:moersing/FindFamilyVue.git
 
 # 安装依赖
+// 注意：就目前而言,如果结合weex,那么weex目录下也需要install
 yarn install
 
 # 开发环境
 yarn run dev
 
 # 仿真环境
-yarn  run build:test
+yarn run build:test
+yarn run build:testFull -- build仿真环境和weex
 
 # 生产环境
 yarn run build
+yarn run build:full  -- build 生产环境和weex
 
+# 单独打包weex
+yarn run weex -- 打包到dist/weex
 # 检测&自动格式化代码
 yarn run lint
 ```
