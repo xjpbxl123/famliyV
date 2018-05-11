@@ -1,7 +1,7 @@
 <template>
     <div class="star">
-        <div class="star-full iconfont icon-star-full" v-for="(num) in parseInt(starNum)" :key="num"></div>
-        <div class="star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-starNum)"
+        <div class="eachStar star-full iconfont icon-star-full" v-for="(num) in parseInt(starNum)" :key="num"></div>
+        <div class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-starNum)"
                  :key="num+7"></div>
     </div>
 
@@ -9,14 +9,14 @@
 <style lang="scss" scope type=text/scss>
     .star-full {
         font-size: 22px;
-        transform: rotateZ(-45deg);
+        transform: rotateZ(45deg);
         color: #fff;
         margin-right: 8px;
     }
 
     .star-empty {
         font-size: 22px;
-        transform: rotateZ(-45deg);
+        transform: rotateZ(45deg);
         color: #fff;
         margin-right: 8px;
     }
@@ -37,7 +37,6 @@
     },
     method: {},
     created () {
-      console.log(this.starNum, 'starNum')
     }
   }
 </script>

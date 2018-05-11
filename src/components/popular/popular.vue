@@ -227,17 +227,15 @@
 </script>
 <style lang="scss" scoped type=text/scss>
   .popular {
-    .style {
-      position: absolute;
-      top: 195px;
-      left: 245px;
-    }
-    .differ {
-      .title {
+    .title {
         position: absolute;
         top: 46px;
         left: 248px
       }
+    .style {
+      position: absolute;
+      top: 195px;
+      left: 245px;
     }
   }
 </style>

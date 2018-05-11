@@ -309,7 +309,11 @@
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
-        this.$store.dispatch({type: 'index/getCollectList'})
+        if (this.isLogin) {
+          return this.$store.dispatch({type: 'index/getCollectList'})
+        } else {
+          return this.$store.dispatch('index/localCollectList', this.localCollect || [])
+        }
       },
       /**
        * @desc 创建会话ID
@@ -367,6 +371,8 @@
         let recentOpenList = this.recentOpenList
         let collectList = this.collectList
         let rightActiveIndex = this.rightSelectedIndex
+        let hotBooks = this.hotBooks
+        let recentBooks = this.recentBooks
         switch (type) {
           case 'help' :
             this.showHelpBanner = true
@@ -432,7 +438,15 @@
             })
             break
           case 'ok':
-            return this.go('/scoreList')
+            if (activeIndex >= 0 && activeIndex <= 7) {
+              // 最近更新
+              return this.$router.push({path: '/scoreList', query: {bookId: recentBooks.bookList[activeIndex].bookId}})
+            }
+            if (activeIndex >= 8 && activeIndex <= 12) {
+              // 热门曲谱
+              return this.$router.push({path: '/scoreList', query: {bookId: hotBooks.bookList[activeIndex - 8].bookId}})
+            }
+            break
           case 'right-up':
             // 右侧列表up事件
             rightActiveIndex--

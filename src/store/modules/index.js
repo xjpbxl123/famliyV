@@ -118,14 +118,29 @@ export default {
         tagId
       }).then(res => {
         if (res.header.code === 0) {
-          res.body.forEach(value => {
-            value.desc = value.desc.replace(/[\n\r]/m, '')
-          })
+          // res.body.forEach(value => {
+          //   value.desc = value.desc.replace(/[\n\r]/m, '')
+          // })
           dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {myCollect: []}, {root: true})
         }
       })
+    },
+    /**
+     * @desc 获取本地收藏列表
+     * */
+    localCollectList ({dispatch}, file) {
+      if (file.length !== 0) {
+        console.log(file, 'file')
+        return dispatch('setCacheToStorage', {localCollect: file}, {root: true})
+      }
+    },
+    /**
+     * @desc 获取本地最近打开
+     * */
+    getLocalRecentOpenList ({dispatch}, file) {
+      return dispatch('setCacheToStorage', {localRecent: file}, {root: true})
     },
     /**
      * @desc 获取右侧列表状态

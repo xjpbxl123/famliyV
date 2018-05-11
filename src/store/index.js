@@ -46,7 +46,8 @@ export default function createStore () {
             }],
             materialList: {
               body: [], sumPage: 1
-            }
+            },
+            localCollect: []
           }
         } // 数据本地缓存
       },
@@ -91,6 +92,9 @@ export default function createStore () {
       },
       yearList: state => {
         return state.storage.cache.renderCache.yearList
+      },
+      localCollect: state => {
+        return state.storage.cache.renderCache.localCollect
       }
     },
     mutations: {

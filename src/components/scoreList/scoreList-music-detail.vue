@@ -9,7 +9,7 @@
     <div class="eachDetail eachDetail2">
       <span class="iconfont icon-star-full"></span>
       <span>难易级别：</span>
-      <!-- <find-star starNum=5 /> -->
+      <find-star :starNum="scoreList[scoreIndex].starNum" />
     </div>
     <div class="eachDetail">
       <span class="iconfont icon-update-time"></span>
@@ -19,7 +19,7 @@
     <div class="eachDetail">
       <span class="iconfont icon-song-introduction"></span>
       <span>曲目介绍：</span>
-      <span>{{scoreList[scoreIndex].desc}}</span>
+      <div class="musicDesc">{{scoreList[scoreIndex].desc}}</div>
     </div>
 
   </div>
@@ -67,7 +67,6 @@
       height: 100%;
       top: 0;
       right: 0;
-      border: 1px solid red;
       text-indent: 176px;
       color: #fff;
       .musicName {
@@ -92,15 +91,42 @@
         &.eachDetail1 {
           margin-top: 60px;
           .author {
-            word-spacing: 20px;
+            display: inline-block;
+            letter-spacing: 9px;
+            text-indent: 0;
+          }
+          span:nth-child(3) {
+            margin-left: -10px;
           }
         }
         &.eachDetail2 {
+          position: relative;
+          span:nth-child(1) {
+            display: inline-block;
+            transform: rotateZ(45deg);
+            text-indent: 0;
+          }
           .star {
-            display: inline;
+            position: absolute;
+            left: 398px;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            text-indent: 0;
           }
         }
-
+        .musicDesc {
+          text-indent: 2rem;
+          width: 1300px;
+          margin-top: 40px;
+          margin-left: 170px;
+          line-height: 44px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          -webkit-line-clamp: 3;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+        }
       }
   }
 </style>

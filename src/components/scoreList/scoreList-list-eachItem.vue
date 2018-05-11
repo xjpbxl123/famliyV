@@ -1,13 +1,13 @@
 <template>
     <li :class="{active:(index===scoreIndex)}">
-        <span class="price sales" v-if="music.sales">限时免费</span>
-        <span class="price free" v-else-if="music.isFree">免费</span>
-        <span class="price hasBought" v-else-if="music.have.base">已购买</span>
-        <span class="price buy" v-else>{{music.payment}}</span>
+        <span class="price sales" v-if="item.sales">限时免费</span>
+        <span class="price free" v-else-if="item.isFree">免费</span>
+        <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
+        <span class="price buy" v-else>{{item.payment}}</span>
         <span class="video iconfont icon-with-video"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
-        <span class="viewNum">{{music.hotNum}}+</span>
-        <span class="musicName">{{music.name}}</span>
+        <span class="viewNum">{{item.hotNum}}+</span>
+        <span class="musicName">{{item.name}}</span>
         <span class="new">new</span>
     </li>
 </template>
@@ -18,9 +18,9 @@
         type: Number,
         default: () => (0)
       },
-      data: {
+      item: {
         type: Object,
-        default: () => ({})
+        default: () => { return {} }
       },
       scoreIndex: {
         type: Number,
@@ -29,35 +29,14 @@
     },
     data () {
       return {
-        music: []
       }
+    },
+    watch: {
+
     },
     methods: {
     },
     created () {
-      let value = this.data
-      this.music = this.data
-      let payment = ''
-      let subParts = {base: '0', accompany: '0', video: '0'}
-      if (!value.isFree && !value.sales && !value.have.base) {
-        // 需要购买
-        let money = 0
-        if (value.have.base !== undefined && value.price.base) {
-          subParts.base = '1'
-          money += value.price.base
-        }
-        if (value.have.accompany === undefined && value.price.accompany) {
-          subParts.accompany = '1'
-          money += value.price.accompany
-        }
-        if (value.have.video === undefined && value.price.video) {
-          subParts.video = '1'
-          money += value.price.video
-        }
-        payment = '￥' + money
-      }
-      this.music.payment = payment
-      this.music.subParts = subParts
     },
     components: {
     }
@@ -72,6 +51,7 @@
       border-bottom-width: 1px;
       transition: all 0.2s ease;
       box-sizing: border-box;
+      display: block;
       border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,0)) 30 30;
       &.active {
         background-image: -webkit-linear-gradient(left,rgba(255,255,255,0.1),rgba(255,255,255,0.2),rgba(255,255,255,0.3));
@@ -86,12 +66,12 @@
           line-height: 30px;
           font-size: 16px;
           color: #fff;
-          background: #d9a122;
+          background: #33b759;
           border-radius: 16px;
           font-weight: 600;
           text-align: center;
           &.buy {
-              background: #33b759;
+              background: #d9a122;
           }
       }
       .video {

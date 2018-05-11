@@ -1,0 +1,83 @@
+[1mdiff --git a/src/components/scoreList/scoreList.vue b/src/components/scoreList/scoreList.vue[m
+[1mindex 36a2730..40490d0 100644[m
+[1m--- a/src/components/scoreList/scoreList.vue[m
+[1m+++ b/src/components/scoreList/scoreList.vue[m
+[36m@@ -7,9 +7,14 @@[m
+       </div>[m
+       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>[m
+       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>[m
+[31m-      <div class="bottom">[m
+[32m+[m[32m      <!-- <div class="bottom">[m
+         <scoreList-control-buttons :collect="collect"/>[m
+[31m-      </div>[m
+[32m+[m[32m      </div> -->[m
+[32m+[m[32m       <toolbar>[m
+[32m+[m[32m      <icon-item v-for="(button,index) in userActionButtons"[m
+[32m+[m[32m                 :key="index" :id="index"[m
+[32m+[m[32m                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>[m
+[32m+[m[32m    </toolbar>[m
+       <find-cover :activeNamespace="namespace" v-if="chooseType">[m
+         <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>[m
+         <scoreList-choose-button :files="files" />[m
+[36m@@ -67,7 +72,60 @@[m
+       return {[m
+         chooseType: false,[m
+         bannerType: '',[m
+[31m-        book: this.$route.query.book[m
+[32m+[m[32m        book: this.$route.query.book,[m
+[32m+[m[32m        userActionButtons: [[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 27,[m
+[32m+[m[32m            text: '帮助',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 30,[m
+[32m+[m[32m            text: '登陆',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 32,[m
+[32m+[m[32m            text: '设置',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 34,[m
+[32m+[m[32m            text: '关机',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 37,[m
+[32m+[m[32m            text: '我的曲谱',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 39,[m
+[32m+[m[32m            text: '弹奏录制',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 42,[m
+[32m+[m[32m            text: '教材练习',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 44,[m
+[32m+[m[32m            text: '流行经典',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 46,[m
+[32m+[m[32m            text: '名师课程',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          },[m
+[32m+[m[32m          {[m
+[32m+[m[32m            pianoKey: 49,[m
+[32m+[m[32m            text: '音乐王国',[m
+[32m+[m[32m            icon: '0xe69c'[m
+[32m+[m[32m          }[m
+[32m+[m
+[32m+[m[32m        ][m
+       }[m
+     },[m
+     watch: {[m

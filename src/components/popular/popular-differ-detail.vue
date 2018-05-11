@@ -46,6 +46,9 @@
       right: 160px;
       top: 260px;
       padding-left: 70px;
+      border-right-width: 0;
+      border-top-width:0;
+      border-bottom-width: 0;
       border-left-width: 2px;
       border-left-style: solid;
       color: #fff;
