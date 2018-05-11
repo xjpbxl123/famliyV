@@ -5,8 +5,8 @@
 ## Get Start
 
 ```
-# clone 项目包括子模块
-git clone --recurse-submodules git@192.168.200.211:moersing/FindFamilyVue.git
+# clone
+git clone  git@192.168.200.211:moersing/FindFamilyVue.git
 
 # 安装依赖
 // 注意：就目前而言,如果结合weex,那么weex目录下也需要install
