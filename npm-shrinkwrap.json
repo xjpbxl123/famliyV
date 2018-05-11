@@ -4173,6 +4173,12 @@
       "integrity": "sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=",
       "dev": true
     },
+    "deep-diff": {
+      "version": "0.3.8",
+      "resolved":
+        "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-0.3.8.tgz",
+      "integrity": "sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ="
+    },
     "deep-equal": {
       "version": "1.0.1",
       "resolved":
@@ -5771,6 +5777,13 @@
         "http://192.168.200.235:8282/repository/findnpmgroup/find-parent-dir/-/find-parent-dir-0.3.0.tgz",
       "integrity": "sha1-M8RLQpqysvBkYpnF+fcY83b/jVQ=",
       "dev": true
+    },
+    "find-toolbar": {
+      "version":
+        "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#0bca4026fe865c155c310a1cd9aa36ae8511d4d2",
+      "requires": {
+        "deep-diff": "0.3.8"
+      }
     },
     "find-up": {
       "version": "2.1.0",
@@ -18303,6 +18316,15 @@
         "espree": "3.5.4",
         "esquery": "1.0.1",
         "lodash": "4.17.5"
+      }
+    },
+    "vue-find-hybrid": {
+      "version":
+        "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#8d1ba40b825d11e428b881d583125d04d644b237",
+      "requires": {
+        "find-toolbar":
+          "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#0bca4026fe865c155c310a1cd9aa36ae8511d4d2",
+        "vue": "2.5.16"
       }
     },
     "vue-hot-reload-api": {

@@ -15,10 +15,14 @@
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
-    <div class="bottom">
-      <popular-tap-button :popularTapIndex="popularTapIndex"/>
-      <popular-control-button/>
-    </div>
+    <toolbar>
+      <icon-item v-for="(button,index) in userActionButtons"
+                 :key="index" :id="index"
+                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
+      <text-icon-item id="200" pianoKey="46" text="年代" icon="0xe6b4"/>
+      <text-icon-item id="201" pianoKey="49" text="难度" icon="0xe6a2"/>
+      <text-icon-item id="202" pianoKey="54" text="曲风" icon="0xe6a8"/>
+    </toolbar>
   </div>
 
 </template>
@@ -44,7 +48,35 @@
 
   export default {
     data () {
-      return {}
+      return {
+        userActionButtons: [
+          {
+            pianoKey: 73,
+            text: '',
+            icon: '0xe660'
+          },
+          {
+            pianoKey: 75,
+            text: '',
+            icon: '0xe65b'
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '0xe63b'
+          },
+          {
+            pianoKey: 80,
+            text: '',
+            icon: '0xe650'
+          },
+          {
+            pianoKey: 82,
+            text: '',
+            icon: '0xe69a'
+          }
+        ]
+      }
     },
     find: {
       [KEY46] () {
@@ -110,6 +142,8 @@
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
+          case 'ok':
+            this.$router.push({path: '/scoreSetList', query: {setId: this.popularGenre[activeIndex].id}})
         }
         this.$store.dispatch('setSelect', {popularGenreSelect: activeIndex}, {root: true})
       },

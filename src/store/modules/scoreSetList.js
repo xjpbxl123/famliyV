@@ -30,10 +30,11 @@ export default {
     },
     getScoreSetList ({dispatch, commit, state} = {}, data) {
       let page = data.page
+      let setId = data.setId
       commit('currentPage', page)
       http.post('', {
         cmd: 'musicScore.getBooksByTag',
-        tagId: 1,
+        tagId: setId,
         page: {
           offset: (page - 1) * 20,
           count: 20

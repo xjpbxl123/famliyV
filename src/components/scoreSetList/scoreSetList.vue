@@ -1,9 +1,9 @@
 <template>
- <div class="scoreSetList">
+  <div class="scoreSetList">
     <findTitle :title="'巴托克小宇宙'"></findTitle>
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
- </div>
+  </div>
 </template>
 <script type="text/javascript">
   import findImg from '../common/find-img/find-img'
@@ -12,6 +12,7 @@
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
   import { KEY73, KEY75, KEY78, KEY80, KEY82 } from 'vue-find'
+
   export default {
     data () {
       return {}
@@ -43,7 +44,7 @@
     },
     methods: {
       getScoreSetList (page) {
-        this.$store.dispatch({ type: 'scoreSetList/getScoreSetList', page: page })
+        this.$store.dispatch({type: 'scoreSetList/getScoreSetList', page, setId: this.$route.query.setId})
       },
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
@@ -114,32 +115,38 @@
   }
 </script>
 <style lang="scss" scoped>
-.scoreSetList {
-  color: #fff;
-    ul.listBox {
+  .scoreSetList {
+    color: #fff;
+
+  ul.listBox {
     position: absolute;
     top: 180px;
     left: 200px;
-    li {
-      color: #fff;
-      font-size: 40px;
-      width: 248px;
-      height: 340px;
-      box-sizing: border-box;
-      margin-right: 102px;
-      margin-bottom: 40px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-      &.active {
-        box-shadow: 0px 0px 50px 10px #fff;
-      }
-    }
+
+  li {
+    color: #fff;
+    font-size: 40px;
+    width: 248px;
+    height: 340px;
+    box-sizing: border-box;
+    margin-right: 102px;
+    margin-bottom: 40px;
+
+  img {
+    width: 100%;
+    height: 100%;
   }
-}
-h1 {
-  font-size: 60px;
-  color: #fff;
-}
+
+  &
+  .active {
+    box-shadow: 0px 0px 50px 10px #fff;
+  }
+
+  }
+  }
+  }
+  h1 {
+    font-size: 60px;
+    color: #fff;
+  }
 </style>

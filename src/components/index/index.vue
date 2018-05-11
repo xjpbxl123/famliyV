@@ -20,14 +20,14 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <find-button-banner>
-      <user-buttons
-        :isLogin="isLogin"
-        :action="buttonActions"/>
-      <voice-control/>
-      <course-button :action="buttonActions"/>
-      <control-button :action="buttonActions"/>
-    </find-button-banner>
+    <!--<find-button-banner>-->
+      <!--<user-buttons-->
+        <!--:isLogin="isLogin"-->
+        <!--:action="buttonActions"/>-->
+      <!--<voice-control/>-->
+      <!--<course-button :action="buttonActions"/>-->
+      <!--<control-button :action="buttonActions"/>-->
+    <!--</find-button-banner>-->
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -42,6 +42,14 @@
       <icon-item v-for="(button,index) in userActionButtons"
                  :key="index" :id="index"
                  :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
+
+      <group id="501">
+        <icon-item id="400" pianoKey="54" text="" icon="0xe62b"/>
+        <icon-item id="401" pianoKey="55" text="" icon="0xe601"/>
+        <icon-item id="402" pianoKey="56" text="120" icon=""/>
+        <icon-item id="403" pianoKey="57" text="" icon="0xe605"/>
+        <icon-item id="404" pianoKey="58" text="3/8" icon=""/>
+      </group>
     </toolbar>
     <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
@@ -59,6 +67,7 @@
     KEY27,
     KEY108,
     KEY30,
+    KEY42,
     KEY75,
     KEY73,
     KEY_ANY,
@@ -107,17 +116,12 @@
           {
             pianoKey: 30,
             text: '登陆',
-            icon: '0xe69c'
+            icon: '0xe651'
           },
           {
             pianoKey: 32,
             text: '设置',
-            icon: '0xe69c'
-          },
-          {
-            pianoKey: 34,
-            text: '关机',
-            icon: '0xe69c'
+            icon: '0xe638'
           },
           {
             pianoKey: 37,
@@ -148,8 +152,37 @@
             pianoKey: 49,
             text: '音乐王国',
             icon: '0xe69c'
+          },
+          {
+            pianoKey: 66,
+            text: '',
+            icon: '0xe609'
+          },
+          {
+            pianoKey: 73,
+            text: '',
+            icon: '0xe660'
+          },
+          {
+            pianoKey: 75,
+            text: '',
+            icon: '0xe65b'
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '0xe63b'
+          },
+          {
+            pianoKey: 80,
+            text: '',
+            icon: '0xe650'
+          },
+          {
+            pianoKey: 82,
+            text: '',
+            icon: '0xe69a'
           }
-
         ]
       }
     },
@@ -159,6 +192,9 @@
       },
       [KEY30] () {
         this.buttonActions('login')
+      },
+      [KEY42] () {
+        this.buttonActions('material')
       },
       [KEY44] () {
         this.buttonActions('popular')
@@ -348,6 +384,8 @@
             return false
           case 'popular':
             return this.go('/popular')
+          case 'material':
+            return this.go('/material')
           case 'left':
             if (activeIndex <= 0) {
               return
