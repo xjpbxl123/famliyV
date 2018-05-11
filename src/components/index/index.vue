@@ -309,15 +309,11 @@
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
-<<<<<<< HEAD
-        this.$store.dispatch({type: 'index/getCollectList'})
-=======
         if (this.isLogin) {
           return this.$store.dispatch({type: 'index/getCollectList'})
         } else {
           return this.$store.dispatch('index/localCollectList', this.localCollect || [])
         }
->>>>>>> findh5-60
       },
       /**
        * @desc 创建会话ID
@@ -444,11 +440,11 @@
           case 'ok':
             if (activeIndex >= 0 && activeIndex <= 7) {
               // 最近更新
-              return this.$router.push({path: '/scoreList', query: {book: recentBooks.bookList[activeIndex]}})
+              return this.$router.push({path: '/scoreList', query: {bookId: recentBooks.bookList[activeIndex].bookId}})
             }
             if (activeIndex >= 8 && activeIndex <= 12) {
               // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {book: hotBooks.bookList[activeIndex - 8]}})
+              return this.$router.push({path: '/scoreList', query: {bookId: hotBooks.bookList[activeIndex - 8].bookId}})
             }
             break
           case 'right-up':
@@ -462,9 +458,9 @@
             rightActiveIndex++
             let data = []
             if (this.rightType === 'myCollect') {
-              data = this.isLogin ? collectList : this.localCollect
+              data = collectList
             } else if (this.rightType === 'recentOpen') {
-              data = this.isLogin ? recentOpenList : this.localRecent
+              data = recentOpenList
             }
             rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
