@@ -19,9 +19,12 @@
       <icon-item v-for="(button,index) in userActionButtons"
                  :key="index" :id="index"
                  :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
-      <text-icon-item id="200" pianoKey="46" text="年代" icon="0xe6b4"/>
-      <text-icon-item id="201" pianoKey="49" text="难度" icon="0xe6a2"/>
-      <text-icon-item id="202" pianoKey="54" text="曲风" icon="0xe6a8"/>
+      <text-icon-item v-for="(item,index) in bigBUtton"
+                      :key="index" :id="item.id"
+                      :text="item.text"
+                      :pianoKey="item.pianoKey"
+                      :style="item.style"
+                      :icon="item.icon"/>
     </toolbar>
   </div>
 
@@ -75,6 +78,11 @@
             text: '',
             icon: '0xe69a'
           }
+        ],
+        bigBUtton: [
+          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#F00000'}},
+          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#F00000'}},
+          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#F00000'}}
         ]
       }
     },
@@ -112,6 +120,11 @@
         popularGenreSelect: state => state.popularGenreSelect
       }),
       ...mapGetters(['differList', 'popularGenre', 'yearList'])
+    },
+    watch: {
+      popularTapIndex: (value) => {
+        this.bigBUtton[value].style.backgroundColor = '#000000'
+      }
     },
     methods: {
       getDiffer () {

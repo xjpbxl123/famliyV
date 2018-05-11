@@ -2283,9 +2283,9 @@ dedent@^0.7.0:
   version "0.7.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
 
-deep-diff@^1.0.0:
-  version "1.0.0"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.0.tgz#0dd55f9412f22a07b2edbfbb11bb4633be6be40b"
+deep-diff@0.3.8:
+  version "0.3.8"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
 
 deep-equal@^1.0.1:
   version "1.0.1"
@@ -3273,10 +3273,10 @@ find-parent-dir@^0.3.0:
     lodash "^4.17.10"
 
 "find-toolbar@git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop":
-  version "1.0.0"
-  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#8559f29087d4f7d4502f71dc5782eb4390a09733"
+  version "1.0.3"
+  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#17db47d2f8bd79d29edd3fc3c3435352d2d13f49"
   dependencies:
-    deep-diff "^1.0.0"
+    deep-diff "0.3.8"
 
 find-up@^1.0.0:
   version "1.1.2"
