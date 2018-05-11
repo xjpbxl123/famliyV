@@ -61,9 +61,7 @@ module.exports = {
       'scripts': path.posix.resolve(__dirname, '../src/scripts'),
       'styles': path.posix.resolve(__dirname, '../src/styles'),
       'images': path.posix.resolve(__dirname, '../src/images'),
-      'plugins': path.posix.resolve(__dirname, '../src/plugins'),
-      'vue-find': path.posix.resolve(__dirname, '../src/plugins/vue-find'),
-      'find-sdk': path.posix.resolve(__dirname, '../src/scripts/findSDK')
+      'plugins': path.posix.resolve(__dirname, '../src/plugins')
     },
     extensions: ['.js', '.vue']
   },
