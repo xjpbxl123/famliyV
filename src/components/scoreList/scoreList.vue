@@ -3,7 +3,7 @@
       <div class="left">
         <!-- <scoreListLeftDeffer></scoreListLeftDeffer> -->
         <!-- <scoreListLeftYear></scoreListLeftYear> -->
-        <scoreListLeftStyle></scoreListLeftStyle>
+        <scoreListLeftStyle :book="book"></scoreListLeftStyle>
       </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
@@ -66,7 +66,8 @@
     data () {
       return {
         chooseType: false,
-        bannerType: ''
+        bannerType: '',
+        book: this.$route.query.book
       }
     },
     watch: {
@@ -197,7 +198,7 @@
       ...mapState({
         scoreIndex: state => state.scoreList.scoreIndex,
         scoreList: function (state) {
-          return state.storage.cache.renderCache.scoreList[this.$route.query.bookId] || [{name: ''}]
+          return state.storage.cache.renderCache.scoreList[this.$route.query.book.bookId] || [{name: ''}]
         },
         isLogin (state) {
           let {storage} = state
@@ -217,7 +218,7 @@
     },
     methods: {
       getScoreList () {
-        let bookId = this.$route.query.bookId
+        let bookId = this.$route.query.book.bookId
         this.$store.dispatch({type: 'scoreList/getScoreList', bookId: bookId})
       },
       /**
@@ -359,7 +360,6 @@
       height: 100%;
       top: 0;
       left: 0;
-      background: burlywood;
     }
 
   }

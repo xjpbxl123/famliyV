@@ -2,7 +2,7 @@
  <div class="scoreListLeft">
    <div class="title">
      <span>
-       周杰伦钢琴演奏
+       {{book.name}}
      </span>
    </div>
     <findImg :src="imgSrc" class="cover"></findImg>
@@ -11,37 +11,37 @@
         <li>
           <i class="iconfont icon-author"></i>
           <span>
-            作者:
+            作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;者:
           </span>
           <span>
-            巴扎嘿
+           {{book.authorName}}
           </span>
         </li>
         <li>
           <i class="iconfont icon-period"></i>
           <span>
-            时期:
+            时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期:
           </span>
           <span>
-            近现代
+            {{book.period}}
           </span>
         </li>
         <li>
           <i class="iconfont icon-country"></i>
           <span>
-            国家:
+            国&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;家:
           </span>
           <span>
-            日不落帝国
+            {{book.country}}
           </span>
         </li>
         <li>
           <i class="iconfont icon-type"></i>
           <span>
-            种类:
+            种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:
           </span>
           <span>
-            属性2值
+            {{book.type}}
           </span>
         </li>
         <li>
@@ -49,7 +49,7 @@
           <span>
             难易级别:
           </span>
-          <findStar :starNum="3" class="scrore-list-scroStar"></findStar>
+          <findStar :starNum="book.starNum" class="scrore-list-scroStar"></findStar>
         </li>
         <li>
           <i class="iconfont icon-update-time"></i>
@@ -57,16 +57,16 @@
             更新日期:
           </span>
           <span>
-            2017-06-20
+            {{book.time | format}}
           </span>
         </li>
         <li>
           <i class="iconfont icon-performer"></i>
           <span>
-            演奏家:
+            演&nbsp;奏&nbsp;家:
           </span>
           <span>
-            流行音乐
+            {{book.performer}}
           </span>
         </li>
       </ul>
@@ -74,21 +74,34 @@
     <div class="musicLabels">
       <i class="iconfont icon-label"></i>
       <span>
-        曲谱标签：港台  2000年后  男歌手  忧桑  抒情
+        曲谱标签：{{book.tagNames}}
       </span>
     </div>
     <div class="introduce">
-      爵士乐（Jazz），于19世纪末20世纪初源于美国，诞生于南部港口城市新奥尔良，音乐根基来自布鲁斯（Blues）和拉格泰姆（Ragtime）。爵士乐讲究即兴，以具有摇摆特点的Shuffle节奏为基础，是非洲黑人文化和欧洲白人文化的结合。20世纪前十几年爵士乐主要集中在新奥尔良发展，1917年后转向芝加哥，30年代又转移至纽约，直至今天，爵士乐风靡全球。爵士乐的主要风格有：新奥尔良爵士、摇摆乐、比博普、冷爵士、自由爵士、拉丁爵士、融合爵士等。
+      {{book.desc}}
     </div>
  </div>
 </template>
 <script type="text/javascript">
   import findImg from '../common/find-img/find-img'
   import findStar from '../common/find-star/find-star'
+  import { formatDate } from 'scripts/utils/index'
   export default {
+    props: {
+      book: {
+        type: Object,
+        default: () => { return {} }
+      }
+    },
     data () {
       return {
         imgSrc: require('../popular/images/pic_02.png')
+      }
+    },
+    filters: {
+      format (value) {
+        let t = new Date(parseInt(value))
+        return formatDate(t, 'yyyy-MM-dd')
       }
     },
     computed: {},
@@ -109,14 +122,22 @@
     position: absolute;
     top: 85px;
     left: 100px;
+    width: 448px;
+    span {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+    }
     &::after {
       content: "";
       position: absolute;
       width: 400px;
       height: 2px;
-      bottom: 10px;
+      bottom: 30px;
       background: -webkit-linear-gradient(left, white, rgba(255, 255, 255, 0));
-      left: 120%;
+      left: 106%;
     }
   }
   .cover {
@@ -129,7 +150,6 @@
   .attribute {
     width: 400px;
     height: 358px;
-    background-color: skyblue;
     font-size: 24px;
     position: absolute;
     right: 0;
