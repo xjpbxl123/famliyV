@@ -97,51 +97,43 @@ export default function createStore () {
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
       },
-      [LOGIN_OUT_CACHE] (state) {
-        state.storage.cache.renderCache = state.storage.cache['-1']
+      [LOGIN_OUT_CACHE] (state, data) {
+        state.storage.cache.renderCache = data
       },
       [SET_SELECT] (state, data) {
         Object.assign(state, data)
       },
       [DEL_SELECT] (state, key) {
-        // Reflect.deleteProperty(state, key)
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
-        let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-        let loginCache = state.storage.cache[userId] || state.storage.cache.renderCache
+        let userId = state.storage.isLogin ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
-          loginCache[key] = value
           state.storage.cache.renderCache[key] = value
         }
-        state.storage.cache[userId] = loginCache
-        nativeStorage.setDefault('cache', {value: JSON.stringify(state.storage.cache)})
+        nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
       }
     },
     actions: {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, state}) {
+      initialNativeStorage ({commit, dispatch}) {
         return Promise.all([
           nativeStorage.getDefault('playCalendar'),
           nativeStorage.getDefault('isLogin'),
           nativeStorage.getDefault('userInfo'),
-          nativeStorage.getDefault('sessionId'),
-          nativeStorage.getDefault('cache')
+          nativeStorage.getDefault('sessionId')
         ])
           .then(data => {
-            let userId = data[2].value && JSON.parse(data[2].value).userId ? JSON.parse(data[2].value).userId : '-1'
-            let cache = data[4].value && JSON.parse(data[4].value) ? JSON.parse(data[4].value) : {}
-            cache['renderCache'] = cache[userId] || Object.assign({}, state.storage.cache.renderCache)
             commit(SET_STORAGE, {
-              playCalendar: data[0].value ? JSON.parse(data[0].value) : {},
-              isLogin: data[1].value ? JSON.parse(data[1].value) : false,
-              userInfo: data[2].value ? JSON.parse(data[2].value) : {},
-              sessionId: data[3].value ? JSON.parse(data[3].value) : null,
-              cache,
+              playCalendar: data[0] && data[0].value ? data[0].value : {},
+              isLogin: data[1] && data[1].value ? data[1].value : false,
+              userInfo: data[2] && data[2].value ? data[2].value : {},
+              sessionId: data[3] && data[3].value ? data[3].value : null,
               isSynced: true
             })
+            dispatch('initCacheStorage', data)
           })
       },
       /**
@@ -150,11 +142,28 @@ export default function createStore () {
       setNativeStorage ({commit}, data) {
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.setDefault(key, {value: JSON.stringify(value)}).then(() => {
+            nativeStorage.setDefault(key, {value}).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
           }
+        })
+      },
+      /**
+       * @desc 初始化缓存数据
+       * @param dispatch
+       * @param state
+       * @param commit
+       * @param data
+       */
+      initCacheStorage ({dispatch, state, commit}, data) {
+        let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
+        nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
+          let cache = {}
+          cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+          commit(SET_STORAGE, {
+            cache
+          })
         })
       },
       /**
@@ -166,8 +175,7 @@ export default function createStore () {
       setCacheToStorage ({dispatch, state, commit}, data) {
         if (Reflect.has(data, 'id')) {
           let key = Object.keys(data)[0]
-          let userId = state.storage.isLogin ? state.storage.userInfo.userId : '-1'
-          let loginCache = Object.assign({}, state.storage.cache[userId] && (state.storage.cache[userId][key] || {}))
+          let loginCache = Object.assign({}, state.storage.cache.renderCache[key] || {})
           let cache = {}
           loginCache[data.id] = data[key]
           cache[key] = loginCache
@@ -219,8 +227,11 @@ export default function createStore () {
       /**
        * @desc 用户注销时的数据映射view
        * */
-      logoutCache ({dispatch, commit}) {
-        commit(LOGIN_OUT_CACHE)
+      logoutCache ({dispatch, commit, state}) {
+        nativeStorage.getDefault('-1').then(param => {
+          let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+          commit(LOGIN_OUT_CACHE, data)
+        })
       },
       setSelect ({commit, state}, data) {
         commit(SET_SELECT, data)

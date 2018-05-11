@@ -1,6 +1,6 @@
 <template>
   <div class="banner-wrapper">
-    <!--<statusBar/>-->
+    <statusBar/>
     <div class="banner-content">
       <banner-left
         :isSynced="isSynced"
@@ -20,14 +20,14 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <!--<find-button-banner className="button-banner">-->
-    <!--<user-buttons-->
-    <!--:isLogin="isLogin"-->
-    <!--:action="buttonActions"/>-->
-    <!--<voice-control/>-->
-    <!--<course-button :action="buttonActions"/>-->
-    <!--<control-button :action="buttonActions"/>-->
-    <!--</find-button-banner>-->
+    <find-button-banner>
+      <user-buttons
+        :isLogin="isLogin"
+        :action="buttonActions"/>
+      <voice-control/>
+      <course-button :action="buttonActions"/>
+      <control-button :action="buttonActions"/>
+    </find-button-banner>
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -39,14 +39,15 @@
       />
     </find-cover>
     <toolbar>
-      <icon-item id="300" pianoKey="27" icon="0xe671" longClick="true"/>
-      <icon-item id="301" pianoKey="56" icon="0xe671" longClick="true"/>
+      <icon-item v-for="(button,index) in userActionButtons"
+                 :key="index" :id="index"
+                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
     </toolbar>
     <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
 </template>
 <script type="text/javascript">
-  import {mapState, mapGetters} from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -74,7 +75,7 @@
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
-  // import statusBar from '../common/find-status-bar/find-status-bar'
+  import statusBar from '../common/find-status-bar/find-status-bar'
 
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
@@ -96,13 +97,65 @@
           borderColor: '#ef9900',
           borderRadius: 20
         },
-        showWeex: true
+        showWeex: true,
+        userActionButtons: [
+          {
+            pianoKey: 27,
+            text: '帮助',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 30,
+            text: '登陆',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 32,
+            text: '设置',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 34,
+            text: '关机',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 37,
+            text: '我的曲谱',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 39,
+            text: '弹奏录制',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 42,
+            text: '教材练习',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 44,
+            text: '流行经典',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 46,
+            text: '名师课程',
+            icon: '0xe69c'
+          },
+          {
+            pianoKey: 49,
+            text: '音乐王国',
+            icon: '0xe69c'
+          }
+
+        ]
       }
     },
     find: {
       [KEY27] () {
-        this.openWeex()
-        // this.buttonActions('help')
+        this.buttonActions('help')
       },
       [KEY30] () {
         this.buttonActions('login')
@@ -140,9 +193,6 @@
       [KEY108] () {
         console.log(this)
         this.buttonActions()
-      },
-      [KEY66] () {
-        this.buttonActions('logout')
       },
       [KEY66] () {
         this.buttonActions('logout')
@@ -398,8 +448,8 @@
       controlButton,
       contentCenter,
       bannerRight,
-      bannerHelp
-      // statusBar
+      bannerHelp,
+      statusBar
     }
   }
 </script>
@@ -407,10 +457,10 @@
   .banner-wrapper {
     height: 100%;
 
-    .banner-content {
-      display: flex;
-      height: 100%;
-    }
+  .banner-content {
+    display: flex;
+    height: 100%;
+  }
 
   }
 

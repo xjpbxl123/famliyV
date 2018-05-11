@@ -2,13 +2,14 @@
   <div>
     <famous-swiper :famousList="allArtists.authors" :select="select" :defaultLeft="defaultLeft"/>
     <find-title title="名师课程"></find-title>
-    <div class="bottom">
-      <find-button v-for="button in famousButton"
-                   :className="button.className"
-                   :iconClass="button.icon"
-                   :action="action.bind(this,button.className[0])"
-                   :key="button.icon"/>
-    </div>
+    <toolbar>
+      <icon-item v-for="button in famousButton"
+                 :pianoKey="button.pianoKey"
+                 :key="button.icon"
+                 longClick="true"
+                 :id="button.id"
+                 :icon="button.icon"/>
+    </toolbar>
   </div>
 </template>
 
@@ -26,16 +27,19 @@
         select: 0,
         famousButton: [
           {
-            icon: 'icon-left',
-            className: ['left', 'key-78']
+            pianoKey: 78,
+            icon: '0xe660',
+            id: 201
           },
           {
-            icon: 'icon-right',
-            className: ['right', 'key-80']
+            pianoKey: 80,
+            icon: '0xe65b',
+            id: 202
           },
           {
-            icon: 'icon-ok',
-            className: ['ok', 'key-82']
+            pianoKey: 82,
+            icon: '0xe69a',
+            id: 203
           }
         ],
         defaultLeft: 1293
