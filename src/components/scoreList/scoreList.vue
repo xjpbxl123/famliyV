@@ -7,13 +7,21 @@
       </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
-      <div class="bottom">
+      <!-- <div class="bottom">
         <scoreList-control-buttons :collect="collect"/>
-      </div>
+      </div> -->
       <find-cover :activeNamespace="namespace" v-if="chooseType">
         <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-button :files="files" />
       </find-cover>
+      <toolbar v-if="!chooseType">
+        <icon-item v-for="(button,index) in controlButtons"
+                :key="index"
+                :id=button.id
+                :icon="button.icon"
+                :pianoKey="button.pianoKey"
+                :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+      </toolbar>
   </div>
 
 </template>
@@ -67,12 +75,63 @@
       return {
         chooseType: false,
         bannerType: '',
-        book: this.$route.query.book
+        book: this.$route.query.book,
+        controlButtons: [
+          {
+            pianoKey: 73,
+            text: '',
+            icon: '0xe636',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 11
+          },
+          {
+            pianoKey: 75,
+            text: '',
+            icon: '0xe64c',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 12
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 13
+          },
+          {
+            pianoKey: 80,
+            text: '',
+            icon: '0xe650',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 14
+          },
+          {
+            pianoKey: 82,
+            text: '',
+            icon: '0xe69a',
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 15
+          },
+          {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe653',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 15
+          }
+        ]
       }
     },
     watch: {
-      scoreList: function () {
-        this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+      scoreList: function (value) {
+        console.log(value, 'value')
+        this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
       }
     },
     find: {

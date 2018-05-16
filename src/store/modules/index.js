@@ -131,10 +131,7 @@ export default {
      * @desc 获取本地收藏列表
      * */
     localCollectList ({dispatch}, file) {
-      if (file.length !== 0) {
-        console.log(file, 'file')
-        return dispatch('setCacheToStorage', {localCollect: file}, {root: true})
-      }
+      return dispatch('setCacheToStorage', {localCollect: file}, {root: true})
     },
     /**
      * @desc 获取本地最近打开

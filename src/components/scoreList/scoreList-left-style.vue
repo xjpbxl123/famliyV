@@ -5,7 +5,7 @@
        {{book.name}}
      </span>
    </div>
-    <findImg :src="imgSrc" class="cover"></findImg>
+    <findImg :src="book.coverSmall" class="cover"></findImg>
     <div class="attribute">
       <ul>
         <li>
