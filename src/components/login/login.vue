@@ -2,7 +2,7 @@
   <div class="login">
     <login-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
-    <!-- <login-button :action="buttonActions"/> -->
+    <login-button :action="buttonActions"/>
     <toolbar>
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
