@@ -40,10 +40,11 @@
     </find-cover>
     <toolbar>
       <text-icon-item v-for="(button,index) in userActionButtons"
-      :key="index" :id="index" :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"
-      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
-      longClick="true"/>
-      <image-item text="收拾" titlePosition="below" :image="require('./images/game.png')"  id="405" pianoKey="60" imageType="big"/>
+                      :key="index" :id="index" :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"
+                      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
+                      longClick="true"/>
+      <image-item text="收拾" titlePosition="below" :image="require('./images/game.png')" id="405" pianoKey="60"
+                  imageType="big"/>
       <group id="501">
         <icon-item id="400" pianoKey="54" text="街拍街拍" titlePosition="below" icon="0xe62b"
                    :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"/>
@@ -57,7 +58,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { mapState, mapGetters } from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import userButtons from './index-user-buttons'
@@ -66,13 +67,13 @@
   import findDot from '../common/find-dot/find-dot'
   import voiceControl from './index-voice-control'
   import {
+    INTERCEPT_DOWN,
     KEY27,
     KEY108,
     KEY30,
     KEY42,
     KEY75,
     KEY73,
-    KEY_ANY,
     KEY66,
     KEY78,
     KEY80,
@@ -236,8 +237,8 @@
         this.buttonActions('logout')
       },
       banner: {
-        [KEY_ANY] (key) {
-          this.clickHelp(key)
+        [INTERCEPT_DOWN] (keys) {
+          this.clickHelp(keys[0])
         }
       }
     },
@@ -511,10 +512,10 @@
   .banner-wrapper {
     height: 100%;
 
-  .banner-content {
-    display: flex;
-    height: 100%;
-  }
+    .banner-content {
+      display: flex;
+      height: 100%;
+    }
 
   }
 
