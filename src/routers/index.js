@@ -12,6 +12,8 @@ import scoreSetList from 'components/scoreSetList/scoreSetList-router'
 import scoreList from 'components/scoreList/scoreList-router'
 import material from 'components/material/material-router'
 import staff from 'components/staff/staff-router'
+import famousPlay from 'components/famous/famous-play/famousPlay-router'
+
 export default [
   index,
   home,
@@ -22,5 +24,6 @@ export default [
   scoreSetList,
   scoreList,
   material,
-  staff
+  staff,
+  famousPlay
 ]

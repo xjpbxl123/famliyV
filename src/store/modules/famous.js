@@ -22,6 +22,17 @@ export default {
       }).then(({body}) => {
         body && dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
       })
+    },
+    getCoursesBySet ({dispatch}, {courseSetID}) {
+      return http.post('', {
+        cmd: 'artist.getCoursesBySet',
+        'courseSetId': courseSetID - 0,
+        ...defaultData
+      }).then((data) => {
+        if (!data.header.code) {
+          return dispatch('setCacheToStorage', {famousPlayCoursesBySet: data.body, id: courseSetID}, {root: true})
+        }
+      })
     }
   }
 }

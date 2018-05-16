@@ -18,7 +18,7 @@
   import findButton from '../../common/find-button/find-button'
   import findTitle from '../../common/find-title/find-title'
   import famousBookSwiper from './famous-book-swiper'
-  import { KEY78, KEY80 } from 'vue-find'
+  import { KEY78, KEY80, KEY82 } from 'vue-find'
 
   export default {
     name: 'famous-book',
@@ -97,6 +97,9 @@
       },
       [KEY80] () {
         this.action('right')
+      },
+      [KEY82] () {
+        this.action('ok')
       }
     },
     components: {
