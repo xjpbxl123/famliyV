@@ -2283,9 +2283,9 @@ dedent@^0.7.0:
   version "0.7.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
 
-deep-diff@0.3.8:
-  version "0.3.8"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
+deep-diff@1.0.0:
+  version "1.0.0"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.0.tgz#0dd55f9412f22a07b2edbfbb11bb4633be6be40b"
 
 deep-equal@^1.0.1:
   version "1.0.1"
@@ -3273,10 +3273,10 @@ find-parent-dir@^0.3.0:
     lodash "^4.17.10"
 
 "find-toolbar@git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop":
-  version "1.0.3"
-  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#17db47d2f8bd79d29edd3fc3c3435352d2d13f49"
+  version "1.0.5"
+  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#cba1942e4ef1b14e73601b0493a0923117eb041c"
   dependencies:
-    deep-diff "0.3.8"
+    deep-diff "1.0.0"
 
 find-up@^1.0.0:
   version "1.1.2"
@@ -8229,11 +8229,21 @@ vue-eslint-parser@^2.0.3:
     find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
     vue "^2.5.2"
 
-"vue-find@git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#develop":
-  version "1.1.1"
-  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#f935d6451289f4bfae2d4a28ba2c3d9fd17eda20"
+"vue-find-hybrid@http://192.168.200.211/zhuzhe/vue-find-hybrid.git":
+  version "1.0.5"
+  resolved "http://192.168.200.211/zhuzhe/vue-find-hybrid.git#0140cd0d35faec387e16d103ee120f4bdb2ef304"
+  dependencies:
+    find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
+    vue "^2.5.2"
+
+"vue-find@git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git":
+  version "1.1.0"
+  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#96fbd3e5dc1e31190305ae9c30ad6d612a8ebd90"
   dependencies:
     lodash "^4.17.10"
+    vue "^2.5.16"
+    vue-find-hybrid "http://192.168.200.211/zhuzhe/vue-find-hybrid.git"
+    vue-router "^3.0.1"
 
 vue-hot-reload-api@^2.2.0:
   version "2.3.0"
@@ -8292,7 +8302,7 @@ vue-template-es2015-compiler@^1.6.0:
   version "1.6.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
 
-vue@^2.2.1, vue@^2.5.2:
+vue@^2.2.1, vue@^2.5.16, vue@^2.5.2:
   version "2.5.16"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 

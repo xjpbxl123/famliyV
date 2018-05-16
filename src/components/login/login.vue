@@ -10,7 +10,7 @@
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
   import loginButton from './login-button'
-  import { KEY_ANY, KEY85, KEY90, KEY92, KEY94 } from 'vue-find'
+  import {INTERCEPT_DOWN, KEY85, KEY90, KEY92, KEY94} from 'vue-find'
 
   export default {
     name: 'login',
@@ -23,7 +23,7 @@
       /**
        * @desc 处理所有按键
        * */
-      [KEY_ANY] (key) {
+      [INTERCEPT_DOWN] (key) {
         if (key >= 27 && key <= 82) {
           /// 钢琴上的27是左边的按键,所以要减去27
           key = key - 27
