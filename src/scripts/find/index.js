@@ -1,8 +1,8 @@
-import {KEY108} from 'vue-find'
+import {BACK_PRESSED} from 'vue-find'
 
 export default {
   globalKeyEvents: {
-    [KEY108] () {
+    [BACK_PRESSED] () {
       this.$router.back()
     }
   }

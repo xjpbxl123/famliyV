@@ -10,7 +10,7 @@
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
   import loginButton from './login-button'
-  import {INTERCEPT_DOWN, KEY85, KEY90, KEY92, KEY94} from 'vue-find'
+  import {INTERCEPT_DOWN} from 'vue-find'
 
   export default {
     name: 'login',
@@ -29,22 +29,22 @@
           key = key - 27
           this.$refs.keyboard.clickKeyboard(key)
         }
-      },
-      /// delete
-      [KEY85] () {
-        this.buttonActions('delete')
-      },
-      /// up
-      [KEY90] () {
-        this.buttonActions('up')
-      },
-      /// down
-      [KEY92] () {
-        this.buttonActions('down')
-      },
-      /// ok
-      [KEY94] () {
-        this.buttonActions('ok')
+        switch (key) {
+          case 85:
+            /// delete
+            return this.buttonActions('delete')
+          case 90:
+            /// up
+            return this.buttonActions('up')
+          case 92:
+            /// down
+            return this.buttonActions('down')
+          case 94:
+            /// ok
+            return this.buttonActions('ok')
+          case 108:
+            return this.$router.back()
+        }
       }
     },
     methods: {

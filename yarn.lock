@@ -8237,8 +8237,8 @@ vue-eslint-parser@^2.0.3:
     vue "^2.5.2"
 
 "vue-find@git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git":
-  version "1.1.0"
-  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#96fbd3e5dc1e31190305ae9c30ad6d612a8ebd90"
+  version "1.1.1"
+  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#b7bab4b68c91f817b9ce2bf0c135c4b81d0ea77c"
   dependencies:
     lodash "^4.17.10"
     vue "^2.5.16"
