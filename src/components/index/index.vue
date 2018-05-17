@@ -20,14 +20,6 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <!--<find-button-banner>-->
-    <!--<user-buttons-->
-    <!--:isLogin="isLogin"-->
-    <!--:action="buttonActions"/>-->
-    <!-- <voice-control/> -->
-    <!-- <course-button :action="buttonActions"/> -->
-    <!--<control-button :action="buttonActions"/>-->
-    <!--</find-button-banner>-->
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -74,11 +66,7 @@
   import {mapState, mapGetters} from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
-  import userButtons from './index-user-buttons'
-  import courseButton from './index-course-button'
-  import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
-  import voiceControl from './index-voice-control'
   import {
     INTERCEPT_DOWN,
     KEY27,
@@ -572,10 +560,6 @@
       bannerLeft,
       findButtonBanner,
       findDot,
-      voiceControl,
-      userButtons,
-      courseButton,
-      controlButton,
       contentCenter,
       bannerRight,
       bannerHelp,

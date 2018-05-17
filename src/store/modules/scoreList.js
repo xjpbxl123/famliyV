@@ -20,12 +20,19 @@ export default {
     /**
      * @desc 获取曲谱列表
      * */
-    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 1000}, bookId}) {
+    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 1000}, typeName, id}) {
+      console.log(id)
+      let cmd = 'musicScore.getMusicsByBook'
+      let netObj = {page, bookId: id, cmd: cmd}
+      if (typeName === 'other') {
+        cmd = 'musicScore.getMusicsByTag'
+        netObj = {page, tagId: id, cmd: cmd}
+      }
+      console.log(netObj)
       return http.post('', {
-        cmd: 'musicScore.getMusicsByBook',
-        page,
-        bookId
+        ...netObj
       }).then(res => {
+        console.log(res)
         if (res.header.code === 0) {
           let musicIdList = []
           let payment = ''
@@ -55,20 +62,20 @@ export default {
             })
             if (!this.state.storage.isLogin) {
               let collectData = []
-              // musicIdList.forEach((value) => {
-              //   if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
-              //     collectData.push({musicId: value, collection: 0})
-              //   } else {
-              //     this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
-              //       if (value === value1.musicId) {
-              //         // 有收藏记录
-              //         collectData.push({musicId: value, collection: 1})
-              //       } else {
-              //         collectData.push({musicId: value, collection: 0})
-              //       }
-              //     })
-              //   }
-              // })
+              musicIdList.forEach((value) => {
+                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
+                  collectData.push({musicId: value, collection: 0})
+                } else {
+                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
+                    if (value === value1.musicId) {
+                      // 有收藏记录
+                      collectData.push({musicId: value, collection: 1})
+                    } else {
+                      collectData.push({musicId: value, collection: 0})
+                    }
+                  })
+                }
+              })
               item.collect = collectData
               collectData = []
             } else {
@@ -83,7 +90,7 @@ export default {
             musicIdList = []
           })
           console.log(res.body.musicList, 'res.body.musicList')
-          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: bookId}, {root: true})
+          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
       })
     },
