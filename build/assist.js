@@ -5,6 +5,7 @@ const NODE_ENV = process.env.NODE_ENV
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const assetConfig = require('./config')
+const shell = require('shelljs')
 /**
  * @desc return an absolute asset path
  * @param {string} _path
@@ -50,8 +51,15 @@ const stylesLoader = (options = {}) => {
   }
   return stylesLoaders
 }
+/**
+ * @desc Copy static assets such as Public folder
+ * */
+const copyStaticAssets = (root = assetConfig.assertRoot) => {
+  shell.cp('-R', assetConfig.staticAssert, root)
+}
 module.exports = {
   assetPath,
   cssLoader,
-  stylesLoader
+  stylesLoader,
+  copyStaticAssets
 }

@@ -11,7 +11,7 @@ module.exports = {
   entry: ['./build/polyfill.js', './src/main.js'],
   output: {
     path: config.assertRoot,
-    publicPath: NODE_ENV !== 'development' ? './' : '',
+    publicPath: './',
     filename: '[name].js'
   },
   module: {
@@ -58,6 +58,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'vue-find$': 'vue-find/dist/vue-find.esm.js',
+      'find-sdk': path.posix.resolve(__dirname, '../src/scripts/findSDK'),
       'components': path.posix.resolve(__dirname, '../src/components'),
       'scripts': path.posix.resolve(__dirname, '../src/scripts'),
       'styles': path.posix.resolve(__dirname, '../src/styles'),
@@ -66,11 +67,10 @@ module.exports = {
     },
     extensions: ['.js', '.vue']
   },
-  devServer: {
-    historyApiFallback: true,
-    stats: 'minimal',
-    noInfo: false,
-    compress: true
+  externals: {
+    math: {
+      root: 'math' // indicates global variable
+    }
   },
   devtool: 'cheap-module-eval-source-map',
   performance: {
