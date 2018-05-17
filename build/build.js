@@ -7,6 +7,7 @@ const path = require('path')
 const webpack = require('webpack')
 const Progress = require('webpack/lib/ProgressPlugin')
 const config = require('./config')
+const assist = require('assist')
 let webpackProd = require('./webpack.prod.config')
 const weexWebpack = require('../weex/node_modules/webpack')
 let weexBuild = require('../weex/webpack.config')
@@ -61,14 +62,13 @@ const buildWeex = () => {
 switch (true) {
   case args.fuller:
     shell.rm('-rf', config.assertRoot)
-    buildWeb()
+    buildWeb().then(assist.copyStaticAssets)
     buildWeex()
     return
   case args.weex:
     shell.rm('-rf', path.resolve(config.assertRoot, config.weexAssertPath))
     return buildWeex()
   default:
-    // shell.exec(`ls ${config.assertRoot} | grep -v ${config.weexAssertPath} | xargs rm -rf`)
     shell.rm('-rf', config.assertRoot)
-    return buildWeb()
+    return buildWeb().then(assist.copyStaticAssets)
 }

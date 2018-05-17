@@ -3,8 +3,6 @@
  */
 const webpackMerge = require('webpack-merge')
 const webpack = require('webpack')
-const path = require('path')
-const shell = require('shelljs')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -14,9 +12,6 @@ const envConfig = require('./env')()
 const isPro = NODE_ENV === 'production'
 const shouldUseSourceMap = !!(NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap)
 const assist = require('./assist')
-const config = require('./config')
-/// Remove files of dist
-shell.rm('-rf', path.resolve(config.assertRoot, '*'))
 module.exports = webpackMerge(webpackBase, {
   output: {
     filename: assist.assetPath('javascript/[name].[chunkhash].js'),

@@ -11,7 +11,7 @@ import popular from 'components/popular/popular-router'
 import scoreSetList from 'components/scoreSetList/scoreSetList-router'
 import scoreList from 'components/scoreList/scoreList-router'
 import material from 'components/material/material-router'
-
+import staff from 'components/staff/staff-router'
 export default [
   index,
   home,
@@ -21,5 +21,6 @@ export default [
   popular,
   scoreSetList,
   scoreList,
-  material
+  material,
+  staff
 ]
