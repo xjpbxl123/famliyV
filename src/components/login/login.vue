@@ -2,7 +2,6 @@
   <div class="login">
     <login-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
-    <!-- <login-button :action="buttonActions"/> -->
     <toolbar>
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
@@ -17,7 +16,6 @@
 <script>
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
-  import loginButton from './login-button'
   import {INTERCEPT_DOWN} from 'vue-find'
 
   export default {
@@ -121,8 +119,7 @@
     },
     components: {
       loginKeyboard,
-      loginBanner,
-      loginButton
+      loginBanner
     }
   }
 </script>

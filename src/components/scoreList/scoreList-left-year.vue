@@ -2,10 +2,10 @@
  <div class="scoreListLeft">
    <div class="title">
      <span>
-       2000~2010年代
+       {{year.name}}
      </span>
    </div>
-    <findImg :src="imgSrc" class="cover"></findImg>
+    <findImg :src="year.coverSmall" class="cover"></findImg>
  </div>
 </template>
 <script type="text/javascript">
@@ -14,6 +14,14 @@
     data () {
       return {
         imgSrc: require('../popular/images/pic_02.png')
+      }
+    },
+    props: {
+      year: {
+        type: Object,
+        default: () => {
+          return {}
+        }
       }
     },
     computed: {

@@ -2,12 +2,12 @@
  <div class="scoreListLeft">
    <div class="title">
      <span>
-       lv.2
+       lv.{{differ.starNum}}
      </span>
    </div>
-    <findImg :src="imgSrc" class="cover"></findImg>
+    <findImg :src="differ.coverSmall" class="cover"></findImg>
     <div class="rhythmic">
-      节奏型：全音符／二分音符／四分音符
+      {{differ.differC}}
     </div>
  </div>
 </template>
@@ -19,11 +19,18 @@
         imgSrc: require('../popular/images/pic_02.png')
       }
     },
+    props: {
+      differ: {
+        type: Object,
+        default: () => { return {} }
+      }
+    },
     computed: {
     },
     methods: {
     },
     created () {
+      console.log(this.differ, 'differ')
     },
     components: {
       findImg

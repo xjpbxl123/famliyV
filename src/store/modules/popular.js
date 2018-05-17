@@ -1,4 +1,3 @@
-// import http from '../../scripts/http'
 import http from '../../scripts/http'
 
 const POPULAY_INDEX = 'POPULAR_INDEX' /// 流行经典选中index
@@ -55,31 +54,36 @@ export default {
             sleCoverSmall: require('../../components/popular/images/pic_01_sle.png'),
             differC: res.body[0].desc,
             skills: res.body[0].desc,
-            starNum: 1
+            starNum: 1,
+            id: res.body[0].id
           }, {
             coverSmall: require('../../components/popular/images/pic_02.png'),
             sleCoverSmall: require('../../components/popular/images/pic_02_sle.png'),
             differC: res.body[1].desc,
             skills: res.body[1].desc,
-            starNum: 2
+            starNum: 2,
+            id: res.body[1].id
           }, {
             coverSmall: require('../../components/popular/images/pic_03.png'),
             sleCoverSmall: require('../../components/popular/images/pic_03_sle.png'),
             differC: res.body[2].desc,
             skills: res.body[2].desc,
-            starNum: 3
+            starNum: 3,
+            id: res.body[2].id
           }, {
             coverSmall: require('../../components/popular/images/pic_04.png'),
             sleCoverSmall: require('../../components/popular/images/pic_04_sle.png'),
             differC: res.body[3].desc,
             skills: res.body[3].desc,
-            starNum: 4
+            starNum: 4,
+            id: res.body[3].id
           }, {
             coverSmall: require('../../components/popular/images/pic_05.png'),
             sleCoverSmall: require('../../components/popular/images/pic_05_sle.png'),
             differC: res.body[4].desc,
             skills: res.body[4].desc,
-            starNum: 5
+            starNum: 5,
+            id: res.body[4].id
           }]
           dispatch('setCacheToStorage', {differList: data}, {root: true})
         }
@@ -107,30 +111,34 @@ export default {
         }
       }).then((res) => {
         console.log(res)
+        let data = [
+          {
+            name: '1970年代',
+            coverSmall: require('../../components/popular/images/pic_1970.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_1970_sle.png'),
+            id: res.body[0].id
+          },
+          {
+            name: '1980年代',
+            coverSmall: require('../../components/popular/images/pic_1980.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_1980_sle.png'),
+            id: res.body[1].id
+          },
+          {
+            name: '1990年代',
+            coverSmall: require('../../components/popular/images/pic_1990.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_1990_sle.png'),
+            id: res.body[2].id
+          },
+          {
+            name: '2000~2010年代',
+            coverSmall: require('../../components/popular/images/pic_2000.png'),
+            sleCoverSmall: require('../../components/popular/images/pic_2000_sle.png'),
+            id: res.body[3].id
+          }
+        ]
+        return dispatch('setCacheToStorage', {yearList: data}, {root: true})
       })
-      let data = [
-        {
-          name: '1970年代',
-          coverSmall: require('../../components/popular/images/pic_1970.png'),
-          sleCoverSmall: require('../../components/popular/images/pic_1970_sle.png')
-        },
-        {
-          name: '1980年代',
-          coverSmall: require('../../components/popular/images/pic_1980.png'),
-          sleCoverSmall: require('../../components/popular/images/pic_1980_sle.png')
-        },
-        {
-          name: '1990年代',
-          coverSmall: require('../../components/popular/images/pic_1990.png'),
-          sleCoverSmall: require('../../components/popular/images/pic_1990_sle.png')
-        },
-        {
-          name: '2000~2010年代',
-          coverSmall: require('../../components/popular/images/pic_2000.png'),
-          sleCoverSmall: require('../../components/popular/images/pic_2000_sle.png')
-        }
-      ]
-      return dispatch('setCacheToStorage', {yearList: data}, {root: true})
     }
   }
 }

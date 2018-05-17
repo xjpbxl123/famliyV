@@ -17,14 +17,15 @@
     </div>
     <toolbar>
       <text-icon-item v-for="(button) in bigBUtton"
-                      :key=button.id :id="button.id"
-                      :text="button.text"
-                      :pianoKey="button.pianoKey"
-                      :style="button.style"
-                      :icon="button.icon"/>
-     <icon-item v-for="(button,index) in controlButtons"
-            :key="index"
-            :id=button.id
+            :key="button.id"
+            :id="button.id"
+            :text="button.text"
+            :pianoKey="button.pianoKey"
+            :style="button.style"
+            :icon="button.icon"/>
+     <icon-item v-for="(button) in controlButtons" v-if="button.show"
+            :id="button.id"
+            :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
@@ -60,7 +61,8 @@
             icon: '0xe660',
             backgroundColor: '#6f24d2',
             dotColor: '#6f24d2',
-            id: 11
+            id: 11,
+            show: true
           },
           {
             pianoKey: 75,
@@ -68,7 +70,8 @@
             icon: '0xe65b',
             backgroundColor: '#c72bbb',
             dotColor: '#c72bbb',
-            id: 12
+            id: 12,
+            show: true
           },
           {
             pianoKey: 78,
@@ -76,7 +79,8 @@
             icon: '0xe63b',
             backgroundColor: '#6f24d2',
             dotColor: '#6f24d2',
-            id: 13
+            id: 13,
+            show: true
           },
           {
             pianoKey: 80,
@@ -84,7 +88,8 @@
             icon: '0xe650',
             backgroundColor: '#c72bbb',
             dotColor: '#c72bbb',
-            id: 14
+            id: 14,
+            show: true
           },
           {
             pianoKey: 82,
@@ -92,7 +97,8 @@
             icon: '0xe69a',
             backgroundColor: '#109892',
             dotColor: '#109892',
-            id: 15
+            id: 15,
+            show: true
           }
         ],
         bigBUtton: [
@@ -139,7 +145,13 @@
     },
     watch: {
       popularTapIndex (value, old) {
-        console.log(value)
+        // if (value === 2) {
+        //   this.controlButtons[2].show = true
+        //   this.controlButtons[3].show = true
+        // } else {
+        //   this.controlButtons[2].show = false
+        //   this.controlButtons[3].show = false
+        // }
         this.bigBUtton[value].style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
         this.bigBUtton[old].style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
       }
@@ -174,13 +186,15 @@
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
           case 'ok':
-            this.$router.push({path: '/scoreSetList', query: {setId: this.popularGenre[activeIndex].id}})
+            let data = this.popularGenre
+            this.$router.push({path: '/scoreSetList', query: {setName: data[activeIndex].name, setId: data[activeIndex].id}})
         }
         this.$store.dispatch('setSelect', {popularGenreSelect: activeIndex}, {root: true})
       },
       yearButtonAction (type) {
         let yearIndex = this.yearIndex
         let len = this.yearList.length
+        let yearList = this.yearList
         switch (type) {
           case 'left':
             console.log('left')
@@ -193,7 +207,7 @@
             this.$store.dispatch('popular/setYearSelected', yearIndex)
             break
           case 'ok':
-            console.log('ok')
+            this.$router.push({path: '/scoreList', query: {year: yearList[yearIndex]}})
             break
           default:
             break
@@ -201,6 +215,7 @@
       },
       differButtonAction (type) {
         let popularIndex = this.popularIndex
+        let differList = this.differList
         switch (type) {
           case 'left' :
             console.log('left')
@@ -216,6 +231,8 @@
             break
           case 'ok':
             console.log('ok')
+            console.log(differList[popularIndex])
+            this.$router.push({path: '/scoreList', query: {differ: differList[popularIndex]}})
             break
           default:
             console.log('108')
@@ -241,6 +258,7 @@
 
     },
     created () {
+      console.log(this.popularGenre, 'popularGenre')
       this.getDiffer()
       this.getStyles()
       this.getCenturys()
