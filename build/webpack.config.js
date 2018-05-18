@@ -64,7 +64,8 @@ module.exports = {
       'images': path.posix.resolve(__dirname, '../src/images'),
       'plugins': path.posix.resolve(__dirname, '../src/plugins')
     },
-    extensions: ['.js', '.vue']
+    extensions: ['.js', '.vue'],
+    symlinks: false // Because we have many local modules and they are though `npm link` to links in `node_modules`,But We don't hope webpack compile them.
   },
   externals: {
     math: {
