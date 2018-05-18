@@ -34,10 +34,10 @@
       changeSize (select) {
         let wag = this.index - select
         if (wag < 0) {
-          this.famousItemStyle.width = 617 - 57 * (-wag)
+          this.famousItemStyle.width = 617 - 57 * (-wag + 1)
         }
         if (wag > 1) {
-          this.famousItemStyle.width = 617 - 57 * (wag)
+          this.famousItemStyle.width = 617 - 57 * (wag - 1)
         }
         if (wag === 0 || wag === 1) {
           this.famousItemStyle.width = 617
@@ -69,7 +69,7 @@
       position: absolute;
       z-index: 10;
     }
-    &.active{
+    &.active {
       margin-right: 15px;
       &:after {
         border: 6px solid #00A2E7;

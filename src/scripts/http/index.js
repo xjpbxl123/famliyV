@@ -5,22 +5,16 @@ import axios from 'axios'
 import { config, getDefaultParams } from './config'
 
 let http = axios.create(config)
-let CancelToken = axios.CancelToken
-let source = CancelToken.source()
-source.cancel()
 http.interceptors.request.use(async function (config) {
-  try {
-    if (Reflect.has(config.data || {}, 'cmd')) {
-      let defaultParams = await getDefaultParams()
-      let header = {...defaultParams, ...{cmd: config.data.cmd}, ...{cancelToken: source.token}}
-      Reflect.deleteProperty(config.data, 'cmd')
-      config.data = JSON.stringify({header, body: config.data})
-    }
-    return config
-  } catch (error) {
-    /// For more errors handler of request go here,such as tip or console.
-    return Promise.reject(error)
+  if (Reflect.has(config.data || {}, 'cmd')) {
+    let defaultParams = await getDefaultParams()
+    let header = {...defaultParams, ...{cmd: config.data.cmd}}
+    Reflect.deleteProperty(config.data, 'cmd')
+    config.data = JSON.stringify({header, body: config.data})
   }
+  return config
+}, function (error) {
+  return Promise.reject(error)
 })
 http.interceptors.response.use(function (response) {
   return response.data

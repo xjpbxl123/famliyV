@@ -22,6 +22,25 @@ export default {
       }).then(({body}) => {
         body && dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
       })
+    },
+    getCoursesBySet ({dispatch}, {courseSetID}) {
+      return http.post('', {
+        cmd: 'artist.getCoursesBySet',
+        'courseSetId': courseSetID - 0,
+        ...defaultData
+      }).then((data) => {
+        if (!data.header.code) {
+          let courseSetData = data.body.courseList
+          courseSetData.map((value) => {
+            if (value.courseId) {
+              value.data.midiHighBitRate.localPath = value.data.videoHighBitRate.localPath = '$artistCache/' + value.courseId
+            }
+          })
+          return dispatch('setCacheToStorage', {famousPlayCoursesBySet: data.body, id: courseSetID}, {root: true})
+        } else {
+          return data
+        }
+      })
     }
   }
 }

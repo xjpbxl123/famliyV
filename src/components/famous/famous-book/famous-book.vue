@@ -18,7 +18,7 @@
   import findButton from '../../common/find-button/find-button'
   import findTitle from '../../common/find-title/find-title'
   import famousBookSwiper from './famous-book-swiper'
-  import { KEY78, KEY80 } from 'vue-find'
+  import { KEY78, KEY80, KEY82 } from 'vue-find'
 
   export default {
     name: 'famous-book',
@@ -88,6 +88,11 @@
             let sele = this.select + 1
             this.select = sele >= this.famousAuthor.courseSetList.length - 1 ? this.famousAuthor.courseSetList.length - 1 : sele
             break
+          case 'ok':
+            this.$router.push({
+              path: '/famous-play',
+              query: {courseSetID: this.famousAuthor.courseSetList[this.select].courseSetId}
+            })
         }
       }
     },
@@ -97,6 +102,9 @@
       },
       [KEY80] () {
         this.action('right')
+      },
+      [KEY82] () {
+        this.action('ok')
       }
     },
     components: {

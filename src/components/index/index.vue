@@ -63,7 +63,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import {mapState, mapGetters} from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import findDot from '../common/find-dot/find-dot'
@@ -73,6 +73,7 @@
     KEY108,
     KEY30,
     KEY42,
+    KEY46,
     KEY75,
     KEY73,
     KEY66,
@@ -267,6 +268,9 @@
       [KEY44] () {
         this.buttonActions('popular')
       },
+      [KEY46] () {
+        this.buttonActions('famous')
+      },
       [KEY73] () {
         this.buttonActions('left')
       },
@@ -457,6 +461,8 @@
             return this.go('/popular')
           case 'material':
             return this.go('/material')
+          case 'famous':
+            return this.go('/famous')
           case 'left':
             if (activeIndex <= 0) {
               return
@@ -571,10 +577,10 @@
   .banner-wrapper {
     height: 100%;
 
-    .banner-content {
-      display: flex;
-      height: 100%;
-    }
+  .banner-content {
+    display: flex;
+    height: 100%;
+  }
 
   }
 

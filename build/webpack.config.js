@@ -58,7 +58,6 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'vue-find$': 'vue-find/dist/vue-find.esm.js',
-      'find-sdk': path.posix.resolve(__dirname, '../src/scripts/findSDK'),
       'components': path.posix.resolve(__dirname, '../src/components'),
       'scripts': path.posix.resolve(__dirname, '../src/scripts'),
       'styles': path.posix.resolve(__dirname, '../src/styles'),

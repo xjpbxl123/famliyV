@@ -15,10 +15,20 @@
     background: url("./image/artistcourse_cover.png") no-repeat;
     -webkit-background-size: 100% 100%;
     background-size: 100% 100%;
+    animation: fadeRighr 1s;
     &.active {
       height: 405px;
       width: 540px;
       margin: 0 0 0 50px;
+    }
+  }
+
+  @keyframes fadeRighr {
+    from {
+      background-position-x: -50px;
+    }
+    to {
+      background-position-x: 0px;
     }
   }
 </style>
