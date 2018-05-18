@@ -45,22 +45,12 @@
             imageType="big"
             :style="{color: '#fff',textColor: '#fff'}"/>
       <group id="501">
-<<<<<<< HEAD
         <icon-item id="400" pianoKey="54" titlePosition="below" icon="0xe62b"
             :style="{color:'#fff',backgroundColor:'#00a490',textColor:'#fff',dotColor: '#00a490'}"/>
         <icon-item id="401" pianoKey="55" text="" icon="0xe601" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
         <icon-item id="402" pianoKey="56"  titlePosition="in" text="120" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
         <icon-item id="403" pianoKey="57" text="" icon="0xe605" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
         <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"  :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
-=======
-        <icon-item id="400" pianoKey="54" text="" titlePosition="below" icon="0xe62b"
-                   :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"/>
-        <icon-item id="401" pianoKey="55" text="" icon="0xe601"/>
-        <icon-item id="402" pianoKey="56" text="120" titlePosition="in" icon="" :style="{fontSize:'16'}"
-                   checkable="true" :checked="false"/>
-        <icon-item id="403" pianoKey="57" text="" icon="0xe605"/>
-        <icon-item id="404" pianoKey="58" text="3/8" titlePosition="in" icon=""/>
->>>>>>> vedio
       </group>
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
