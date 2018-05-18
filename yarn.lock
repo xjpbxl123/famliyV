@@ -3272,6 +3272,12 @@ find-parent-dir@^0.3.0:
   version "0.3.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-parent-dir/-/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
+"find-sdk@git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop":
+  version "1.0.0"
+  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#e7e756768992b5ccd599e6586bb0503ffced37d2"
+  dependencies:
+    lodash "^4.17.10"
+
 "find-toolbar@git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop":
   version "1.0.5"
   resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#cba1942e4ef1b14e73601b0493a0923117eb041c"
@@ -8214,7 +8220,7 @@ vinyl@^1.0.0:
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vinyl/-/vinyl-1.2.0.tgz#5c88036cf565e5df05558bfc911f8656df218884"
   dependencies:
     clone "^1.0.0"
-    clone-stats "^0.0.1"
+    clone-stats "^0."find-sdk":"git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop",0.1"
     replace-ext "0.0.1"
 
 vm-browserify@0.0.4:
@@ -8235,8 +8241,9 @@ vue-eslint-parser@^2.0.3:
     lodash "^4.17.4"
 
 "vue-find-hybrid@git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#develop":
-  version "1.0.3"
-  resolved "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#fc3af35406fce84ca91b7143eb8b3c140239e515"
+  version "1.0.5"
+  uid "0140cd0d35faec387e16d103ee120f4bdb2ef304"
+  resolved "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#0140cd0d35faec387e16d103ee120f4bdb2ef304"
   dependencies:
     find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
     vue "^2.5.2"

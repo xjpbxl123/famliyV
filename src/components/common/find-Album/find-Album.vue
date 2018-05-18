@@ -1,7 +1,13 @@
 <template>
   <ul>
-    <li v-for="(item,index) in albumArr" :key="index" :style="imgSize(index)">
-      <findImg :src=item></findImg>
+    <li :style="imgSize(0)">
+      <findImg :src="albumArr[0] || 'dsds'" :beforeImage="errorImage"></findImg>
+    </li>
+    <li :style="imgSize(1)">
+      <findImg :src="albumArr[1] || 'dsds'" :beforeImage="errorImage"></findImg>
+    </li>
+    <li :style="imgSize(2)">
+      <findImg :src="albumArr[2] || 'dsds'" :beforeImage="errorImage"></findImg>
     </li>
   </ul>
 </template>
@@ -44,7 +50,9 @@
       }
     },
     data () {
-      return {}
+      return {
+        errorImage: require('../../../images/famousbg.png')
+      }
     },
     methods: {
       styles ({height, translate, zIndex}) {
@@ -55,7 +63,7 @@
         }
       },
       imgSize (index) {
-        let wag = Math.ceil(this.albumArr.length / 2) - (index + 1)
+        let wag = Math.ceil(3 / 2) - (index + 1)
         if (wag < 0) {
           let height = this.type.maxHeight - this.type.differHeight * (-wag)
           let translate = this.type.over * index

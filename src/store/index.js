@@ -47,7 +47,8 @@ export default function createStore () {
             materialList: {
               body: [], sumPage: 1
             },
-            localCollect: []
+            localCollect: [],
+            famousPlayCoursesBySet: []
           }
         } // 数据本地缓存
       },

@@ -56,7 +56,8 @@
         <icon-item id="400" pianoKey="54" text="" titlePosition="below" icon="0xe62b"
                    :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"/>
         <icon-item id="401" pianoKey="55" text="" icon="0xe601"/>
-        <icon-item id="402" pianoKey="56" text="120" titlePosition="in" icon="" :style="{fontSize:'16'}" checkable="true" :checked="false"/>
+        <icon-item id="402" pianoKey="56" text="120" titlePosition="in" icon="" :style="{fontSize:'16'}"
+                   checkable="true" :checked="false"/>
         <icon-item id="403" pianoKey="57" text="" icon="0xe605"/>
         <icon-item id="404" pianoKey="58" text="3/8" titlePosition="in" icon=""/>
 >>>>>>> vedio
@@ -72,7 +73,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import {mapState, mapGetters} from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
   import findDot from '../common/find-dot/find-dot'
@@ -82,6 +83,7 @@
     KEY108,
     KEY30,
     KEY42,
+    KEY46,
     KEY75,
     KEY73,
     KEY66,
@@ -276,6 +278,9 @@
       [KEY44] () {
         this.buttonActions('popular')
       },
+      [KEY46] () {
+        this.buttonActions('famous')
+      },
       [KEY73] () {
         this.buttonActions('left')
       },
@@ -466,6 +471,8 @@
             return this.go('/popular')
           case 'material':
             return this.go('/material')
+          case 'famous':
+            return this.go('/famous')
           case 'left':
             if (activeIndex <= 0) {
               return
@@ -580,10 +587,10 @@
   .banner-wrapper {
     height: 100%;
 
-    .banner-content {
-      display: flex;
-      height: 100%;
-    }
+  .banner-content {
+    display: flex;
+    height: 100%;
+  }
 
   }
 

@@ -88,6 +88,11 @@
             let sele = this.select + 1
             this.select = sele >= this.famousAuthor.courseSetList.length - 1 ? this.famousAuthor.courseSetList.length - 1 : sele
             break
+          case 'ok':
+            this.$router.push({
+              path: '/famous-play',
+              query: {courseSetID: this.famousAuthor.courseSetList[this.select].courseSetId}
+            })
         }
       }
     },
