@@ -20,14 +20,6 @@
         :collectList="collectList"
         :rightType="rightType"/>
     </div>
-    <!--<find-button-banner>-->
-    <!--<user-buttons-->
-    <!--:isLogin="isLogin"-->
-    <!--:action="buttonActions"/>-->
-    <!--<voice-control/>-->
-    <!--<course-button :action="buttonActions"/>-->
-    <!--<control-button :action="buttonActions"/>-->
-    <!--</find-button-banner>-->
     <div class="footBack"></div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -40,19 +32,32 @@
     </find-cover>
     <toolbar>
       <text-icon-item v-for="(button,index) in userActionButtons"
-                      :key="index" :id="index" :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"
-                      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
-                      longClick="true"/>
-      <image-item text="收拾" titlePosition="below" :image="require('./images/game.png')" id="405" pianoKey="60"
-                  imageType="big"/>
+      :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
+      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
+      longClick="true"/>
+      <image-item v-for="(button,index) in courseButtons"
+            :key="index"
+            :id=button.id
+            titlePosition="below"
+            :image="button.image"
+            :text="button.text"
+            :pianoKey="button.pianoKey"
+            imageType="big"
+            :style="{color: '#fff',textColor: '#fff'}"/>
       <group id="501">
-        <icon-item id="400" pianoKey="54" text="街拍街拍" titlePosition="below" icon="0xe62b"
-                   :style="{color:'#f00000',backgroundColor:'#ff0000',textColor:'#ffffff'}"/>
-        <icon-item id="401" pianoKey="55" text="" icon="0xe601"/>
-        <icon-item id="402" pianoKey="56" text="120" icon=""/>
-        <icon-item id="403" pianoKey="57" text="" icon="0xe605"/>
-        <icon-item id="404" pianoKey="58" text="3/8" icon=""/>
+        <icon-item id="400" pianoKey="54" titlePosition="below" icon="0xe62b"
+            :style="{color:'#fff',backgroundColor:'#00a490',textColor:'#fff',dotColor: '#00a490'}"/>
+        <icon-item id="401" pianoKey="55" text="" icon="0xe601" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
+        <icon-item id="402" pianoKey="56"  titlePosition="in" text="120" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
+        <icon-item id="403" pianoKey="57" text="" icon="0xe605" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
+        <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"  :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
       </group>
+      <icon-item v-for="(button,index) in controlButtons"
+            :key="index"
+            :id=button.id
+            :icon="button.icon"
+            :pianoKey="button.pianoKey"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
     <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
@@ -61,11 +66,7 @@
   import {mapState, mapGetters} from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
-  import userButtons from './index-user-buttons'
-  import courseButton from './index-course-button'
-  import controlButton from './index-control-button'
   import findDot from '../common/find-dot/find-dot'
-  import voiceControl from './index-voice-control'
   import {
     INTERCEPT_DOWN,
     KEY27,
@@ -77,10 +78,10 @@
     KEY66,
     KEY78,
     KEY80,
+    KEY90,
+    KEY92,
     KEY94,
     KEY97,
-    KEY99,
-    KEY102,
     KEY44,
     KEY82
   } from 'vue-find'
@@ -114,77 +115,141 @@
           {
             pianoKey: 27,
             text: '帮助',
-            icon: '0xe69c'
+            icon: '0xe69c',
+            id: 1
           },
           {
             pianoKey: 30,
             text: '登陆',
-            icon: '0xe651'
+            icon: '0xe651',
+            id: 2
           },
           {
             pianoKey: 32,
             text: '设置',
-            icon: '0xe638'
-          },
+            icon: '0xe638',
+            id: 3
+
+          }
+        ],
+        courseButtons: [
           {
             pianoKey: 37,
             text: '我的曲谱',
-            icon: '0xe69c'
+            image: require('./images/my-score.png'),
+            id: 4
           },
           {
             pianoKey: 39,
             text: '弹奏录制',
-            icon: '0xe69c'
+            image: './images/record.png',
+            id: 5
           },
           {
             pianoKey: 42,
             text: '教材练习',
-            icon: '0xe69c'
+            image: './images/material.png',
+            id: 6
           },
           {
             pianoKey: 44,
             text: '流行经典',
-            icon: '0xe69c'
+            image: './images/popular.png',
+            id: 7
           },
           {
             pianoKey: 46,
             text: '名师课程',
-            icon: '0xe69c'
+            image: './images/master.png',
+            id: 8
           },
           {
             pianoKey: 49,
             text: '音乐王国',
-            icon: '0xe69c'
-          },
+            image: './images/master.png',
+            id: 9
+          }
+        ],
+        controlButtons: [
           {
             pianoKey: 66,
             text: '',
-            icon: '0xe609'
+            icon: '0xe609',
+            backgroundColor: '#3b3b39',
+            dotColor: '#3b3b39',
+            id: 10
           },
           {
             pianoKey: 73,
             text: '',
-            icon: '0xe660'
+            icon: '0xe660',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 11
           },
           {
             pianoKey: 75,
             text: '',
-            icon: '0xe65b'
+            icon: '0xe65b',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 12
           },
           {
             pianoKey: 78,
             text: '',
-            icon: '0xe63b'
+            icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 13
           },
           {
             pianoKey: 80,
             text: '',
-            icon: '0xe650'
+            icon: '0xe650',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 14
           },
           {
             pianoKey: 82,
             text: '',
-            icon: '0xe69a'
+            icon: '0xe69a',
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 15
+          },
+          {
+            pianoKey: 90,
+            text: '',
+            icon: '0xe63c',
+            backgroundColor: '#6000',
+            dotColor: '#000',
+            id: 16
+          },
+          {
+            pianoKey: 92,
+            text: '',
+            icon: '0xe654',
+            backgroundColor: '#6000',
+            dotColor: '#000',
+            id: 17
+          },
+          {
+            pianoKey: 94,
+            text: '',
+            icon: '0xe69a',
+            backgroundColor: '#6000',
+            dotColor: '#000',
+            id: 18
+          },
+          {
+            pianoKey: 97,
+            text: '',
+            icon: '0xe679',
+            backgroundColor: '#6000',
+            dotColor: '#000',
+            id: 19
           }
         ]
       }
@@ -217,16 +282,16 @@
       [KEY82] () {
         this.buttonActions('ok')
       },
-      [KEY94] () {
+      [KEY97] () {
         this.buttonActions('changeRightData')
       },
-      [KEY97] () {
+      [KEY90] () {
         this.buttonActions('right-up')
       },
-      [KEY99] () {
+      [KEY92] () {
         this.buttonActions('right-down')
       },
-      [KEY102] () {
+      [KEY94] () {
         this.buttonActions('right-play')
       },
       [KEY108] () {
@@ -312,11 +377,8 @@
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
-        if (this.isLogin) {
-          return this.$store.dispatch({type: 'index/getCollectList'})
-        } else {
-          return this.$store.dispatch('index/localCollectList', this.localCollect || [])
-        }
+        this.$store.dispatch({type: 'index/getCollectList'})
+        this.$store.dispatch('index/localCollectList', this.localCollect || [])
       },
       /**
        * @desc 创建会话ID
@@ -443,11 +505,12 @@
           case 'ok':
             if (activeIndex >= 0 && activeIndex <= 7) {
               // 最近更新
-              return this.$router.push({path: '/scoreList', query: {bookId: recentBooks.bookList[activeIndex].bookId}})
+              console.log(recentBooks.bookList[activeIndex])
+              return this.$router.push({path: '/scoreList', query: {book: recentBooks.bookList[activeIndex]}})
             }
             if (activeIndex >= 8 && activeIndex <= 12) {
               // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {bookId: hotBooks.bookList[activeIndex - 8].bookId}})
+              return this.$router.push({path: '/scoreList', query: {book: hotBooks.bookList[activeIndex - 8]}})
             }
             break
           case 'right-up':
@@ -497,10 +560,6 @@
       bannerLeft,
       findButtonBanner,
       findDot,
-      voiceControl,
-      userButtons,
-      courseButton,
-      controlButton,
       contentCenter,
       bannerRight,
       bannerHelp,

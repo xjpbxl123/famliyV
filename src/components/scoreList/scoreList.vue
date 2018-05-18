@@ -1,19 +1,24 @@
 <template>
   <div class="scoreList">
       <div class="left">
-        <!-- <scoreListLeftDeffer></scoreListLeftDeffer> -->
-        <!-- <scoreListLeftYear></scoreListLeftYear> -->
-        <scoreListLeftStyle :book="book"></scoreListLeftStyle>
+        <scoreListLeftDeffer v-if="query.differ" :differ="query.differ"></scoreListLeftDeffer>
+        <scoreListLeftYear v-if="query.year" :year="query.year"></scoreListLeftYear>
+        <scoreListLeftStyle v-if="!query.differ && !query.year" :book="query.book"></scoreListLeftStyle>
       </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
-      <div class="bottom">
-        <scoreList-control-buttons :collect="collect"/>
-      </div>
+
       <find-cover :activeNamespace="namespace" v-if="chooseType">
         <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>
-        <scoreList-choose-button :files="files" />
       </find-cover>
+      <toolbar v-if="!chooseType">
+        <icon-item v-for="(button,index) in controlButtons"
+                :key="index"
+                :id=button.id
+                :icon="button.icon"
+                :pianoKey="button.pianoKey"
+                :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+      </toolbar>
   </div>
 
 </template>
@@ -21,9 +26,7 @@
   import { mapState, mapGetters } from 'vuex'
   import scoreListCenter from './scoreList-center'
   import scoreListMusicDetail from './scoreList-music-detail'
-  import scoreListControlButtons from './scoreList-control-buttons'
   import scoreListChooseType from './scoreList-choose-type'
-  import scoreListChooseButton from './scoreList-choose-button'
   import scoreListLeftDeffer from './scoreList-left-deffer'
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
@@ -67,12 +70,72 @@
       return {
         chooseType: false,
         bannerType: '',
-        book: this.$route.query.book
+        query: this.$route.query,
+        controlButtons: [
+          {
+            pianoKey: 73,
+            text: '',
+            icon: '0xe636',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 11
+          },
+          {
+            pianoKey: 75,
+            text: '',
+            icon: '0xe64c',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 12
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 13
+          },
+          {
+            pianoKey: 80,
+            text: '',
+            icon: '0xe650',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 14
+          },
+          {
+            pianoKey: 82,
+            text: '',
+            icon: '0xe69a',
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 15
+          },
+          {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe653',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 16
+          }
+        ]
       }
     },
     watch: {
-      scoreList: function () {
-        this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+      scoreList: function (value) {
+        console.log(value, 'value')
+        this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
+        let flag = false
+        value.forEach((item) => {
+          if (item) { flag = true }
+        })
+        if (flag) {
+          this.controlButtons[5].icon = '0xe656'
+        } else {
+          this.controlButtons[5].icon = '0xe653'
+        }
       }
     },
     find: {
@@ -198,7 +261,13 @@
       ...mapState({
         scoreIndex: state => state.scoreList.scoreIndex,
         scoreList: function (state) {
-          return state.storage.cache.renderCache.scoreList[this.$route.query.book.bookId] || [{name: ''}]
+          if (this.$route.query.differ) {
+            return state.storage.cache.renderCache.scoreList[this.$route.query.differ.id] || [{name: ''}]
+          } else if (this.$route.query.year) {
+            return state.storage.cache.renderCache.scoreList[this.$route.query.year.id] || [{name: ''}]
+          } else {
+            return state.storage.cache.renderCache.scoreList[this.$route.query.book.bookId] || [{name: ''}]
+          }
         },
         isLogin (state) {
           let {storage} = state
@@ -218,8 +287,17 @@
     },
     methods: {
       getScoreList () {
-        let bookId = this.$route.query.book.bookId
-        this.$store.dispatch({type: 'scoreList/getScoreList', bookId: bookId})
+        let id = 0
+        if (this.$route.query.differ) {
+          id = this.$route.query.differ.id
+          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
+        } else if (this.$route.query.year) {
+          id = this.$route.query.year.id
+          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
+        } else {
+          id = this.$route.query.book.bookId
+          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: id})
+        }
       },
       /**
        * @desc 按钮组件按钮事件
@@ -285,6 +363,11 @@
             let hasCollected = false
             let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
             let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+            if (flag) {
+              this.controlButtons[5].icon = '0xe653'
+            } else {
+              this.controlButtons[5].icon = '0xe656'
+            }
             let musicData = {
               musicId: musicId,
               bookId: bookId,
@@ -321,6 +404,7 @@
                   })
                   return
                 }
+
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                 this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
@@ -341,9 +425,7 @@
     components: {
       scoreListCenter,
       scoreListMusicDetail,
-      scoreListControlButtons,
       scoreListChooseType,
-      scoreListChooseButton,
       scoreListLeftDeffer,
       scoreListLeftYear,
       scoreListLeftStyle

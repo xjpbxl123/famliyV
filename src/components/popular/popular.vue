@@ -16,15 +16,19 @@
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
     <toolbar>
-      <icon-item v-for="(button,index) in userActionButtons"
-                 :key="index" :id="index"
-                 :pianoKey="button.pianoKey" :text="button.text" :icon="button.icon" longClick="true"/>
-      <text-icon-item v-for="(item,index) in bigBUtton"
-                      :key="index" :id="item.id"
-                      :text="item.text"
-                      :pianoKey="item.pianoKey"
-                      :style="item.style"
-                      :icon="item.icon"/>
+      <text-icon-item v-for="(button) in bigBUtton"
+            :key="button.id"
+            :id="button.id"
+            :text="button.text"
+            :pianoKey="button.pianoKey"
+            :style="button.style"
+            :icon="button.icon"/>
+     <icon-item v-for="(button) in controlButtons" v-if="button.show"
+            :id="button.id"
+            :key="button.id"
+            :icon="button.icon"
+            :pianoKey="button.pianoKey"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
 
@@ -32,8 +36,6 @@
 <script type="text/javascript">
   import { mapState, mapGetters } from 'vuex'
   import contentLine from '../index/index-content-line'
-  import popularTapButton from './popular-tap-buttons'
-  import popularControlButton from './popular-control-buttons'
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
@@ -52,37 +54,57 @@
   export default {
     data () {
       return {
-        userActionButtons: [
+        controlButtons: [
           {
             pianoKey: 73,
             text: '',
-            icon: '0xe660'
+            icon: '0xe660',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 11,
+            show: true
           },
           {
             pianoKey: 75,
             text: '',
-            icon: '0xe65b'
+            icon: '0xe65b',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 12,
+            show: true
           },
           {
             pianoKey: 78,
             text: '',
-            icon: '0xe63b'
+            icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 13,
+            show: true
           },
           {
             pianoKey: 80,
             text: '',
-            icon: '0xe650'
+            icon: '0xe650',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 14,
+            show: true
           },
           {
             pianoKey: 82,
             text: '',
-            icon: '0xe69a'
+            icon: '0xe69a',
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 15,
+            show: true
           }
         ],
         bigBUtton: [
-          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#F00000'}},
-          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#F00000'}},
-          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#F00000'}}
+          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
         ]
       }
     },
@@ -122,8 +144,16 @@
       ...mapGetters(['differList', 'popularGenre', 'yearList'])
     },
     watch: {
-      popularTapIndex: (value) => {
-        this.bigBUtton[value].style.backgroundColor = '#000000'
+      popularTapIndex (value, old) {
+        // if (value === 2) {
+        //   this.controlButtons[2].show = true
+        //   this.controlButtons[3].show = true
+        // } else {
+        //   this.controlButtons[2].show = false
+        //   this.controlButtons[3].show = false
+        // }
+        this.bigBUtton[value].style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
+        this.bigBUtton[old].style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
       }
     },
     methods: {
@@ -156,13 +186,15 @@
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
           case 'ok':
-            this.$router.push({path: '/scoreSetList', query: {setId: this.popularGenre[activeIndex].id}})
+            let data = this.popularGenre
+            this.$router.push({path: '/scoreSetList', query: {setName: data[activeIndex].name, setId: data[activeIndex].id}})
         }
         this.$store.dispatch('setSelect', {popularGenreSelect: activeIndex}, {root: true})
       },
       yearButtonAction (type) {
         let yearIndex = this.yearIndex
         let len = this.yearList.length
+        let yearList = this.yearList
         switch (type) {
           case 'left':
             console.log('left')
@@ -175,7 +207,7 @@
             this.$store.dispatch('popular/setYearSelected', yearIndex)
             break
           case 'ok':
-            console.log('ok')
+            this.$router.push({path: '/scoreList', query: {year: yearList[yearIndex]}})
             break
           default:
             break
@@ -183,6 +215,7 @@
       },
       differButtonAction (type) {
         let popularIndex = this.popularIndex
+        let differList = this.differList
         switch (type) {
           case 'left' :
             console.log('left')
@@ -198,6 +231,8 @@
             break
           case 'ok':
             console.log('ok')
+            console.log(differList[popularIndex])
+            this.$router.push({path: '/scoreList', query: {differ: differList[popularIndex]}})
             break
           default:
             console.log('108')
@@ -223,14 +258,13 @@
 
     },
     created () {
+      console.log(this.popularGenre, 'popularGenre')
       this.getDiffer()
       this.getStyles()
       this.getCenturys()
     },
     components: {
       contentLine,
-      popularTapButton,
-      popularControlButton,
       popularDifferList,
       popularDifferDetail,
       popularGenre,

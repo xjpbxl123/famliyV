@@ -20,12 +20,19 @@ export default {
     /**
      * @desc 获取曲谱列表
      * */
-    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 1000}, bookId}) {
+    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 1000}, typeName, id}) {
+      console.log(id)
+      let cmd = 'musicScore.getMusicsByBook'
+      let netObj = {page, bookId: id, cmd: cmd}
+      if (typeName === 'other') {
+        cmd = 'musicScore.getMusicsByTag'
+        netObj = {page, tagId: id, cmd: cmd}
+      }
+      console.log(netObj)
       return http.post('', {
-        cmd: 'musicScore.getMusicsByBook',
-        page,
-        bookId
+        ...netObj
       }).then(res => {
+        console.log(res)
         if (res.header.code === 0) {
           let musicIdList = []
           let payment = ''
@@ -82,7 +89,8 @@ export default {
 
             musicIdList = []
           })
-          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: bookId}, {root: true})
+          console.log(res.body.musicList, 'res.body.musicList')
+          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
       })
     },

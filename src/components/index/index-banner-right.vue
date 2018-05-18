@@ -184,7 +184,7 @@
 }
 .banner-right {
   width: 688px;
-  height: 100%;
+  height: 1080px;
   background-color: rgba(255, 255, 255, 0.2);
 }
 .banner-title {

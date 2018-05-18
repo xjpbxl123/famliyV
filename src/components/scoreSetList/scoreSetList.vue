@@ -1,8 +1,16 @@
 <template>
   <div class="scoreSetList">
-    <findTitle :title="'巴托克小宇宙'"></findTitle>
+    <findTitle :title="setName"></findTitle>
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
+    <toolbar>
+     <icon-item v-for="(button) in controlButtons" v-if="button.show"
+            :id="button.id"
+            :key="button.id"
+            :icon="button.icon"
+            :pianoKey="button.pianoKey"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+    </toolbar>
   </div>
 </template>
 <script type="text/javascript">
@@ -15,7 +23,56 @@
 
   export default {
     data () {
-      return {}
+      return {
+        setName: this.$route.query.setName,
+        controlButtons: [
+          {
+            pianoKey: 73,
+            text: '',
+            icon: '0xe660',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 1,
+            show: true
+          },
+          {
+            pianoKey: 75,
+            text: '',
+            icon: '0xe65b',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 2,
+            show: true
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
+            id: 3,
+            show: true
+          },
+          {
+            pianoKey: 80,
+            text: '',
+            icon: '0xe650',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 4,
+            show: true
+          },
+          {
+            pianoKey: 82,
+            text: '',
+            icon: '0xe69a',
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 5,
+            show: true
+          }
+        ]
+      }
     },
     find: {
       [KEY73] () {
@@ -48,6 +105,7 @@
       },
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
+        let scoreSetList = this.scoreSetList
         switch (type) {
           case 'up':
             console.log('up')
@@ -70,7 +128,9 @@
             this.next(scoreListIndex)
             break
           case 'ok':
-            console.log('ok')
+            let data = scoreSetList[scoreListIndex]
+            console.log(data)
+            this.$router.push({path: '/scoreList', query: {book: data}})
             break
           default:
             break
@@ -105,6 +165,7 @@
     },
     created () {
       this.getScoreSetList(1)
+      console.log(this.scoreSetList, 'scoreSetList')
     },
     components: {
       findImg,

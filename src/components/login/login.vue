@@ -2,21 +2,58 @@
   <div class="login">
     <login-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
-    <login-button :action="buttonActions"/>
+    <toolbar>
+        <icon-item v-for="(button,index) in controlButtons"
+              :key="index"
+              :id="index"
+              :icon="button.icon"
+              :pianoKey="button.pianoKey"
+              :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+    </toolbar>
   </div>
 </template>
 
 <script>
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
-  import loginButton from './login-button'
   import {INTERCEPT_DOWN} from 'vue-find'
 
   export default {
     name: 'login',
     data () {
       return {
-        value: ''
+        value: '',
+        controlButtons: [
+          {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe608',
+            backgroundColor: '#f44242',
+            dotColor: '#f44242'
+          },
+          {
+            pianoKey: 90,
+            text: '',
+            icon: '0xe63b',
+            backgroundColor: '#4467d4',
+            dotColor: '#4467d4'
+
+          },
+          {
+            pianoKey: 92,
+            text: '',
+            icon: '0xe650',
+            backgroundColor: '#4467d4',
+            dotColor: '#4467d4'
+          },
+          {
+            pianoKey: 94,
+            text: '',
+            icon: '0xe69a',
+            backgroundColor: '#4467d4',
+            dotColor: '#4467d4'
+          }
+        ]
       }
     },
     find: {
@@ -82,8 +119,7 @@
     },
     components: {
       loginKeyboard,
-      loginBanner,
-      loginButton
+      loginBanner
     }
   }
 </script>
