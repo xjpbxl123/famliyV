@@ -48,13 +48,14 @@
       height: 78px;
       position: relative;
       border-bottom-style: solid;
+      border-width: 0;
       border-bottom-width: 1px;
       transition: all 0.2s ease;
       box-sizing: border-box;
       display: block;
       border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,0)) 30 30;
       &.active {
-        background-image: -webkit-linear-gradient(left,rgba(255,255,255,0.1),rgba(255,255,255,0.2),rgba(255,255,255,0.3));
+        background-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.2),rgba(255,255,255,0.3));
       }
       .price {
           position: absolute;

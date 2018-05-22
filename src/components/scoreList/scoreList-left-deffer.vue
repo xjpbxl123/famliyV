@@ -50,7 +50,7 @@
         content: '';
         position: absolute;
         width: 500px;
-        height: 2px;
+        height: 1px;
         bottom: 10px;
         background: -webkit-linear-gradient(left, white, rgba(255, 255, 255, 0));
         left: 120%;

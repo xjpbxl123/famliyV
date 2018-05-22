@@ -176,6 +176,7 @@
 
   .slip-line {
     margin-top: 5px;
+    border-width: 0;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-image: -webkit-linear-gradient(
