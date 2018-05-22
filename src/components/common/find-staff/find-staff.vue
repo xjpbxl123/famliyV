@@ -31,6 +31,7 @@
         // 适配当前设备
         window.setSvgPageSize(ww, hh, true)
         window.setSvgPageSizeJianpu(ww, hh, true)
+        this.$emit('loaded')
       },
       /**
        * @desc 执行svg中的JavaScript
@@ -50,7 +51,6 @@
           }
           container.removeChild(script)
         })
-        this.$emit('loaded')
         this.initial()
       },
       handelSvg (musicId) {

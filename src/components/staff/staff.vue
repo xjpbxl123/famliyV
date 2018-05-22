@@ -1,6 +1,6 @@
 <template>
   <div>
-    <find-staff :musicId="musicId" />
+    <find-staff :musicId="musicId" v-on:loaded="svgLoaded" />
   </div>
 </template>
 <script>
@@ -10,6 +10,11 @@
     data () {
       return {
         musicId: null
+      }
+    },
+    methods: {
+      svgLoaded () {
+
       }
     },
     created () {
