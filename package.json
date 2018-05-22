@@ -27,11 +27,11 @@
     "axios": "^0.18.0",
     "babel-runtime": "^6.23.0",
     "es6-promise": "^4.1.1",
+    "find-sdk": "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop",
     "lodash": "^4.17.5",
     "normalize.css": "^8.0.0",
     "qrcode": "^1.2.0",
     "vue": "^2.2.1",
-    "find-sdk": "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop",
     "vue-find": "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git",
     "vue-find-hybrid":
       "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#develop",

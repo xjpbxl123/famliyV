@@ -13,8 +13,7 @@ import scoreList from 'components/scoreList/scoreList-router'
 import material from 'components/material/material-router'
 import staff from 'components/staff/staff-router'
 import famousPlay from 'components/famous/famous-play/famousPlay-router'
-
-export default [
+const routers = [
   index,
   home,
   login,
@@ -24,6 +23,11 @@ export default [
   scoreSetList,
   scoreList,
   material,
-  staff,
   famousPlay
 ]
+/// staff是曲谱测试，仅开发环境可用
+const NODE_ENV = process.env.NODE_ENV
+if (NODE_ENV === 'development') {
+  routers.push(staff)
+}
+export default routers

@@ -12,6 +12,7 @@ import famous from './modules/famous'
 import scoreSetList from './modules/scoreSetList'
 import scoreList from './modules/scoreList'
 import material from './modules/material'
+import staff from './modules/staff'
 import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
@@ -260,7 +261,8 @@ export default function createStore () {
       popular,
       scoreSetList,
       scoreList,
-      material
+      material,
+      staff
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

@@ -3285,7 +3285,7 @@ find-parent-dir@^0.3.0:
 
 "find-sdk@git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop":
   version "1.0.0"
-  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#bacd49749a97256e67ad231d61015489f5f49c06"
+  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#9383aece6d0e319a6556f58bd67904198d202af8"
   dependencies:
     lodash "^4.17.10"
 
