@@ -76,6 +76,7 @@
     KEY27,
     KEY108,
     KEY30,
+    KEY37,
     KEY42,
     KEY46,
     KEY75,
@@ -147,7 +148,7 @@
           {
             pianoKey: 39,
             text: '弹奏录制',
-            image: require('./images/material.png'),
+            image: require('./images/recording.png'),
             id: 5
           },
           {
@@ -171,7 +172,7 @@
           {
             pianoKey: 49,
             text: '音乐王国',
-            image: require('./images/master.png'),
+            image: require('./images/game.png'),
             id: 9
           }
         ],
@@ -265,6 +266,9 @@
       },
       [KEY30] () {
         this.buttonActions('login')
+      },
+      [KEY37] () {
+        this.buttonActions('myScore')
       },
       [KEY42] () {
         this.buttonActions('material')
@@ -467,6 +471,8 @@
             return this.go('/material')
           case 'famous':
             return this.go('/famous')
+          case 'myScore':
+            return this.go('/myScore')
           case 'left':
             if (activeIndex <= 0) {
               return
