@@ -523,11 +523,11 @@
             if (activeIndex >= 0 && activeIndex <= 7) {
               // 最近更新
               console.log(recentBooks.bookList[activeIndex])
-              return this.$router.push({path: '/scoreList', query: {book: recentBooks.bookList[activeIndex]}})
+              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex <= 12) {
               // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {book: hotBooks.bookList[activeIndex - 8]}})
+              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
             break
           case 'right-up':

@@ -207,7 +207,7 @@
             this.$store.dispatch('popular/setYearSelected', yearIndex)
             break
           case 'ok':
-            this.$router.push({path: '/scoreList', query: {year: yearList[yearIndex]}})
+            this.$router.push({path: '/scoreList', query: {year: JSON.stringify(yearList[yearIndex])}})
             break
           default:
             break
@@ -232,7 +232,7 @@
           case 'ok':
             console.log('ok')
             console.log(differList[popularIndex])
-            this.$router.push({path: '/scoreList', query: {differ: differList[popularIndex]}})
+            this.$router.push({path: '/scoreList', query: {differ: JSON.stringify(differList[popularIndex])}})
             break
           default:
             console.log('108')

@@ -2,9 +2,17 @@
   <div class="myScore">
     <find-wrap :title="title" :pagination=false>
         <div class="logo iconfont icon-logo"> </div>
-        <find-localSource :localSource="localSource" v-if="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex"/>
-        <find-localMid :list="myRecord" v-if="myScoreTapIndex === 2" :listIndex="myRecordIndex"/>
-        <find-localMid :list="myPlay" v-if="myScoreTapIndex === 3" :listIndex="myPlayIndex"/>
+        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex"/>
+        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex"/>
+        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex"/>
+        <find-userMess v-show="myScoreTapIndex === 1"
+        :list="isLogin?collectList:localCollect"
+        :rightTitle="`收藏时间`"
+        :listIndex="myCollectIndex"/>
+        <find-userMess v-show="myScoreTapIndex === 4"
+        :rightTitle="`最近打开时间`"
+        :list="isLogin?recentOpenList:localRecent"
+        :listIndex="myRecentIndex"/>
     </find-wrap>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
     <toolbar>
@@ -19,11 +27,12 @@
 
 </template>
 <script type="text/javascript">
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import findWrap from '../common/find-wrap/find-wrap'
   import findLocalSource from './find-localSource'
   import findLocalMid from './find-localMid'
   import findTapButtons from './find-tap-buttons'
+  import findUserMess from './find-userMess'
   import {
     INTERCEPT_DOWN
   } from 'vue-find'
@@ -144,9 +153,17 @@
         myRecordIndex: state => state.myScore.myRecordIndex,
         myRecord: state => state.myScore.myRecord,
         myPlayIndex: state => state.myScore.myPlayIndex,
-        myPlay: state => state.myScore.myPlay
-      })
-    //   ...mapGetters(['localSource'])
+        myPlay: state => state.myScore.myPlay,
+        myCollectIndex: state => state.myScore.myCollectIndex,
+        myRecentIndex: state => state.myScore.myRecentIndex,
+        isLogin (state) {
+          console.log(state)
+          let {storage} = state
+          return storage.isLogin
+        }
+      }),
+      ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent'])
+
     },
     watch: {
       myScoreTapIndex (value, old) {
@@ -164,6 +181,8 @@
             this.$store.dispatch('myScore/setLocalSourceIndex', index)
           }
         })
+      },
+      isLogin (val) {
       }
     },
     methods: {
@@ -175,6 +194,20 @@
       },
       getMyPlay () {
         return this.$store.dispatch('myScore/getMyPlay')
+      },
+      /**
+       * @desc 最近打开数据
+       * */
+      getMyRecentOpen () {
+        this.$store.dispatch({type: 'index/getRecentOpenList'})
+        this.$store.dispatch('index/localRecent', this.localRecent || [])
+      },
+      /**
+       * @desc 我的收藏数据
+       * */
+      getMyCollect () {
+        this.$store.dispatch({type: 'index/getCollectList'})
+        this.$store.dispatch('index/localCollect', this.localCollect || [])
       },
       /**
        * @desc 本地资源
@@ -284,6 +317,64 @@
         }
       },
       /**
+       * @desc 我的收藏
+       * */
+      myCollectButtonAction (type) {
+        let myCollectIndex = this.myCollectIndex
+        let collectList = this.isLogin ? this.collectList : this.localCollect
+        let length = collectList.length
+        switch (type) {
+          case 'up':
+            myCollectIndex--
+            myCollectIndex = Math.max(myCollectIndex, 0)
+            this.$store.dispatch('myScore/setMyCollectIndex', myCollectIndex)
+            break
+          case 'down':
+            myCollectIndex++
+            myCollectIndex = Math.min(myCollectIndex, length - 1)
+            this.$store.dispatch('myScore/setMyCollectIndex', myCollectIndex)
+            break
+          case 'ok':
+            let data = collectList[myCollectIndex]
+            if (data) {
+              //  去播放midi
+            }
+            break
+          case 'back':
+            this.destroyedFunc()
+            return this.$router.back()
+        }
+      },
+      /**
+       * @desc 最近打开
+       * */
+      recentOpenButtonAction (type) {
+        let myRecentIndex = this.myRecentIndex
+        let recentList = this.isLogin ? this.recentOpenList : this.localRecent
+        let length = recentList.length
+        switch (type) {
+          case 'up':
+            myRecentIndex--
+            myRecentIndex = Math.max(myRecentIndex, 0)
+            this.$store.dispatch('myScore/setRecentIndex', myRecentIndex)
+            break
+          case 'down':
+            myRecentIndex++
+            myRecentIndex = Math.min(myRecentIndex, length - 1)
+            this.$store.dispatch('myScore/setRecentIndex', myRecentIndex)
+            break
+          case 'ok':
+            let data = recentList[myRecentIndex]
+            if (data) {
+              //  去播放midi
+            }
+            break
+          case 'back':
+            this.destroyedFunc()
+            return this.$router.back()
+        }
+      },
+      /**
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
@@ -293,7 +384,7 @@
             this.localSourceButtonAction(type)
             break
           case 1:
-            this.this.myCollectButtonAction(type)
+            this.myCollectButtonAction(type)
             break
           case 2:
             this.myRecordButtonAction(type)
@@ -321,12 +412,15 @@
       this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
+      this.getMyCollect()
+      this.getMyRecentOpen()
     },
     components: {
       findWrap,
       findLocalSource,
       findTapButtons,
-      findLocalMid
+      findLocalMid,
+      findUserMess
     }
   }
 </script>

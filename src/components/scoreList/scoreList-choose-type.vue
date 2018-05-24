@@ -127,6 +127,7 @@
             transform: translateX(-50%);
             padding-bottom: 10px;
             border-bottom-style: solid;
+            border-width: 0;
             border-bottom-width: 1px;
             border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,0)) 30 30;
           }
