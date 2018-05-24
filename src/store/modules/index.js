@@ -130,13 +130,13 @@ export default {
     /**
      * @desc 获取本地收藏列表
      * */
-    localCollectList ({dispatch}, file) {
+    localCollect ({dispatch}, file) {
       return dispatch('setCacheToStorage', {localCollect: file}, {root: true})
     },
     /**
      * @desc 获取本地最近打开
      * */
-    getLocalRecentOpenList ({dispatch}, file) {
+    localRecent ({dispatch}, file) {
       return dispatch('setCacheToStorage', {localRecent: file}, {root: true})
     },
     /**

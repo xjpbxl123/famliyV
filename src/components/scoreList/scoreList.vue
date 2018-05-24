@@ -8,10 +8,10 @@
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
 
-      <find-cover :activeNamespace="namespace" v-if="chooseType">
-        <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>
+      <find-cover :activeNamespace="namespace">
+        <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
       </find-cover>
-      <toolbar v-if="!chooseType">
+      <toolbar :hidden="chooseType">
         <icon-item v-for="(button,index) in controlButtons"
                 :key="index"
                 :id=button.id
@@ -63,7 +63,7 @@
     KEY98,
     KEY99,
     KEY100,
-    KEY108
+    BACK_PRESSED
   } from 'vue-find'
   export default {
     data () {
@@ -124,12 +124,24 @@
       }
     },
     watch: {
-      scoreList: function (value) {
-        console.log(value, 'value')
+      scoreList: function (value, old) {
         this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
         let flag = false
-        value.forEach((item) => {
-          if (item) { flag = true }
+        console.log(value[this.scoreIndex].collect)
+        value[this.scoreIndex].collect.forEach((item) => {
+          if (item.collection) { flag = true }
+        })
+        if (flag) {
+          this.controlButtons[5].icon = '0xe656'
+        } else {
+          this.controlButtons[5].icon = '0xe653'
+        }
+      },
+      scoreIndex: function (value) {
+        this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+        let flag = false
+        this.scoreList[this.scoreIndex].collect.forEach((item) => {
+          if (item.collection) { flag = true }
         })
         if (flag) {
           this.controlButtons[5].icon = '0xe656'
@@ -157,7 +169,7 @@
       [KEY85] () {
         this.buttonActions('collect')
       },
-      [KEY108] () {
+      [BACK_PRESSED] () {
         this.buttonActions('back')
       },
       chooseType: {
@@ -251,7 +263,7 @@
         [KEY100] () {
           this.buttonActions('choseType', 5)
         },
-        [KEY108] () {
+        [BACK_PRESSED] () {
           console.log('108')
           this.chooseType = false
         }
@@ -282,6 +294,7 @@
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
       },
       namespace () {
+        console.log(this.chooseType)
         return this.chooseType ? 'chooseType' : ''
       }
     },
@@ -303,6 +316,7 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type, typeNum) {
+        console.log(this.scoreList)
         let scoreIndex = this.scoreIndex
         let scoreList = [].concat(JSON.parse(JSON.stringify(this.scoreList)))
         let files = this.files
@@ -346,7 +360,6 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
-
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
@@ -374,7 +387,7 @@
               musicName: scoreList[scoreIndex].name,
               bookName: scoreList[scoreIndex].bookName,
               time: new Date().getTime(),
-              styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName]
+              styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName] || []
             }
             if (files.length >= typeNum) {
               if (this.bannerType === 'collect') {
@@ -398,7 +411,7 @@
                       localCollect.splice(localCollectIndex, 1)
                     }
                   }
-                  this.$store.dispatch('index/localCollectList', localCollect).then(() => {
+                  this.$store.dispatch('index/localCollect', localCollect).then(() => {
                     scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                     this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId})
                   })
@@ -418,6 +431,21 @@
             // this.goBack()
         }
       }
+      // checkCollect () {
+      //   let scoreIndex = this.scoreIndex
+      //   let collect = this.scoreList[scoreIndex].collect
+      //   let flag = false
+      //   collect.forEach((item) => {
+      //     if (flag.item.collection) {
+      //       flag = true
+      //     }
+      //   })
+      //   if (flag) {
+      //     this.controlButtons[5].icon = '0xe656'
+      //   } else {
+      //     this.controlButtons[5].icon = '0xe653'
+      //   }
+      // }
     },
     created () {
       this.getScoreList()

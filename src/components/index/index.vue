@@ -15,9 +15,9 @@
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
       <bannerRight
-        :recentOpenList="recentOpenList"
+        :recentOpenList="isLogin?recentOpenList:localRecent"
         :rightSelectedIndex="rightSelectedIndex"
-        :collectList="collectList"
+        :collectList="isLogin?collectList:localCollect"
         :rightType="rightType"/>
     </div>
     <div class="footBack"></div>
@@ -63,7 +63,7 @@
                  :pianoKey="button.pianoKey"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
-    <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
+    <!-- <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/> -->
   </div>
 </template>
 <script type="text/javascript">
@@ -105,18 +105,18 @@
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1,
-        weexStyle: {
-          left: 400,
-          top: 100,
-          width: 2000,
-          height: 900,
-          backgroundColor: '#30000000',
-          float: 'left',
-          borderWidth: 3,
-          borderColor: '#ef9900',
-          borderRadius: 20
-        },
-        showWeex: true,
+        // weexStyle: {
+        //   left: 400,
+        //   top: 100,
+        //   width: 2000,
+        //   height: 900,
+        //   backgroundColor: '#30000000',
+        //   float: 'left',
+        //   borderWidth: 3,
+        //   borderColor: '#ef9900',
+        //   borderRadius: 20
+        // },
+        // showWeex: true,
         userActionButtons: [
           {
             pianoKey: 27,
@@ -342,7 +342,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent'])
     },
     watch: {
       /**
@@ -358,8 +358,8 @@
       },
       isLogin (val) {
         if (val) {
-          this.getRecentOpenList()
-          this.getCollectList()
+          // this.getRecentOpenList()
+          // this.getCollectList()
         }
       }
     },
@@ -384,13 +384,14 @@
        * */
       getRecentOpenList () {
         this.$store.dispatch({type: 'index/getRecentOpenList'})
+        this.$store.dispatch('index/localRecent', this.localRecent || [])
       },
       /**
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
         this.$store.dispatch({type: 'index/getCollectList'})
-        this.$store.dispatch('index/localCollectList', this.localCollect || [])
+        this.$store.dispatch('index/localCollect', this.localCollect || [])
       },
       /**
        * @desc 创建会话ID

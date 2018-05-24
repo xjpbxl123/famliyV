@@ -201,9 +201,11 @@
             if (data) {
               console.log(data)
               if (data.type === 'dir') {
+                let newPath = this.localSourcePath + '/' + data.name
+                console.log(newPath)
                 this.$store.dispatch('myScore/setLocalSourceIndex', 0)
-                this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload/' + data.name)
-                this.$store.dispatch('myScore/getLocalSource', '$userUpload/' + data.name)
+                this.$store.dispatch('myScore/setLocalSourcePath', newPath)
+                this.$store.dispatch('myScore/getLocalSource', newPath)
               } else {
                 // 去打开文件
               }
@@ -213,7 +215,7 @@
             if (myScoreTapIndex === 0 && localSourcePath !== '$userUpload') {
               let pathArr = localSourcePath.split('/')
               this.dirName = pathArr.pop()
-              let newPath = pathArr.join('')
+              let newPath = pathArr.join('/')
               this.$store.dispatch('myScore/setLocalSourcePath', newPath)
               this.$store.dispatch('myScore/getLocalSource', newPath)
             } else {
