@@ -13,8 +13,8 @@ const assist = require('./assist')
 const ip = require('ip').address()
 const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
-const port = envConfig.env[NODE_ENV].PORT || '8080'
-
+const env = envConfig.env[NODE_ENV] || envConfig.env
+const port = env.PORT || '8080'
 const webpackConfig = webpackMerge(webpackBase, {
   plugins: [
     /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.

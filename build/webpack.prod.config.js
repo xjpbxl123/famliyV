@@ -10,7 +10,8 @@ const webpackBase = require('./webpack.config')
 const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
 const isPro = NODE_ENV === 'production'
-const shouldUseSourceMap = !!(NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap)
+const env = envConfig.env[NODE_ENV] || envConfig.env
+const shouldUseSourceMap = !!(NODE_ENV === 'development' || env.shouldUseSourceMap)
 const assist = require('./assist')
 module.exports = webpackMerge(webpackBase, {
   output: {

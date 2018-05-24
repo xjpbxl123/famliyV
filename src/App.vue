@@ -16,3 +16,8 @@
     }
   }
 </script>
+<style lang="scss">
+  #app {
+    background-color: #000c;
+  }
+</style>
