@@ -26,6 +26,7 @@
   "keywords": ["weex"],
   "license": "MIT",
   "dependencies": {
+    "find-toolbar": "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git",
     "phantom-limb": "0.0.1",
     "url-parse": "^1.4.0",
     "vue": "^2.5.11",
