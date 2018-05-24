@@ -87,7 +87,7 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {
-        "browsers": ["last 4 Chrome versions"]
+        "browsers": ["last 3 versions"]
       }
     }
   }
