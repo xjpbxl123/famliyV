@@ -15,32 +15,35 @@ const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
 const port = envConfig.env[NODE_ENV].PORT || '8080'
 
-const compiler = webpack(
-  webpackMerge(webpackBase, {
-    plugins: [
-      /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.
-      new webpack.NamedModulesPlugin(),
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'src/index.html',
-        inject: true
-      }),
-      new FriendlyErrorsPlugin({
-        compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${ip}:${port} and you can visit http://localhost:${port} at the some time`]
-        }
-      })
-    ]
-  })
-)
-const server = new WebPackDevServer(compiler, {
+const webpackConfig = webpackMerge(webpackBase, {
+  plugins: [
+    /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'src/index.html',
+      inject: true
+    }),
+    new FriendlyErrorsPlugin({
+      compilationSuccessInfo: {
+        messages: [`Your application is running here: http://${ip}:${port} and you can visit http://localhost:${port} at the some time`]
+      }
+    })
+  ]
+})
+const devServerOptions = {
   publicPath: '/',
   contentBase: config.assertRoot,
+  host: '0.0.0.0',
   hot: true,
   historyApiFallback: true,
   stats: 'minimal',
   noInfo: false,
   compress: true,
   quiet: true /// Here set true, Because FriendlyErrorsPlugin will prints friendly error for you.
-})
+}
+WebPackDevServer.addDevServerEntrypoints(webpackConfig, devServerOptions)
+const compiler = webpack(webpackConfig)
+const server = new WebPackDevServer(compiler, devServerOptions)
 server.listen(port, '0.0.0.0', assist.copyStaticAssets())

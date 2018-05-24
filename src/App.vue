@@ -9,9 +9,7 @@
   export default {
     name: 'app',
     data () {
-      return {
-        msg: ''
-      }
+      return {}
     },
     components: {},
     created () {

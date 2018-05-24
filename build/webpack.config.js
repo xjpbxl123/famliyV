@@ -5,7 +5,8 @@ const assist = require('./assist')
 const config = require('./config')
 const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
-const shouldUseSourceMap = NODE_ENV === 'development' || envConfig.env[NODE_ENV].shouldUseSourceMap
+const env = envConfig.env[NODE_ENV] || envConfig.env
+const shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
 module.exports = {
   context: process.cwd(),
   entry: ['./build/polyfill.js', './src/main.js'],
@@ -66,11 +67,6 @@ module.exports = {
     },
     extensions: ['.js', '.vue'],
     symlinks: false // Because we have many local modules and they are though `npm link` to links in `node_modules`,But We don't hope webpack compile them.
-  },
-  externals: {
-    math: {
-      root: 'math' // indicates global variable
-    }
   },
   devtool: 'cheap-module-eval-source-map',
   performance: {
