@@ -209,6 +209,6 @@
   .progress {
     font-size: 14px;
     text-align: center;
-    color: #fff;
+    color: #ffffff;
   }
 </style>
