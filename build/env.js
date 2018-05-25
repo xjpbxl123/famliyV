@@ -4,6 +4,7 @@
  */
 let fs = require('fs')
 let path = require('path')
+let deepMerge = require('deepmerge')
 let NODE_ENV = process.env.NODE_ENV
 const environments = ['.env', '.env.local', `.env.${NODE_ENV}`, `.env.${NODE_ENV}.local`]
 /**
@@ -16,7 +17,7 @@ const getEnvironment = () => {
     if (fs.existsSync(envPath)) {
       let env = require(envPath)
       try {
-        Object.assign(initial.env, env)
+        initial.env = deepMerge(initial.env, env)
         Object.keys(initial.env).forEach(key => {
           initial.stringify[key] = JSON.stringify(initial.env[key])
         })
