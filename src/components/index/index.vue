@@ -573,6 +573,9 @@
       this.getRecentOpenList()
       this.getCollectList()
     },
+    destroyed () {
+      clearInterval(window.interval)
+    },
     components: {
       bannerLeft,
       findButtonBanner,

@@ -105,7 +105,7 @@ export default {
         if (res.header.code === 0) {
           dispatch('setCacheToStorage', {recentOpen: res.body}, {root: true})
         } else if (res.header.code === 5) {
-          dispatch('setCacheToStorage', {recentOpen: []}, {root: true})
+          dispatch('setCacheToStorage', {recentOpenList: []}, {root: true})
         }
       })
     },
@@ -123,7 +123,7 @@ export default {
           // })
           dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
         } else if (res.header.code === 5) {
-          dispatch('setCacheToStorage', {myCollect: []}, {root: true})
+          dispatch('setCacheToStorage', {collectList: []}, {root: true})
         }
       })
     },

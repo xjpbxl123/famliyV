@@ -34,10 +34,10 @@ export default {
       }).then(res => {
         console.log(res)
         if (res.header.code === 0) {
-          let musicIdList = []
           let payment = ''
           let subParts = {base: '0', accompany: '0', video: '0'}
           res.body.musicList.forEach((item) => {
+            let musicIdList = []
             if (!item.isFree && !item.sales && item.have && !item.have.base) {
               // 需要购买
               let money = 0
@@ -66,14 +66,14 @@ export default {
                 if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
                   collectData.push({musicId: value, collection: 0})
                 } else {
+                  let flag = 0
                   this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
                     if (value === value1.musicId) {
                       // 有收藏记录
-                      collectData.push({musicId: value, collection: 1})
-                    } else {
-                      collectData.push({musicId: value, collection: 0})
+                      flag = 1
                     }
                   })
+                  collectData.push({musicId: value, collection: flag})
                 }
               })
               item.collect = collectData
@@ -86,10 +86,8 @@ export default {
                 item.collect = res.body.musicList
               })
             }
-
             musicIdList = []
           })
-          console.log(res.body.musicList, 'res.body.musicList')
           return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
       })
@@ -98,7 +96,9 @@ export default {
      * @desc 操作
      * */
     setCollect ({dispatch, state}, {scoreList, bookId, musicId, flag}) {
-      dispatch('setCacheToStorage', {scoreList: scoreList, id: bookId}, {root: true})
+      if (scoreList) {
+        dispatch('setCacheToStorage', {scoreList: scoreList, id: bookId}, {root: true})
+      }
       if (!musicId) {
         return
       }

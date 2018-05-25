@@ -151,6 +151,7 @@
     justify-content: space-around;
     align-items: center;
     margin: 24px auto 0 auto;
+    border-width: 0px;
     border-bottom: 1px solid;
     border-image: -webkit-linear-gradient(
         left,

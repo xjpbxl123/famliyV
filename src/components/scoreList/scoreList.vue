@@ -42,6 +42,7 @@
     INTERCEPT_DOWN,
     BACK_PRESSED
   } from 'vue-find'
+
   export default {
     data () {
       return {
@@ -217,7 +218,6 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type, typeNum) {
-        console.log(this.scoreList)
         let scoreIndex = this.scoreIndex
         let scoreList = [].concat(JSON.parse(JSON.stringify(this.scoreList)))
         let files = this.files
@@ -272,8 +272,18 @@
             }
             break
           case 'choseType':
+
             console.log('choseType')
             let bookId = scoreList[scoreIndex].bookId
+            let id = 0
+            if (this.query.book) {
+              id = JSON.parse(this.query.book).bookId
+            } else if (this.query.differ) {
+              id = JSON.parse(this.query.differ).id
+            } else if (this.query.year) {
+              id = JSON.parse(this.query.year).id
+            }
+
             let hasCollected = false
             let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
             let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
@@ -294,7 +304,6 @@
               if (this.bannerType === 'collect') {
                 if (!isLogin) {
                   // 没有登录的话 操作本地收藏列表
-
                   let localCollect = [].concat(JSON.parse(JSON.stringify(this.localCollect)))
                   let localCollectIndex = 0
                   localCollect.forEach((value, index) => {
@@ -313,14 +322,17 @@
                     }
                   }
                   this.$store.dispatch('index/localCollect', localCollect).then(() => {
-                    scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId})
+                    scoreList[scoreIndex].collect.forEach((item, index) => {
+                      item.collection = !flag
+                    })
+                    console.log(flag)
+                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id})
                   })
                   return
                 }
 
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
+                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
                 console.log('去播放')
               }

@@ -21,6 +21,7 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
+            :hidden="!button.show"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -106,6 +107,15 @@
             dotColor: '#109892',
             id: 15,
             show: true
+          },
+          {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe642',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 16,
+            show: false
           }
         ],
         title: '最近打开',
@@ -117,18 +127,23 @@
         switch (key) {
           case 39:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+            this.controlButtons[8].show = false
             break
           case 42:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
+            this.controlButtons[8].show = true
             break
           case 46:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
+            this.controlButtons[8].show = true
             break
           case 49:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
+            this.controlButtons[8].show = false
             break
           case 54:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+            this.controlButtons[8].show = false
             break
           case 78:
             this.buttonActions('up')
@@ -139,6 +154,9 @@
           case 82:
             this.buttonActions('ok')
             break
+          case 85:
+            this.buttonActions('delete')
+            break
           case 108:
             this.buttonActions('back')
         }
@@ -146,7 +164,12 @@
     },
     computed: {
       ...mapState({
-        myScoreTapIndex: state => state.myScore.myScoreTapIndex,
+        myScoreTapIndex: function (state) {
+          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 2) {
+            this.controlButtons[8].show = true
+          }
+          return state.myScore.myScoreTapIndex
+        },
         localSourceIndex: state => state.myScore.localSourceIndex,
         localSourcePath: state => state.myScore.localSourcePath,
         localSource: state => state.myScore.localSource,
@@ -282,6 +305,9 @@
               //  去播放midi
             }
             break
+          case 'delete':
+            console.log('删除这条录音')
+            break
           case 'back':
             this.destroyedFunc()
             return this.$router.back()
@@ -321,7 +347,8 @@
        * */
       myCollectButtonAction (type) {
         let myCollectIndex = this.myCollectIndex
-        let collectList = this.isLogin ? this.collectList : this.localCollect
+        let collectList1 = this.isLogin ? this.collectList : this.localCollect
+        let collectList = [].concat(JSON.parse(JSON.stringify(collectList1)))
         let length = collectList.length
         switch (type) {
           case 'up':
@@ -338,6 +365,28 @@
             let data = collectList[myCollectIndex]
             if (data) {
               //  去播放midi
+            }
+            break
+          case 'delete':
+            console.log('删除这条收藏的数据')
+            if (collectList.length === 0) {
+              return
+            }
+            let musicId = collectList[myCollectIndex].musicId
+            let bookId = collectList[myCollectIndex].bookId
+            if (!musicId || !bookId) {
+              return
+            }
+            console.log(collectList)
+            if (!this.isLogin) {
+              collectList.splice(myCollectIndex, 1)
+              this.$store.dispatch('index/localCollect', collectList)
+            } else {
+              this.$store.dispatch('scoreList/setCollect', {bookId: bookId, musicId: musicId, flag: 0})
+              this.$store.dispatch({type: 'index/getCollectList'})
+            }
+            if (this.myCollectIndex - 1 >= 0) {
+              this.$store.dispatch('myScore/setMyCollectIndex', myCollectIndex - 1)
             }
             break
           case 'back':
@@ -405,6 +454,8 @@
         this.$store.dispatch('myScore/localSourceIndex', 0)
         this.$store.dispatch('myScore/myRecordIndex', 0)
         this.$store.dispatch('myScore/myPlayIndex', 0)
+        this.$store.dispatch('myScore/myCollectIndex', 0)
+        this.$store.dispatch('myScore/myRecentIndex', 0)
       }
 
     },

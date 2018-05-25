@@ -23,7 +23,7 @@
             :pianoKey="button.pianoKey"
             :style="button.style"
             :icon="button.icon"/>
-     <icon-item v-for="(button) in controlButtons" v-if="button.show"
+     <icon-item v-for="(button) in controlButtons" :hidden="!button.show"
             :id="button.id"
             :key="button.id"
             :icon="button.icon"
@@ -48,7 +48,8 @@
     KEY82,
     KEY46,
     KEY49,
-    KEY54
+    KEY54,
+    BACK_PRESSED
   } from 'vue-find'
 
   export default {
@@ -132,6 +133,13 @@
       },
       [KEY82] () {
         this.buttonActions('ok')
+      },
+      [BACK_PRESSED] () {
+        this.$store.dispatch('popular/setPopularTapSelected', 2)
+        this.$store.dispatch('popular/setYearSelected', 0)
+        this.$store.dispatch('popular/setPopularSelected', 0)
+        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
+        this.$router.back()
       }
     },
     computed: {
@@ -145,13 +153,13 @@
     },
     watch: {
       popularTapIndex (value, old) {
-        // if (value === 2) {
-        //   this.controlButtons[2].show = true
-        //   this.controlButtons[3].show = true
-        // } else {
-        //   this.controlButtons[2].show = false
-        //   this.controlButtons[3].show = false
-        // }
+        if (value === 2) {
+          this.controlButtons[2].show = true
+          this.controlButtons[3].show = true
+        } else {
+          this.controlButtons[2].show = false
+          this.controlButtons[3].show = false
+        }
         this.bigBUtton[value].style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
         this.bigBUtton[old].style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
       }
@@ -262,6 +270,22 @@
       this.getDiffer()
       this.getStyles()
       this.getCenturys()
+      if (this.popularTapIndex === 2) {
+        this.controlButtons[2].show = true
+        this.controlButtons[3].show = true
+      } else {
+        this.controlButtons[2].show = false
+        this.controlButtons[3].show = false
+      }
+
+      this.bigBUtton.forEach((item, index) => {
+        console.log(this.popularTapIndex)
+        if (index === this.popularTapIndex) {
+          item.style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
+        } else {
+          item.style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
+        }
+      })
     },
     components: {
       contentLine,
