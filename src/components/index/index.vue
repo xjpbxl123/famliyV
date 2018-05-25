@@ -32,32 +32,36 @@
     </find-cover>
     <toolbar>
       <text-icon-item v-for="(button,index) in userActionButtons"
-      :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
-      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
-      longClick="true"/>
+                      :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
+                      :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
+                      longClick="true"/>
       <image-item v-for="(button,index) in courseButtons"
-            :key="index"
-            :id=button.id
-            titlePosition="below"
-            :image="button.image"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            imageType="big"
-            :style="{color: '#fff',textColor: '#fff'}"/>
+                  :key="index"
+                  :id=button.id
+                  titlePosition="below"
+                  :image="button.image"
+                  :text="button.text"
+                  :pianoKey="button.pianoKey"
+                  imageType="big"
+                  :style="{color: '#fff',textColor: '#fff'}"/>
       <group id="501">
         <icon-item id="400" pianoKey="54" titlePosition="below" icon="0xe62b"
-            :style="{color:'#fff',backgroundColor:'#00a490',textColor:'#fff',dotColor: '#00a490'}"/>
-        <icon-item id="401" pianoKey="55" text="" icon="0xe601" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
-        <icon-item id="402" pianoKey="56"  titlePosition="in" text="120" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
-        <icon-item id="403" pianoKey="57" text="" icon="0xe605" :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
-        <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"  :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
+                   :style="{color:'#fff',backgroundColor:'#00a490',textColor:'#fff',dotColor: '#00a490'}"/>
+        <icon-item id="401" pianoKey="55" text="" icon="0xe601"
+                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
+        <icon-item id="402" pianoKey="56" titlePosition="in" text="120"
+                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
+        <icon-item id="403" pianoKey="57" text="" icon="0xe605"
+                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a00a490490',textColor:'#fff'}"/>
+        <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"
+                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
       </group>
       <icon-item v-for="(button,index) in controlButtons"
-            :key="index"
-            :id=button.id
-            :icon="button.icon"
-            :pianoKey="button.pianoKey"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+                 :key="index"
+                 :id=button.id
+                 :icon="button.icon"
+                 :pianoKey="button.pianoKey"
+                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
     <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
   </div>
@@ -143,31 +147,31 @@
           {
             pianoKey: 39,
             text: '弹奏录制',
-            image: './images/record.png',
+            image: require('./images/material.png'),
             id: 5
           },
           {
             pianoKey: 42,
             text: '教材练习',
-            image: './images/material.png',
+            image: require('./images/material.png'),
             id: 6
           },
           {
             pianoKey: 44,
             text: '流行经典',
-            image: './images/popular.png',
+            image: require('./images/popular.png'),
             id: 7
           },
           {
             pianoKey: 46,
             text: '名师课程',
-            image: './images/master.png',
+            image: require('./images/master.png'),
             id: 8
           },
           {
             pianoKey: 49,
             text: '音乐王国',
-            image: './images/master.png',
+            image: require('./images/master.png'),
             id: 9
           }
         ],

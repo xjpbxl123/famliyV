@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createStore from './store'
-import {isObject} from 'lodash'
+import { isObject } from 'lodash'
 import VueFind from 'vue-find'
 import vueFindHybrid from 'vue-find-hybrid'
 import find from './scripts/find'
@@ -25,14 +25,15 @@ if (isInFindClient) {
   Vue.use(VueFind)
   const store = createStore()
   const router = new VueRouter({routes})
-  vue = new Vue({
-    el: '#app',
-    render: h => h(App),
-    router,
-    store: store,
-    find: new VueFind(find)
+  store.dispatch('initialNativeStorage').then(() => {
+    vue = new Vue({
+      el: '#app',
+      render: h => h(App),
+      router,
+      store: store,
+      find: new VueFind(find)
+    })
   })
-  store.dispatch('initialNativeStorage')
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
 }

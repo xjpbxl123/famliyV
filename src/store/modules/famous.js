@@ -1,4 +1,8 @@
+/**
+ * Created by Tommy on 2018/5/18 .
+ * */
 import http from 'scripts/http'
+import { download } from 'find-sdk'
 
 let defaultData = {'page': {'offset': 0, 'count': 1800}}
 export default {
@@ -36,10 +40,40 @@ export default {
               value.data.midiHighBitRate.localPath = value.data.videoHighBitRate.localPath = '$artistCache/' + value.courseId
             }
           })
-          return dispatch('setCacheToStorage', {famousPlayCoursesBySet: data.body, id: courseSetID}, {root: true})
+          return dispatch('videoHasDownload', {body: data.body, courseSetID})
         } else {
           return data
         }
+      })
+    },
+    /**
+     * @desc 判断视频是否有下载
+     * @param dispatch
+     * @param body
+     * @param courseSetID
+     * @returns {Promise<any[]>}
+     */
+    videoHasDownload ({dispatch}, {body, courseSetID}) {
+      let midiHighBitRateArr = []
+      let videoHighBitRateArr = []
+      let midPromise
+      let videoPromise
+      body.courseList.forEach((item) => {
+        midiHighBitRateArr.push(item.data.midiHighBitRate)
+        videoHighBitRateArr.push(item.data.videoHighBitRate)
+      })
+      midPromise = download.fileIsExistsAll(midiHighBitRateArr).then((data) => {
+        return body.courseList.map((item, index) => {
+          item.midiDownload = data[index]
+        })
+      })
+      videoPromise = download.fileIsExistsAll(videoHighBitRateArr).then((data) => {
+        return body.courseList.map((item, index) => {
+          item.videoDownload = data[index]
+        })
+      })
+      return Promise.all([midPromise, videoPromise]).then(() => {
+        return dispatch('setCacheToStorage', {famousPlayCoursesBySet: body, id: courseSetID}, {root: true})
       })
     }
   }

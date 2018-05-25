@@ -8,6 +8,7 @@
                  :key="button.icon"
                  longClick="true"
                  :id="button.id"
+                 :style="{backgroundColor:'#4467D4',dotColor:'#4467D4'}"
                  :icon="button.icon"/>
     </toolbar>
   </div>
@@ -60,13 +61,6 @@
     created () {
       this.getAnthor()
     },
-    // watch: {
-    //   famousAuthor (val) {
-    //     if (val[this.getId()]) {
-    //       this.authorList = val[this.getId()]
-    //     }
-    //   }
-    // },
     methods: {
       getAnthor () {
         let cover = this.$route.query.cover

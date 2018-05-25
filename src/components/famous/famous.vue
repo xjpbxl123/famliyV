@@ -8,6 +8,7 @@
                  :key="button.icon"
                  longClick="true"
                  :id="button.id"
+                 :style="{backgroundColor:'#4467D4',dotColor:'#4467D4'}"
                  :icon="button.icon"/>
     </toolbar>
   </div>

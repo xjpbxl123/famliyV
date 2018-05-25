@@ -8,20 +8,21 @@
     "precommit": "lint-staged",
     "dev": "cross-env NODE_ENV=development node ./build/webpack.dev.config.js",
     "build": "npm run lint&&cross-env NODE_ENV=production node ./build/build",
-    "build:test":
-      "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
-    "build:testFull":
-      "npm run lint&&cross-env NODE_ENV=buildTest WEEX_ENV=production node ./build/build --fuller",
-    "build:weex":
-      "npm run lint&&cross-env NODE_ENV=production node ./build/build --weex",
-    "build:full":
-      "npm run lint&&cross-env NODE_ENV=production node ./build/build --fuller",
-    "lint":
-      "eslint  --fix --ext js,vue  src build --ignore-pattern !.eslintrc.js --rule no-debugger:error"
+    "build:test": "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
+    "build:testFull": "npm run lint&&cross-env NODE_ENV=buildTest WEEX_ENV=production node ./build/build --fuller",
+    "build:weex": "npm run lint&&cross-env NODE_ENV=production node ./build/build --weex",
+    "build:full": "npm run lint&&cross-env NODE_ENV=production node ./build/build --fuller",
+    "lint": "eslint  --fix --ext js,vue  src build --ignore-pattern !.eslintrc.js --rule no-debugger:error"
   },
   "lint-staged": {
-    "*.{json,scss,css,md}": ["prettier --write", "git add"],
-    "*.{js,vue}": ["npm run lint", "git add"]
+    "*.{json,scss,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,vue}": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -32,8 +33,8 @@
     "normalize.css": "^8.0.0",
     "qrcode": "^1.2.0",
     "vue": "^2.2.1",
-    "vue-find": "^1.2.1",
-    "vue-find-hybrid": "^1.0.7",
+    "vue-find": "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git",
+    "vue-find-hybrid": "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#develop",
     "vue-resource": "^1.3.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
@@ -87,7 +88,9 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {
-        "browsers": ["last 3 versions"]
+        "browsers": [
+          "last 3 versions"
+        ]
       }
     }
   }
