@@ -86,12 +86,16 @@
     "webpack-merge": "^4.1.2",
     "yargs": "^11.0.0"
   },
-  "browserslist": ["last 3 versions", "not ie <=8"],
+  "browserslist": [
+    "last 3 versions",
+    "not ie <=8"
+  ],
   "postcss": {
     "plugins": {
       "postcss-cssnext": {},
       "cssnano": {
-        "autoprefixer": false
+        "autoprefixer": false,
+        "zindex:": false
       }
     }
   }
