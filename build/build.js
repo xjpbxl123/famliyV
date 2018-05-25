@@ -62,7 +62,7 @@ const buildWeex = () => {
 switch (true) {
   case args.fuller:
     shell.rm('-rf', config.assertRoot)
-    buildWeb().then(assist.copyStaticAssets)
+    buildWeb().then(() => { assist.copyStaticAssets() })
     buildWeex()
     return
   case args.weex:
@@ -70,5 +70,5 @@ switch (true) {
     return buildWeex()
   default:
     shell.rm('-rf', config.assertRoot)
-    return buildWeb().then(assist.copyStaticAssets)
+    return buildWeb().then(() => { assist.copyStaticAssets() })
 }

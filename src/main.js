@@ -1,3 +1,7 @@
+import 'normalize.css'
+import './styles/iconfont/iconfont.css'
+import './main.scss'
+import './styles/button/button.scss'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createStore from './store'
@@ -5,13 +9,9 @@ import { isObject } from 'lodash'
 import VueFind from 'vue-find'
 import vueFindHybrid from 'vue-find-hybrid'
 import find from './scripts/find'
-import App from './App.vue'
 import VueRouter from 'vue-router'
 import routes from './routers'
-import 'normalize.css'
-import './styles/iconfont/iconfont.css'
-import './main.scss'
-import './styles/button/button.scss'
+import App from './App.vue'
 
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
