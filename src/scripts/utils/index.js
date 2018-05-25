@@ -54,5 +54,11 @@ const formatDate = function (date, format) {
   }
   return format
 }
-
-export { os, formatDate }
+/**
+ * @desc 获取当前环境变量
+ * */
+const getCurrentEnv = () => {
+  let NODE_ENV = process.env.NODE_ENV
+  return process.env[NODE_ENV]
+}
+export { os, formatDate, getCurrentEnv }
