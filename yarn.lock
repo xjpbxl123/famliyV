@@ -3290,8 +3290,8 @@ find-parent-dir@^0.3.0:
     lodash "^4.17.10"
 
 "find-toolbar@git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop":
-  version "1.0.5"
-  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#cba1942e4ef1b14e73601b0493a0923117eb041c"
+  version "1.0.6"
+  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#7ac349856eab43c337654e08d47ff3c438cac0d3"
   dependencies:
     deep-diff "1.0.0"
 
@@ -8244,16 +8244,24 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-find-hybrid@^1.0.7:
+"vue-find-hybrid@git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#develop":
   version "1.0.7"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.0.7.tgz#73e45ec6307ea305a6a74d95b9c35a6e2348e085"
+  uid "585f1c23277094e43f2c8c28302a0d016154ff2b"
+  resolved "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#585f1c23277094e43f2c8c28302a0d016154ff2b"
   dependencies:
     find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
     vue "^2.5.2"
 
-vue-find@^1.2.1:
+"vue-find-hybrid@http://192.168.200.211/zhuzhe/vue-find-hybrid.git":
+  version "1.0.7"
+  resolved "http://192.168.200.211/zhuzhe/vue-find-hybrid.git#585f1c23277094e43f2c8c28302a0d016154ff2b"
+  dependencies:
+    find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
+    vue "^2.5.2"
+
+"vue-find@git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git":
   version "1.2.1"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.2.1.tgz#96708e11cf66037ebc1391c693158a0d624aad98"
+  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git#22ba65bd9e3ac6afe81f1291b3cc1bc367c19afe"
   dependencies:
     lodash "^4.17.10"
     vue "^2.5.16"
