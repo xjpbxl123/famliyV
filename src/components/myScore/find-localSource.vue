@@ -86,6 +86,7 @@
                     border-bottom: 1px solid #fff;
                     box-sizing: border-box;
                     position: relative;
+                    display: block;
                     &.active {
                         background: #FF7E1B;
                     }

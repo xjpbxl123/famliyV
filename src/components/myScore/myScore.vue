@@ -451,11 +451,11 @@
        * */
       destroyedFunc () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-        this.$store.dispatch('myScore/localSourceIndex', 0)
-        this.$store.dispatch('myScore/myRecordIndex', 0)
-        this.$store.dispatch('myScore/myPlayIndex', 0)
-        this.$store.dispatch('myScore/myCollectIndex', 0)
-        this.$store.dispatch('myScore/myRecentIndex', 0)
+        this.$store.dispatch('myScore/setLocalSourceIndex', 0)
+        this.$store.dispatch('myScore/setMyRecordIndex', 0)
+        this.$store.dispatch('myScore/setMyPlayIndex', 0)
+        this.$store.dispatch('myScore/setMyCollectIndex', 0)
+        this.$store.dispatch('myScore/setRecentIndex', 0)
       }
 
     },

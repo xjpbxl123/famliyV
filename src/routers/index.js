@@ -12,6 +12,7 @@ import scoreSetList from 'components/scoreSetList/scoreSetList-router'
 import scoreList from 'components/scoreList/scoreList-router'
 import material from 'components/material/material-router'
 import staff from 'components/staff/staff-router'
+import myScore from 'components/myScore/myScore-router'
 import famousPlay from 'components/famous/famous-play/famousPlay-router'
 const routers = [
   index,
@@ -23,7 +24,8 @@ const routers = [
   scoreSetList,
   scoreList,
   material,
-  famousPlay
+  famousPlay,
+  myScore
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV

@@ -13,6 +13,7 @@ import scoreSetList from './modules/scoreSetList'
 import scoreList from './modules/scoreList'
 import material from './modules/material'
 import staff from './modules/staff'
+import myScore from './modules/myScore'
 import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
@@ -271,7 +272,8 @@ export default function createStore () {
       scoreSetList,
       scoreList,
       material,
-      staff
+      staff,
+      myScore
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

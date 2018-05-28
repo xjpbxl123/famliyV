@@ -322,9 +322,7 @@
                     }
                   }
                   this.$store.dispatch('index/localCollect', localCollect).then(() => {
-                    scoreList[scoreIndex].collect.forEach((item, index) => {
-                      item.collection = !flag
-                    })
+                    scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                     console.log(flag)
                     this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id})
                   })
