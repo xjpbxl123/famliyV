@@ -345,6 +345,19 @@
     },
     created () {
       this.getScoreList()
+
+      console.log(JSON.parse(this.$route.query.musicId))
+      let musicId = JSON.parse(this.$route.query.musicId)
+      if (musicId) {
+        // 从我的收藏或者最近打开进来
+        this.scoreList.forEach((item, index) => {
+          item.files.forEach((item1) => {
+            if (item1.musicId === musicId) {
+              return this.$store.dispatch('scoreList/setScoreListIndex', index)
+            }
+          })
+        })
+      }
     },
     components: {
       scoreListCenter,

@@ -1,4 +1,5 @@
 import { file } from 'find-sdk'
+import http from '../../scripts/http'
 const MY_SCORE_TAP_INDEX = 'MY_SCORE_TAP_INDEX' /// 我的曲谱index
 const LOCAL_SOURCE = 'LOCAL_SOURCE' /// 本地资源
 const LOCAL_SOURCE_INDEX = 'LOCAL_SOURCE_INDEX' /// 本地资源index
@@ -200,6 +201,16 @@ export default {
      * */
     setRecentIndex ({commit}, num) {
       commit(MY_RECENT_INDEX, num)
+    },
+    /**
+     * @desc bookInfo
+     * */
+    getBookInfo ({dispatch, commit} = {}, bookId) {
+      http.post('', {cmd: 'musicScore.getBookById', bookId}).then(({body, header}) => {
+        if (!header.code) {
+          return body && dispatch('setCacheToStorage', {bookInfo: body, id: bookId}, {root: true})
+        }
+      })
     }
   }
 }

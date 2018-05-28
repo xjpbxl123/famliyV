@@ -145,7 +145,6 @@
                         left:110px;
                         height:100%;
                         color: #fff;
-                        font-weight: 600;
                         width: 400px;
                         .musicName {
                             font-size: 30px;

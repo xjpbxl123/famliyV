@@ -116,6 +116,15 @@
             dotColor: '#c72bbb',
             id: 16,
             show: false
+          },
+          {
+            pianoKey: 90,
+            text: '',
+            icon: '0xe63d',
+            backgroundColor: '#8D45FF',
+            dotColor: '#8D45FF',
+            id: 17,
+            show: false
           }
         ],
         title: '最近打开',
@@ -127,23 +136,28 @@
         switch (key) {
           case 39:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-            this.controlButtons[8].show = false
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 42:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
-            this.controlButtons[8].show = true
+            this.controlButtons[this.controlButtons.length - 2].show = true
+            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 46:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
-            this.controlButtons[8].show = true
+            this.controlButtons[this.controlButtons.length - 2].show = true
+            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 49:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-            this.controlButtons[8].show = false
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.legnth - 1].show = false
             break
           case 54:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
-            this.controlButtons[8].show = false
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 78:
             this.buttonActions('up')
@@ -157,6 +171,9 @@
           case 85:
             this.buttonActions('delete')
             break
+          case 90:
+            this.buttonActions('scoreList')
+            break
           case 108:
             this.buttonActions('back')
         }
@@ -166,7 +183,10 @@
       ...mapState({
         myScoreTapIndex: function (state) {
           if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 2) {
-            this.controlButtons[8].show = true
+            this.controlButtons[this.controlButtons.length - 2].show = true
+          }
+          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
+            this.controlButtons[this.controlButtons.length - 1].show = true
           }
           return state.myScore.myScoreTapIndex
         },
@@ -185,7 +205,7 @@
           return storage.isLogin
         }
       }),
-      ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent'])
+      ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent', 'bookInfo'])
 
     },
     watch: {
@@ -350,6 +370,11 @@
         let collectList1 = this.isLogin ? this.collectList : this.localCollect
         let collectList = [].concat(JSON.parse(JSON.stringify(collectList1)))
         let length = collectList.length
+        if (length === 1) {
+          return
+        }
+        let musicId = collectList[myCollectIndex].musicId
+        let bookId = collectList[myCollectIndex].bookId
         switch (type) {
           case 'up':
             myCollectIndex--
@@ -367,13 +392,14 @@
               //  去播放midi
             }
             break
+          case 'scoreList':
+            if (bookId && musicId) {
+              this.$store.dispatch('myScore/getBookInfo', bookId)
+              this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+            }
+            break
           case 'delete':
             console.log('删除这条收藏的数据')
-            if (collectList.length === 0) {
-              return
-            }
-            let musicId = collectList[myCollectIndex].musicId
-            let bookId = collectList[myCollectIndex].bookId
             if (!musicId || !bookId) {
               return
             }
@@ -401,6 +427,11 @@
         let myRecentIndex = this.myRecentIndex
         let recentList = this.isLogin ? this.recentOpenList : this.localRecent
         let length = recentList.length
+        if (length === 0) {
+          return
+        }
+        let bookId = recentList[myRecentIndex].bookId
+        let musicId = recentList[myRecentIndex].musicId
         switch (type) {
           case 'up':
             myRecentIndex--
@@ -421,6 +452,12 @@
           case 'back':
             this.destroyedFunc()
             return this.$router.back()
+          case 'scoreList':
+            if (bookId && musicId) {
+              this.$store.dispatch('myScore/getBookInfo', bookId)
+              this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+            }
+            break
         }
       },
       /**

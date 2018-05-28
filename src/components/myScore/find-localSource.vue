@@ -105,7 +105,6 @@
                         height: 100%;
                         line-height: 120px;
                         color: #fff;
-                        font-weight: 600;
                     }
                 }
             }
