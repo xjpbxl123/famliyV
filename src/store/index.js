@@ -219,6 +219,11 @@ export default function createStore () {
         }).then(({body, header}) => {
           if (header.code === 0) {
             clearInterval(window.interval)
+            for (let value of Object.keys(body)) {
+              if (Object.prototype.toString.call(body[value]) === '[object Null]') {
+                body[value] = ''
+              }
+            }
             return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
           return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
