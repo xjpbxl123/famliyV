@@ -12,7 +12,6 @@ import find from './scripts/find'
 import VueRouter from 'vue-router'
 import routes from './routers'
 import App from './App.vue'
-
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
 Vue.use(Vuex)
