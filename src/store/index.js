@@ -113,7 +113,7 @@ export default function createStore () {
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
-        let userId = state.storage.isLogin ? state.storage.userInfo.userId : -1
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }

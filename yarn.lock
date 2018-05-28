@@ -8609,18 +8609,18 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-find-hybrid@^1.0.7:
-  version "1.0.7"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.0.7.tgz#9faae0acbe56fae926b329225b64842c08debf8e"
-  dependencies:
-    find-toolbar "^1.0.7"
-    vue "^2.5.2"
-
 "vue-find-hybrid@git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#develop":
   version "1.0.7"
   resolved "git+ssh://git@192.168.200.211:zhuzhe/vue-find-hybrid.git#585f1c23277094e43f2c8c28302a0d016154ff2b"
   dependencies:
     find-toolbar "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#develop"
+    vue "^2.5.2"
+
+"vue-find-hybrid@http://192.168.200.211/zhuzhe/vue-find-hybrid.git":
+  version "1.0.7"
+  resolved "http://192.168.200.211/zhuzhe/vue-find-hybrid.git#ba458e82329daaf8293702c426d53d342d23747f"
+  dependencies:
+    find-toolbar "^1.0.7"
     vue "^2.5.2"
 
 "vue-find@git+ssh://git@192.168.200.211:FindH5Lib/FindVue.git":
