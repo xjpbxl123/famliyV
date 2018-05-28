@@ -94,7 +94,8 @@
       "postcss-cssnext": {},
       "cssnano": {
         "autoprefixer": false,
-        "zindex": false
+        "zindex": false,
+        "mergeRules": false
       }
     }
   }
