@@ -2739,9 +2739,9 @@ find-parent-dir@~0.3.0:
   version "0.3.0"
   resolved "http://registry.npm.taobao.org/find-parent-dir/download/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
-"find-toolbar@git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git":
-  version "1.0.6"
-  resolved "git+ssh://git@192.168.200.211:zhuzhe/find-toolbar.git#7ac349856eab43c337654e08d47ff3c438cac0d3"
+find-toolbar@^1.0.7:
+  version "1.0.7"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.0.7.tgz#03fc94f3ca648c5e563a7a036d8d15a0dc03fbbe"
   dependencies:
     deep-diff "1.0.0"
 

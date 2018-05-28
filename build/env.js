@@ -5,6 +5,7 @@
 let fs = require('fs')
 let path = require('path')
 let deepMerge = require('deepmerge')
+let assign = Object.assign
 let NODE_ENV = process.env.NODE_ENV
 const environments = ['.env', '.env.local', `.env.${NODE_ENV}`, `.env.${NODE_ENV}.local`]
 /**
@@ -27,6 +28,6 @@ const getEnvironment = (dynamicEnv) => {
       }
     }
     return initial
-  }, {stringify: {...{NODE_ENV}, ...dynamicEnv}, env: {...{NODE_ENV}, ...dynamicEnv}})
+  }, {stringify: assign({NODE_ENV}, dynamicEnv), env: assign({NODE_ENV}, dynamicEnv)})
 }
 module.exports = getEnvironment
