@@ -9,7 +9,6 @@
 git clone  git@192.168.200.211:moersing/FindFamilyVue.git
 
 # 安装依赖
-// 注意：就目前而言,如果结合weex,那么weex目录下也需要install
 yarn install
 
 # 开发环境
@@ -32,7 +31,7 @@ yarn run lint
 ### Usage
 
 1.  postcss 配置在`package.json`的`postcss`字段 ,详见 [postcss-load-config](https://github.com/michael-ciniawsky/postcss-load-config#postcssrc),兼容浏览器版本位于 `package.json`的`browserslist`字段,详见[browserslist](https://github.com/browserslist/browserslist)
-2.  环境变量位于根目录,根据环境配置: `.env.json`,本地环境变量则是:`.env.local.json`.
+2.  环境变量位于根目录,根据环境配置: `.env.json`,本地环境变量则是:`.env.local.json`,除此之外,你还可以根据环境变量自由配置,如: 你的`NODE_ENV`是 test,那么,你可以新增一个 `.env.test.json`,即 `.env.{NODE_ENV}.json`的格式.
 3.  由于个人习惯不同,使用的编辑器也不同,editorConfig 是一个 coding style 的标准,这能使我们在 coding style 上达到统一的风格,相关编辑器插件可以到[(http://editorconfig.org/](http://editorconfig.org/)上查找.
 4.  esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
 
