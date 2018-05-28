@@ -10,7 +10,9 @@
         <div class="subscript">
             new
         </div>
-          请更新Find版本号：{{serverVersionInfo.version}}({{serverVersionInfo.build}})
+        <div>
+          请更新Find版本号：{{serverVersionInfo.version}} ({{serverVersionInfo.build}})
+        </div>
       </div>
     </div>
     <toolbar>
@@ -28,6 +30,7 @@
 <script type="text/javascript">
   import { mapState } from 'vuex'
   import { KEY82 } from 'vue-find'
+  import { download } from 'find-sdk'
   export default {
     data () {
       return {
@@ -45,8 +48,15 @@
     find: {
       [KEY82] () {
         let version = process.env.VERSION
-
         console.log(`更新${version}`)
+        let downloadInfo = this.serverVersionInfo.url
+        console.log(downloadInfo)
+        download.downloadFile({
+          url: downloadInfo.url,
+          md5: downloadInfo.md5,
+          fsize: downloadInfo.fsize,
+          localPath: '/Users/find/Documents/Find Downloads/'
+        }).progress(progress => { console.log(progress) }).then(res => { console.log(res.desc) })
       }
     },
     computed: {
@@ -55,7 +65,14 @@
         localVersionInfo: state => state.softwareUpdate.localVersionInfo
       })
     },
-    methods: {},
+    methods: {
+      update () {
+
+      },
+      stopUpdate () {
+
+      }
+    },
     created () {
       this.$store.dispatch('softwareUpdate/getServerVersionInfo')
       this.$store.dispatch('softwareUpdate/getLocalVersionInfo')
@@ -91,7 +108,7 @@
     font-size: 36px;
     box-sizing: border-box;
     padding: 35px 50px;
-    .subscript {
+    &>.subscript {
       width: 80px;
       height: 40px;
       line-height: 40px;
