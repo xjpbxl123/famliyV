@@ -1,6 +1,4 @@
 const path = require('path')
-const config = require('./config')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
 
 exports.cssLoaders = function (options) {
@@ -81,5 +79,23 @@ exports.createNotifierCallback = () => {
       subtitle: filename || '',
       icon: path.join(__dirname, 'logo.png')
     })
+  }
+}
+/**
+ * @desc Create a file loader for images asserts.
+ * */
+exports.fileLoaders = function (publicPath = '/images/') {
+  return {
+    test: /\.(png|jpg|gif)$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[name][hash].[ext]',
+          outputPath: 'images/',
+          publicPath
+        }
+      }
+    ]
   }
 }

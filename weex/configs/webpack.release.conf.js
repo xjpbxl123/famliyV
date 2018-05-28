@@ -1,14 +1,13 @@
 const commonConfig = require('./webpack.common.conf')
 const webpackMerge = require('webpack-merge') // used to merge webpack configs
 // tools
-const ip = require('ip').address()
 const os = require('os')
 const chalk = require('chalk')
 const path = require('path')
 const webpack = require('webpack')
 const helper = require('./helper')
 const config = require('./config')
-
+const utils = require('./utils')
 console.log(`${chalk.green(`Package web project at ${chalk.bold(path.resolve('./release/web'))}!`)}`)
 /**
  * Webpack Plugins
@@ -43,7 +42,10 @@ const generateMultipleEntrys = (entry) => {
 /**
  * Webpack configuration for web.
  */
-const productionConfig = webpackMerge(commonConfig[0], {
+const productionConfig = webpackMerge.smart(commonConfig[0], {
+  module: {
+    rules: utils.fileLoaders('/weex/images/')
+  },
   /**
    * Developer tool to enhance debugging
    *
@@ -155,50 +157,50 @@ const productionConfig = webpackMerge(commonConfig[0], {
 /**
  * Webpack configuration for weex.
  */
-const weexConfig = webpackMerge(commonConfig[1], {
-  /**
-   * Options affecting the output of the compilation.
-   *
-   * See: http://webpack.github.io/docs/configuration.html#output
-   */
-  output: {
-    /**
-     * The output directory as absolute path (required).
-     *
-     * See: http://webpack.github.io/docs/configuration.html#output-path
-     */
-    path: helper.rootNode('dist'),
-    /**
-     * Specifies the name of each output file on disk.
-     * IMPORTANT: You must not specify an absolute path here!
-     *
-     * See: http://webpack.github.io/docs/configuration.html#output-filename
-     */
-    filename: '[name].js'
-  },
-  /*
-   * Add additional plugins to the compiler.
-   *
-   * See: http://webpack.github.io/docs/configuration.html#plugins
-   */
-  plugins: [
-    /*
-     * Plugin: UglifyJsparallelPlugin
-     * Description: Identical to standard uglify webpack plugin
-     * with an option to build multiple files in parallel
-     *
-     * See: https://www.npmjs.com/package/webpack-uglify-parallel
-     */
-    new UglifyJsparallelPlugin({
-      workers: os.cpus().length,
-      mangle: true,
-      compressor: {
-        warnings: false,
-        drop_console: true,
-        drop_debugger: true
-      }
-    })
-  ]
-})
+// const weexConfig = webpackMerge(commonConfig[1], {
+//  /**
+//   * Options affecting the output of the compilation.
+//   *
+//   * See: http://webpack.github.io/docs/configuration.html#output
+//   */
+//  output: {
+//    /**
+//     * The output directory as absolute path (required).
+//     *
+//     * See: http://webpack.github.io/docs/configuration.html#output-path
+//     */
+//    path: helper.rootNode('dist'),
+//    /**
+//     * Specifies the name of each output file on disk.
+//     * IMPORTANT: You must not specify an absolute path here!
+//     *
+//     * See: http://webpack.github.io/docs/configuration.html#output-filename
+//     */
+//    filename: '[name].js'
+//  },
+//  /*
+//   * Add additional plugins to the compiler.
+//   *
+//   * See: http://webpack.github.io/docs/configuration.html#plugins
+//   */
+//  plugins: [
+//    /*
+//     * Plugin: UglifyJsparallelPlugin
+//     * Description: Identical to standard uglify webpack plugin
+//     * with an option to build multiple files in parallel
+//     *
+//     * See: https://www.npmjs.com/package/webpack-uglify-parallel
+//     */
+//    new UglifyJsparallelPlugin({
+//      workers: os.cpus().length,
+//      mangle: true,
+//      compressor: {
+//        warnings: false,
+//        drop_console: true,
+//        drop_debugger: true
+//      }
+//    })
+//  ]
+// })
 
 module.exports = productionConfig

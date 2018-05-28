@@ -5,6 +5,7 @@ const webpack = require('webpack')
 
 const config = require('./config')
 const helper = require('./helper')
+const utils = require('./utils')
 
 /**
  * Webpack Plugins
@@ -14,7 +15,10 @@ const UglifyJsparallelPlugin = require('webpack-uglify-parallel')
 /**
  * Webpack configuration for weex.
  */
-const weexConfig = webpackMerge(commonConfig[1], {
+const weexConfig = webpackMerge.smart(commonConfig[1], {
+  module: {
+    rules: [utils.fileLoaders('/weex/images')]
+  },
   /*
    * Add additional plugins to the compiler.
    *
@@ -45,7 +49,10 @@ const weexConfig = webpackMerge(commonConfig[1], {
 /**
  * Webpack configuration for web.
  */
-const webConfig = webpackMerge(commonConfig[0], {
+const webConfig = webpackMerge.smart(commonConfig[0], {
+  module: {
+    rules: [utils.fileLoaders('/weex/images')]
+  },
   /**
    * Developer tool to enhance debugging
    *
@@ -115,5 +122,5 @@ const webConfig = webpackMerge(commonConfig[0], {
     })
   ]
 })
-
+console.log(JSON.stringify(weexConfig.module.rules))
 module.exports = [weexConfig, webConfig]

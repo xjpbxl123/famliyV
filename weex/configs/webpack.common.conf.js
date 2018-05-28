@@ -3,13 +3,13 @@ const fs = require('fs-extra')
 const webpack = require('webpack')
 const config = require('./config')
 const helper = require('./helper')
+const utils = require('./utils')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vueWebTemp = helper.rootNode(config.templateDir)
 const hasPluginInstalled = fs.existsSync(helper.rootNode(config.pluginFilePath))
 const isWin = /^win/.test(process.platform)
 const webEntry = {}
 const weexEntry = {}
-
 // Wraping the entry file for web.
 const getEntryFileContent = (entryPath, vueFilePath) => {
   let relativeVuePath = path.relative(path.join(entryPath, '../'), vueFilePath)
@@ -142,19 +142,7 @@ const webConfig = {
           })
         }]
       },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name][hash].[ext]',
-              outputPath: 'images/',
-              publicPath: '/images/'
-            }
-          }
-        ]
-      }
+      utils.fileLoaders('/weex/images')
     ])
   },
   /*
@@ -201,19 +189,7 @@ const weexConfig = {
           options: vueLoaderConfig({useVue: false})
         }]
       },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name][hash].[ext]',
-              outputPath: 'images/',
-              publicPath: '/images/'
-            }
-          }
-        ]
-      }
+      utils.fileLoaders('/weex/images')
     ]
   },
   /*

@@ -93,7 +93,7 @@
     },
     mounted () {
       let weexUrl = process.env[process.env.NODE_ENV].WEEX_URL
-      this.$refs.weex.openUrl(`${weexUrl}dist/components/videoDirectory/videoDirectory.js`)
+      this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
     },
     methods: {
       getCoursesBySet (courseSetID) {
