@@ -5,7 +5,7 @@ const assist = require('./assist')
 const config = require('./config')
 const NODE_ENV = process.env.NODE_ENV
 const pkg = require('../package')
-const envConfig = require('./env')({VERSION: pkg.version})
+const envConfig = require('./env')({VERSION: pkg.version, BUILD_VERSION: pkg.build})
 const env = envConfig.env[NODE_ENV] || envConfig.env
 const shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
 module.exports = {

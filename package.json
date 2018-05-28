@@ -2,6 +2,7 @@
   "name": "piano-family",
   "description": "钢琴家庭版",
   "version": "1.0.0",
+  "build": 0,
   "author": "Moersing Lin<1261870167@qq.com>",
   "private": true,
   "scripts": {
