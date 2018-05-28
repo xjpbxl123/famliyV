@@ -113,7 +113,7 @@ export default function createStore () {
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
-        let userId = state.storage.isLogin ? state.storage.userInfo.userId : -1
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
@@ -219,6 +219,11 @@ export default function createStore () {
         }).then(({body, header}) => {
           if (header.code === 0) {
             clearInterval(window.interval)
+            for (let value of Object.keys(body)) {
+              if (Object.prototype.toString.call(body[value]) === '[object Null]') {
+                body[value] = ''
+              }
+            }
             return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
           return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
