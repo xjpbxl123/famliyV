@@ -63,7 +63,6 @@
     watch: {
       sessionId () {
         if (!this.isLogin) {
-          console.log('unlogin')
           this.$nextTick(() => {
             if (this.$refs.qrCode) {
               this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
@@ -84,7 +83,6 @@
       }
     },
     created () {
-      console.log(process.env)
       this.$nextTick(() => {
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
