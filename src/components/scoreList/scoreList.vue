@@ -1,17 +1,18 @@
 <template>
   <div class="scoreList">
       <div class="left">
-        <scoreListLeftDeffer v-if="query.differ" :differ="query.differ"></scoreListLeftDeffer>
-        <scoreListLeftYear v-if="query.year" :year="query.year"></scoreListLeftYear>
-        <scoreListLeftStyle v-if="!query.differ && !query.year" :book="query.book"></scoreListLeftStyle>
+        <scoreListLeftDeffer v-if="query.differ" :differ="JSON.parse(query.differ)"></scoreListLeftDeffer>
+        <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
+        <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
       </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
 
-      <find-cover :activeNamespace="namespace" v-if="chooseType">
-        <scoreList-choose-type :files="files" :bannerType="bannerType" :collect="collect"/>
+      <find-cover :activeNamespace="namespace">
+        <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
+        <scoreList-choose-buttons  v-if="chooseType" :files="files" />
       </find-cover>
-      <toolbar v-if="!chooseType">
+      <toolbar :hidden="chooseType">
         <icon-item v-for="(button,index) in controlButtons"
                 :key="index"
                 :id=button.id
@@ -27,44 +28,21 @@
   import scoreListCenter from './scoreList-center'
   import scoreListMusicDetail from './scoreList-music-detail'
   import scoreListChooseType from './scoreList-choose-type'
+  import scoreListChooseButtons from './scoreList-choose-buttons'
   import scoreListLeftDeffer from './scoreList-left-deffer'
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import {
-    KEY67,
-    KEY68,
-    KEY69,
-    KEY70,
-    KEY71,
-    KEY72,
     KEY73,
-    KEY74,
     KEY75,
-    KEY76,
-    KEY77,
     KEY78,
-    KEY79,
     KEY80,
-    KEY81,
     KEY82,
-    KEY83,
-    KEY84,
     KEY85,
-    KEY86,
-    KEY88,
-    KEY89,
-    KEY90,
-    KEY91,
-    KEY92,
-    KEY93,
-    KEY95,
-    KEY96,
-    KEY97,
-    KEY98,
-    KEY99,
-    KEY100,
-    KEY108
+    INTERCEPT_DOWN,
+    BACK_PRESSED
   } from 'vue-find'
+
   export default {
     data () {
       return {
@@ -124,12 +102,24 @@
       }
     },
     watch: {
-      scoreList: function (value) {
-        console.log(value, 'value')
+      scoreList: function (value, old) {
         this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
         let flag = false
-        value.forEach((item) => {
-          if (item) { flag = true }
+        console.log(value[this.scoreIndex].collect)
+        value[this.scoreIndex].collect.forEach((item) => {
+          if (item.collection) { flag = true }
+        })
+        if (flag) {
+          this.controlButtons[5].icon = '0xe656'
+        } else {
+          this.controlButtons[5].icon = '0xe653'
+        }
+      },
+      scoreIndex: function (value) {
+        this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+        let flag = false
+        this.scoreList[this.scoreIndex].collect.forEach((item) => {
+          if (item.collection) { flag = true }
         })
         if (flag) {
           this.controlButtons[5].icon = '0xe656'
@@ -157,103 +147,24 @@
       [KEY85] () {
         this.buttonActions('collect')
       },
-      [KEY108] () {
+      [BACK_PRESSED] () {
         this.buttonActions('back')
       },
       chooseType: {
-        [KEY67] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY68] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY69] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY70] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY71] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY72] () {
-          this.buttonActions('choseType', 1)
-        },
-        [KEY74] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY75] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY76] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY77] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY78] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY79] () {
-          this.buttonActions('choseType', 2)
-        },
-        [KEY81] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY82] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY83] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY84] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY85] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY86] () {
-          this.buttonActions('choseType', 3)
-        },
-        [KEY88] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY89] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY90] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY91] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY92] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY93] () {
-          this.buttonActions('choseType', 4)
-        },
-        [KEY95] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY96] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY97] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY98] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY99] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY100] () {
-          this.buttonActions('choseType', 5)
-        },
-        [KEY108] () {
-          console.log('108')
-          this.chooseType = false
+        [INTERCEPT_DOWN] (key) {
+          if (key >= 67 && key <= 72) {
+            this.buttonActions('choseType', 1)
+          } else if (key >= 74 && key <= 79) {
+            this.buttonActions('choseType', 2)
+          } else if (key >= 81 && key <= 86) {
+            this.buttonActions('choseType', 3)
+          } else if (key >= 88 && key <= 93) {
+            this.buttonActions('choseType', 4)
+          } else if (key >= 95 && key <= 100) {
+            this.buttonActions('choseType', 5)
+          } else if (key === 108) {
+            this.chooseType = false
+          }
         }
       }
     },
@@ -261,12 +172,13 @@
       ...mapState({
         scoreIndex: state => state.scoreList.scoreIndex,
         scoreList: function (state) {
-          if (this.$route.query.differ) {
-            return state.storage.cache.renderCache.scoreList[this.$route.query.differ.id] || [{name: ''}]
-          } else if (this.$route.query.year) {
-            return state.storage.cache.renderCache.scoreList[this.$route.query.year.id] || [{name: ''}]
+          let query = this.query
+          if (query.differ) {
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || [{name: ''}]
+          } else if (query.year) {
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || [{name: ''}]
           } else {
-            return state.storage.cache.renderCache.scoreList[this.$route.query.book.bookId] || [{name: ''}]
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || [{name: ''}]
           }
         },
         isLogin (state) {
@@ -282,20 +194,23 @@
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
       },
       namespace () {
+        console.log(this.chooseType)
         return this.chooseType ? 'chooseType' : ''
       }
     },
     methods: {
       getScoreList () {
+        console.log(this.$route.query, 'this.$route')
+        let query = this.query
         let id = 0
-        if (this.$route.query.differ) {
-          id = this.$route.query.differ.id
+        if (query.differ) {
+          id = JSON.parse(query.differ).id
           this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
-        } else if (this.$route.query.year) {
-          id = this.$route.query.year.id
+        } else if (query.year) {
+          id = JSON.parse(query.year).id
           this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
         } else {
-          id = this.$route.query.book.bookId
+          id = JSON.parse(query.book).bookId
           this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: id})
         }
       },
@@ -342,11 +257,10 @@
             console.log('直接去播放曲谱')
             break
           case 'back':
-            this.$router.push('/')
+            this.$router.back()
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
-
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
@@ -358,8 +272,18 @@
             }
             break
           case 'choseType':
+
             console.log('choseType')
             let bookId = scoreList[scoreIndex].bookId
+            let id = 0
+            if (this.query.book) {
+              id = JSON.parse(this.query.book).bookId
+            } else if (this.query.differ) {
+              id = JSON.parse(this.query.differ).id
+            } else if (this.query.year) {
+              id = JSON.parse(this.query.year).id
+            }
+
             let hasCollected = false
             let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
             let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
@@ -374,13 +298,12 @@
               musicName: scoreList[scoreIndex].name,
               bookName: scoreList[scoreIndex].bookName,
               time: new Date().getTime(),
-              styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName]
+              styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName] || []
             }
             if (files.length >= typeNum) {
               if (this.bannerType === 'collect') {
                 if (!isLogin) {
                   // 没有登录的话 操作本地收藏列表
-
                   let localCollect = [].concat(JSON.parse(JSON.stringify(this.localCollect)))
                   let localCollectIndex = 0
                   localCollect.forEach((value, index) => {
@@ -398,15 +321,16 @@
                       localCollect.splice(localCollectIndex, 1)
                     }
                   }
-                  this.$store.dispatch('index/localCollectList', localCollect).then(() => {
+                  this.$store.dispatch('index/localCollect', localCollect).then(() => {
                     scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId})
+                    console.log(flag)
+                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id})
                   })
                   return
                 }
 
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: bookId, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
+                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
                 console.log('去播放')
               }
@@ -421,6 +345,19 @@
     },
     created () {
       this.getScoreList()
+
+      console.log(JSON.parse(this.$route.query.musicId))
+      let musicId = JSON.parse(this.$route.query.musicId)
+      if (musicId) {
+        // 从我的收藏或者最近打开进来
+        this.scoreList.forEach((item, index) => {
+          item.files.forEach((item1) => {
+            if (item1.musicId === musicId) {
+              return this.$store.dispatch('scoreList/setScoreListIndex', index)
+            }
+          })
+        })
+      }
     },
     components: {
       scoreListCenter,
@@ -428,7 +365,8 @@
       scoreListChooseType,
       scoreListLeftDeffer,
       scoreListLeftYear,
-      scoreListLeftStyle
+      scoreListLeftStyle,
+      scoreListChooseButtons
     }
   }
 </script>

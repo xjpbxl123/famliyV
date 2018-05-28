@@ -71,6 +71,9 @@
     methods: {
     },
     created () {
+      if (this.scoreIndex >= 10) {
+        this.rightTop = (this.scoreIndex - 9) * -78
+      }
     },
     components: {
       scoreListListEachItem

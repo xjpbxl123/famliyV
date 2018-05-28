@@ -247,6 +247,7 @@
       height: 120px;
       color: #FFF;
       position: relative;
+      border-width: 0;
       border-bottom-width: 1px;
       border-bottom-style: solid;
       border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.5),rgba(255,255,255,0)) 30 30;

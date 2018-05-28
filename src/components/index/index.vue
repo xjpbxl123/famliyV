@@ -15,9 +15,9 @@
         :hotBooks="hotBooks"
         :selectedIndex="selectedIndex"/>
       <bannerRight
-        :recentOpenList="recentOpenList"
+        :recentOpenList="isLogin?recentOpenList:localRecent"
         :rightSelectedIndex="rightSelectedIndex"
-        :collectList="collectList"
+        :collectList="isLogin?collectList:localCollect"
         :rightType="rightType"/>
     </div>
     <div class="footBack"></div>
@@ -63,7 +63,7 @@
                  :pianoKey="button.pianoKey"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
-    <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/>
+    <!-- <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/> -->
   </div>
 </template>
 <script type="text/javascript">
@@ -76,6 +76,7 @@
     KEY27,
     KEY108,
     KEY30,
+    KEY37,
     KEY42,
     KEY46,
     KEY75,
@@ -104,18 +105,18 @@
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1,
-        weexStyle: {
-          left: 400,
-          top: 100,
-          width: 2000,
-          height: 900,
-          backgroundColor: '#30000000',
-          float: 'left',
-          borderWidth: 3,
-          borderColor: '#ef9900',
-          borderRadius: 20
-        },
-        showWeex: true,
+        // weexStyle: {
+        //   left: 400,
+        //   top: 100,
+        //   width: 2000,
+        //   height: 900,
+        //   backgroundColor: '#30000000',
+        //   float: 'left',
+        //   borderWidth: 3,
+        //   borderColor: '#ef9900',
+        //   borderRadius: 20
+        // },
+        // showWeex: true,
         userActionButtons: [
           {
             pianoKey: 27,
@@ -147,7 +148,7 @@
           {
             pianoKey: 39,
             text: '弹奏录制',
-            image: require('./images/material.png'),
+            image: require('./images/recording.png'),
             id: 5
           },
           {
@@ -171,7 +172,7 @@
           {
             pianoKey: 49,
             text: '音乐王国',
-            image: require('./images/master.png'),
+            image: require('./images/game.png'),
             id: 9
           }
         ],
@@ -266,6 +267,9 @@
       [KEY30] () {
         this.buttonActions('login')
       },
+      [KEY37] () {
+        this.buttonActions('myScore')
+      },
       [KEY42] () {
         this.buttonActions('material')
       },
@@ -338,7 +342,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent'])
     },
     watch: {
       /**
@@ -354,8 +358,8 @@
       },
       isLogin (val) {
         if (val) {
-          this.getRecentOpenList()
-          this.getCollectList()
+          // this.getRecentOpenList()
+          // this.getCollectList()
         }
       }
     },
@@ -380,13 +384,14 @@
        * */
       getRecentOpenList () {
         this.$store.dispatch({type: 'index/getRecentOpenList'})
+        this.$store.dispatch('index/localRecent', this.localRecent || [])
       },
       /**
        * @desc 右侧我的收藏数据
        * */
       getCollectList () {
         this.$store.dispatch({type: 'index/getCollectList'})
-        this.$store.dispatch('index/localCollectList', this.localCollect || [])
+        this.$store.dispatch('index/localCollect', this.localCollect || [])
       },
       /**
        * @desc 创建会话ID
@@ -467,6 +472,8 @@
             return this.go('/material')
           case 'famous':
             return this.go('/famous')
+          case 'myScore':
+            return this.go('/myScore')
           case 'left':
             if (activeIndex <= 0) {
               return
@@ -516,11 +523,11 @@
             if (activeIndex >= 0 && activeIndex <= 7) {
               // 最近更新
               console.log(recentBooks.bookList[activeIndex])
-              return this.$router.push({path: '/scoreList', query: {book: recentBooks.bookList[activeIndex]}})
+              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex <= 12) {
               // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {book: hotBooks.bookList[activeIndex - 8]}})
+              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
             break
           case 'right-up':
@@ -565,6 +572,9 @@
       this.getUserStatus()
       this.getRecentOpenList()
       this.getCollectList()
+    },
+    destroyed () {
+      clearInterval(window.interval)
     },
     components: {
       bannerLeft,

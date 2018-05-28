@@ -13,6 +13,7 @@ import scoreSetList from './modules/scoreSetList'
 import scoreList from './modules/scoreList'
 import material from './modules/material'
 import staff from './modules/staff'
+import myScore from './modules/myScore'
 import { nativeStorage } from 'find-sdk'
 
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
@@ -49,7 +50,9 @@ export default function createStore () {
               body: [], sumPage: 1
             },
             localCollect: [],
-            famousPlayCoursesBySet: []
+            localRecentOpen: [],
+            famousPlayCoursesBySet: [],
+            bookInfo: []
           }
         } // 数据本地缓存
       },
@@ -97,6 +100,12 @@ export default function createStore () {
       },
       localCollect: state => {
         return state.storage.cache.renderCache.localCollect
+      },
+      localRecent: state => {
+        return state.storage.cache.renderCache.localRecentOpen
+      },
+      bookInfo: state => {
+        return state.storage.cache.renderCache.bookInfo
       }
     },
     mutations: {
@@ -267,7 +276,8 @@ export default function createStore () {
       scoreSetList,
       scoreList,
       material,
-      staff
+      staff,
+      myScore
     },
     plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
   })

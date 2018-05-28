@@ -130,7 +130,7 @@
           case 'ok':
             let data = scoreSetList[scoreListIndex]
             console.log(data)
-            this.$router.push({path: '/scoreList', query: {book: data}})
+            this.$router.push({path: '/scoreList', query: {book: JSON.stringify(data)}})
             break
           default:
             break
