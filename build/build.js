@@ -29,7 +29,7 @@ const buildWeb = () => {
         console.error(err.details)
         return reject(reject)
       }
-      console.log(stats.toString(stateConfig) + '\n\n')
+      console.log(stats.toString(stateConfig) + '\r\n')
       resolve(null)
     })
   })
