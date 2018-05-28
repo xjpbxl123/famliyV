@@ -63,14 +63,14 @@ const generateHtmlWebpackPlugin = (entry) => {
 /**
  * Webpack configuration for browser.
  */
-const devWebpackConfig = webpackMerge(commonConfig[0], {
+const devWebpackConfig = webpackMerge.smart(commonConfig[0], {
   /*
    * Options affecting the resolving of modules.
    *
    * See: http://webpack.github.io/docs/configuration.html#module
    */
   module: {
-    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true})
+    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true}).concat([utils.fileLoaders()])
   },
   /**
    * Developer tool to enhance debugging
@@ -147,7 +147,10 @@ const devWebpackConfig = webpackMerge(commonConfig[0], {
 /**
  * Webpack configuration for weex.
  */
-const weexConfig = webpackMerge(commonConfig[1], {
+const weexConfig = webpackMerge.smart(commonConfig[1], {
+  module: {
+    rules: [utils.fileLoaders()]
+  },
   watch: true
 })
 
