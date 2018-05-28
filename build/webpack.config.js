@@ -4,7 +4,8 @@ const webpack = require('webpack')
 const assist = require('./assist')
 const config = require('./config')
 const NODE_ENV = process.env.NODE_ENV
-const envConfig = require('./env')()
+const pkg = require('../package')
+const envConfig = require('./env')({VERSION: pkg.version})
 const env = envConfig.env[NODE_ENV] || envConfig.env
 const shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
 module.exports = {
