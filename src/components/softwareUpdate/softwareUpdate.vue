@@ -13,8 +13,10 @@
         <div>
           请更新Find版本号：{{serverVersionInfo.version}} ({{serverVersionInfo.build}})
         </div>
+        <progressBar :progress="progress" v-show="downloading"></progressBar>
       </div>
     </div>
+    <findPrompt icon="icon-grade-right" text="成功获取最新版本信息" v-show="showPrompt"></findPrompt>
     <toolbar>
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
@@ -31,9 +33,14 @@
   import { mapState } from 'vuex'
   import { KEY82 } from 'vue-find'
   import { download } from 'find-sdk'
+  import progressBar from '../common/find-progress-bar/find-progress-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
   export default {
     data () {
       return {
+        progress: 0,
+        downloading: false,
+        showPrompt: false,
         controlButtons: [
           {
             pianoKey: 82,
@@ -48,15 +55,35 @@
     find: {
       [KEY82] () {
         let version = process.env.VERSION
-        console.log(`更新${version}`)
+        let build = process.env.BUILD_VERSION
+        console.log(`${version}${build}`)
         let downloadInfo = this.serverVersionInfo.url
-        console.log(downloadInfo)
-        download.downloadFile({
-          url: downloadInfo.url,
-          md5: downloadInfo.md5,
-          fsize: downloadInfo.fsize,
-          localPath: '/Users/find/Documents/Find Downloads/'
-        }).progress(progress => { console.log(progress) }).then(res => { console.log(res.desc) })
+        let that = this
+        if (this.downloading) {
+          // 暂停下载
+          this.downloading = false
+        } else {
+          // 开始下载
+          this.downloading = true
+          this.controlButtons = this.controlButtons.map(item => {
+            if (item.pianoKey === 82) {
+              item.text = '取消下载'
+              item.icon = '0xe60a'
+            }
+            return item
+          })
+          download.downloadFile({
+            url: downloadInfo.url,
+            md5: downloadInfo.md5,
+            fsize: downloadInfo.fsize,
+            localPath: '/Users/find/Documents/Find Downloads/'
+          }).progress(progress => {
+            console.log(progress.progress)
+            that.progress = progress.progress
+          }).then(res => {
+            console.log(res.desc)
+          })
+        }
       }
     },
     computed: {
@@ -74,10 +101,20 @@
       }
     },
     created () {
-      this.$store.dispatch('softwareUpdate/getServerVersionInfo')
+      let that = this
+      this.$store.dispatch('softwareUpdate/getServerVersionInfo', {callback () {
+        console.log(that)
+        that.showPrompt = true
+        setTimeout(() => {
+          that.showPrompt = false
+        }, 2000)
+      }})
       this.$store.dispatch('softwareUpdate/getLocalVersionInfo')
     },
-    components: {}
+    components: {
+      progressBar,
+      findPrompt
+    }
   }
 </script>
 <style lang="scss" scoped>
@@ -108,7 +145,7 @@
     font-size: 36px;
     box-sizing: border-box;
     padding: 35px 50px;
-    &>.subscript {
+    & > .subscript {
       width: 80px;
       height: 40px;
       line-height: 40px;
@@ -120,6 +157,20 @@
       border-radius: 10px;
       font-size: 30px;
     }
+    .progressBar {
+      width: 80%;
+      height: 15px;
+      position: absolute;
+      bottom: -50px;
+      left: 5%;
+    }
+  }
+  .find-prompt {
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 275px;
+    left: 2043px;
   }
 }
 </style>

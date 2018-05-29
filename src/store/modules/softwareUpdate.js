@@ -24,6 +24,7 @@ export default {
       }).then(res => {
         console.log(res)
         commit('setServerVersionInfo', res.body.app)
+        data.callback()
       })
     },
     getLocalVersionInfo ({dispatch, commit, state}, data) {
