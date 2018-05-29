@@ -4,7 +4,7 @@
       <div class="video-img">
         <image class="video-img-header" style="width:40px;height:30px" :src="logo"></image>
       </div>
-      <text class="video-text fwhite" v-if="progress">{{`${progress}%`}}</text>
+      <text class="video-text fwhite" >曲谱列表</text>
       <text class="video-mun fwhite">{{`共${videoList.sum || 0}个`}}</text>
     </div>
     <div class="contentBox">
