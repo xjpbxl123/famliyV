@@ -295,7 +295,7 @@
             let musicData = {
               musicId: musicId,
               bookId: bookId,
-              musicName: scoreList[scoreIndex].name,
+              name: scoreList[scoreIndex].name,
               bookName: scoreList[scoreIndex].bookName,
               time: new Date().getTime(),
               styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName] || []

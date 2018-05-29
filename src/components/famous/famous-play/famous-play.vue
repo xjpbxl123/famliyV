@@ -32,7 +32,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, receiveMsgFromWeex, KEY61 } from 'vue-find'
+  import { KEY80, KEY70, receiveMsgFromWeex } from 'vue-find'
 
   export default {
     data () {
@@ -55,7 +55,7 @@
           borderColor: '#ff00ee'
         },
         weexStyle: {
-          right: 0,
+          right: -690,
           bottom: 0,
           width: 690,
           height: 1080,
@@ -78,9 +78,8 @@
             id: 203
           },
           {
-            pianoKey: 61,
-            icon: '0xe682',
-            id: 204
+            pianoKey: 70,
+            icon: '0xe635'
           }
         ],
         isPlay: false,
@@ -97,17 +96,30 @@
          */
         this.playOrpause()
       },
-      [KEY61] () {
-        // this.weexHidden = !this.weexHidden
-        // this.$refs.weex.animation({
-        //   duration: 800,
-        //   timingFunction: 'ease',
-        //   style: {
-        //     transform: this.weexHidden ? 'translateX(-690px)' : 'translateX(690px)'
-        //   }
-        // }).then((data) => {
-        //   console.log(data)
-        // })
+      [KEY70] () {
+        /**
+         * @desc 打开视频列表
+         */
+        let flag = false
+        if (this.weexHidden) {
+          this.showWeex()
+          flag = true
+        }
+        this.$refs.weex.animation({
+          duration: 800,
+          timingFunction: 'ease',
+          styles: {
+            transform: !flag ? 'translateX(690px)' : 'translateX(-690px)'
+          }
+        }).then((data) => {
+          if (flag) {
+            return
+          }
+          if (!this.weexHidden) {
+            this.showWeex()
+          }
+          console.log(data)
+        })
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
@@ -191,6 +203,12 @@
         this.isPlay ? this.$refs.player.pause() : this.$refs.player.play()
         this.isPlay = !this.isPlay
       },
+      showWeex () {
+        if (!this.palyHidden) {
+          // 视频下载完成
+          this.weexHidden = !this.weexHidden
+        }
+      },
       /**
        * @desc video init successful
        */
@@ -217,7 +235,6 @@
         if (val.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.download(val.courseList[0]).then(() => {
             this.palyHidden = false
-            this.weexHidden = false
           })
         }
       }
