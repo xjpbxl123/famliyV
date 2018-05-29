@@ -58,22 +58,23 @@ export default {
       let videoHighBitRateArr = []
       let midPromise
       let videoPromise
-      body.courseList.forEach((item) => {
+      let newBody = JSON.parse(JSON.stringify(body))
+      newBody.courseList.forEach((item) => {
         midiHighBitRateArr.push(item.data.midiHighBitRate)
         videoHighBitRateArr.push(item.data.videoHighBitRate)
       })
       midPromise = download.fileIsExistsAll(midiHighBitRateArr).then((data) => {
-        return body.courseList.map((item, index) => {
+        return newBody.courseList.map((item, index) => {
           item.midiDownload = data[index]
         })
       })
       videoPromise = download.fileIsExistsAll(videoHighBitRateArr).then((data) => {
-        return body.courseList.map((item, index) => {
+        return newBody.courseList.map((item, index) => {
           item.videoDownload = data[index]
         })
       })
       return Promise.all([midPromise, videoPromise]).then(() => {
-        return dispatch('setCacheToStorage', {famousPlayCoursesBySet: body, id: courseSetID}, {root: true})
+        return dispatch('setCacheToStorage', {famousPlayCoursesBySet: newBody, id: courseSetID}, {root: true})
       })
     }
   }

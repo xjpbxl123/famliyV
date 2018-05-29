@@ -7,7 +7,7 @@
         <fh-label></fh-label>
       </fh-video>
     </fh-player>
-      <fh-weex :hidden="weexHidden" :style="weexStyle" ref="weex"/>
+    <fh-weex :hidden="weexHidden" :style="weexStyle" ref="weex"/>
     <toolbar>
       <icon-item v-for="button in videoButton"
                  :pianoKey="button.pianoKey"
@@ -32,7 +32,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, receiveMsgFromWeex } from 'vue-find'
+  import { KEY80, receiveMsgFromWeex, KEY61 } from 'vue-find'
 
   export default {
     data () {
@@ -42,6 +42,17 @@
         playerSource: {
           videoUrl: '',
           midiUrl: ''
+        },
+        labelStyle: {
+          left: 100,
+          top: 100,
+          width: 150,
+          height: 150,
+          text: 'test',
+          color: '#ef0000',
+          fontSize: 30,
+          borderWidth: 3,
+          borderColor: '#ff00ee'
         },
         weexStyle: {
           right: 0,
@@ -65,12 +76,18 @@
             pianoKey: 82,
             icon: '0xe682',
             id: 203
+          },
+          {
+            pianoKey: 61,
+            icon: '0xe682',
+            id: 204
           }
         ],
         isPlay: false,
         weexHidden: true,
         index: 0,
-        progressing: false
+        progressing: false,
+        files: []
       }
     },
     find: {
@@ -79,6 +96,18 @@
          * @desc 暂停或者播放
          */
         this.playOrpause()
+      },
+      [KEY61] () {
+        // this.weexHidden = !this.weexHidden
+        // this.$refs.weex.animation({
+        //   duration: 800,
+        //   timingFunction: 'ease',
+        //   style: {
+        //     transform: this.weexHidden ? 'translateX(-690px)' : 'translateX(690px)'
+        //   }
+        // }).then((data) => {
+        //   console.log(data)
+        // })
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
@@ -108,8 +137,10 @@
         return download.downloadAll([video, midi]).progress((process) => {
           this.progress = parseInt(process.allProgress * 100)
         }).then((data) => {
-          this.playerSource.videoUrl = data[0].path
-          this.playerSource.midiUrl = data[1].path
+          this.playerSource = {
+            videoUrl: data[0].path,
+            midiUrl: data[1].path
+          }
           this.sendMessageAgain()
         })
       },
@@ -118,7 +149,9 @@
        **/
       weexDownload ({courseItem, index, isDownload}) {
         if (this.progressing && !isDownload) {
-          console.log('还有别的正在下载')
+          download.abortAll(this.files).then((data) => {
+            console.log(data)
+          })
         } else {
           this.continueDownload(courseItem, index, isDownload)
         }
@@ -126,6 +159,7 @@
       continueDownload (courseItem, index, isDownload) {
         let video = courseItem.data.videoHighBitRate
         let midi = courseItem.data.midiHighBitRate
+        this.files = [video, midi]
         return download.downloadAll([video, midi]).progress((process) => {
           this.progressing = true
           this.$find.sendMessage({
