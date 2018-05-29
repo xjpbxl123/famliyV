@@ -370,7 +370,7 @@
         let collectList1 = this.isLogin ? this.collectList : this.localCollect
         let collectList = [].concat(JSON.parse(JSON.stringify(collectList1)))
         let length = collectList.length
-        if (length === 1) {
+        if (length === 0) {
           return
         }
         let musicId = collectList[myCollectIndex].musicId

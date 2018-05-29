@@ -8,7 +8,7 @@
                 <li  v-for="(item,index) in list"  :key="index" :class="{active: listIndex == index}">
                     <span class="typeIcon iconfont icon-song" ></span>
                     <div class="name">
-                        <span class="musicName">{{item.musicName}}</span>
+                        <span class="musicName">{{item.name}}</span>
                         <span class="bookName">{{item.bookName}}</span>
                     </div>
                     <div class="styleName">

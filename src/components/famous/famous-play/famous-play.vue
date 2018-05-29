@@ -32,7 +32,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, receiveMsgFromWeex, KEY61 } from 'vue-find'
+  import { KEY80, KEY70, receiveMsgFromWeex, KEY61 } from 'vue-find'
 
   export default {
     data () {
@@ -62,6 +62,10 @@
           borderWidth: 3
         },
         videoButton: [
+          {
+            pianoKey: 70,
+            icon: '0xe635'
+          },
           {
             pianoKey: 78,
             icon: '0e683',
@@ -108,6 +112,12 @@
         // }).then((data) => {
         //   console.log(data)
         // })
+      },
+      [KEY70] () {
+        /**
+         * @desc 打开视频列表
+         */
+        this.showWeex()
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
@@ -191,6 +201,12 @@
         this.isPlay ? this.$refs.player.pause() : this.$refs.player.play()
         this.isPlay = !this.isPlay
       },
+      showWeex () {
+        if (!this.palyHidden) {
+          // 视频下载完成
+          this.weexHidden = !this.weexHidden
+        }
+      },
       /**
        * @desc video init successful
        */
@@ -217,7 +233,6 @@
         if (val.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.download(val.courseList[0]).then(() => {
             this.palyHidden = false
-            this.weexHidden = false
           })
         }
       }

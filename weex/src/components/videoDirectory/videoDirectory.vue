@@ -7,29 +7,31 @@
       <text class="video-text fwhite" v-if="progress">{{`${progress}%`}}</text>
       <text class="video-mun fwhite">{{`共${videoList.sum || 0}个`}}</text>
     </div>
-    <list class="video-list">
-      <cell class="video-cell" v-for="(item,index) in videoList.courseList" :key="index"
-            :style="index==select && styleObject">
-        <div class="video-cell-image">
-          <div class="video-cell-image-pic">
-            <image :src="linkImg" style="height: 75px;width: 100px;"></image>
+    <div class="contentBox">
+      <list class="video-list" :style="{marginTop: rightTop+'px'}">
+        <cell class="video-cell" v-for="(item,index) in videoList.courseList" :key="index"
+              :style="index==select && styleObject">
+          <div class="video-cell-image">
+            <div class="video-cell-image-pic">
+              <image :src="linkImg" style="height: 75px;width: 100px;"></image>
+            </div>
+            <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress">
+              <text class="progress">下载中</text>
+              <text class="progress">{{`${item.progress}%`}}</text>
+            </div>
+            <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
+            v-if="item.midiDownload && item.videoDownload && !item.progress"></image>
+            <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
+            v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
           </div>
-          <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress">
-            <text class="progress">下载中</text>
-            <text class="progress">{{`${item.progress}%`}}</text>
+          <div class="video-cell-desc">
+            <text class="video-cell-desc-title">{{item.courseSetName}}</text>
+            <text class="video-cell-desc-art">{{item.courseName}}</text>
           </div>
-          <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-          v-if="item.midiDownload && item.videoDownload && !item.progress"></image>
-          <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-          v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
-        </div>
-        <div class="video-cell-desc">
-          <text class="video-cell-desc-title">{{item.courseSetName}}</text>
-          <text class="video-cell-desc-art">{{item.courseName}}</text>
-        </div>
-        <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
-      </cell>
-    </list>
+          <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
+        </cell>
+      </list>
+    </div>
     <toolbar>
       <icon-item id="403" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
@@ -64,17 +66,34 @@
         },
         videoList: {},
         select: 0,
-        progress: 0
+        progress: 0,
+        rightTop: 0
       }
     },
     methods: {
       buttonActions (type) {
+        let height = this.select * 122 * -1
         switch (type) {
           case 'down':
-            this.select++
+            if (this.select < this.videoList.courseList.length - 1) {
+              this.select++
+            }
+            if (this.select >= 7 && this.select < this.videoList.courseList.length) {
+              if (parseInt(this.rightTop) - height > 122 * 6) {
+                this.rightTop = (this.select - 6) * 122 * -1
+              }
+            }
             break
           case 'up':
-            this.select--
+            if (this.select > 0) {
+              this.select--
+            }
+            if (this.select <= 0) {
+              this.rightTop = 0
+            }
+            if (this.rightTop - height < 122) {
+              this.rightTop = height
+            }
             break
           case 'ok':
             this.okAction()
@@ -167,8 +186,13 @@
     font-size: 20px;
   }
 
-  .video-list {
+  .contentBox {
     height: 854px;
+    background-color: rgba(255,255,255,0.4);
+  }
+
+  .video-list {
+
   }
 
   .video-cell {
