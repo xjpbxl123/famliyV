@@ -8,15 +8,15 @@
                 <li  v-for="(item,index) in list"  :key="index" :class="{active: listIndex == index}">
                     <span class="typeIcon iconfont icon-song" ></span>
                     <div class="name">
-                        <span class="musicName">{{item.name}}</span>
+                        <span class="musicName">{{item.name || item.musicName}}</span>
                         <span class="bookName">{{item.bookName}}</span>
                     </div>
                     <div class="styleName">
                         {{item.styleName[0] || ''}}
                     </div>
                     <div class="date">
-                        <span class="date1">{{ item.time | format1}}</span>
-                        <span class="date2">{{ item.time | format2}}</span>
+                        <span class="date1">{{ item.time || item.practiceTime | format1}}</span>
+                        <span class="date2">{{ item.time || item.practiceTime | format2}}</span>
                     </div>
                 </li>
             </ul>
@@ -81,6 +81,9 @@
     methods: {
     },
     created () {
+      if (this.listIndex >= 5) {
+        this.rightTop = (this.listIndex - 4) * -120
+      }
     },
     components: {
     }

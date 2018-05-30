@@ -7,7 +7,7 @@
         <fh-label></fh-label>
       </fh-video>
     </fh-player>
-    <fh-weex :hidden="weexHidden" :style="weexStyle" ref="weex"/>
+    <fh-weex  :style="weexStyle" ref="weex" :hidden="weexHidden"/>
     <toolbar>
       <icon-item v-for="button in videoButton"
                  :pianoKey="button.pianoKey"
@@ -21,6 +21,8 @@
 </template>
 <style lang="scss" scoped type=text/scss>
   .vidioPlay {
+    background: url(../video_bg.png) no-repeat !important;
+    background-size: cover;
     h1 {
       position: absolute;
       top: 50%;
@@ -100,6 +102,7 @@
         /**
          * @desc 打开视频列表
          */
+
         let flag = false
         if (this.weexHidden) {
           this.showWeex()
@@ -207,6 +210,10 @@
         if (!this.palyHidden) {
           // 视频下载完成
           this.weexHidden = !this.weexHidden
+          this.$find.sendMessage({
+            method: 'controlButton',
+            params: {show: !this.weexHidden}
+          })
         }
       },
       /**
@@ -216,7 +223,7 @@
         // this.$refs.player.play()
       },
       sendMessage () {
-        this.$find.sendMessage({method: 'getVideoList', params: this.famousPlayCoursesBySet})
+        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
       }
     },
     computed: {

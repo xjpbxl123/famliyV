@@ -345,9 +345,7 @@
     },
     created () {
       this.getScoreList()
-
-      console.log(JSON.parse(this.$route.query.musicId))
-      let musicId = JSON.parse(this.$route.query.musicId)
+      let musicId = JSON.parse(this.query.book).musicId
       if (musicId) {
         // 从我的收藏或者最近打开进来
         this.scoreList.forEach((item, index) => {

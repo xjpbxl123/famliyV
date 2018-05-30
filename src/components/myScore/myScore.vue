@@ -502,6 +502,7 @@
       this.getMyPlay()
       this.getMyCollect()
       this.getMyRecentOpen()
+      console.log(this.collectList, 'list')
     },
     components: {
       findWrap,

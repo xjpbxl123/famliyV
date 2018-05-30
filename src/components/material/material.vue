@@ -11,8 +11,10 @@
                  :key="button.icon"
                  longClick="true"
                  :id="button.id"
-                 :icon="button.icon"/>
+                 :icon="button.icon"
+                 :style="{backgroundColor:button.backgroundColor,color: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
+
   </div>
 
 </template>
@@ -48,28 +50,43 @@
         materialButton: [
           {
             pianoKey: 73,
+            text: '',
             icon: '0xe660',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
             id: 201
           },
           {
             pianoKey: 75,
+            text: '',
             icon: '0xe65b',
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
             id: 202
           },
           {
             pianoKey: 78,
+            text: '',
             icon: '0xe63b',
+            backgroundColor: '#6f24d2',
+            dotColor: '#6f24d2',
             id: 203
           },
           {
             pianoKey: 80,
+            text: '',
             icon: '0xe650',
-            id: 204
+            backgroundColor: '#c72bbb',
+            dotColor: '#c72bbb',
+            id: 14
           },
           {
             pianoKey: 82,
+            text: '',
             icon: '0xe69a',
-            id: 205
+            backgroundColor: '#109892',
+            dotColor: '#109892',
+            id: 204
           }
         ]
       }
@@ -112,7 +129,7 @@
             if (activeIndex - 4 >= 0) activeIndex -= 4
             break
           case 'ok':
-            return this.$router.push({path: '/scoreSetList', query: {setId: this.materialList.body[activeIndex].id}})
+            return this.$router.push({path: '/scoreSetList', query: {setId: this.materialList.body[activeIndex].id, setName: this.materialList.body[activeIndex].name}})
           case 'back':
             this.$router.back(-1)
             return setTimeout(() => {

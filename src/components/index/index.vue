@@ -52,7 +52,7 @@
         <icon-item id="402" pianoKey="56" titlePosition="in" text="120"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
         <icon-item id="403" pianoKey="57" text="" icon="0xe605"
-                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a00a490490',textColor:'#fff'}"/>
+                   :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
         <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
       </group>
@@ -553,6 +553,26 @@
           case 'right-play':
             // 右侧列表play事件
             console.log('去播放')
+            let list = []
+            let list1 = []
+            let musicObj = {}
+            if (this.rightType === 'recentOpen') {
+              list = this.isLogin ? this.recentOpenList : this.localRecent
+              list1 = [].concat(JSON.parse(JSON.stringify(list)))
+              musicObj = list1[rightActiveIndex]
+              musicObj.practiceTime = new Date().getTime()
+            } else if (this.rightType === 'myCollect') {
+              list = this.isLogin ? this.collectList : this.localCollect
+              list1 = [].concat(JSON.parse(JSON.stringify(list)))
+              musicObj = list1[rightActiveIndex]
+              musicObj.time = new Date().getTime()
+            }
+
+            if (!this.isLogin) {
+              list1.shift()
+              list1.push(musicObj)
+              this.$store.dispatch('index/localRecent', list1)
+            }
             break
           case 'changeRightData':
             // 切换右侧数据
