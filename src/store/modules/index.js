@@ -137,7 +137,10 @@ export default {
      * @desc 获取本地最近打开
      * */
     localRecent ({dispatch}, file) {
-      return dispatch('setCacheToStorage', {localRecent: file}, {root: true})
+      console.log(this.state.storage)
+      return dispatch('setCacheToStorage', {localRecent: file}, {root: true}).then((data) => {
+        console.log(data, 'data')
+      })
     },
     /**
      * @desc 获取右侧列表状态

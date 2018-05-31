@@ -569,9 +569,11 @@
             }
 
             if (!this.isLogin) {
-              list1.shift()
-              list1.push(musicObj)
-              this.$store.dispatch('index/localRecent', list1)
+              // list1.shift()
+              // list1.push(musicObj)
+              this.$store.dispatch('index/localRecent', musicObj)
+            } else {
+
             }
             break
           case 'changeRightData':
