@@ -136,9 +136,28 @@ export default {
     /**
      * @desc 获取本地最近打开
      * */
-    localRecent ({dispatch}, file) {
-      console.log(this.state.storage)
-      return dispatch('setCacheToStorage', {localRecent: file}, {root: true}).then((data) => {
+    localRecent ({dispatch}, musicObj) {
+      console.log(musicObj)
+      let localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
+      console.log(localRecent)
+      if (musicObj) {
+        let flag = false
+        let num = 0
+        if (localRecent.length !== 0) {
+          localRecent.forEach((item, index) => {
+            if (item.musicId === musicObj) {
+              flag = true
+              num = index
+            }
+          })
+          if (flag) {
+            localRecent.splice(num, 1)
+          }
+        }
+        localRecent.unshift(musicObj)
+        localRecent = localRecent.splice(0, 20)
+      }
+      return dispatch('setCacheToStorage', {localRecent: localRecent}, {root: true}).then((data) => {
         console.log(data, 'data')
       })
     },

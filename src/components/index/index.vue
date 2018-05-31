@@ -384,7 +384,7 @@
        * */
       getRecentOpenList () {
         this.$store.dispatch({type: 'index/getRecentOpenList'})
-        this.$store.dispatch('index/localRecent', this.localRecent || [])
+        this.$store.dispatch('index/localRecent')
       },
       /**
        * @desc 右侧我的收藏数据
@@ -569,8 +569,6 @@
             }
 
             if (!this.isLogin) {
-              // list1.shift()
-              // list1.push(musicObj)
               this.$store.dispatch('index/localRecent', musicObj)
             } else {
 
