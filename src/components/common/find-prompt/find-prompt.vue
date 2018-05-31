@@ -1,5 +1,5 @@
 <template>
- <div class="find-prompt">
+ <div class="find-prompt" v-show="show">
      <div class="prompt">
          <div class="prompt-icon">
              <i :class="['iconfont',icon]"></i>
@@ -20,15 +20,34 @@
       text: {
         type: String,
         default: () => '提示'
+      },
+      delay: {
+        type: String,
+        default: () => '2000'
+      },
+      showPrompt: {
+        type: Boolean,
+        default: () => false
       }
     },
     data () {
-      return {}
+      return {
+        show: false
+      }
     },
     computed: {},
     methods: {},
-    created () {},
-    components: {}
+    created () {
+    },
+    components: {},
+    watch: {
+      showPrompt: function (val, oldval) {
+        this.show = val
+        setTimeout(() => {
+          this.show = false
+        }, this.delay)
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>

@@ -17,22 +17,23 @@ export default {
   actions: {
     getServerVersionInfo ({dispatch, commit, state} = {}, data) {
       console.log('hahahahahah')
-      http.post('', {
+      return http.post('', {
         cmd: 'system.getApp',
         appType: 'testing',
         appName: 'familyH5'
-      }).then(res => {
-        console.log(res)
+      }).then((res) => {
         commit('setServerVersionInfo', res.body.app)
-        data.callback()
       })
     },
     getLocalVersionInfo ({dispatch, commit, state}, data) {
-      let localVersionInfo = {
-        version: '1.0.1',
-        build: 110
-      }
-      commit('setLocalVersionInfo', localVersionInfo)
+      return new Promise(function (resolve, reject) {
+        let localVersionInfo = {
+          version: process.env.VERSION,
+          build: process.env.BUILD_VERSION
+        }
+        commit('setLocalVersionInfo', localVersionInfo)
+        resolve()
+      })
     }
   }
 }
