@@ -3,20 +3,20 @@
     <h1 v-if="palyHidden">{{`正在下载中:${progress}%`}}</h1>
     <fh-player ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
-      <fh-video  ref="video" :style="{width:3840,height:1080}">
+      <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
     </fh-player>
-    <fh-div :style="labelStyle" :hidden="isPlay && palyHidden">
-         <fh-label :style="videoNameStyle">
-         </fh-label>
-         <fh-label :style="currentTime">
-         </fh-label>
-         <fh-label :style="flag">
-         </fh-label>
-         <fh-label :style="totalTime">
-         </fh-label>
+    <fh-div :style="labelStyle" :hidden="isPlay && !palyHidden">
+      <fh-label :style="videoNameStyle">
+      </fh-label>
+      <fh-label :style="currentTime">
+      </fh-label>
+      <fh-label :style="flag">
+      </fh-label>
+      <fh-label :style="totalTime">
+      </fh-label>
     </fh-div>
-    <fh-weex  :style="weexStyle" ref="weex" :hidden="weexHidden"/>
+    <fh-weex :style="weexStyle" ref="weex" :hidden="weexHidden"/>
     <toolbar>
       <icon-item v-for="button in videoButton"
                  :pianoKey="button.pianoKey"
@@ -25,19 +25,19 @@
                  :id="button.id"
                  :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
                  :icon="button.icon"/>
-       <icon-item
-                 pianoKey="68"
-                 key="0xe635"
-                 longClick="true"
-                 id="205"
-                 :style="{backgroundColor: '#1078cc',textColor: '#fff',fontSize:'14'}"
-                 text="视频列表"
-                 titlePosition='below'
-                 icon="0xe635"/>
-      <slider ref="slider" id="701" :style="{backgroundColor:'#0B8290'}" :value="8" min="1" max="10">
-        <titleitem text="-" id="710" pianoKey="73" />
+      <icon-item
+        pianoKey="68"
+        key="0xe635"
+        longClick="true"
+        id="205"
+        :style="{backgroundColor: '#1078cc',textColor: '#fff',fontSize:'14'}"
+        text="视频列表"
+        titlePosition='below'
+        icon="0xe635"/>
+      <slider ref="slider" id="701" :style="{backgroundColor:'#0B8290'}" :value="speedValue" min="100" max="200">
+        <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
-        <titleitem text="+" id="714" pianoKey="75" />
+        <titleitem text="+" id="714" pianoKey="75"/>
       </slider>
 
     </toolbar>
@@ -143,7 +143,8 @@
         weexHidden: true,
         index: 0,
         progressing: false,
-        files: []
+        files: [],
+        speedValue: 100
       }
     },
     find: {
@@ -318,6 +319,10 @@
        */
       playerInitComplete () {
         // this.$refs.player.play()
+        this.$refs.player.info().then((data) => {
+          console.log(data, 'data')
+          this.speedValue = parseInt(data.curRate * data.curBpm)
+        })
         this.$refs.video.getTotalTime().then((data) => {
           let timeString = this.timeFilter(data)
           this.totalTime.text = timeString

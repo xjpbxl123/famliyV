@@ -30,7 +30,7 @@
         :buttonActions="buttonActions"
       />
     </find-cover>
-    <toolbar :toolbarHidden="false">
+    <toolbar :hidden="toolbarHidden">
       <text-icon-item v-for="(button,index) in userActionButtons"
                       :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
                       :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
@@ -497,12 +497,13 @@
             if (this.metronome) {
               metronome.stop()
               this.metronome = false
-            } else {
-              this.toolbarHidden = !this.toolbarHidden
             }
+            this.toolbarHidden = !this.toolbarHidden
+
             break
           case 'openMetro':
             if (!this.metronome) {
+              this.toolbarHidden = true
               metronome.start()
               this.metronome = true
             }
@@ -569,12 +570,12 @@
             break
           case 'ok':
             console.log(activeIndex)
-            if (activeIndex >= 0 && activeIndex <= 7) {
+            if (activeIndex >= 0 && activeIndex < 7) {
               // 最近更新
               console.log(recentBooks.bookList[activeIndex])
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
-            if (activeIndex >= 8 && activeIndex <= 12) {
+            if (activeIndex >= 8 && activeIndex < 12) {
               // 热门曲谱
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
