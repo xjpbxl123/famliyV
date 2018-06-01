@@ -22,14 +22,14 @@
     data () {
       return {
         controlButtons: [
-          {
-            pianoKey: 75,
-            text: '退出App',
-            icon: '0xe6ac',
-            id: 1,
-            backgroundColor: '#555',
-            show: true
-          },
+          // {
+          //   pianoKey: 75,
+          //   text: '退出App',
+          //   icon: '0xe6ac',
+          //   id: 1,
+          //   backgroundColor: '#555',
+          //   show: true
+          // },
           {
             pianoKey: 78,
             text: '取消',
@@ -107,14 +107,21 @@
     computed: {},
     methods: {
       go (params) {
-        this.$router.push(params)
+        switch (params) {
+          case 'back':
+            this.$router.back()
+            break
+          default:
+            this.$router.push(params)
+            break
+        }
       },
       buttonAction (type) {
         switch (type) {
           case 'exitApp':
             break
           case 'cancel':
-
+            this.go('back')
             break
           case 'shutdown':
             global.powerOFF()
