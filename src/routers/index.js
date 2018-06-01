@@ -15,6 +15,7 @@ import staff from 'components/staff/staff-router'
 import myScore from 'components/myScore/myScore-router'
 import famousPlay from 'components/famous/famous-play/famousPlay-router'
 import softwareUpdate from 'components/softwareUpdate/softwareUpdate-router'
+import shutdown from 'components/shutdown/shutdown-router'
 const routers = [
   index,
   home,
@@ -27,7 +28,8 @@ const routers = [
   material,
   famousPlay,
   myScore,
-  softwareUpdate
+  softwareUpdate,
+  shutdown
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV
