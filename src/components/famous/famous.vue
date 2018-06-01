@@ -1,6 +1,6 @@
 <template>
   <div>
-    <famous-swiper :famousList="allArtists.authors" :select="select" :defaultLeft="defaultLeft"/>
+    <famous-swiper :famousList="allArtists.authors" :select="famousSetSelect" :defaultLeft="defaultLeft"/>
     <find-title title="名师课程"></find-title>
     <toolbar>
       <icon-item v-for="button in famousButton"
@@ -25,7 +25,6 @@
     name: 'famous',
     data () {
       return {
-        select: 0,
         famousButton: [
           {
             pianoKey: 78,
@@ -50,25 +49,29 @@
       this.$store.dispatch({type: 'famous/getAllArtistsToFamily'})
     },
     computed: {
-      ...mapState({}),
+      ...mapState({
+        'famousSetSelect': state => state.famous.famousSetSelect
+      }),
       ...mapGetters(['allArtists'])
     },
     methods: {
       action (type) {
         switch (type) {
           case 'left':
-            let selectd = this.select - 1
-            this.select = selectd < 0 ? 0 : selectd
+            let selectd = this.famousSetSelect - 1
+            selectd = selectd < 0 ? 0 : selectd
+            this.$store.dispatch('famous/setFamousSetSelect', selectd)
             break
           case 'right':
-            let sele = this.select + 1
-            this.select = sele >= this.allArtists.authors.length ? this.allArtists.authors.length - 1 : sele
+            let sele = this.famousSetSelect + 1
+            sele = sele >= this.allArtists.authors.length ? this.allArtists.authors.length - 1 : sele
+            this.$store.dispatch('famous/setFamousSetSelect', sele)
             break
         }
       },
       gotoFamousBook () {
-        let authorId = this.allArtists.authors[this.select].authorId
-        let cover = this.allArtists.authors[this.select].bgCover
+        let authorId = this.allArtists.authors[this.famousSetSelect].authorId
+        let cover = this.allArtists.authors[this.famousSetSelect].bgCover
         this.$router.push({path: '/famous-book', query: {authorId, cover}})
       }
     },

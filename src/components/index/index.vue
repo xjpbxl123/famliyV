@@ -30,7 +30,7 @@
         :buttonActions="buttonActions"
       />
     </find-cover>
-    <toolbar>
+    <toolbar :toolbarHidden="false">
       <text-icon-item v-for="(button,index) in userActionButtons"
                       :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
                       :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
@@ -49,11 +49,11 @@
                    :style="{color:'#fff',backgroundColor:'#00a490',textColor:'#fff',dotColor: '#00a490'}"/>
         <icon-item id="401" pianoKey="55" text="" icon="0xe601"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
-        <icon-item id="402" pianoKey="56" titlePosition="in" text="120"
+        <icon-item id="402" pianoKey="56" titlePosition="in" :text="speed"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
         <icon-item id="403" pianoKey="57" text="" icon="0xe605"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff'}"/>
-        <icon-item id="404" pianoKey="58" titlePosition="in" text="3/8"
+        <icon-item id="404" pianoKey="58" titlePosition="in" :text="metre"
                    :style="{color:'#fff',backgroundColor:'#00a490',dotColor: '#00a490',textColor:'#fff',fontSize:18}"/>
       </group>
       <icon-item v-for="(button,index) in controlButtons"
@@ -72,30 +72,13 @@
   import bannerHelp from './index-banner-help'
   import findDot from '../common/find-dot/find-dot'
   import {
-    INTERCEPT_DOWN,
-    KEY27,
-    KEY108,
-    KEY30,
-    KEY37,
-    KEY42,
-    KEY46,
-    KEY75,
-    KEY73,
-    KEY66,
-    KEY78,
-    KEY80,
-    KEY90,
-    KEY92,
-    KEY94,
-    KEY97,
-    KEY44,
-    KEY82
+    INTERCEPT_DOWN
   } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-
+  import { metronome } from 'find-sdk'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -105,18 +88,6 @@
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1,
-        // weexStyle: {
-        //   left: 400,
-        //   top: 100,
-        //   width: 2000,
-        //   height: 900,
-        //   backgroundColor: '#30000000',
-        //   float: 'left',
-        //   borderWidth: 3,
-        //   borderColor: '#ef9900',
-        //   borderRadius: 20
-        // },
-        // showWeex: true,
         userActionButtons: [
           {
             pianoKey: 27,
@@ -257,61 +228,90 @@
             dotColor: '#000',
             id: 19
           }
-        ]
+        ],
+        metronome: false,
+        speed: 120,
+        metre: '3/8',
+        toolbarHidden: false
       }
     },
     find: {
-      [KEY27] () {
-        this.buttonActions('help')
-      },
-      [KEY30] () {
-        this.buttonActions('login')
-      },
-      [KEY37] () {
-        this.buttonActions('myScore')
-      },
-      [KEY42] () {
-        this.buttonActions('material')
-      },
-      [KEY44] () {
-        this.buttonActions('popular')
-      },
-      [KEY46] () {
-        this.buttonActions('famous')
-      },
-      [KEY66] () {
-        this.buttonActions('shutdown')
-      },
-      [KEY73] () {
-        this.buttonActions('left')
-      },
-      [KEY75] () {
-        this.buttonActions('right')
-      },
-      [KEY78] () {
-        this.buttonActions('up')
-      },
-      [KEY80] () {
-        this.buttonActions('down')
-      },
-      [KEY82] () {
-        this.buttonActions('ok')
-      },
-      [KEY97] () {
-        this.buttonActions('changeRightData')
-      },
-      [KEY90] () {
-        this.buttonActions('right-up')
-      },
-      [KEY92] () {
-        this.buttonActions('right-down')
-      },
-      [KEY94] () {
-        this.buttonActions('right-play')
-      },
-      [KEY108] () {
-        console.log(this)
-        this.buttonActions()
+      [INTERCEPT_DOWN] (key) {
+        switch (key) {
+          case 21:
+            // 关闭节拍器
+            this.buttonActions('closeMetro')
+            break
+          case 22:
+            // 关闭节拍器
+            this.buttonActions('closeMetro')
+            break
+          case 27:
+            this.buttonActions('help')
+            break
+          case 30:
+            this.buttonActions('login')
+            break
+          case 37:
+            this.buttonActions('myScore')
+            break
+          case 42:
+            this.buttonActions('material')
+            break
+          case 44:
+            this.buttonActions('popular')
+            break
+          case 46:
+            this.buttonActions('famous')
+            break
+          case 54:
+            // 打开节拍器
+            this.buttonActions('openMetro')
+            break
+          case 55:
+            // 节拍器减速
+            this.buttonActions('speedDown')
+            break
+          case 57:
+            // 节拍器加速
+            this.buttonActions('speedUp')
+            break
+          case 58:
+            // 节拍器换拍子
+            this.buttonActions('metroTip')
+            break
+          case 66:
+            // 关机
+            this.buttonActions('shutdown')
+            break
+          case 73:
+            this.buttonActions('left')
+            break
+          case 75:
+            this.buttonActions('right')
+            break
+          case 78:
+            this.buttonActions('up')
+            break
+          case 80:
+            this.buttonActions('down')
+            break
+          case 82:
+            this.buttonActions('ok')
+            break
+          case 90:
+            this.buttonActions('right-up')
+            break
+          case 92:
+            this.buttonActions('right-down')
+            break
+          case 94:
+            this.buttonActions('right-play')
+            break
+          case 97:
+            this.buttonActions('changeRightData')
+            break
+        }
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
@@ -329,6 +329,9 @@
         },
         isLogin (state) {
           let {storage} = state
+          if (storage.isLogin) {
+            this.userActionButtons[1].text = '注销'
+          }
           return storage.isLogin
         },
         userInfo (state) {
@@ -358,8 +361,9 @@
       },
       isLogin (val) {
         if (val) {
-          // this.getRecentOpenList()
-          // this.getCollectList()
+          this.userActionButtons[1].text = '注销'
+        } else {
+          this.userActionButtons[1].text = '登陆'
         }
       }
     },
@@ -406,6 +410,16 @@
       setCalendarData (playCalendar) {
         this.$store.dispatch('setNativeStorage', {
           playCalendar
+        })
+      },
+      /**
+       * @desc 获取节拍器状态
+       * @param {object} playCalendar - 练琴数据
+       * */
+      getMetronomeStatus () {
+        metronome.getCurrentTempo().then((data) => {
+          this.speed = data.tempoSpeed
+          this.metre = data.metre
         })
       },
       /**
@@ -460,8 +474,11 @@
               // 未登录进入登录页
               return this.go('/login')
             } else {
-              // 进入账户页
-              console.log('已登录')
+              // 临时写的用来注销账号
+              this.$store.dispatch('logoutCache', {root: true})
+              this.$store.dispatch('logout', {root: true}).then(() => {
+                this.$store.dispatch('setSession', '')
+              })
               return
             }
           case 'settings':
@@ -476,6 +493,35 @@
             return this.go('/shutdown')
           case 'myScore':
             return this.go('/myScore')
+          case 'closeMetro':
+            if (this.metronome) {
+              metronome.stop()
+              this.metronome = false
+            } else {
+              this.toolbarHidden = !this.toolbarHidden
+            }
+            break
+          case 'openMetro':
+            if (!this.metronome) {
+              metronome.start()
+              this.metronome = true
+            }
+            break
+          case 'speedDown':
+            metronome.changeTempoSpeed(false).then(() => {
+              this.getMetronomeStatus()
+            })
+            break
+          case 'speedUp':
+            metronome.changeTempoSpeed(true).then(() => {
+              this.getMetronomeStatus()
+            })
+            break
+          case 'metroTip':
+            metronome.changeTempo().then(() => {
+              this.getMetronomeStatus()
+            })
+            break
           case 'left':
             if (activeIndex <= 0) {
               return
@@ -516,12 +562,13 @@
             break
           case 'logout':
             // 临时写的用来注销账号
-            this.$store.dispatch('logoutCache', {root: true})
-            this.$store.dispatch('logout', {root: true}).then(() => {
-              this.$store.dispatch('setSession', '')
-            })
+            // this.$store.dispatch('logoutCache', {root: true})
+            // this.$store.dispatch('logout', {root: true}).then(() => {
+            //   this.$store.dispatch('setSession', '')
+            // })
             break
           case 'ok':
+            console.log(activeIndex)
             if (activeIndex >= 0 && activeIndex <= 7) {
               // 最近更新
               console.log(recentBooks.bookList[activeIndex])
@@ -594,6 +641,7 @@
       this.getUserStatus()
       this.getRecentOpenList()
       this.getCollectList()
+      this.getMetronomeStatus()
     },
     destroyed () {
       clearInterval(window.interval)
