@@ -20,7 +20,7 @@
     <toolbar>
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
-            :id=button.id
+            :id="button.id"
             :icon="button.icon"
             :text="button.text"
             :pianoKey="button.pianoKey"
@@ -61,19 +61,11 @@
         let build = process.env.BUILD_VERSION
         console.log(`${version}${build}`)
         let downloadInfo = this.serverVersionInfo.url
-        let localPath = '/Users/wumeng/Documents/Find Downloads'
-        let targetPath = '/Users/wumeng/Documents/Find Web/familyClient'
 
-        let that = this
         if (this.downloading) {
           // 暂停下载
           this.downloading = false
-          download.abort({
-            url: downloadInfo.url,
-            md5: downloadInfo.md5,
-            fsize: downloadInfo.fsize,
-            localPath: localPath
-          })
+          this.stopdownload(downloadInfo)
           this.controlButtons = this.controlButtons.map(item => {
             if (item.pianoKey === 82) {
               item.text = '更新'
@@ -84,34 +76,13 @@
         } else {
           // 开始下载
           this.downloading = true
+          this.download(downloadInfo)
           this.controlButtons = this.controlButtons.map(item => {
             if (item.pianoKey === 82) {
               item.text = '取消下载'
               item.icon = '0xe60a'
             }
             return item
-          })
-          download.downloadFile({
-            url: downloadInfo.url,
-            md5: downloadInfo.md5,
-            fsize: downloadInfo.fsize,
-            localPath: localPath
-          }).progress(progress => {
-            console.log(progress.progress)
-            that.progress = progress.progress
-          }).then(res => {
-            console.log(res)
-            if (res.path) {
-              file.unZip(res.path, targetPath).then(function (data) {
-                if (data.code !== undefined) {
-                  console.log('减压失败' + data.desc)
-                } else {
-                  console.log('成功')
-                  console.log('重启App')
-                  global.relaunchApp()
-                }
-              })
-            }
           })
         }
       }
@@ -161,11 +132,52 @@
           return false
         }
       },
-      update () {
-
+      download (downloadInfo) {
+        let that = this
+        let localPath, targetPath
+        console.log(file.pathComplement('$downLoadHtmls'))
+        file.pathComplement('$downLoadHtmls').then(function (result) {
+          console.log(result)
+          localPath = result
+          return file.pathComplement('$web')
+        }).then(function (result) {
+          console.log(result)
+          targetPath = result
+          download.downloadFile({
+            url: downloadInfo.url,
+            md5: downloadInfo.md5,
+            fsize: downloadInfo.fsize,
+            localPath: localPath
+          }).progress(progress => {
+            console.log(progress.progress)
+            that.progress = progress.progress
+          }).then(res => {
+            console.log(res)
+            if (res.path) {
+              file.unZip(res.path, targetPath).then(function (data) {
+                if (data.code !== undefined) {
+                  console.log('解压失败' + data.desc)
+                } else {
+                  console.log('成功')
+                  console.log('重启App')
+                  global.relaunchApp()
+                }
+              })
+            }
+          })
+        })
       },
-      stopUpdate () {
-
+      stopdownload (downloadInfo) {
+        let localPath
+        file.pathComplement('$downLoadHtmls').then(function (result) {
+          localPath = result
+          download.abort({
+            url: downloadInfo.url,
+            md5: downloadInfo.md5,
+            fsize: downloadInfo.fsize,
+            localPath: localPath
+          })
+        })
       }
     },
     created () {
