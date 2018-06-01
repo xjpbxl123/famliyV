@@ -279,6 +279,9 @@
       [KEY46] () {
         this.buttonActions('famous')
       },
+      [KEY66] () {
+        this.buttonActions('shutdown')
+      },
       [KEY73] () {
         this.buttonActions('left')
       },
@@ -309,9 +312,6 @@
       [KEY108] () {
         console.log(this)
         this.buttonActions()
-      },
-      [KEY66] () {
-        this.buttonActions('logout')
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
@@ -472,6 +472,8 @@
             return this.go('/material')
           case 'famous':
             return this.go('/famous')
+          case 'shutdown':
+            return this.go('/shutdown')
           case 'myScore':
             return this.go('/myScore')
           case 'left':
