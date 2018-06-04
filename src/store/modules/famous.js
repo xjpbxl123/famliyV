@@ -3,13 +3,30 @@
  * */
 import http from 'scripts/http'
 import { download } from 'find-sdk'
-
+const FAMOUS_BOOK_SELECT = 'FAMOUS_BOOK_SELECT'
+const FAMOUS_SET_SELECT = 'FAMOUS_SET_SELECT'
 let defaultData = {'page': {'offset': 0, 'count': 1800}}
 export default {
   namespaced: true,
-  state: {},
-  mutations: {},
+  state: {
+    famousBookSelect: 0,
+    famousSetSelect: 0
+  },
+  mutations: {
+    [FAMOUS_BOOK_SELECT] (state, index) {
+      state.famousBookSelect = index
+    },
+    [FAMOUS_SET_SELECT] (state, index) {
+      state.famousSetSelect = index
+    }
+  },
   actions: {
+    setFamousBookSelect ({commit}, num) {
+      commit(FAMOUS_BOOK_SELECT, num)
+    },
+    setFamousSetSelect ({commit}, num) {
+      commit(FAMOUS_SET_SELECT, num)
+    },
     getAllArtistsToFamily ({dispatch}) {
       return http.post('', {
         ...defaultData,

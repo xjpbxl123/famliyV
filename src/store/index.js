@@ -38,9 +38,9 @@ export default function createStore () {
             allArtists: {authors: []},
             hottest: {bookList: []},
             recentUpdate: {bookList: []},
-            recentOpen: [],
+            recentOpenList: [],
             popularGenre: [],
-            myCollect: [],
+            collectList: [],
             yearList: [],
             scoreSetList: [],
             scoreList: [],
@@ -51,7 +51,7 @@ export default function createStore () {
               body: [], sumPage: 1
             },
             localCollect: [],
-            localRecentOpen: [],
+            localRecent: [],
             famousPlayCoursesBySet: [],
             bookInfo: []
           }
@@ -76,10 +76,10 @@ export default function createStore () {
         return state.storage.cache.renderCache.allArtists
       },
       recentOpenList: state => {
-        return state.storage.cache.renderCache.recentOpen
+        return state.storage.cache.renderCache.recentOpenList
       },
       collectList: state => {
-        return state.storage.cache.renderCache.myCollect
+        return state.storage.cache.renderCache.collectList
       },
       differList: state => {
         return state.storage.cache.renderCache.differList
@@ -103,7 +103,7 @@ export default function createStore () {
         return state.storage.cache.renderCache.localCollect
       },
       localRecent: state => {
-        return state.storage.cache.renderCache.localRecentOpen
+        return state.storage.cache.renderCache.localRecent
       },
       bookInfo: state => {
         return state.storage.cache.renderCache.bookInfo
@@ -127,7 +127,7 @@ export default function createStore () {
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
+        return nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
       }
     },
     actions: {
@@ -149,7 +149,7 @@ export default function createStore () {
               sessionId: data[3] && data[3].value ? data[3].value : null,
               isSynced: true
             })
-            dispatch('initCacheStorage', data)
+            return dispatch('initCacheStorage', data)
           })
       },
       /**
@@ -173,12 +173,15 @@ export default function createStore () {
        * @param data
        */
       initCacheStorage ({dispatch, state, commit}, data) {
-        let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-        nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
-          let cache = {}
-          cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
-          commit(SET_STORAGE, {
-            cache
+        return new Promise(resolve => {
+          let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
+          nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
+            let cache = {}
+            cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+            commit(SET_STORAGE, {
+              cache
+            })
+            resolve(cache)
           })
         })
       },
@@ -196,8 +199,10 @@ export default function createStore () {
           loginCache[data.id] = data[key]
           cache[key] = loginCache
           commit(SET_CACHE_STORAGE, cache)
+          return Promise.resolve(cache)
         } else {
           commit(SET_CACHE_STORAGE, data)
+          return Promise.resolve(data)
         }
       },
       /**
@@ -223,8 +228,8 @@ export default function createStore () {
        * @desc 获取用户信息
        * */
       getUserInfo ({dispatch}) {
-        let root = process.env.production.HTTP_ROOT
-        return http.post(root, {
+        // let root = process.env.production.HTTP_ROOT
+        return http.post('', {
           cmd: 'account.getInfo'
         }).then(({body, header}) => {
           if (header.code === 0) {

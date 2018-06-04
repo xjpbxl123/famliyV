@@ -1,7 +1,7 @@
 <template>
   <div :style="{background:`url(${cover})`}">
     <find-title :title="famousAuthor.courseSetList[0].authorName" :style="styles"></find-title>
-    <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="select"></famous-book-swiper>
+    <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="famousBookSelect"></famous-book-swiper>
     <toolbar>
       <icon-item v-for="button in famousButton"
                  :pianoKey="button.pianoKey"
@@ -45,7 +45,6 @@
             id: 203
           }
         ],
-        select: 0,
         cover: '',
         authorList: {courseSetList: [{authorName: ''}]}
       }
@@ -54,7 +53,8 @@
       ...mapState({
         'famousAuthor': function (state) {
           return state.storage.cache.renderCache.famousAuthor[this.$route.query.authorId] || {courseSetList: [{authorName: ''}]}
-        }
+        },
+        'famousBookSelect': state => state.famous.famousBookSelect
       }),
       ...mapGetters([])
     },
@@ -75,17 +75,21 @@
       action (type) {
         switch (type) {
           case 'left':
-            let selectd = this.select - 1
-            this.select = selectd < 0 ? 0 : selectd
+            let selectd = this.famousBookSelect - 1
+            console.log(selectd)
+            selectd = selectd < 0 ? 0 : selectd
+            this.$store.dispatch('famous/setFamousBookSelect', selectd)
             break
           case 'right':
-            let sele = this.select + 1
-            this.select = sele >= this.famousAuthor.courseSetList.length - 1 ? this.famousAuthor.courseSetList.length - 1 : sele
+            let sele = this.famousBookSelect + 1
+            console.log(sele)
+            sele = sele >= this.famousAuthor.courseSetList.length - 1 ? this.famousAuthor.courseSetList.length - 1 : sele
+            this.$store.dispatch('famous/setFamousBookSelect', sele)
             break
           case 'ok':
             this.$router.push({
               path: '/famous-play',
-              query: {courseSetID: this.famousAuthor.courseSetList[this.select].courseSetId}
+              query: {courseSetID: this.famousAuthor.courseSetList[this.famousBookSelect].courseSetId}
             })
         }
       }

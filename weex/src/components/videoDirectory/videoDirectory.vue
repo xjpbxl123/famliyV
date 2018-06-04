@@ -33,11 +33,11 @@
       </list>
     </div>
     <toolbar>
-      <icon-item id="403" pianoKey="92" text="" icon="0xe63c"
+      <icon-item :hidden="!show" id="403" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item id="404" pianoKey="94" text="" icon="0xe654"
+      <icon-item :hidden="!show" id="404" pianoKey="94" text="" icon="0xe654"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item id="405" pianoKey="97" text="" icon="0xe69a"
+      <icon-item :hidden="!show" id="405" pianoKey="97" text="" icon="0xe69a"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
     </toolbar>
   </div>
@@ -67,7 +67,8 @@
         videoList: {},
         select: 0,
         progress: 0,
-        rightTop: 0
+        rightTop: 0,
+        show: false
       }
     },
     methods: {
@@ -111,12 +112,15 @@
           params
         })
       },
-      getVideoList (params) {
-        this.videoList = params
+      getVideoList ({videoList}) {
+        this.videoList = videoList
       },
       weexProgress ({progress, index}) {
         this.progress = progress
         this.videoList.courseList[index].progress = progress < 100 ? progress : false
+      },
+      controlButton ({show}) {
+        this.show = show
       }
     },
     computed () {

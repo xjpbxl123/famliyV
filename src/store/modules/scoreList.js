@@ -20,7 +20,7 @@ export default {
     /**
      * @desc 获取曲谱列表
      * */
-    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 1000}, typeName, id}) {
+    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
       console.log(id)
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
