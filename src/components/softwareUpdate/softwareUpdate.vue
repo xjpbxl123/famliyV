@@ -136,6 +136,7 @@
         let that = this
         let localPath, targetPath
         console.log(file.pathComplement('$downLoadHtmls'))
+        this.progress = 0
         file.pathComplement('$downLoadHtmls').then(function (result) {
           console.log(result)
           localPath = result

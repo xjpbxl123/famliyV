@@ -105,8 +105,7 @@
       scoreList: function (value, old) {
         this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
         let flag = false
-        console.log(value[this.scoreIndex].collect)
-        value[this.scoreIndex].collect.forEach((item) => {
+        this.collet && this.collet.forEach((item) => {
           if (item.collection) { flag = true }
         })
         if (flag) {
@@ -118,7 +117,7 @@
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
         let flag = false
-        this.scoreList[this.scoreIndex].collect.forEach((item) => {
+        this.collet && this.collet.forEach((item) => {
           if (item.collection) { flag = true }
         })
         if (flag) {
@@ -345,7 +344,7 @@
     },
     created () {
       this.getScoreList()
-      let musicId = JSON.parse(this.query.book).musicId
+      let musicId = this.query.book ? JSON.parse(this.query.book).musicId : false
       if (musicId) {
         // 从我的收藏或者最近打开进来
         this.scoreList.forEach((item, index) => {

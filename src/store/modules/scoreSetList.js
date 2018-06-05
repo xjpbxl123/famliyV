@@ -43,6 +43,9 @@ export default {
         console.log(res)
         if (res.header.code === 0) {
           commit('totalPage', Math.ceil(res.body.sum / 20))
+          if (state.scoreListIndex >= res.body.bookList.length) {
+            commit('scoreListIndex', res.body.bookList.length - 1)
+          }
           dispatch('setCacheToStorage', {scoreSetList: res.body.bookList}, {root: true})
         }
       })

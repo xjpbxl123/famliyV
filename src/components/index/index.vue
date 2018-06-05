@@ -362,6 +362,7 @@
       isLogin (val) {
         if (val) {
           this.userActionButtons[1].text = '注销'
+          this.getRecentOpenList()
         } else {
           this.userActionButtons[1].text = '登陆'
         }
@@ -575,7 +576,7 @@
               console.log(recentBooks.bookList[activeIndex])
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
-            if (activeIndex >= 8 && activeIndex < 12) {
+            if (activeIndex >= 8 && activeIndex < 13) {
               // 热门曲谱
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
@@ -643,6 +644,9 @@
       this.getRecentOpenList()
       this.getCollectList()
       this.getMetronomeStatus()
+      if (!this.sessionId) {
+        this.createSession()
+      }
     },
     destroyed () {
       clearInterval(window.interval)

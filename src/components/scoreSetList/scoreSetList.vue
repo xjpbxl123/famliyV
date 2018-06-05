@@ -19,7 +19,7 @@
   import pageNation from './scoreSetList-pagenation'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
-  import { KEY73, KEY75, KEY78, KEY80, KEY82 } from 'vue-find'
+  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
 
   export default {
     data () {
@@ -89,6 +89,11 @@
       },
       [KEY82] () {
         this.buttonActions('ok')
+      },
+      [BACK_PRESSED] () {
+        this.$router.back()
+        this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
+        this.$store.dispatch('scoreSetList/setCurrentPage', 1)
       }
     },
     computed: {
@@ -149,6 +154,7 @@
           }
         }
         this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
+        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
       },
       pre (scoreListIndex) {
         let currentPage = this.currentPage
@@ -161,10 +167,11 @@
           }
         }
         this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
+        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
       }
     },
     created () {
-      this.getScoreSetList(1)
+      this.getScoreSetList(this.currentPage)
       console.log(this.scoreSetList, 'scoreSetList')
     },
     components: {

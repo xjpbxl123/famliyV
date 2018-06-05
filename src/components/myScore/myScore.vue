@@ -243,14 +243,12 @@
        * */
       getMyRecentOpen () {
         this.$store.dispatch({type: 'index/getRecentOpenList'})
-        this.$store.dispatch('index/localRecent', this.localRecent || [])
       },
       /**
        * @desc 我的收藏数据
        * */
       getMyCollect () {
         this.$store.dispatch({type: 'index/getCollectList'})
-        this.$store.dispatch('index/localCollect', this.localCollect || [])
       },
       /**
        * @desc 本地资源

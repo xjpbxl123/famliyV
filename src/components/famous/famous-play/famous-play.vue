@@ -231,6 +231,8 @@
        * weex通知下载
        **/
       weexDownload ({courseItem, index, isDownload}) {
+        console.log(courseItem, index, isDownload)
+
         if (this.progressing && !isDownload) {
           download.abortAll(this.files).then((data) => {
             console.log(data)
@@ -242,8 +244,11 @@
       continueDownload (courseItem, index, isDownload) {
         let video = courseItem.data.videoHighBitRate
         let midi = courseItem.data.midiHighBitRate
+        console.log(video, midi)
+
         this.files = [video, midi]
         return download.downloadAll([video, midi]).progress((process) => {
+          console.log(`进度：${process.allProgress}`)
           this.progressing = true
           this.$find.sendMessage({
             method: 'weexProgress',

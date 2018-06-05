@@ -34,7 +34,7 @@
       changeSize (select) {
         let wag = this.index - select
         if (wag < 0) {
-          this.famousItemStyle.width = 617 - 57 * (-wag + 1)
+          this.famousItemStyle.width = 617 - 57 * (-wag)
         }
         if (wag > 1) {
           this.famousItemStyle.width = 617 - 57 * (wag - 1)
