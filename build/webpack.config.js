@@ -44,14 +44,14 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: assist.assetPath(`/images/[name].[ext]?${NODE_ENV !== 'development' && '[hash]'}`)
+          name: assist.assetPath('/images/[name].[hash:7].[ext]')
         }
       },
       {
         test: /\.(eot|ttf|woff|woff2)$/,
         loader: 'file-loader',
         options: {
-          name: assist.assetPath(`/fonts/[name].[ext]?${NODE_ENV !== 'development' && '[hash]'}`)
+          name: assist.assetPath('/fonts/[name].[hash:7].[ext]')
         }
       }
     ]
