@@ -122,5 +122,4 @@ const webConfig = webpackMerge.smart(commonConfig[0], {
     })
   ]
 })
-console.log(JSON.stringify(weexConfig.module.rules))
 module.exports = [weexConfig, webConfig]

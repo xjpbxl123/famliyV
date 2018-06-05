@@ -1,4 +1,4 @@
 export default {
   path: '/softwareUpdate',
-  component: () => import('./softwareUpdate')
+  component: () => import(/* webpackChunkName:"softwareUpdate" */ './softwareUpdate')
 }

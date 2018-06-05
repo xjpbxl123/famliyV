@@ -17,7 +17,7 @@
        * */
       generateQrCode (qrCodeOptions) {
         /// 异步获取qrcode模块，生成二维码
-        return import(/* webpackChunkName:"qr-code" */ 'qrcode').then(qrCode => {
+        return import(/* webpackChunkName:"qrCode" */ 'qrcode').then(qrCode => {
           qrCode.toCanvas(
             document.querySelector('canvas'),
             `http://spapi.findpiano.cn/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=''&sessionId=${

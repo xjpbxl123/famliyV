@@ -10,6 +10,9 @@
     "preinstall": "cd weex&& yarn install",
     "dev": "cross-env NODE_ENV=development node ./build/webpack.dev.config.js",
     "build": "npm run lint&&cross-env NODE_ENV=production node ./build/build",
+    "build:dev": "npm run lint&&cross-env NODE_ENV=buildDev node ./build/build",
+    "build:devFull":
+      "npm run lint&&cross-env NODE_ENV=buildDev WEEX_ENV=production node ./build/build --fuller",
     "build:test":
       "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
     "build:testFull":
@@ -36,8 +39,7 @@
     "qrcode": "^1.2.0",
     "vue": "^2.2.1",
     "vue-find": "^1.2.1",
-    "vue-find-hybrid": "^1.0.8",
-    "vue-resource": "^1.3.1",
+    "vue-find-hybrid": "^1.1.3",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
