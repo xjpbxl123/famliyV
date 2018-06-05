@@ -21,7 +21,7 @@
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
               </div>
-              <div class="styleType">{{data.styleName[0] || ''}}</div>
+              <div class="styleType">{{data.styleName?data.styleName[0]:''}}</div>
             </div>
           </div>
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
@@ -30,7 +30,7 @@
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
               </div>
-              <div class="styleType">{{data.styleName[0] || ''}}</div>
+              <div class="styleType">{{data.styleName?data.styleName[0]:''}}</div>
             </div>
           </div>
         </div>

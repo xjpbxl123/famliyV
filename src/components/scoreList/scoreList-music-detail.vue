@@ -1,25 +1,25 @@
 <template>
   <div class="musicDetail">
-    <div class="musicName">{{scoreList[scoreIndex].name}}</div>
+    <div class="musicName">{{scoreList[scoreIndex]&&scoreList[scoreIndex].name}}</div>
     <div class="eachDetail eachDetail1">
       <span class="iconfont icon-composer"></span>
       <span class="author">作曲家：</span>
-      <span>{{scoreList[scoreIndex].composer}}</span>
+      <span>{{scoreList[scoreIndex]&&scoreList[scoreIndex].composer}}</span>
     </div>
     <div class="eachDetail eachDetail2">
       <span class="iconfont icon-star-full"></span>
       <span>难易级别：</span>
-      <find-star :starNum="scoreList[scoreIndex].starNum" />
+      <find-star :starNum="scoreList[scoreIndex]&&scoreList[scoreIndex].starNum" />
     </div>
     <div class="eachDetail">
       <span class="iconfont icon-update-time"></span>
       <span>更新日期：</span>
-      <span>{{scoreList[scoreIndex].lastUpdate | format}}</span>
+      <span>{{scoreList[scoreIndex]&&scoreList[scoreIndex].lastUpdate | format}}</span>
     </div>
     <div class="eachDetail">
       <span class="iconfont icon-song-introduction"></span>
       <span>曲目介绍：</span>
-      <div class="musicDesc">{{scoreList[scoreIndex].desc}}</div>
+      <div class="musicDesc">{{scoreList[scoreIndex]&&scoreList[scoreIndex].desc}}</div>
     </div>
 
   </div>

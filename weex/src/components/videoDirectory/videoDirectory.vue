@@ -73,33 +73,22 @@
     },
     methods: {
       buttonActions (type) {
-        let height = this.select * 122 * -1
         switch (type) {
           case 'down':
             if (this.select < this.videoList.courseList.length - 1) {
               this.select++
-            }
-            if (this.select >= 7 && this.select < this.videoList.courseList.length) {
-              if (parseInt(this.rightTop) - height > 122 * 6) {
-                this.rightTop = (this.select - 6) * 122 * -1
-              }
             }
             break
           case 'up':
             if (this.select > 0) {
               this.select--
             }
-            if (this.select <= 0) {
-              this.rightTop = 0
-            }
-            if (this.rightTop - height < 122) {
-              this.rightTop = height
-            }
             break
           case 'ok':
             this.okAction()
             break
         }
+        console.log('buttonActions', this.select)
       },
       okAction () {
         let courseItem = this.videoList.courseList[this.select]
@@ -117,7 +106,8 @@
       },
       weexProgress ({progress, index}) {
         this.progress = progress
-        this.videoList.courseList[index].progress = progress < 100 ? progress : false
+        // this.videoList.courseList[index].progress = progress < 100 ? progress : false
+        this.$set(this.videoList.courseList[index], 'progress', progress < 100 ? progress : false)
       },
       controlButton ({show}) {
         this.show = show
@@ -143,6 +133,12 @@
     },
     components: {
       ...toolbar
+    },
+    watch: {
+      select: function (val, oldval) {
+        let rightTop = -(val - 6) * 122
+        this.rightTop = rightTop > 0 ? 0 : rightTop
+      }
     }
   }
 </script>

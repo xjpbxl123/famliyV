@@ -19,7 +19,7 @@
   import findButton from '../common/find-button/find-button'
   import famousSwiper from './famous-swiper'
   import findTitle from 'components/common/find-title/find-title'
-  import { KEY78, KEY80, KEY82 } from 'vue-find'
+  import { KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
 
   export default {
     name: 'famous',
@@ -76,6 +76,10 @@
       }
     },
     find: {
+      [BACK_PRESSED] () {
+        this.$router.back()
+        this.$store.dispatch('famous/setFamousSetSelect', 0)
+      },
       [KEY78] () {
         this.action('left')
       },

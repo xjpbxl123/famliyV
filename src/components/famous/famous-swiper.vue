@@ -33,17 +33,18 @@
     },
     data () {
       return {
-        left: this.defaultLeft
+      }
+    },
+    computed: {
+      left: function () {
+        let width = 0
+        for (let i = 0; i < this.select; i++) {
+          width = width + 560 - 57 * i
+        }
+        return this.defaultLeft - width
       }
     },
     watch: {
-      select (val, oldValue) {
-        if (val > oldValue) {
-          this.left = this.left - (560 - (val - 1) * 57)
-        } else {
-          this.left = this.left + (560 - (val) * 57)
-        }
-      }
     },
     components: {
       famousItem

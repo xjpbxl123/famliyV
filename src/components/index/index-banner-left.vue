@@ -85,6 +85,7 @@
     created () {
       this.$nextTick(() => {
         if (this.$refs.qrCode) {
+          console.log(121212, this.sessionId)
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
             clearInterval(window.interval)
             window.interval = window.setInterval(() => {
