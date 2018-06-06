@@ -106,7 +106,11 @@
     },
     methods: {
       getScoreSetList (page) {
-        this.$store.dispatch({type: 'scoreSetList/getScoreSetList', page, setId: this.$route.query.setId})
+        this.$store.dispatch({
+          type: 'scoreSetList/getScoreSetList',
+          page,
+          setId: this.$route.query.setId
+        })
       },
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
@@ -135,7 +139,10 @@
           case 'ok':
             let data = scoreSetList[scoreListIndex]
             console.log(data)
-            this.$router.push({path: '/scoreList', query: {book: JSON.stringify(data)}})
+            this.$router.push({
+              path: '/scoreList',
+              query: { book: JSON.stringify(data) }
+            })
             break
           default:
             break
@@ -183,38 +190,36 @@
   }
 </script>
 <style lang="scss" scoped>
-  .scoreSetList {
-    color: #fff;
+.scoreSetList {
+  color: #fff;
 
   ul.listBox {
     position: absolute;
     top: 180px;
     left: 200px;
 
-  li {
-    color: #fff;
-    font-size: 40px;
-    width: 248px;
-    height: 340px;
-    box-sizing: border-box;
-    margin-right: 102px;
-    margin-bottom: 40px;
+    li {
+      color: #fff;
+      font-size: 40px;
+      width: 248px;
+      height: 340px;
+      box-sizing: border-box;
+      margin-right: 102px;
+      margin-bottom: 40px;
 
-  img {
-    width: 100%;
-    height: 100%;
-  }
+      img {
+        width: 100%;
+        height: 100%;
+      }
 
-  &
-  .active {
-    box-shadow: 0px 0px 50px 10px #fff;
+      & .active {
+        box-shadow: 0px 0px 50px 10px #fff;
+      }
+    }
   }
-
-  }
-  }
-  }
-  h1 {
-    font-size: 60px;
-    color: #fff;
-  }
+}
+h1 {
+  font-size: 60px;
+  color: #fff;
+}
 </style>
