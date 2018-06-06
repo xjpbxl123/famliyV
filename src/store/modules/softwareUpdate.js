@@ -21,9 +21,15 @@ export default {
         cmd: 'system.getApp',
         appType: 'testing',
         appName: 'familyH5'
-      }).then((res) => {
-        commit('setServerVersionInfo', res.body.app)
       })
+      // .then((res) => {
+      //   commit('setServerVersionInfo', res.body.app)
+      // }).catch((err) => {
+      //   console.log(1211, err)
+      // })
+    },
+    setServerVersionInfo ({dispatch, commit, state}, data) {
+      commit('setServerVersionInfo', data.body.app)
     },
     getLocalVersionInfo ({dispatch, commit, state}, data) {
       return new Promise(function (resolve, reject) {
@@ -31,8 +37,13 @@ export default {
           version: process.env.VERSION,
           build: process.env.BUILD_VERSION
         }
-        commit('setLocalVersionInfo', localVersionInfo)
-        resolve()
+        if (localVersionInfo.version) {
+          commit('setLocalVersionInfo', localVersionInfo)
+          resolve(localVersionInfo)
+        } else {
+          let err = new Error('获取本地版本失败')
+          reject(err)
+        }
       })
     }
   }

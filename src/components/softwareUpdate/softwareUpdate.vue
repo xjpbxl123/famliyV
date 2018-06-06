@@ -16,7 +16,7 @@
         <progressBar :progress="progress" v-show="downloading"></progressBar>
       </div>
     </div>
-    <findPrompt icon="icon-grade-right" text="成功获取最新版本信息" :showPrompt="show" delay="2000"></findPrompt>
+    <findPrompt :icon="promptInfo.icon" :text="promptInfo.text" :showPrompt="promptInfo.show" :delay="promptInfo.delay"></findPrompt>
     <toolbar>
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
@@ -41,8 +41,13 @@
       return {
         progress: 0,
         downloading: false,
-        show: false,
         needupdate: false,
+        promptInfo: {
+          show: false,
+          text: '成功获取最新版本信息',
+          icon: 'icon-grade-right',
+          delay: 2000
+        },
         controlButtons: [
           {
             pianoKey: 82,
@@ -50,18 +55,20 @@
             icon: '0xe69c',
             id: 1,
             backgroundColor: '#f08032',
-            show: false
+            show: true
           }
         ]
       }
     },
     find: {
       [KEY82] () {
+        if (!this.needupdate) {
+          return
+        }
         let version = process.env.VERSION
         let build = process.env.BUILD_VERSION
         console.log(`${version}${build}`)
         let downloadInfo = this.serverVersionInfo.url
-
         if (this.downloading) {
           // 暂停下载
           this.downloading = false
@@ -140,7 +147,7 @@
         file.pathComplement('$downLoadHtmls').then(function (result) {
           console.log(result)
           localPath = result
-          return file.pathComplement('$web')
+          return file.pathComplement('$web/familyClient')
         }).then(function (result) {
           console.log(result)
           targetPath = result
@@ -183,11 +190,23 @@
     },
     created () {
       let that = this
-      this.$store.dispatch('softwareUpdate/getServerVersionInfo').then(function () {
-        that.show = true
-        that.$store.dispatch('softwareUpdate/getLocalVersionInfo').then(function () {
-          that.needupdate = that.contrastVersion(that.serverVersionInfo, that.localVersionInfo)
-        })
+      this.$store.dispatch('softwareUpdate/getServerVersionInfo').then(function (res) {
+        console.log(res)
+        that.promptInfo.show = true
+        that.$store.dispatch('softwareUpdate/setServerVersionInfo', res)
+        return that.$store.dispatch('softwareUpdate/getLocalVersionInfo')
+      }).catch(function (err) {
+        console.log(err)
+        that.promptInfo.show = true
+        that.promptInfo.text = '获取版本出错'
+        that.promptInfo.icon = 'icon-wrong'
+        return that.$store.dispatch('softwareUpdate/getLocalVersionInfo')
+      }).then(function (data) {
+        console.log(1234, data)
+        that.needupdate = that.contrastVersion(that.serverVersionInfo, that.localVersionInfo)
+      }).catch(function (err) {
+        that.needupdate = false
+        console.log(err)
       })
     },
     components: {
