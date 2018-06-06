@@ -2323,6 +2323,10 @@ deep-diff@1.0.0:
   version "1.0.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.0.tgz#0dd55f9412f22a07b2edbfbb11bb4633be6be40b"
 
+deep-diff@^1.0.1:
+  version "1.0.1"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.1.tgz#ac437a691e88baf4205b83ae1aa095a13c6c10ac"
+
 deep-equal@^1.0.1:
   version "1.0.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
