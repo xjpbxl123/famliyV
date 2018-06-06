@@ -22,8 +22,8 @@
         default: () => '提示'
       },
       delay: {
-        type: String,
-        default: () => '2000'
+        type: Number,
+        default: () => 2000
       },
       showPrompt: {
         type: Boolean,

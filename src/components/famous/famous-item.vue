@@ -1,7 +1,7 @@
 <template>
   <li class="famous-item" :class="index == select && 'active'"
       :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}">
-    <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage"/>
+    <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage" :text="famous.name"/>
   </li>
 </template>
 <script>

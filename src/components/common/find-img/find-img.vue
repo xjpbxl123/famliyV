@@ -1,5 +1,9 @@
-<style lang="scss">
-</style>
+<template>
+  <div class="image">
+      <img :src="url" alt="Find">
+      <h1 v-show="showTitle">{{text}}</h1>
+  </div>
+</template>
 <script>
   export default {
     name: 'find-img',
@@ -21,11 +25,16 @@
         default: () => {
           return require('../../../images/default.jpg')
         }
+      },
+      text: {
+        type: String,
+        default: () => ''
       }
     },
     data () {
       return {
-        url: this.beforeImage || this.errorImage
+        url: this.beforeImage || this.errorImage,
+        showTitle: true
       }
     },
     methods: {
@@ -36,17 +45,43 @@
         this.url = this.errorImage || this.beforeImage
       }
     },
-    render () {
-      return (
-        <img src={this.url} alt="Find" onError={this.error}></img>
-      )
-    },
+    // render () {
+    //   return (
+    //     <img src={this.url} alt="Find" onError={this.error}></img>
+    //   )
+    // },
     created () {
       let image = new Image()
       image.src = this.src
       image.onload = () => {
         this.url = this.src
       }
+      let checkoutImg = setInterval(() => {
+        console.log(image.complete)
+        if (image.complete) { // 加载完成
+          this.showTitle = false
+          clearInterval(checkoutImg)
+        }
+      }, 1000)
     }
   }
 </script>
+<style lang="scss">
+  .image {
+    width: 100%;
+    height: 100%;
+    img {
+      width:100%;
+      position: absolute;
+      bottom: 0;
+    }
+    h1 {
+      font-size: 70px;
+      color: #fff;
+      position: absolute;
+      left: 50%;
+      transform:translateX(-50%);
+      top: 70%;
+    }
+  }
+</style>
