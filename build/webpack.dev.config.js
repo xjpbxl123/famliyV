@@ -5,16 +5,21 @@ const webpackMerge = require('webpack-merge')
 const webpack = require('webpack')
 const WebPackDevServer = require('webpack-dev-server')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const webpackBase = require('./webpack.config')
 const config = require('./config')
 const assist = require('./assist')
+const args = require('yargs').argv
 /// Determine Ip and Port
 const ip = require('ip').address()
+const shell = require('shelljs')
+const pkg = require('../package')
 const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
 const env = envConfig.env[NODE_ENV] || envConfig.env
 const port = env.PORT || '8080'
+const devPort = env.DEV_PORT || '8098'
 const webpackConfig = webpackMerge(webpackBase, {
   plugins: [
     /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.
@@ -25,12 +30,26 @@ const webpackConfig = webpackMerge(webpackBase, {
       template: 'src/index.html',
       inject: true
     }),
+    new HtmlWebpackIncludeAssetsPlugin({
+      assets: [{path: 'public/scripts', glob: '*.js'}],
+      append: false
+    }),
     new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: [`Your application is running here: http://${ip}:${port} and you can visit http://localhost:${port} at the some time`]
       }
     })
-  ]
+  ].concat(
+    /// Inject script tag for vue-devtool,See https://github.com/vuejs/vue-devtools/blob/master/shells/electron/README.md
+    args.debug
+      ? [
+        new HtmlWebpackIncludeAssetsPlugin({
+          assets: [{path: `http://${ip}:${devPort}`, type: 'js'}],
+          append: true,
+          publicPath: false
+        })
+      ] : []
+  )
 })
 const devServerOptions = {
   publicPath: '/',
@@ -46,4 +65,14 @@ const devServerOptions = {
 WebPackDevServer.addDevServerEntrypoints(webpackConfig, devServerOptions)
 const compiler = webpack(webpackConfig)
 const server = new WebPackDevServer(compiler, devServerOptions)
-server.listen(port, '0.0.0.0', assist.copyStaticAssets())
+server.listen(port, '0.0.0.0', () => {
+  /// Running in debugger mode,We used devtools for other webBrowser that whit Electron
+  if (args.debug) {
+    if (!pkg.devDependencies['@vue/devtools']) {
+      console.error('Can\'t found @vue/devtools in package.json,Maybe you need install it use `yarn add -D @vue/devtools` command that for debugger.')
+    } else {
+      shell.exec(`cross-env PORT=${devPort}  node node_modules/.bin/vue-devtools`, {async: true})
+    }
+  }
+  assist.copyStaticAssets()
+})
