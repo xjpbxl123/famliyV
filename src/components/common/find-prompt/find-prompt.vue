@@ -1,5 +1,5 @@
 <template>
- <div class="find-prompt" v-show="show">
+ <div class="find-prompt" v-show="show" :style="{width:width+'px',height: height + 'px'}">
      <div class="prompt">
          <div class="prompt-icon">
              <i :class="['iconfont',icon]"></i>
@@ -25,9 +25,13 @@
         type: Number,
         default: () => 2000
       },
-      showPrompt: {
-        type: Boolean,
-        default: () => false
+      width: {
+        type: Number,
+        default: () => 750
+      },
+      height: {
+        type: Number,
+        default: () => 450
       }
     },
     data () {
@@ -36,22 +40,25 @@
       }
     },
     computed: {},
-    methods: {},
-    created () {
-    },
-    components: {},
-    watch: {
-      showPrompt: function (val, oldval) {
-        this.show = val
+    methods: {
+      showPrompt () {
+        this.show = true
         setTimeout(() => {
           this.show = false
         }, this.delay)
       }
+    },
+    created () {
+    },
+    components: {},
+    watch: {
     }
   }
 </script>
 <style lang="scss" scoped>
 .find-prompt {
+  position: absolute;
+  z-index: 100;
   .prompt {
     width: 100%;
     height: 100%;
@@ -65,6 +72,7 @@
       margin-top: 120px;
       .iconfont {
         font-size: 120px;
+        color: #fff;
       }
     }
     .prompt-text {
@@ -72,6 +80,7 @@
       width: 100%;
       text-align: center;
       margin-top: 55px;
+      color: #fff;
     }
   }
 }

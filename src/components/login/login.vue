@@ -1,5 +1,7 @@
 <template>
   <div class="login">
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
+
     <login-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
     <toolbar>
@@ -18,6 +20,7 @@
   import loginBanner from './login-banner'
   import {INTERCEPT_DOWN} from 'vue-find'
   import {getCurrentEnv} from '../../scripts/utils'
+  import findPrompt from '../common/find-prompt/find-prompt'
 
   export default {
     name: 'login',
@@ -54,7 +57,15 @@
             backgroundColor: '#4467d4',
             dotColor: '#4467d4'
           }
-        ]
+        ],
+        promptInfo: {
+          show: false,
+          text: '',
+          icon: '',
+          delay: 2000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -99,9 +110,17 @@
         this.$store
           .dispatch('login/login', {userName, password})
           .then((data) => {
-            this.$store.dispatch('getUserInfo', {root: true}).then(() => {
-              this.$router.push('/')
-            })
+            console.log(1212, data)
+            if (data.isLogin) {
+              this.$store.dispatch('getUserInfo', {root: true}).then(() => {
+                this.$router.push('/')
+              })
+            } else {
+              console.log(`${data.header.desc}`)
+              this.$refs.prompt.showPrompt()
+              this.promptInfo.text = `${data.header.desc}`
+              this.promptInfo.icon = 'icon-wrong'
+            }
           })
       },
       buttonActions (type) {
@@ -123,10 +142,18 @@
     },
     components: {
       loginKeyboard,
-      loginBanner
+      loginBanner,
+      findPrompt
     }
   }
 </script>
 
 <style scoped>
+  .find-prompt {
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 275px;
+    left: 2043px;
+  }
 </style>

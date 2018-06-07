@@ -103,7 +103,7 @@ export default {
         tagId
       }).then(res => {
         if (res.header.code === 0) {
-          dispatch('setCacheToStorage', {recentOpen: res.body}, {root: true})
+          dispatch('setCacheToStorage', {recentOpenList: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {recentOpenList: []}, {root: true})
         }
@@ -121,7 +121,7 @@ export default {
           // res.body.forEach(value => {
           //   value.desc = value.desc.replace(/[\n\r]/m, '')
           // })
-          dispatch('setCacheToStorage', {myCollect: res.body}, {root: true})
+          dispatch('setCacheToStorage', {collectList: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {collectList: []}, {root: true})
         }
