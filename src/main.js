@@ -2,8 +2,10 @@ import 'normalize.css'
 import './styles/iconfont/iconfont.css'
 import './main.scss'
 import './styles/button/button.scss'
+import devtools from '@vue/devtools'
 import Vue from 'vue'
 import Vuex from 'vuex'
+// import Vuetron from 'vuetron'
 import createStore from './store'
 import { isObject } from 'lodash'
 import VueFind from 'vue-find'
@@ -12,6 +14,11 @@ import find from './scripts/find'
 import VueRouter from 'vue-router'
 import routes from './routers'
 import App from './App.vue'
+// Vue.use(Vuetron.VuetronVue)
+if (process.env.NODE_ENV === 'development') {
+  devtools.connect('http://localhost', 9999)
+}
+
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -36,28 +43,5 @@ if (isInFindClient) {
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
 }
+
 export default vue
-window.app.sendEvent = () => {
-}
-/**
- * @desc 实现Command+R 刷新
- * */
-if (process.env.NODE_ENV !== 'production') {
-  let pressingCommand = false
-  document.addEventListener('keydown', (event) => {
-    let key = event.key.toLowerCase()
-    if (key === 'meta') {
-      pressingCommand = true
-      return
-    }
-    if (key === 'r' && pressingCommand) {
-      window.location.reload()
-    }
-  }, false)
-  document.addEventListener('keyup', (event) => {
-    let key = event.key.toLowerCase()
-    if (key === 'meta') {
-      pressingCommand = false
-    }
-  }, false)
-}

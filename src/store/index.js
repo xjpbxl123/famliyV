@@ -2,7 +2,6 @@
  * Created by Moersing on 2018/4/3 .
  * */
 import Vuex from 'vuex'
-import createLogger from 'vuex/dist/logger'
 import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
@@ -16,7 +15,7 @@ import staff from './modules/staff'
 import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
 import { nativeStorage } from 'find-sdk'
-
+// import Vuetron from 'vuetron'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
@@ -26,6 +25,7 @@ export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
     state: {
+      NODE_ENV: process.env.NODE_ENV,
       storage: {
         isSynced: false, // 数据是否同步完成,注意: 所有涉及到nativeStorage的操作,都应该基于这个标志来判断是否完成
         playCalendar: {}, // 练琴日期
@@ -285,7 +285,6 @@ export default function createStore () {
       staff,
       myScore,
       softwareUpdate
-    },
-    plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
+    }
   })
 }

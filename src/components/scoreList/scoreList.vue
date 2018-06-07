@@ -169,7 +169,9 @@
     },
     computed: {
       ...mapState({
-        scoreIndex: state => state.scoreList.scoreIndex,
+        scoreIndex: state => {
+          return state.scoreList.scoreIndex
+        },
         scoreList: function (state) {
           let query = this.query
           if (query.differ) {

@@ -66,10 +66,7 @@
           this.$nextTick(() => {
             if (this.$refs.qrCode) {
               this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-                clearInterval(window.interval)
-                window.interval = window.setInterval(() => {
-                  this.$store.dispatch('getUserInfo')
-                }, 2000)
+                this.$store.dispatch('getUserInfo')
               })
             }
           })
@@ -88,9 +85,7 @@
           console.log(121212, this.sessionId)
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
             clearInterval(window.interval)
-            window.interval = window.setInterval(() => {
-              this.$store.dispatch('getUserInfo')
-            }, 2000)
+            this.$store.dispatch('getUserInfo')
           })
         }
       })
