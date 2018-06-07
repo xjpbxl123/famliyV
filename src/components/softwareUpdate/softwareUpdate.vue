@@ -16,7 +16,7 @@
         <progressBar :progress="progress" v-show="downloading"></progressBar>
       </div>
     </div>
-    <findPrompt :icon="promptInfo.icon" :text="promptInfo.text" :showPrompt="promptInfo.show" :delay="promptInfo.delay"></findPrompt>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <toolbar>
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
@@ -43,10 +43,11 @@
         downloading: false,
         needupdate: false,
         promptInfo: {
-          show: false,
           text: '成功获取最新版本信息',
           icon: 'icon-grade-right',
-          delay: 2000
+          delay: 2000,
+          width: 750,
+          height: 450
         },
         controlButtons: [
           {
@@ -192,14 +193,16 @@
       let that = this
       this.$store.dispatch('softwareUpdate/getServerVersionInfo').then(function (res) {
         console.log(res)
-        that.promptInfo.show = true
+        that.promptInfo.text = '成功获取最新版本信息'
+        that.promptInfo.icon = 'icon-grade-right'
+        that.$refs.prompt.showPrompt()
         that.$store.dispatch('softwareUpdate/setServerVersionInfo', res)
         return that.$store.dispatch('softwareUpdate/getLocalVersionInfo')
       }).catch(function (err) {
         console.log(err)
-        that.promptInfo.show = true
         that.promptInfo.text = '获取版本出错'
         that.promptInfo.icon = 'icon-wrong'
+        that.$refs.prompt.showPrompt()
         return that.$store.dispatch('softwareUpdate/getLocalVersionInfo')
       }).then(function (data) {
         console.log(1234, data)

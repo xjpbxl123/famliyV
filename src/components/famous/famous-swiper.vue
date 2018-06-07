@@ -39,7 +39,9 @@
       left: function () {
         let width = 0
         for (let i = 0; i < this.select; i++) {
-          width = width + 560 - 57 * i
+          let itemWidth = 560 - 57 * i
+          itemWidth = itemWidth > 47 ? itemWidth : 47
+          width = width + itemWidth
         }
         return this.defaultLeft - width
       }

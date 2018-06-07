@@ -304,7 +304,7 @@
   position: absolute;
   bottom: 8px;
   overflow: hidden;
-  margin-left: 24px;
+  margin-left: 5px;
   border-radius: 15px;
   width: 2800px;
   height: 54px;

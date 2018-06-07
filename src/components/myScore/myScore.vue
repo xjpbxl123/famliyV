@@ -22,7 +22,7 @@
             :icon="button.icon"
             :pianoKey="button.pianoKey"
             :hidden="!button.show"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
     </toolbar>
   </div>
 
@@ -46,7 +46,8 @@
             text: '',
             icon: '',
             dotColor: '#1bb3ff',
-            id: 12,
+            activeColor: '#fff',
+            id: 0,
             show: true
           },
           {
@@ -54,7 +55,8 @@
             text: '',
             icon: '',
             dotColor: '#dc50ff',
-            id: 11,
+            activeColor: '#fff',
+            id: 1,
             show: true
           },
           {
@@ -62,7 +64,8 @@
             text: '',
             icon: '',
             dotColor: '#00be93',
-            id: 10,
+            activeColor: '#fff',
+            id: 2,
             show: true
           },
           {
@@ -70,7 +73,8 @@
             text: '',
             icon: '',
             dotColor: '#dfbb39',
-            id: 9,
+            activeColor: '#fff',
+            id: 3,
             show: true
           },
           {
@@ -78,7 +82,8 @@
             text: '',
             icon: '',
             dotColor: '#941bff',
-            id: 8,
+            activeColor: '#fff',
+            id: 4,
             show: true
           },
           {
@@ -87,7 +92,7 @@
             icon: '0xe63b',
             backgroundColor: '#6f24d2',
             dotColor: '#6f24d2',
-            id: 13,
+            id: 5,
             show: true
           },
           {
@@ -96,7 +101,7 @@
             icon: '0xe650',
             backgroundColor: '#c72bbb',
             dotColor: '#c72bbb',
-            id: 14,
+            id: 6,
             show: true
           },
           {
@@ -105,7 +110,7 @@
             icon: '0xe69a',
             backgroundColor: '#109892',
             dotColor: '#109892',
-            id: 15,
+            id: 7,
             show: true
           },
           {
@@ -114,7 +119,7 @@
             icon: '0xe642',
             backgroundColor: '#c72bbb',
             dotColor: '#c72bbb',
-            id: 16,
+            id: 8,
             show: false
           },
           {
@@ -123,7 +128,7 @@
             icon: '0xe63d',
             backgroundColor: '#8D45FF',
             dotColor: '#8D45FF',
-            id: 17,
+            id: 9,
             show: false
           }
         ],
@@ -136,28 +141,18 @@
         switch (key) {
           case 39:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 42:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 46:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 49:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.legnth - 1].show = false
             break
           case 54:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 78:
             this.buttonActions('up')
@@ -181,15 +176,7 @@
     },
     computed: {
       ...mapState({
-        myScoreTapIndex: function (state) {
-          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 2) {
-            this.controlButtons[this.controlButtons.length - 2].show = true
-          }
-          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
-            this.controlButtons[this.controlButtons.length - 1].show = true
-          }
-          return state.myScore.myScoreTapIndex
-        },
+        myScoreTapIndex: state => state.myScore.myScoreTapIndex,
         localSourceIndex: state => state.myScore.localSourceIndex,
         localSourcePath: state => state.myScore.localSourcePath,
         localSource: state => state.myScore.localSource,
@@ -209,15 +196,6 @@
 
     },
     watch: {
-      myScoreTapIndex (value, old) {
-        if (value !== old) {
-          let dotColor = ['#1bb3ff', '#dc50ff', '#00be93', '#dfbb39', '#941bff']
-          let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
-          this.controlButtons[value].dotColor = '#fff'
-          this.controlButtons[old].dotColor = dotColor[value]
-          this.title = title[value]
-        }
-      },
       localSource (value, old) {
         value.forEach((item, index) => {
           if (item.name === this.dirName) {
