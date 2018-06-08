@@ -8,6 +8,7 @@ const pkg = require('../package')
 const envConfig = require('./env')({VERSION: pkg.version, BUILD_VERSION: pkg.build})
 const env = envConfig.env[NODE_ENV] || envConfig.env
 const shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 module.exports = {
   context: process.cwd(),
   entry: ['./build/polyfill.js', './src/main.js'],
@@ -74,7 +75,11 @@ module.exports = {
     hints: false
   },
   plugins: [
-    new webpack.DefinePlugin({'process.env': envConfig.stringify})
+    new webpack.DefinePlugin({'process.env': envConfig.stringify}),
+    new HtmlWebpackIncludeAssetsPlugin({
+      assets: [{path: 'public/scripts', glob: '*.js'}],
+      append: false
+    })
   ]
 };
 /// add style loaders for .js files

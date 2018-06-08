@@ -30,10 +30,6 @@ const webpackConfig = webpackMerge(webpackBase, {
       template: 'src/index.html',
       inject: true
     }),
-    new HtmlWebpackIncludeAssetsPlugin({
-      assets: [{path: 'public/scripts', glob: '*.js'}],
-      append: false
-    }),
     new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: [`Your application is running here: http://${ip}:${port} and you can visit http://localhost:${port} at the some time`]
