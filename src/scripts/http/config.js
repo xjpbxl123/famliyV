@@ -2,7 +2,6 @@
  * Created by Moersing on 2018/4/3 .
  * */
 import { device, nativeStorage } from 'find-sdk'
-let baseURL = process.env[process.env.NODE_ENV].HTTP_ROOT
 /**
  *@desc Get default params
  * */
@@ -44,6 +43,5 @@ export const getDefaultParams = (() => {
   }
 })()
 export const config = {
-  baseURL,
   timeout: 3000 // request timeout
 }

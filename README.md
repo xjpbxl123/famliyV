@@ -5,17 +5,11 @@
 ## Get Start
 
 ```
-# clone
-git clone  git@192.168.200.211:moersing/FindFamilyVue.git
-
 # 安装依赖
 yarn install
 
 # 开发环境
 yarn run dev
-
-# 带debug的开发环境
-yarn run dev:debug -- 集成vue-devtool
 
 # 仿真环境
 yarn run build:test
@@ -37,6 +31,7 @@ yarn run lint
 2.  环境变量位于根目录,根据环境配置: `.env.json`,本地环境变量则是:`.env.local.json`,除此之外,你还可以根据环境变量自由配置,如: 你的`NODE_ENV`是 test,那么,你可以新增一个 `.env.test.json`,即 `.env.{NODE_ENV}.json`的格式,固定环境变量参数解释如下:
 
         PORT:8080  //DevServer 的端口
+        VUE_DEV_ROOLS:true  // 是否使用 vue-devTools
         VUE_DEV_ROOLS_PORT: 8098 // vue-devtools debug 端口
         HTTP_ROOT:'your_api_url' // ajax 请求的url
         WEEX_URL:'weex_url' // weex 打包的js路径

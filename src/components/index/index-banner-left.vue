@@ -57,38 +57,34 @@
     },
     data () {
       return {
-        imgError: 'this.src="' + require('./images/admin.png') + '"'
+        imgError: 'this.src="' + require('./images/admin.png') + '"',
+        interval: null
       }
     },
     watch: {
       sessionId () {
         if (!this.isLogin) {
-          this.$nextTick(() => {
-            if (this.$refs.qrCode) {
-              this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-                this.$store.dispatch('getUserInfo')
-              })
-            }
-          })
-        }
-      },
-      isLogin (val) {
-        console.log(window.interval, 'ddd')
-        if (val) {
-          clearInterval(window.interval)
+          this.generateQrCode()
         }
       }
     },
-    created () {
-      this.$nextTick(() => {
+    methods: {
+      generateQrCode () {
         if (this.$refs.qrCode) {
-          console.log(121212, this.sessionId)
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-            clearInterval(window.interval)
-            this.$store.dispatch('getUserInfo')
+            this.interval = window.setInterval(() => {
+              this.dispatch('getUserInfo').then(res => {
+                if (res.isLogin) {
+                  clearInterval(this.interval)
+                }
+              })
+            }, 2000)
           })
         }
-      })
+      }
+    },
+    mounted () {
+      this.generateQrCode()
     },
     components: {
       qrCode,

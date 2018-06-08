@@ -5,7 +5,6 @@ import './styles/button/button.scss'
 import devtools from '@vue/devtools'
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import Vuetron from 'vuetron'
 import createStore from './store'
 import { isObject } from 'lodash'
 import VueFind from 'vue-find'
@@ -14,9 +13,12 @@ import find from './scripts/find'
 import VueRouter from 'vue-router'
 import routes from './routers'
 import App from './App.vue'
-// Vue.use(Vuetron.VuetronVue)
-if (process.env.NODE_ENV === 'development') {
-  devtools.connect('http://localhost', 9999)
+
+const isDev = process.env.NODE_ENV === 'development'
+const devEnvVars = process.env['development']
+/// Use vue-devtools
+if (isDev && devEnvVars.VUE_DEV_TOOLS) {
+  devtools.connect('http://localhost', devEnvVars.VUE_DEV_TOOLS_PORT)
 }
 
 Vue.use(vueFindHybrid)
@@ -31,7 +33,7 @@ if (isInFindClient) {
   Vue.use(VueFind)
   const store = createStore()
   const router = new VueRouter({routes})
-  store.dispatch('initialNativeStorage').then(() => {
+  Promise.all([store.dispatch('initialNativeStorage'), store.dispatch('initEnv')]).then(() => {
     vue = new Vue({
       el: '#app',
       render: h => h(App),

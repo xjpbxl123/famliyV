@@ -19,9 +19,7 @@
   import loginKeyboard from './login-keyboard'
   import loginBanner from './login-banner'
   import {INTERCEPT_DOWN} from 'vue-find'
-  import {getCurrentEnv} from '../../scripts/utils'
   import findPrompt from '../common/find-prompt/find-prompt'
-
   export default {
     name: 'login',
     data () {
@@ -101,12 +99,11 @@
         this.$refs.banner.setValue(value)
       },
       login (userName, password) {
-        let env = {}
+        let env = this.$store.state.environments
         if (process.env.NODE_ENV !== 'production') {
-          env = getCurrentEnv()
+          userName = userName || env.default_user_name
+          password = password || env.default_password
         }
-        userName = userName || env.default_user_name
-        password = password || env.default_password
         this.$store
           .dispatch('login/login', {userName, password})
           .then((data) => {

@@ -8,7 +8,9 @@
         :userInfo="userInfo"
         :sessionId="sessionId"
         :usedTime="usedTime"
-        :setCalendarData="setCalendarData"/>
+        :setCalendarData="setCalendarData"
+        :dispatch="dispatchUserInfo"
+      />
       <content-center
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
@@ -391,6 +393,12 @@
       initializeData () {
         this.$store.dispatch({type: 'index/getRecentBooks'})
         this.$store.dispatch({type: 'index/getHotBooks'})
+      },
+      /**
+       * @desc dispatch 用户状态
+       * */
+      dispatchUserInfo () {
+        return this.$store.dispatch('getUserInfo')
       },
       /**
        * @desc 获取用户状态和用琴时间

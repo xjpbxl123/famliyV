@@ -14,9 +14,10 @@ import material from './modules/material'
 import staff from './modules/staff'
 import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
-import { nativeStorage } from 'find-sdk'
-// import Vuetron from 'vuetron'
+import {nativeStorage} from 'find-sdk'
+import {getCurEnvs} from '../scripts/utils'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
+const INIT_ENV = 'INIT_ENV' // 初始化环境变量
 const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
@@ -25,7 +26,7 @@ export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
     state: {
-      NODE_ENV: process.env.NODE_ENV,
+      environments: {},
       storage: {
         isSynced: false, // 数据是否同步完成,注意: 所有涉及到nativeStorage的操作,都应该基于这个标志来判断是否完成
         playCalendar: {}, // 练琴日期
@@ -110,6 +111,9 @@ export default function createStore () {
       }
     },
     mutations: {
+      [INIT_ENV] (state, env) {
+        state.environments = env
+      },
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
       },
@@ -151,6 +155,14 @@ export default function createStore () {
             })
             return dispatch('initCacheStorage', data)
           })
+      },
+      /**
+       * @desc 获取当前环境变量,如果是开发环境,则永远是开发环境,不会跟着App的环境切换,如果打包之后,则当前环境变量会跟着当前APP切换
+       * */
+      initEnv ({commit}) {
+        return getCurEnvs().then(data => {
+          commit(INIT_ENV, data)
+        })
       },
       /**
        * @desc 将数据写入原生中
@@ -233,7 +245,6 @@ export default function createStore () {
           cmd: 'account.getInfo'
         }).then(({body, header}) => {
           if (header.code === 0) {
-            clearInterval(window.interval)
             for (let value of Object.keys(body)) {
               if (Object.prototype.toString.call(body[value]) === '[object Null]') {
                 body[value] = ''
@@ -241,7 +252,7 @@ export default function createStore () {
             }
             return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
           }
-          return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+          return {userInfo: body, isLogin: false}
         })
       },
       /**
