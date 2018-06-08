@@ -54,15 +54,14 @@
       let image = new Image()
       image.src = this.src
       image.onload = () => {
-        this.url = this.src
+        let checkoutImg = setInterval(() => {
+          if (image.complete) { // 加载完成
+            this.showTitle = false
+            this.url = this.src
+            clearInterval(checkoutImg)
+          }
+        }, 1000)
       }
-      let checkoutImg = setInterval(() => {
-        console.log(image.complete)
-        if (image.complete) { // 加载完成
-          this.showTitle = false
-          clearInterval(checkoutImg)
-        }
-      }, 1000)
     }
   }
 </script>

@@ -75,13 +75,15 @@
     },
     data () {
       return {
-        left: 0
+      }
+    },
+    computed: {
+      left: function () {
+        let select = this.select
+        return -460 * select - (select + select) * 40
       }
     },
     watch: {
-      select (value) {
-        this.left = -460 * value - (value + value) * 40
-      }
     },
     components: {
       famousBookItem

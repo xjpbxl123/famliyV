@@ -363,7 +363,11 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent']),
+      newCollectList: function () {
+        let collectList = this.collectList
+        return collectList.reverse()
+      }
     },
     watch: {
       /**
