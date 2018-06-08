@@ -10,7 +10,6 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const webpackBase = require('./webpack.config')
 const config = require('./config')
 const assist = require('./assist')
-const args = require('yargs').argv
 /// Determine Ip and Port
 const ip = require('ip').address()
 const shell = require('shelljs')
@@ -19,7 +18,8 @@ const NODE_ENV = process.env.NODE_ENV
 const envConfig = require('./env')()
 const env = envConfig.env[NODE_ENV] || envConfig.env
 const port = env.PORT || '8080'
-const devPort = env.DEV_PORT || '8098'
+const useDevTools = env.VUE_DEV_TOOLS
+const devPort = env.VUE_DEV_TOOLS_PORT || '8098'
 const webpackConfig = webpackMerge(webpackBase, {
   plugins: [
     /// This plugin will cause the relative path of the module to be displayed when HMR is enabled.
@@ -41,7 +41,7 @@ const webpackConfig = webpackMerge(webpackBase, {
     })
   ].concat(
     /// Inject script tag for vue-devtool,See https://github.com/vuejs/vue-devtools/blob/master/shells/electron/README.md
-    args.debug
+    useDevTools
       ? [
         new HtmlWebpackIncludeAssetsPlugin({
           assets: [{path: `http://${ip}:${devPort}`, type: 'js'}],
@@ -67,7 +67,7 @@ const compiler = webpack(webpackConfig)
 const server = new WebPackDevServer(compiler, devServerOptions)
 server.listen(port, '0.0.0.0', () => {
   /// Running in debugger mode,We used devtools for other webBrowser that whit Electron
-  if (args.debug) {
+  if (useDevTools) {
     if (!pkg.devDependencies['@vue/devtools']) {
       console.error('Can\'t found @vue/devtools in package.json,Maybe you need install it use `yarn add -D @vue/devtools` command that for debugger.')
     } else {

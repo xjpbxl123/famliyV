@@ -2,6 +2,7 @@
  * Created by moersing on 07/02/2018.
  */
 import {isString} from 'lodash'
+import {global} from 'find-sdk'
 const os = (function () {
   return (function () {
     let
@@ -55,10 +56,19 @@ const formatDate = function (date, format) {
   return format
 }
 /**
- * @desc 获取当前环境变量
- * @param {String} [node_env] - 当前的环境字符串,如果没有传递,使用process.env.NODE_ENV
+ * @desc 获取当前环境变量,如果是开发环境,则永远是开发环境,不会跟着App的环境切换,如果打包之后,则当前环境变量会跟着当前APP切换
  * */
-const getCurrentEnv = (node_env = process.env.NODE_ENV) => {
-  return process.env[node_env]
+const getCurEnvs = function () {
+  const envs = {0: 'production', 1: 'development', 2: 'buildTest'}
+  const isDev = process.env.NODE_ENV === 'development'
+  return new Promise(resolve => {
+    /// 0:生产
+    /// 1:开发
+    /// 2:测试
+    global.severType().then(envNum => {
+      let curEnv = isDev ? 'development' : envs[envNum - 0]
+      resolve(process.env[curEnv])
+    })
+  })
 }
-export { os, formatDate, getCurrentEnv }
+export { os, formatDate, getCurEnvs }

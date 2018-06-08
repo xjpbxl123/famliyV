@@ -3,10 +3,14 @@
  */
 import axios from 'axios'
 import { config, getDefaultParams } from './config'
+import {isPlainObject} from 'lodash'
+import {getCurEnvs} from '../utils'
 
 let http = axios.create(config)
 http.interceptors.request.use(async function (config) {
-  if (Reflect.has(config.data || {}, 'cmd')) {
+  const curEnv = await getCurEnvs()
+  config.baseURL = curEnv.HTTP_ROOT
+  if (isPlainObject(config.data) && config.data.cmd) {
     let defaultParams = await getDefaultParams()
     let header = {...defaultParams, ...{cmd: config.data.cmd}}
     Reflect.deleteProperty(config.data, 'cmd')
