@@ -78,15 +78,14 @@ module.exports = {
     hints: false
   },
   plugins: [
-    new webpack.DefinePlugin({'process.env': envConfig.stringify}),
-    new HtmlWebpackIncludeAssetsPlugin({
-      assets: [
-        {path: 'public', glob: '**/*.js', globPath: config.staticAssert},
-        {path: 'public', glob: '**/*.css', globPath: config.staticAssert}
-      ],
-      append: false
-    })
-  ]
+    new webpack.DefinePlugin({'process.env': envConfig.stringify})
+  ].concat(config.staticAssert ? new HtmlWebpackIncludeAssetsPlugin({
+    assets: [
+      {path: 'public', glob: '**/*.js', globPath: config.staticAssert},
+      {path: 'public', glob: '**/*.css', globPath: config.staticAssert}
+    ],
+    append: false
+  }) : [])
 };
 /// add style loaders for .js files
 [].push.apply(module.exports.module.rules, assist.stylesLoader({sourceMap: shouldUseSourceMap}))
