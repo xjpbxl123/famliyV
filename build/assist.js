@@ -54,7 +54,7 @@ const stylesLoader = (options = {}) => {
 /**
  * @desc Copy static assets such as Public folder
  * */
-const copyStaticAssets = (root = assetConfig.assertRoot) => {
+const copyStaticAssets = (root = path.join(assetConfig.assertRoot, 'public')) => {
   shell.cp('-R', assetConfig.staticAssert, root)
 }
 module.exports = {
