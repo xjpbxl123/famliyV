@@ -16,10 +16,6 @@ import App from './App.vue'
 
 const isDev = process.env.NODE_ENV === 'development'
 const devEnvVars = process.env['development']
-/// Use vue-devtools
-if (isDev && devEnvVars.VUE_DEV_TOOLS) {
-  devtools.connect('http://localhost', devEnvVars.VUE_DEV_TOOLS_PORT)
-}
 
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
@@ -45,5 +41,8 @@ if (isInFindClient) {
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
 }
-
+/// Use vue-devtools
+if (isDev && devEnvVars.VUE_DEV_TOOLS) {
+  devtools.connect('http://localhost', devEnvVars.VUE_DEV_TOOLS_PORT)
+}
 export default vue
