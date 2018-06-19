@@ -43,6 +43,6 @@ if (isInFindClient) {
 }
 /// Use vue-devtools
 if (isDev && devEnvVars.VUE_DEV_TOOLS) {
-  devtools.connect('http://localhost', devEnvVars.VUE_DEV_TOOLS_PORT)
+  devtools.connect('0.0.0.0', devEnvVars.VUE_DEV_TOOLS_PORT)
 }
 export default vue
