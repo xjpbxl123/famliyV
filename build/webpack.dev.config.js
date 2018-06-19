@@ -67,7 +67,7 @@ server.listen(port, '0.0.0.0', () => {
     if (!pkg.devDependencies['@vue/devtools']) {
       console.error('Can\'t found @vue/devtools in package.json,Maybe you need install it use `yarn add -D @vue/devtools` command that for debugger.')
     } else {
-      shell.exec(`cross-env PORT=${devPort}  node node_modules/.bin/vue-devtools`, {async: true})
+      shell.exec(`cross-env PORT=${devPort} node_modules/.bin/vue-devtools`, {async: true})
     }
   }
   assist.copyStaticAssets()
