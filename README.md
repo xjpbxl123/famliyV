@@ -32,6 +32,7 @@ yarn run lint
 
         PORT:8080  //DevServer 的端口
         VUE_DEV_TOOLS:true  // 是否使用 vue-devTools
+        VUE_DEV_TOOLS_HOST: 'your_ip' // vue-devtools host,默认是本机ip
         VUE_DEV_TOOLS_PORT: 8098 // vue-devtools debug 端口
         HTTP_ROOT:'your_api_url' // ajax 请求的url
         WEEX_URL:'weex_url' // weex 打包的js路径
