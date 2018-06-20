@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "precommit": "lint-staged",
-    "preinstall": "cd weex&& yarn install",
+    "preinstall": "cd ./weex&&yarn install",
     "dev": "cross-env NODE_ENV=development node ./build/webpack.dev.config.js",
     "build:test": "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
     "build:testFull": "npm run lint&&cross-env NODE_ENV=buildTest WEEX_ENV=production node ./build/build --fuller",
