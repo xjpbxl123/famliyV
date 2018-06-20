@@ -34,7 +34,7 @@
         text="视频列表"
         titlePosition='below'
         icon="0xe635"/>
-      <slider ref="slider" id="701" :style="{backgroundColor:'#0B8290'}" :value="speedValue" min="100" max="200">
+      <slider ref="slider" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -58,8 +58,8 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY68, receiveMsgFromWeex } from 'vue-find'
-
+  import { KEY80, KEY78, KEY82, KEY68, KEY73, KEY74, KEY75, receiveMsgFromWeex } from 'vue-find'
+  import {getCurEnvs} from 'scripts/utils'
   export default {
     data () {
       return {
@@ -144,7 +144,9 @@
         index: 0,
         progressing: false,
         files: [],
-        speedValue: 100
+        // speedValue: 100,
+        orgBpm: 120,
+        curBpm: 120
       }
     },
     find: {
@@ -153,6 +155,37 @@
          * @desc 暂停或者播放
          */
         this.playOrpause()
+      },
+      [KEY73] () {
+        /**
+         * @desc 速率减
+         */
+        let newBpm = this.curBpm - 20
+        if (newBpm < this.minBPM) {
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
+      },
+      [KEY74] () {
+        /**
+         * @desc 速率加
+         */
+        this.$refs.player.setRate(1)
+        this.curBpm = this.orgBpm
+      },
+      [KEY75] () {
+        /**
+         * @desc 速率加
+         */
+        let newBpm = this.curBpm + 20
+        if (newBpm > this.maxBPM) {
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
       },
       [KEY78] () {
         /**
@@ -189,7 +222,6 @@
           if (!this.weexHidden) {
             this.showWeex()
           }
-          console.log(data)
         })
       },
       [receiveMsgFromWeex] ({method, params}) {
@@ -204,8 +236,11 @@
       this.getCoursesBySet(courseSetID)
     },
     mounted () {
-      let weexUrl = process.env[process.env.NODE_ENV].WEEX_URL
-      this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+      getCurEnvs().then(env => {
+        let weexUrl = env.WEEX_URL
+        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+        console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+      })
     },
     methods: {
       getCoursesBySet (courseSetID) {
@@ -322,11 +357,11 @@
       /**
        * @desc video init successful
        */
-      playerInitComplete () {
-        // this.$refs.player.play()
+      playerInitComplete (data) {
+        let self = this
         this.$refs.player.info().then((data) => {
-          console.log(data, 'data')
-          this.speedValue = parseInt(data.curRate * data.curBpm)
+          self.orgBpm = data.originalBpm
+          self.curBpm = data.curBpm
         })
         this.$refs.video.getTotalTime().then((data) => {
           let timeString = this.timeFilter(data)
@@ -347,7 +382,13 @@
           return state.storage.cache.renderCache.famousPlayCoursesBySet[this.$route.query.courseSetID] || {courseList: []}
         }
       }),
-      ...mapGetters([])
+      ...mapGetters([]),
+      minBPM () {
+        return this.orgBpm * 0.5
+      },
+      maxBPM () {
+        return this.orgBpm * 1.5
+      }
     },
     watch: {
       isPlay (val) {
