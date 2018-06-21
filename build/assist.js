@@ -2,6 +2,7 @@
  * Created by moersing on 04/05/2017.
  */
 const NODE_ENV = process.env.NODE_ENV
+const fs = require('fs')
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const assetConfig = require('./config')
@@ -54,7 +55,10 @@ const stylesLoader = (options = {}) => {
 /**
  * @desc Copy static assets such as Public folder
  * */
-const copyStaticAssets = (root = path.join(assetConfig.assertRoot, 'public')) => {
+const copyStaticAssets = (root = assetConfig.assertRoot) => {
+  if (!fs.existsSync(root)) {
+    shell.mkdir('-p', root)
+  }
   shell.cp('-R', assetConfig.staticAssert, root)
 }
 module.exports = {
