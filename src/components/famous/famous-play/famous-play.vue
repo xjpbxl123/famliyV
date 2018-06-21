@@ -17,24 +17,27 @@
       </fh-label>
     </fh-div>
     <fh-weex :style="weexStyle" ref="weex" :hidden="weexHidden"/>
+    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <toolbar>
       <icon-item v-for="button in videoButton"
-                 :pianoKey="button.pianoKey"
-                 :key="button.icon"
-                 longClick="true"
-                 :id="button.id"
-                 :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
-                 :icon="button.icon"/>
-      <icon-item
-        pianoKey="68"
-        key="0xe635"
-        longClick="true"
-        id="205"
-        :style="{backgroundColor: '#1078cc',textColor: '#fff',fontSize:'14'}"
-        text="视频列表"
-        titlePosition='below'
-        icon="0xe635"/>
-      <slider ref="slider" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
+              :hidden="!mixerHidden"
+              :pianoKey="button.pianoKey"
+              :key="button.icon"
+              longClick="true"
+              :id="button.id"
+              :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
+              :icon="button.icon"/>
+      <icon-item v-for="button in buttons"
+              :hidden="!mixerHidden"
+              :pianoKey="button.pianoKey"
+              :key="button.icon"
+              longClick="true"
+              :id="button.id"
+              :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
+              :text="button.text"
+              titlePosition='below'
+              :icon="button.icon"/>
+      <slider ref="slider" :hidden="!mixerHidden" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -58,17 +61,34 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY68, KEY73, KEY74, KEY75, receiveMsgFromWeex } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   export default {
     data () {
       return {
         progress: 0,
         palyHidden: true,
+        toolbarHidden: false,
         playerSource: {
           videoUrl: '',
           midiUrl: ''
         },
+        buttons: [
+          {
+            pianoKey: 68,
+            icon: '0xe635',
+            id: 205,
+            backgroundColor: '#1078cc',
+            text: '视频列表'
+          },
+          {
+            pianoKey: 58,
+            icon: '0xe635',
+            id: 206,
+            backgroundColor: '#1078cc',
+            text: '调音台'
+          }
+        ],
         labelStyle: {
           left: 6,
           top: 27,
@@ -122,6 +142,13 @@
           height: 1080,
           borderWidth: 3
         },
+        mixerStyle: {
+          right: 0,
+          top: 280,
+          width: 3840,
+          height: 800
+          // backgroundColor: '#767676'
+        },
         videoButton: [
           {
             pianoKey: 78,
@@ -141,6 +168,7 @@
         ],
         isPlay: false,
         weexHidden: true,
+        mixerHidden: false,
         index: 0,
         progressing: false,
         files: [],
@@ -199,6 +227,13 @@
          */
         this.$refs.player.fastForward(10)
       },
+      [KEY58] () {
+        /**
+         * @desc 打开调音台
+         */
+        this.mixerHidden = !this.mixerHidden
+        this.toolbarHidden = !this.mixerHidden
+      },
       [KEY68] () {
         /**
          * @desc 打开视频列表
@@ -226,6 +261,13 @@
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
+      },
+      [BACK_PRESSED] () {
+        if (!this.mixerHidden) {
+          this.mixerHidden = !this.mixerHidden
+        } else {
+          this.$router.back()
+        }
       }
     },
     created () {
@@ -238,7 +280,9 @@
     mounted () {
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
+        this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`)
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+
         console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
