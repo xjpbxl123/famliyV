@@ -172,7 +172,6 @@
         index: 0,
         progressing: false,
         files: [],
-        // speedValue: 100,
         orgBpm: 120,
         curBpm: 120
       }
@@ -231,14 +230,25 @@
         /**
          * @desc 打开调音台
          */
+        if (!this.weexHidden) {
+          this.$find.sendMessage({
+            method: 'controlButton',
+            params: {show: false}
+          })
+        }
+        this.$refs.mixer.focus()
         this.mixerHidden = !this.mixerHidden
-        this.toolbarHidden = !this.mixerHidden
+        this.weexHidden = !this.mixerHidden
+        this.$find.sendMessage({
+          method: 'controlButtons',
+          params: {show: true}
+        })
       },
       [KEY68] () {
         /**
          * @desc 打开视频列表
          */
-
+        this.$refs.weex.focus()
         let flag = false
         if (this.weexHidden) {
           this.showWeex()
@@ -265,6 +275,10 @@
       [BACK_PRESSED] () {
         if (!this.mixerHidden) {
           this.mixerHidden = !this.mixerHidden
+          this.$find.sendMessage({
+            method: 'controlButtons',
+            params: {show: !this.mixerHidden}
+          })
         } else {
           this.$router.back()
         }
@@ -280,8 +294,11 @@
     mounted () {
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
-        this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`)
-        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+        this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`).then((res) => {
+          if (res.result) {
+            this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
+          }
+        })
         console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },

@@ -1,6 +1,5 @@
 <template>
   <div class="mixer">
-    <text>{{JSON.stringify(show)}}</text>
     <image :src="back" class="back"></image>
     <div class="vioceBox vioceBox1 ">
       <text class="text1">总音量</text>
@@ -240,12 +239,11 @@
             icon: '0xe605'
           }
         ],
-        title: 'nochange',
-        value1: 8,
+        value1: 50,
         bar: require('./images/Scroll@3x.png'),
         slider: require('./images/pic_black_btn.png'),
         back: require('./images/pic_background.png'),
-        sliderTop: 0
+        sliderTop: -34
       }
     },
     methods: {
@@ -268,33 +266,30 @@
         console.log('buttonActions', this.select)
       },
       controlButtons ({show}) {
-
+        this.show = show
       }
     },
-    computed () {
+    computed: {
     },
     created () {
+      // this.value1 = 50
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
         let keyEvent = arg.data.keys[0]
-        let newTop = 0
         switch (keyEvent) {
           case 49:
-            newTop = this.sliderTop - 20
-            if (newTop < 0) {
-              return
-            }
-            this.sliderTop = newTop
+            this.value1 = Math.max(this.value1 - 5, 0)
             break
           case 50:
-            this.buttons1[1].icon = '0xe603'
-            this.title = 'change'
+            if (this.buttons1[1].icon === '0xe68c') {
+              // 放音
+              this.buttons1[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons1[1].icon = '0xe68c'
+            }
             break
           case 51:
-            newTop = this.sliderTop + 20
-            if (newTop > 400) {
-              return
-            }
-            this.sliderTop = newTop
+            this.value1 = Math.min(this.value1 + 5, 100)
             break
         }
       })
@@ -303,9 +298,11 @@
       ...toolbar
     },
     watch: {
-      select: function (val, oldval) {
-        let rightTop = -(val - 6) * 122
-        this.rightTop = rightTop > 0 ? 0 : rightTop
+      value1: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop = (460 - (val / 5) * 23) - 34
       }
     }
   }
@@ -409,20 +406,22 @@
 .bar {
   position: absolute;
   left: 0px;
-  top: 108px;
+  bottom: 6px;
   width: 168px;
-  height: 495px;
+  height: 461px;
+  /* overflow: visible; */
+
 }
 
 .barA {
-  top: 128px;
+   bottom: 6px;
 }
 
 .slider1 {
   position: absolute;
   width: 64px;
   height: 86px;
-  /* top: 200px; */
   left:70px;
 }
+
 </style>

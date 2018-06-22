@@ -74,6 +74,28 @@
   import bannerHelp from './index-banner-help'
   import findDot from '../common/find-dot/find-dot'
   import {
+    KEY21,
+    KEY22,
+    KEY27,
+    KEY30,
+    KEY37,
+    KEY42,
+    KEY44,
+    KEY46,
+    KEY54,
+    KEY55,
+    KEY57,
+    KEY58,
+    KEY66,
+    KEY73,
+    KEY75,
+    KEY78,
+    KEY80,
+    KEY82,
+    KEY90,
+    KEY92,
+    KEY94,
+    KEY97,
     INTERCEPT_DOWN
   } from 'vue-find'
   import bannerLeft from './index-banner-left'
@@ -238,82 +260,80 @@
       }
     },
     find: {
-      [INTERCEPT_DOWN] (key) {
-        switch (key) {
-          case 21:
-          case 22:
-            this.buttonActions('closeMetro')
-            break
-          case 27:
-            this.buttonActions('help')
-            break
-          case 30:
-            this.buttonActions('login')
-            break
-          case 37:
-            this.buttonActions('myScore')
-            break
-          case 42:
-            this.buttonActions('material')
-            break
-          case 44:
-            this.buttonActions('popular')
-            break
-          case 46:
-            this.buttonActions('famous')
-            break
-          case 54:
-            // 打开节拍器
-            this.buttonActions('openMetro')
-            break
-          case 55:
-            // 节拍器减速
-            this.buttonActions('speedDown')
-            break
-          case 57:
-            // 节拍器加速
-            this.buttonActions('speedUp')
-            break
-          case 58:
-            // 节拍器换拍子
-            this.buttonActions('metroTip')
-            break
-          case 66:
-            // 关机
-            this.buttonActions('shutdown')
-            break
-          case 73:
-            this.buttonActions('left')
-            break
-          case 75:
-            this.buttonActions('right')
-            break
-          case 78:
-            this.buttonActions('up')
-            break
-          case 80:
-            this.buttonActions('down')
-            break
-          case 82:
-            this.buttonActions('ok')
-            break
-          case 90:
-            this.buttonActions('right-up')
-            break
-          case 92:
-            this.buttonActions('right-down')
-            break
-          case 94:
-            this.buttonActions('right-play')
-            break
-          case 97:
-            this.buttonActions('changeRightData')
-            break
-        }
+      [KEY21] () {
+        this.buttonActions('closeMetro')
+      },
+      [KEY22] () {
+        this.buttonActions('closeMetro')
+      },
+      [KEY27] () {
+        this.buttonActions('help')
+      },
+      [KEY30] () {
+        this.buttonActions('login')
+      },
+      [KEY37] () {
+        this.buttonActions('myScore')
+      },
+      [KEY42] () {
+        this.buttonActions('material')
+      },
+      [KEY44] () {
+        this.buttonActions('popular')
+      },
+      [KEY46] () {
+        this.buttonActions('famous')
+      },
+      [KEY54] () {
+        // 打开节拍器
+        this.buttonActions('openMetro')
+      },
+      [KEY55] () {
+        // 节拍器减速
+        this.buttonActions('speedDown')
+      },
+      [KEY57] () {
+        // 节拍器加速
+        this.buttonActions('speedUp')
+      },
+      [KEY58] () {
+        // 节拍器换拍子
+        this.buttonActions('metroTip')
+      },
+      [KEY66] () {
+        // 关机
+        this.buttonActions('shutdown')
+      },
+      [KEY73] () {
+        this.buttonActions('left')
+      },
+      [KEY75] () {
+        this.buttonActions('right')
+      },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
+      },
+      [KEY82] () {
+        this.buttonActions('ok')
+      },
+      [KEY90] () {
+        this.buttonActions('right-up')
+      },
+      [KEY92] () {
+        this.buttonActions('right-down')
+      },
+      [KEY94] () {
+        this.buttonActions('right-play')
+      },
+      [KEY97] () {
+        this.buttonActions('changeRightData')
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
-          this.clickHelp(keys[0])
+          this.clickHelp(keys)
         }
       }
     },
@@ -437,15 +457,18 @@
       clickHelp (key) {
         if (this.showHelpBanner) {
           if (key === 108) {
-            this.helpIndex = 0
             this.showHelpBanner = false
+            this.toolbarHidden = false
+            this.helpIndex = 0
             return
           }
           if (this.helpIndex < this.helpImg.length - 1) {
             this.helpIndex = this.helpIndex + 1
+            this.toolbarHidden = true
           } else {
             this.helpIndex = 0
             this.showHelpBanner = false
+            this.toolbarHidden = false
           }
         }
       },
