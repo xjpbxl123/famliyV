@@ -168,7 +168,7 @@
         ],
         isPlay: false,
         weexHidden: true,
-        mixerHidden: false,
+        mixerHidden: true,
         index: 0,
         progressing: false,
         files: [],
@@ -282,7 +282,6 @@
         let weexUrl = env.WEEX_URL
         this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`)
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
-
         console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
