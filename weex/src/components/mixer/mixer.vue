@@ -1,5 +1,6 @@
 <template>
   <div class="mixer">
+    <text>{{JSON.stringify(show)}}</text>
     <image :src="back" class="back"></image>
     <div class="vioceBox vioceBox1 ">
       <text class="text1">总音量</text>
@@ -59,9 +60,8 @@
       </div>
     </div>
     <toolbar>
-      <group id="400">
+      <group id="400" :hidden="!show">
         <icon-item v-for="button in buttons1"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -69,9 +69,8 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="500">
+      <group id="500" :hidden="!show">
         <icon-item v-for="button in buttons2"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -79,9 +78,8 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="600">
+      <group id="600" :hidden="!show">
         <icon-item v-for="button in buttons3"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -89,9 +87,8 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="700">
+      <group id="700" :hidden="!show">
         <icon-item v-for="button in buttons4"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -99,9 +96,8 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="800">
+      <group id="800" :hidden="!show">
         <icon-item v-for="button in buttons5"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -109,9 +105,8 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="900">
+      <group id="900" :hidden="!show">
         <icon-item v-for="button in buttons6"
-                :hidden="!show"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
                 longClick="true"
@@ -135,11 +130,11 @@
 
 <script>
   import * as toolbar from 'find-toolbar'
-
+  import mixins from '../mixin.js'
   const globalEvent = weex.requireModule('globalEvent')
-  const find = weex.requireModule('find')
   export default {
     name: 'mixer',
+    mixins: [mixins],
     data () {
       return {
         show: false,
@@ -272,27 +267,8 @@
         }
         console.log('buttonActions', this.select)
       },
-      okAction () {
-        let courseItem = this.videoList.courseList[this.select]
-        let params = {courseItem, index: this.select, isDownload: false}
-        if (courseItem.midiDownload && courseItem.videoDownload) {
-          params.isDownload = true
-        }
-        find.sendMsgToWeb({
-          method: 'weexDownload',
-          params
-        })
-      },
-      getVideoList ({videoList}) {
-        this.videoList = videoList
-      },
-      weexProgress ({progress, index}) {
-        this.progress = progress
-        // this.videoList.courseList[index].progress = progress < 100 ? progress : false
-        this.$set(this.videoList.courseList[index], 'progress', progress < 100 ? progress : false)
-      },
-      controlButton ({show}) {
-        this.show = show
+      controlButtons ({show}) {
+
       }
     },
     computed () {

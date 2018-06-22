@@ -33,11 +33,11 @@
       </list>
     </div>
     <toolbar>
-      <icon-item :hidden="!show" id="403" pianoKey="92" text="" icon="0xe63c"
+      <icon-item :hidden="!show" id="34" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item :hidden="!show" id="404" pianoKey="94" text="" icon="0xe654"
+      <icon-item :hidden="!show" id="35" pianoKey="94" text="" icon="0xe654"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item :hidden="!show" id="405" pianoKey="97" text="" icon="0xe69a"
+      <icon-item :hidden="!show" id="36" pianoKey="97" text="" icon="0xe69a"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
     </toolbar>
   </div>
@@ -45,7 +45,7 @@
 
 <script>
   import * as toolbar from 'find-toolbar'
-  import mixins from './mixin.js'
+  import mixins from '../mixin.js'
 
   const globalEvent = weex.requireModule('globalEvent')
   const find = weex.requireModule('find')
