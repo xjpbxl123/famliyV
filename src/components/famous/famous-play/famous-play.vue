@@ -230,19 +230,25 @@
         /**
          * @desc 打开调音台
          */
-        if (!this.weexHidden) {
-          this.$find.sendMessage({
+        let self = this
+        if (!self.weexHidden) {
+          self.$find.sendMessage({
             method: 'controlButton',
             params: {show: false}
           })
         }
-        this.$refs.mixer.focus()
-        this.mixerHidden = !this.mixerHidden
-        this.weexHidden = !this.mixerHidden
+        self.$refs.mixer.focus()
+        self.mixerHidden = !self.mixerHidden
+        self.weexHidden = !self.mixerHidden
         volume.getAllVolumeSize().then(data => {
-          console.log(data)
+          console.log(data, 'data')
+          console.log(self.$find)
+          self.$find.sendMessage({
+            method: 'allVolumeSize',
+            params: data
+          })
         })
-        this.$find.sendMessage({
+        self.$find.sendMessage({
           method: 'controlButtons',
           params: {show: true}
         })
@@ -437,6 +443,9 @@
       },
       sendMessage () {
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
+      },
+      reduce (data) {
+        console.log(data, 'data')
       }
     },
     computed: {
