@@ -2,60 +2,60 @@
   <div class="mixer">
     <image :src="back" class="back"></image>
     <div class="vioceBox vioceBox1 ">
-      <text class="text1">总音量</text>
-      <text class="value1">{{value1}}</text>
+      <text class="text1" :class="[mute1?'mute':'']">总音量</text>
+      <text class="value1" :class="[mute1?'mute':'']">{{value1}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
       </div>
     </div>
     <div class="vioceBox vioceBox2">
       <text class="text1">电子音源音量</text>
-      <text class="value1">{{value1}}</text>
+      <text class="value1">{{value2}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
       </div>
     </div>
     <div class="vioceBox vioceBox3">
       <text class="text1">自动演奏音量</text>
-      <text class="value1">{{value1}}</text>
+      <text class="value1">{{value3}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
       </div>
     </div>
     <div class="vioceBox vioceBox4">
       <text class="text1 textA">音频音量</text>
       <text class="text2">(视频/伴奏)</text>
-      <text class="value1">{{value1}}</text>
+      <text class="value1">{{value4}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar barA">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
       </div>
     </div>
     <div class="vioceBox vioceBox5">
       <text class="text1 textA">音频分音量</text>
       <text class="text2">(人声)</text>
-      <text class="value1">{{value1}}</text>
+      <text class="value1">{{value5}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar barA">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
       </div>
     </div>
     <div class="vioceBox vioceBox6">
       <text class="text1 textA">音频分音量</text>
       <text class="text2">(配乐)</text>
-      <text class="value1">{{value1}}</text>
+      <text class="value1">{{value6}}</text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar barA">
-        <image :src="slider" class="slider1" :style="{top: sliderTop+'px'}"></image>
+        <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
       </div>
     </div>
     <toolbar>
@@ -239,11 +239,28 @@
             icon: '0xe605'
           }
         ],
-        value1: 50,
+        value1: 100,
+        value2: 100,
+        value3: 100,
+        value4: 100,
+        value5: 100,
+        value6: 100,
         bar: require('./images/Scroll@3x.png'),
         slider: require('./images/pic_black_btn.png'),
         back: require('./images/pic_background.png'),
-        sliderTop: -34
+        sliderTop1: -34,
+        sliderTop2: -34,
+        sliderTop3: -34,
+        sliderTop4: -34,
+        sliderTop5: -34,
+        sliderTop6: -34,
+        mute1: true,
+        mute2: true,
+        mute3: true,
+        mute4: true,
+        mute5: true,
+        mute6: true
+
       }
     },
     methods: {
@@ -272,7 +289,6 @@
     computed: {
     },
     created () {
-      // this.value1 = 50
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
         let keyEvent = arg.data.keys[0]
         switch (keyEvent) {
@@ -280,6 +296,7 @@
             this.value1 = Math.max(this.value1 - 5, 0)
             break
           case 50:
+            this.mute1 = !this.mute1
             if (this.buttons1[1].icon === '0xe68c') {
               // 放音
               this.buttons1[1].icon = '0xe603'
@@ -291,6 +308,89 @@
           case 51:
             this.value1 = Math.min(this.value1 + 5, 100)
             break
+          case 56:
+            this.value2 = Math.max(this.value2 - 5, 0)
+            break
+          case 57:
+            if (this.buttons2[1].icon === '0xe68c') {
+              // 放音
+              this.buttons2[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons2[1].icon = '0xe68c'
+            }
+            break
+          case 58:
+            this.value2 = Math.min(this.value2 + 5, 100)
+            break
+          case 61:
+            this.value3 = Math.max(this.value3 - 5, 0)
+            break
+          case 62:
+            if (this.buttons3[1].icon === '0xe68c') {
+              // 放音
+              this.buttons3[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons3[1].icon = '0xe68c'
+            }
+            break
+          case 63:
+            this.value3 = Math.min(this.value3 + 5, 100)
+            break
+          case 68:
+            this.value4 = Math.max(this.value4 - 5, 0)
+            break
+          case 69:
+            if (this.buttons4[1].icon === '0xe68c') {
+              // 放音
+              this.buttons4[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons4[1].icon = '0xe68c'
+            }
+            break
+          case 70:
+            this.value4 = Math.min(this.value4 + 5, 100)
+            break
+          case 73:
+            this.value5 = Math.max(this.value5 - 5, 0)
+            break
+          case 74:
+            if (this.buttons5[1].icon === '0xe68c') {
+              // 放音
+              this.buttons5[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons5[1].icon = '0xe68c'
+            }
+            break
+          case 75:
+            this.value5 = Math.min(this.value5 + 5, 100)
+            break
+          case 78:
+            this.value6 = Math.max(this.value6 - 5, 0)
+            break
+          case 79:
+            if (this.buttons6[1].icon === '0xe68c') {
+              // 放音
+              this.buttons6[1].icon = '0xe603'
+            } else {
+              // 静音
+              this.buttons6[1].icon = '0xe68c'
+            }
+            break
+          case 80:
+            this.value6 = Math.min(this.value6 + 5, 100)
+            break
+          case 85:
+            // 重置
+            this.value1 = 50
+            this.value2 = 50
+            this.value3 = 50
+            this.value4 = 50
+            this.value5 = 50
+            this.value6 = 50
         }
       })
     },
@@ -302,7 +402,37 @@
         if (val === oldval) {
           return
         }
-        this.sliderTop = (460 - (val / 5) * 23) - 34
+        this.sliderTop1 = (460 - (val / 5) * 23) - 34
+      },
+      value2: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop2 = (460 - (val / 5) * 23) - 34
+      },
+      value3: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop3 = (460 - (val / 5) * 23) - 34
+      },
+      value4: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop4 = (460 - (val / 5) * 23) - 34
+      },
+      value5: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop5 = (460 - (val / 5) * 23) - 34
+      },
+      value6: function (val, oldval) {
+        if (val === oldval) {
+          return
+        }
+        this.sliderTop6 = (460 - (val / 5) * 23) - 34
       }
     }
   }
@@ -409,12 +539,10 @@
   bottom: 6px;
   width: 168px;
   height: 461px;
-  /* overflow: visible; */
-
 }
 
 .barA {
-   bottom: 6px;
+   bottom: 7px;
 }
 
 .slider1 {
@@ -424,4 +552,7 @@
   left:70px;
 }
 
+.mute {
+  color:rgba(255,255,255,0.4);
+}
 </style>

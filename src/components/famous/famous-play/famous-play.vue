@@ -60,7 +60,7 @@
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
-  import { download } from 'find-sdk'
+  import { download, volume } from 'find-sdk'
   import { KEY80, KEY78, KEY82, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   export default {
@@ -239,6 +239,9 @@
         this.$refs.mixer.focus()
         this.mixerHidden = !this.mixerHidden
         this.weexHidden = !this.mixerHidden
+        volume.getAllVolumeSize().then(data => {
+          console.log(data)
+        })
         this.$find.sendMessage({
           method: 'controlButtons',
           params: {show: true}
