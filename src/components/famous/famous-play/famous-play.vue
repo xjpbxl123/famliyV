@@ -444,7 +444,23 @@
       sendMessage () {
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
       },
-      reduce (data) {
+      vioceControl (data) {
+        switch (data.name) {
+          case 'setMute':
+            console.log(data, 'data')
+            volume.volumeMute(data.type, data.value)
+            break
+          case 'volumeSet':
+            volume.volumeSet(data.type, data.value, false).then(data => {
+              console.log(data)
+            })
+            break
+        }
+      },
+      mute (data) {
+        console.log(data)
+      },
+      add (data) {
         console.log(data, 'data')
       }
     },

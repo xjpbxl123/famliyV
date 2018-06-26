@@ -2,10 +2,10 @@
   <div class="mixer">
     <image :src="back" class="back"></image>
     <div class="vioceBox vioceBox1 ">
-      <text class="text1 unmute" v-if="!mute1" >{{value1}}</text>
+      <text class="text1 unmute" v-if="!mute1" >总音量</text>
       <text class="text1 mute" v-else >总音量 </text>
-      <text class="value unmute" v-if="!mute1">{{offset}}</text>
-      <text class="value mute" v-else>{{offset}} </text>
+      <text class="value unmute" v-if="!mute1">{{value1}}</text>
+      <text class="value mute" v-else>{{value1}} </text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar">
@@ -146,6 +146,7 @@
   import * as toolbar from 'find-toolbar'
   import mixins from '../mixin.js'
   const globalEvent = weex.requireModule('globalEvent')
+  const find = weex.requireModule('find')
   export default {
     name: 'mixer',
     mixins: [mixins],
@@ -263,12 +264,12 @@
         bar: require('./images/bar.png'),
         slider: require('./images/slider.png'),
         back: require('./images/pic_background.png'),
-        sliderTop1: -34,
-        sliderTop2: -34,
-        sliderTop3: -34,
-        sliderTop4: -34,
-        sliderTop5: -34,
-        sliderTop6: -34,
+        sliderTop1: 0,
+        sliderTop2: 0,
+        sliderTop3: 0,
+        sliderTop4: 0,
+        sliderTop5: 0,
+        sliderTop6: 0,
         mute1: true,
         mute2: true,
         mute3: true,
@@ -276,8 +277,10 @@
         mute5: true,
         mute6: true,
         color1: 'rgba(255,255,255,1)',
-        offset: 0
-
+        offset1: 0,
+        offset2: 0,
+        offset3: 0,
+        offset4: 0
       }
     },
     methods: {
@@ -293,26 +296,6 @@
         this.mute2 = electronic.mute
         this.mute3 = autoPlay.mute
         this.mute4 = media.mute
-        if (all.mute) {
-          this.buttons1[1].icon = '0xe68c'
-        } else {
-          this.buttons1[1].icon = '0xe603'
-        }
-        if (electronic.mute) {
-          this.buttons2[1].icon = '0xe68c'
-        } else {
-          this.buttons2[1].icon = '0xe603'
-        }
-        if (autoPlay.mute) {
-          this.buttons3[1].icon = '0xe68c'
-        } else {
-          this.buttons3[1].icon = '0xe603'
-        }
-        if (media.mute) {
-          this.buttons4[1].icon = '0xe68c'
-        } else {
-          this.buttons4[1].icon = '0xe603'
-        }
       }
     },
     computed: {
@@ -320,54 +303,57 @@
     created () {
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
         let keyEvent = arg.data.keys[0]
+        let val = this.value1
         switch (keyEvent) {
           // 总音量
           case 49:
-            if (this.value1 - 1 < 1) {
-              this.offset = this.offset - 1
+            this.value1 = Math.max(this.value1 - 1, 1)
+            if (val - 1 < 1) {
               return
             }
-            this.value1 = this.value1 - 1
-            this.value2 = Math.max(this.value2 - 1, 1)
-            this.value3 = Math.max(this.value3 - 1, 1)
-            find.sendMsgToWeb({
-              method: 'reduce',
-              params: {name: 'all', value: this.value1 / 1}
-            })
+            if (this.offset1 > 0) {
+              this.value2 = Math.max(this.value1 - this.offset1, 1)
+            } else {
+              this.value2 = Math.min(this.value1 - this.offset1, 15)
+            }
+            if (this.offset2 > 0) {
+              this.value3 = Math.max(this.value1 - this.offset2, 1)
+            } else {
+              this.value3 = Math.min(this.value1 - this.offset2, 15)
+            }
+            if (this.offset3 > 0) {
+              this.value3 = Math.max(this.value1 - this.offset2, 1)
+            } else {
+              this.value4 = Math.min(this.value1 - this.offset3, 15)
+            }
+
             break
           case 50:
             this.mute1 = !this.mute1
             this.mute2 = this.mute1
             this.mute3 = this.mute1
-            if (this.buttons1[1].icon === '0xe68c') {
-              // 放音
-              this.buttons1[1].icon = '0xe603'
-              this.buttons2[1].icon = '0xe603'
-              this.buttons3[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons1[1].icon = '0xe68c'
-              this.buttons2[1].icon = '0xe68c'
-              this.buttons3[1].icon = '0xe68c'
-            }
-
-            find.sendMsgToWeb({
-              method: 'mute',
-              params: {name: 'all', value: !this.mute1}
-            })
+            this.mute4 = this.mute1
             break
           case 51:
-            if (this.value1 + 1 > 15) {
-              this.offset = this.offset + 1
+            this.value1 = Math.min(this.value1 + 1, 15)
+            if (val + 1 > 15) {
               return
             }
-            this.value1 = this.value1 + 1
-            this.value2 = Math.min(this.value2 + 1, 15)
-            this.value3 = Math.min(this.value3 + 1, 15)
-            find.sendMsgToWeb({
-              method: 'add',
-              params: {name: 'all', value: !this.value1}
-            })
+            if (this.offset1 > 0) {
+              this.value2 = Math.max(this.value1 - this.offset1, 1)
+            } else {
+              this.value2 = Math.min(this.value1 - this.offset1, 15)
+            }
+            if (this.offset2 > 0) {
+              this.value3 = Math.max(this.value1 - this.offset2, 1)
+            } else {
+              this.value3 = Math.min(this.value1 - this.offset2, 15)
+            }
+            if (this.offset3 > 0) {
+              this.value3 = Math.max(this.value1 - this.offset2, 1)
+            } else {
+              this.value4 = Math.min(this.value1 - this.offset3, 15)
+            }
             break
           // 电子音源音量
           case 56:
@@ -375,16 +361,7 @@
             break
           case 57:
             this.mute2 = !this.mute2
-            if (!this.mute2) {
-              this.mute1 = false
-            }
-            if (this.buttons2[1].icon === '0xe68c') {
-              // 放音
-              this.buttons2[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons2[1].icon = '0xe68c'
-            }
+            this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 58:
             this.value2 = Math.min(this.value2 + 1, 15)
@@ -395,16 +372,7 @@
             break
           case 62:
             this.mute3 = !this.mute3
-            if (!this.mute3) {
-              this.mute3 = false
-            }
-            if (this.buttons3[1].icon === '0xe68c') {
-              // 放音
-              this.buttons3[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons3[1].icon = '0xe68c'
-            }
+            this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 63:
             this.value3 = Math.min(this.value3 + 1, 15)
@@ -415,13 +383,7 @@
             break
           case 69:
             this.mute4 = !this.mute4
-            if (this.buttons4[1].icon === '0xe68c') {
-              // 放音
-              this.buttons4[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons4[1].icon = '0xe68c'
-            }
+            this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 70:
             this.value4 = Math.min(this.value4 + 1, 15)
@@ -432,13 +394,7 @@
             break
           case 74:
             this.mute5 = !this.mute5
-            if (this.buttons5[1].icon === '0xe68c') {
-              // 放音
-              this.buttons5[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons5[1].icon = '0xe68c'
-            }
+            this.mute4 = this.mute5 && this.mute6
             break
           case 75:
             this.value5 = Math.min(this.value5 + 1, 15)
@@ -449,13 +405,7 @@
             break
           case 79:
             this.mute6 = !this.mute6
-            if (this.buttons6[1].icon === '0xe68c') {
-              // 放音
-              this.buttons6[1].icon = '0xe603'
-            } else {
-              // 静音
-              this.buttons6[1].icon = '0xe68c'
-            }
+            this.mute4 = this.mute5 && this.mute6
             break
           case 80:
             this.value6 = Math.min(this.value6 + 1, 15)
@@ -476,41 +426,149 @@
     },
     watch: {
       value1: function (val, oldval) {
-        if (val === oldval) {
-          return
+        if (!this.mute1) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'all', value: val}
+          })
         }
-        this.sliderTop1 = (480 - val * 34)
+        this.sliderTop1 = 506 - val * 34
       },
       value2: function (val, oldval) {
-        if (val === oldval) {
-          return
+        this.offset1 = this.value1 - val
+        if (!this.mute2) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'electronic', value: val}
+          })
         }
-        this.sliderTop2 = (480 - val * 34)
+        this.sliderTop2 = 506 - val * 34
       },
       value3: function (val, oldval) {
-        if (val === oldval) {
-          return
+        this.offset2 = this.value1 - val
+        if (!this.mute3) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'autoPlay', value: val}
+          })
         }
-        this.sliderTop3 = (480 - val * 34)
+        this.sliderTop3 = 506 - val * 34
       },
       value4: function (val, oldval) {
-        if (val === oldval) {
-          return
+        this.offset3 = this.value1 - val
+        if (!this.mute4) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'media', value: val}
+          })
         }
-        this.sliderTop4 = (480 - val * 34)
+        this.sliderTop4 = 506 - val * 34
       },
       value5: function (val, oldval) {
-        if (val === oldval) {
-          return
-        }
-        this.sliderTop5 = (480 - val * 34)
+        this.sliderTop5 = 506 - val * 34
       },
       value6: function (val, oldval) {
-        if (val === oldval) {
-          return
+        this.sliderTop6 = 506 - val * 34
+      },
+      mute1: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'all', value: val}
+        })
+        if (!val) {
+          // 放音
+          this.buttons1[1].icon = '0xe603'
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'all', value: this.value1}
+          })
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'electronic', value: this.value2}
+          })
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
+          })
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'media', value: this.value4}
+          })
+        } else {
+          // 静音
+          this.buttons1[1].icon = '0xe68c'
         }
-        this.sliderTop6 = (480 - val * 34)
+      },
+      mute2: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'electronic', value: val}
+        })
+        if (!val) {
+          // 放音
+          this.buttons2[1].icon = '0xe603'
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'electronic', value: this.value2}
+          })
+        } else {
+          // 静音
+          this.buttons2[1].icon = '0xe68c'
+        }
+      },
+      mute3: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'autoPlay', value: val}
+        })
+        if (!val) {
+          // 放音
+          this.buttons3[1].icon = '0xe603'
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
+          })
+        } else {
+          // 静音
+          this.buttons3[1].icon = '0xe68c'
+        }
+      },
+      mute4: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'media', value: val}
+        })
+        if (!val) {
+          // 放音
+          this.buttons4[1].icon = '0xe603'
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'media', value: this.value4}
+          })
+        } else {
+          // 静音
+          this.buttons4[1].icon = '0xe68c'
+        }
+      },
+      mute5: function (val, oldval) {
+        if (!val) {
+          // 放音
+          this.buttons5[1].icon = '0xe603'
+        } else {
+          // 静音
+          this.buttons5[1].icon = '0xe68c'
+        }
+      },
+      mute6: function (val, oldval) {
+        if (!val) {
+          // 放音
+          this.buttons6[1].icon = '0xe603'
+        } else {
+          // 静音
+          this.buttons6[1].icon = '0xe68c'
+        }
       }
+
     }
   }
 </script>
@@ -613,13 +671,13 @@
 .bar {
   position: absolute;
   left: 0px;
-  bottom: 4px;
+  bottom: -28px;
   width: 168px;
-  height: 483px;
+  height: 545px;
 }
 
 .barA {
-   bottom: 6px;
+   bottom: -27px;
 }
 
 .slider1 {
