@@ -2,7 +2,7 @@
   <div class="login">
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
 
-    <login-keyboard ref="keyboard" :setValue="setValue"/>
+    <find-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
     <toolbar>
         <icon-item v-for="(button,index) in controlButtons"
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import loginKeyboard from './login-keyboard'
+  import findKeyboard from '../common/find-keyboard/find-keyboard'
   import loginBanner from './login-banner'
   import {INTERCEPT_DOWN} from 'vue-find'
   import findPrompt from '../common/find-prompt/find-prompt'
@@ -138,7 +138,7 @@
       }
     },
     components: {
-      loginKeyboard,
+      findKeyboard,
       loginBanner,
       findPrompt
     }

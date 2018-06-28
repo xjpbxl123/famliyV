@@ -16,6 +16,7 @@ import myScore from 'components/myScore/myScore-router'
 import famousPlay from 'components/famous/famous-play/famousPlay-router'
 import softwareUpdate from 'components/softwareUpdate/softwareUpdate-router'
 import shutdown from 'components/shutdown/shutdown-router'
+import search from 'components/search/search-router'
 const routers = [
   index,
   home,
@@ -29,7 +30,8 @@ const routers = [
   famousPlay,
   myScore,
   softwareUpdate,
-  shutdown
+  shutdown,
+  search
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV

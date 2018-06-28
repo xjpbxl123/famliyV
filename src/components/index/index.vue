@@ -78,6 +78,7 @@
     KEY22,
     KEY27,
     KEY30,
+    KEY32,
     KEY37,
     KEY42,
     KEY44,
@@ -92,6 +93,7 @@
     KEY78,
     KEY80,
     KEY82,
+    KEY85,
     KEY90,
     KEY92,
     KEY94,
@@ -102,7 +104,7 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import { metronome } from 'find-sdk'
+  import { modules } from 'find-sdk'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -221,6 +223,14 @@
             id: 15
           },
           {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe64d',
+            backgroundColor: '#BF5E18',
+            dotColor: '#BF5E18',
+            id: 100
+          },
+          {
             pianoKey: 90,
             text: '',
             icon: '0xe63c',
@@ -272,6 +282,9 @@
       [KEY30] () {
         this.buttonActions('login')
       },
+      [KEY32] () {
+        this.buttonActions('set')
+      },
       [KEY37] () {
         this.buttonActions('myScore')
       },
@@ -318,6 +331,9 @@
       },
       [KEY82] () {
         this.buttonActions('ok')
+      },
+      [KEY85] () {
+        this.buttonActions('search')
       },
       [KEY90] () {
         this.buttonActions('right-up')
@@ -446,7 +462,7 @@
        * @param {object} playCalendar - 练琴数据
        * */
       getMetronomeStatus () {
-        metronome.getCurrentTempo().then((data) => {
+        modules.metronome.getCurrentTempo().then((data) => {
           this.speed = data.tempoSpeed
           this.metre = data.metre
         })
@@ -513,6 +529,11 @@
               })
               return
             }
+          case 'set':
+            modules.nativeRouter.openSettingView()
+            break
+          case 'search':
+            return this.go('/search')
           case 'settings':
             return false
           case 'popular':
@@ -526,10 +547,9 @@
           case 'myScore':
             return this.go('/myScore')
           case 'closeMetro':
-
             console.log('close')
             if (this.metronome) {
-              metronome.stop()
+              modules.metronome.stop()
               this.metronome = false
             }
             this.toolbarHidden = !this.toolbarHidden
@@ -538,22 +558,22 @@
           case 'openMetro':
             if (!this.metronome) {
               this.toolbarHidden = true
-              metronome.start()
+              modules.metronome.start()
               this.metronome = true
             }
             break
           case 'speedDown':
-            metronome.changeTempoSpeed(false).then(() => {
+            modules.metronome.changeTempoSpeed(false).then(() => {
               this.getMetronomeStatus()
             })
             break
           case 'speedUp':
-            metronome.changeTempoSpeed(true).then(() => {
+            modules.metronome.changeTempoSpeed(true).then(() => {
               this.getMetronomeStatus()
             })
             break
           case 'metroTip':
-            metronome.changeTempo().then(() => {
+            modules.metronome.changeTempo().then(() => {
               this.getMetronomeStatus()
             })
             break
