@@ -346,15 +346,19 @@
     },
     created () {
       this.getScoreList()
-      let musicId = this.query.book ? JSON.parse(this.query.book).musicId : false
+
+      let musicId = parseInt(this.query.musicId)
       if (musicId) {
         // 从我的收藏或者最近打开进来
         this.scoreList.forEach((item, index) => {
-          item.files.forEach((item1) => {
-            if (item1.musicId === musicId) {
-              return this.$store.dispatch('scoreList/setScoreListIndex', index)
-            }
-          })
+          if (item.files) {
+            item.files.forEach((item1) => {
+              console.log(item1.musicId)
+              if (item1.musicId === musicId) {
+                return this.$store.dispatch('scoreList/setScoreListIndex', index)
+              }
+            })
+          }
         })
       }
     },

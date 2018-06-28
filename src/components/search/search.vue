@@ -1,9 +1,10 @@
 <template>
   <div class="login">
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
-
     <find-keyboard ref="keyboard" :setValue="setValue"/>
-    <login-banner ref="banner" :login="login"/>
+    <musicList :list="musicList" :listIndex="listIndex"/>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
+    <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
+    <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
     <toolbar>
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
@@ -17,14 +18,26 @@
 
 <script>
   import findKeyboard from '../common/find-keyboard/find-keyboard'
-  import loginBanner from './login-banner'
-  import {INTERCEPT_DOWN} from 'vue-find'
   import findPrompt from '../common/find-prompt/find-prompt'
+  import musicList from './musicList'
+  import {search} from 'find-sdk'
+  import {INTERCEPT_DOWN} from 'vue-find'
+  import { mapGetters } from 'vuex'
   export default {
     name: 'login',
     data () {
       return {
         value: '',
+        initDataComplete: false,
+        listIndex: 0,
+        musicList: [],
+        promptInfo: {
+          text: '成功',
+          icon: 'icon-grade-right',
+          delay: 2000,
+          width: 750,
+          height: 450
+        },
         controlButtons: [
           {
             pianoKey: 85,
@@ -56,14 +69,7 @@
             dotColor: '#4467d4'
           }
         ],
-        promptInfo: {
-          show: false,
-          text: '',
-          icon: '',
-          delay: 2000,
-          width: 750,
-          height: 450
-        }
+        searchName: ''
       }
     },
     find: {
@@ -94,53 +100,90 @@
         }
       }
     },
+    computed: {
+      ...mapGetters(['bookInfo'])
+    },
     methods: {
-      setValue (value) {
-        this.$refs.banner.setValue(value)
+      initData () {
+        let self = this
+        search.loadSearchData().then(data => {
+          if (data.code === 0) {
+            // 成功
+            self.promptInfo.text = '成功'
+            self.promptInfo.icon = 'icon-grade-right'
+            self.$refs.prompt.showPrompt()
+            setTimeout(function () {
+              self.initDataComplete = true
+            }, 2000)
+          } else {
+            console.log(data.desc)
+            self.promptInfo.text = data.desc || '拉取数据出错'
+            self.promptInfo.icon = 'icon-wrong'
+            self.$refs.prompt.showPrompt()
+          }
+          console.log(data, 'loadSearchData')
+        })
       },
-      login (userName, password) {
-        let env = this.$store.state.environments
-        if (process.env.NODE_ENV !== 'production') {
-          userName = userName || env.default_user_name
-          password = password || env.default_password
-        }
-        this.$store
-          .dispatch('login/login', {userName, password})
-          .then((data) => {
-            console.log(1212, data)
-            if (data.isLogin) {
-              this.$store.dispatch('getUserInfo', {root: true}).then(() => {
-                this.$router.push('/')
-              })
-            } else {
-              console.log(`${data.header.desc}`)
-              this.$refs.prompt.showPrompt()
-              this.promptInfo.text = `${data.header.desc}`
-              this.promptInfo.icon = 'icon-wrong'
-            }
-          })
+      setValue (value) {
+        this.searchName = this.searchName + value
       },
       buttonActions (type) {
         switch (type) {
           case 'delete':
-            this.$refs.banner.delete()
+            this.searchName = this.searchName.slice(0, this.searchName.length - 1)
             break
           case 'up':
-            this.$refs.banner.setFocus('account')
+            if (this.musicList.length === 0) {
+              return
+            }
+            this.listIndex = Math.max(this.listIndex - 1, 0)
             break
           case 'down':
-            this.$refs.banner.setFocus('password')
+            if (this.musicList.length === 0) {
+              return
+            }
+            this.listIndex = Math.min(this.listIndex + 1, this.musicList.length - 1)
             break
           case 'ok':
-            this.$refs.banner.toLogin()
+            if (this.musicList.length === 0) {
+              return
+            }
+            console.log(this.musicList[this.listIndex])
+            let musicData = this.musicList[this.listIndex]
+            let bookId = musicData.bookId
+            if (musicData.bookId) {
+              // 去曲谱列表
+              this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
+                let bookData = this.bookInfo[bookId]
+                if (!bookData) {
+                  return
+                }
+                if (musicData.musicId) {
+                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData), musicId: musicData.musicId}})
+                } else {
+                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData)}})
+                }
+              })
+            }
             break
         }
       }
     },
+    watch: {
+      searchName (val) {
+        search.searchMusicName(val).then(data => {
+          this.musicList = data
+          console.log(data, 'musicList')
+        })
+      }
+    },
+    created () {
+      this.initData()
+    },
     components: {
       findKeyboard,
-      loginBanner,
-      findPrompt
+      findPrompt,
+      musicList
     }
   }
 </script>
@@ -151,6 +194,35 @@
     height: 450px;
     position: absolute;
     top: 275px;
-    left: 2043px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .searchInput {
+    width: 1500px;
+    position: absolute;
+    top: 480px;
+    left: 302px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid #fff;
+    font-size: 64px;
+    text-indent: 166px;
+    color: #fff;
+    height: 160px;
+  }
+
+  input::placeholder {
+    color:#fff !important;
+  }
+
+  .searchIcon {
+    font-size: 120px;
+    color: #fff;
+    position: absolute;
+    top: 480px;
+    left: 302px;
+
   }
 </style>

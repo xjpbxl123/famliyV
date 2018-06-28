@@ -16,7 +16,7 @@
     </find-wrap>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
     <toolbar>
-        <icon-item v-for="(button) in controlButtons" v-if="button.show"
+        <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
             :icon="button.icon"
@@ -141,18 +141,28 @@
         switch (key) {
           case 39:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 42:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
+            this.controlButtons[this.controlButtons.length - 2].show = true
+            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 46:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
+            this.controlButtons[this.controlButtons.length - 2].show = true
+            this.controlButtons[this.controlButtons.length - 1].show = false
             break
           case 49:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.legnth - 1].show = false
             break
           case 54:
             this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+            this.controlButtons[this.controlButtons.length - 2].show = false
+            this.controlButtons[this.controlButtons.length - 1].show = true
             break
           case 78:
             this.buttonActions('up')
@@ -176,7 +186,15 @@
     },
     computed: {
       ...mapState({
-        myScoreTapIndex: state => state.myScore.myScoreTapIndex,
+        myScoreTapIndex: function (state) {
+          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 2) {
+            this.controlButtons[this.controlButtons.length - 2].show = true
+          }
+          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
+            this.controlButtons[this.controlButtons.length - 1].show = true
+          }
+          return state.myScore.myScoreTapIndex
+        },
         localSourceIndex: state => state.myScore.localSourceIndex,
         localSourcePath: state => state.myScore.localSourcePath,
         localSource: state => state.myScore.localSource,
@@ -203,7 +221,14 @@
           }
         })
       },
-      isLogin (val) {
+      myScoreTapIndex (value, old) {
+        if (value !== old) {
+          let dotColor = ['#1bb3ff', '#dc50ff', '#00be93', '#dfbb39', '#941bff']
+          let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
+          this.controlButtons[value].dotColor = '#fff'
+          this.controlButtons[old].dotColor = dotColor[value]
+          this.title = title[value]
+        }
       }
     },
     methods: {
@@ -370,8 +395,12 @@
             break
           case 'scoreList':
             if (bookId && musicId) {
-              this.$store.dispatch('myScore/getBookInfo', bookId)
-              this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+              if (!this.bookInfo[bookId]) {
+                return
+              }
+              this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
+                this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+              })
             }
             break
           case 'delete':
@@ -430,8 +459,12 @@
             return this.$router.back()
           case 'scoreList':
             if (bookId && musicId) {
-              this.$store.dispatch('myScore/getBookInfo', bookId)
-              this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+              this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
+                if (!this.bookInfo[musicId]) {
+                  return
+                }
+                this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
+              })
             }
             break
         }

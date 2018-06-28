@@ -206,9 +206,12 @@ export default {
      * @desc bookInfo
      * */
     getBookInfo ({dispatch, commit} = {}, bookId) {
-      http.post('', {cmd: 'musicScore.getBookById', bookId}).then(({body, header}) => {
+      console.log(bookId)
+      return http.post('', {cmd: 'musicScore.getBookById', bookId}).then(({body, header}) => {
         if (!header.code) {
-          return body && dispatch('setCacheToStorage', {bookInfo: body, id: bookId}, {root: true})
+          if (body) {
+            return dispatch('setCacheToStorage', {bookInfo: body, id: bookId}, {root: true})
+          }
         }
       })
     }
