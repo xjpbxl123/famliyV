@@ -221,6 +221,14 @@
             id: 15
           },
           {
+            pianoKey: 85,
+            text: '',
+            icon: '0xe64d',
+            backgroundColor: '#BF5E18',
+            dotColor: '#BF5E18',
+            id: 100
+          },
+          {
             pianoKey: 90,
             text: '',
             icon: '0xe63c',
