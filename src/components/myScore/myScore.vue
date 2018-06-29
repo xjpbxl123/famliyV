@@ -460,7 +460,7 @@
           case 'scoreList':
             if (bookId && musicId) {
               this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
-                if (!this.bookInfo[musicId]) {
+                if (!this.bookInfo[bookId]) {
                   return
                 }
                 this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
