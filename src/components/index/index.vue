@@ -74,7 +74,7 @@
   import bannerHelp from './index-banner-help'
   import findDot from '../common/find-dot/find-dot'
   import {
-    KEY21,
+    TOOLBAR_PRESSED,
     KEY22,
     KEY27,
     KEY30,
@@ -270,7 +270,11 @@
       }
     },
     find: {
-      [KEY21] () {
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden = hidden
+        if (hidden && this.metronome) {
+          return
+        }
         this.buttonActions('closeMetro')
       },
       [KEY22] () {
@@ -549,11 +553,10 @@
           case 'closeMetro':
             console.log('close')
             if (this.metronome) {
+              this.toolbarHidden = false
               modules.metronome.stop()
               this.metronome = false
             }
-            this.toolbarHidden = !this.toolbarHidden
-
             break
           case 'openMetro':
             if (!this.metronome) {

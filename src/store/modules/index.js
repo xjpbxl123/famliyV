@@ -102,9 +102,9 @@ export default {
         cmd: 'musicScore.getPracticeRecent',
         tagId
       }).then(res => {
-        res.body.reverse()
-        res.body = res.body.slice(0, 20)
         if (res.header.code === 0) {
+          res.body.reverse()
+          res.body = res.body.slice(0, 20)
           dispatch('setCacheToStorage', {recentOpenList: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {recentOpenList: []}, {root: true})

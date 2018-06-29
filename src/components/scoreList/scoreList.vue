@@ -204,7 +204,7 @@
         console.log(this.$route.query, 'this.$route')
         let query = this.query
         let id = 0
-        let typeName = ''
+        let typeName = 'other'
         if (query.differ) {
           id = JSON.parse(query.differ).id
         } else if (query.year) {
