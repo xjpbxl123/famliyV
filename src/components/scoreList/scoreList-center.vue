@@ -57,6 +57,10 @@
             height = (this.scoreList.length - 10) * 78 * -1
           }
           this.rightTop = height
+        } else {
+          if (value > 9) {
+            this.rightTop = (value - 9) * 78 * -1
+          }
         }
       },
       scoreList: (val, old) => {

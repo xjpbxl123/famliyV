@@ -204,16 +204,31 @@
         console.log(this.$route.query, 'this.$route')
         let query = this.query
         let id = 0
+        let typeName = ''
         if (query.differ) {
           id = JSON.parse(query.differ).id
-          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
         } else if (query.year) {
           id = JSON.parse(query.year).id
-          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'other', id: id})
         } else {
           id = JSON.parse(query.book).bookId
-          this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: id})
+          typeName = 'musicScore'
         }
+        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then(() => {
+          let musicId = parseInt(this.query.musicId)
+          if (musicId) {
+            // 光标定到指定曲目
+            this.scoreList.forEach((item, index) => {
+              if (item.files) {
+                item.files.forEach((item1) => {
+                  console.log(item1.musicId)
+                  if (item1.musicId === musicId) {
+                    return this.$store.dispatch('scoreList/setScoreListIndex', index)
+                  }
+                })
+              }
+            })
+          }
+        })
       },
       /**
        * @desc 按钮组件按钮事件
@@ -346,21 +361,6 @@
     },
     created () {
       this.getScoreList()
-
-      let musicId = parseInt(this.query.musicId)
-      if (musicId) {
-        // 从我的收藏或者最近打开进来
-        this.scoreList.forEach((item, index) => {
-          if (item.files) {
-            item.files.forEach((item1) => {
-              console.log(item1.musicId)
-              if (item1.musicId === musicId) {
-                return this.$store.dispatch('scoreList/setScoreListIndex', index)
-              }
-            })
-          }
-        })
-      }
     },
     components: {
       scoreListCenter,
