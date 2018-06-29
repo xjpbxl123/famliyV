@@ -57,6 +57,8 @@
     watch: {
       rightSelectedIndex (value, oldValue) {
         // 控制列表位置
+
+        console.log(value)
         let rightData = []
         this.rightType === 'recentOpen' ? rightData = this.recentOpenList : rightData = this.collectList
         let height = value * 120 * -1

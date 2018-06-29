@@ -507,8 +507,8 @@
        * */
       buttonActions (type) {
         let activeIndex = this.selectedIndex
-        let recentOpenList = this.recentOpenList
-        let collectList = this.collectList
+        let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
+        let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
         let hotBooks = this.hotBooks
         let recentBooks = this.recentBooks
@@ -650,7 +650,9 @@
               data = recentOpenList
             }
             rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
-            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            if (rightActiveIndex > 0) {
+              this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+            }
             break
           case 'right-play':
             // 右侧列表play事件
@@ -678,12 +680,13 @@
             break
           case 'changeRightData':
             // 切换右侧数据
-            if (this.rightType === 'myCollect') {
-              this.$store.dispatch('index/setRightType', 'recentOpen')
-            } else if (this.rightType === 'recentOpen') {
-              this.$store.dispatch('index/setRightType', 'myCollect')
+            let rightTypeName = 'recentOpen'
+            if (this.rightType === 'recentOpen') {
+              rightTypeName = 'myCollect'
             }
-            this.$store.dispatch('index/setRightSelect', 0)
+            this.$store.dispatch('index/setRightType', rightTypeName).then(() => {
+              this.$store.dispatch('index/setRightSelect', 0)
+            })
             break
           default:
             console.log('108')
