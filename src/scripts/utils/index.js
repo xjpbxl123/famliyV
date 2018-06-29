@@ -56,18 +56,16 @@ const formatDate = function (date, format) {
   return format
 }
 /**
- * @desc 获取当前环境变量,如果是开发环境,则永远是开发环境,不会跟着App的环境切换,如果打包之后,则当前环境变量会跟着当前APP切换
+ * @desc 获取当前环境变量,跟着APP环境走
  * */
 const getCurEnvs = function () {
   const envs = {0: 'production', 1: 'development', 2: 'buildTest'}
-  const isDev = process.env.NODE_ENV === 'development'
   return new Promise(resolve => {
     /// 0:生产
     /// 1:开发
     /// 2:测试
     global.severType().then(envNum => {
-      let curEnv = isDev ? 'development' : envs[envNum - 0]
-      resolve(process.env[curEnv])
+      resolve(process.env[envs[envNum - 0]])
     })
   })
 }
