@@ -10,6 +10,7 @@ yarn install
 
 # 开发环境
 yarn run dev
+yarn run dev:weex -- 运行开发环境的weex
 
 # 仿真环境
 yarn run build:test
@@ -25,6 +26,8 @@ yarn run weex -- 打包到dist/weex
 yarn run lint
 ```
 
+> 注: **build:dev** 和 **build:devFull** 等价于 **build:test** 和 **build:testFull**,这是为了打包命令语义化配置的
+
 ### Usage
 
 1.  postcss 配置在`package.json`的`postcss`字段 ,详见 [postcss-load-config](https://github.com/michael-ciniawsky/postcss-load-config#postcssrc),兼容浏览器版本位于 `package.json`的`browserslist`字段,详见[browserslist](https://github.com/browserslist/browserslist)
@@ -38,8 +41,9 @@ yarn run lint
         WEEX_URL:'weex_url' // weex 打包的js路径
         ....其他
 
-3.  由于个人习惯不同,使用的编辑器也不同,editorConfig 是一个 coding style 的标准,这能使我们在 coding style 上达到统一的风格,相关编辑器插件可以到[(http://editorconfig.org/](http://editorconfig.org/)上查找.
-4.  esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
+    > 注意: 环境变量的值取决于 APP,即,如果 APP 是 development,则环境变量是对应的 development,可以使用 **utils.getCurEnvs => Promise 获取当前正确的环境变量**
+
+3.  esLint 默认没有配置全局变量,这可能会导致检测错误,有两种方式可以避免:
 
 第一种:在`.eslintrc`中:
 
