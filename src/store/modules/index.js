@@ -7,6 +7,7 @@ const HOT_BOOKS = 'HOT_BOOKS' /// 热门
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
 const RIGHT_SELECTED_INDEX = 'RIGHT_SELECT_INDEX' /// 最近打开索引
 const RIGHT_TYPE = 'RIGHT_TYPE'
+const MORE_INDEX = 'MORE_INDEX'
 export default {
   namespaced: true,
   state: {
@@ -19,7 +20,9 @@ export default {
       openAppTime: '', //  累计开始使用时间
       scoringTime: '' //  评分时间
     },
-    rightType: 'recentOpen'
+    rightType: 'recentOpen',
+    moreIndex: 0
+
   },
   mutations: {
     [SELECTED_INDEX] (state, index) {
@@ -39,6 +42,9 @@ export default {
     },
     [RIGHT_TYPE] (state, data) {
       state.rightType = data
+    },
+    [MORE_INDEX] (state, data) {
+      state.moreIndex = data
     }
 
   },
@@ -56,30 +62,44 @@ export default {
       commit(RIGHT_SELECTED_INDEX, num)
     },
     /**
+     * @desc 设置查看更多页面index
+     * */
+    setMoreIndex ({commit}, num) {
+      commit(MORE_INDEX, num)
+    },
+    /**
      * @desc 获取最近更新
      * */
-    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 7}} = {}) {
+    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+          let re = JSON.parse(JSON.stringify(res.body))
+          return dispatch('setCacheToStorage', {recentUpdateAll: res.body}, {root: true}).then(() => {
+            re.bookList = re.bookList.slice(0, 7)
+            dispatch('setCacheToStorage', {recentUpdate: re}, {root: true})
+          })
         }
       })
     },
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 5}} = {}) {
+    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+          let ho = JSON.parse(JSON.stringify(res.body))
+          return dispatch('setCacheToStorage', {hottestAll: res.body}, {root: true}).then(() => {
+            ho.bookList = ho.bookList.slice(0, 5)
+            dispatch('setCacheToStorage', {hottest: ho}, {root: true})
+          })
         }
       })
     },
@@ -102,9 +122,9 @@ export default {
         cmd: 'musicScore.getPracticeRecent',
         tagId
       }).then(res => {
-        res.body.reverse()
-        res.body = res.body.slice(0, 20)
         if (res.header.code === 0) {
+          res.body.reverse()
+          res.body = res.body.slice(0, 20)
           dispatch('setCacheToStorage', {recentOpenList: res.body}, {root: true})
         } else if (res.header.code === 5) {
           dispatch('setCacheToStorage', {recentOpenList: []}, {root: true})

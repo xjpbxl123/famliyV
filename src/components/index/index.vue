@@ -72,9 +72,8 @@
   import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
-  import findDot from '../common/find-dot/find-dot'
   import {
-    KEY21,
+    TOOLBAR_PRESSED,
     KEY22,
     KEY27,
     KEY30,
@@ -270,7 +269,11 @@
       }
     },
     find: {
-      [KEY21] () {
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden = hidden
+        if (hidden && this.metronome) {
+          return
+        }
         this.buttonActions('closeMetro')
       },
       [KEY22] () {
@@ -379,11 +382,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent']),
-      newCollectList: function () {
-        let collectList = this.collectList
-        return collectList.reverse()
-      }
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent'])
     },
     watch: {
       /**
@@ -401,6 +400,7 @@
         if (val) {
           this.userActionButtons[1].text = '注销'
           this.getRecentOpenList()
+          this.getCollectList()
         } else {
           this.userActionButtons[1].text = '登陆'
         }
@@ -411,8 +411,25 @@
        * @desc  初始化首页曲谱
        * */
       initializeData () {
-        this.$store.dispatch({type: 'index/getRecentBooks'})
-        this.$store.dispatch({type: 'index/getHotBooks'})
+        this.$store.dispatch({type: 'index/getRecentBooks'}).then(() => {
+          this.$store.dispatch({type: 'index/getHotBooks'})
+        })
+      },
+      /**
+       * @desc 右侧最近打开数据
+       * */
+      getRecentOpenList () {
+        if (this.isLogin) {
+          this.$store.dispatch({type: 'index/getRecentOpenList'})
+        }
+      },
+      /**
+       * @desc 右侧我的收藏数据
+       * */
+      getCollectList () {
+        if (this.isLogin) {
+          this.$store.dispatch({type: 'index/getCollectList'})
+        }
       },
       /**
        * @desc dispatch 用户状态
@@ -427,20 +444,6 @@
         if (this.isSynced) {
           this.$store.dispatch('index/getPianoUsedTime')
         }
-      },
-      /**
-       * @desc 右侧最近打开数据
-       * */
-      getRecentOpenList () {
-        this.$store.dispatch({type: 'index/getRecentOpenList'})
-        this.$store.dispatch('index/localRecent')
-      },
-      /**
-       * @desc 右侧我的收藏数据
-       * */
-      getCollectList () {
-        this.$store.dispatch({type: 'index/getCollectList'})
-        this.$store.dispatch('index/localCollect', this.localCollect || [])
       },
       /**
        * @desc 创建会话ID
@@ -498,10 +501,6 @@
           this.$router.back()
         }
       },
-      openWeex () {
-        this.showWeex = false
-        this.$refs.weex.openUrl(`${process.env.weex_url}dist/index.js`)
-      },
       /**
        * @desc 按钮组件按钮事件
        * */
@@ -549,11 +548,10 @@
           case 'closeMetro':
             console.log('close')
             if (this.metronome) {
+              this.toolbarHidden = false
               modules.metronome.stop()
               this.metronome = false
             }
-            this.toolbarHidden = !this.toolbarHidden
-
             break
           case 'openMetro':
             if (!this.metronome) {
@@ -624,6 +622,12 @@
             break
           case 'ok':
             console.log(activeIndex)
+            if (activeIndex === 7) {
+              return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
+            }
+            if (activeIndex === 13) {
+              return this.$router.push({path: '/indexMore', query: {title: '热门曲谱'}})
+            }
             if (activeIndex >= 0 && activeIndex < 7) {
               // 最近更新
               console.log(recentBooks.bookList[activeIndex])
@@ -710,7 +714,6 @@
     components: {
       bannerLeft,
       findButtonBanner,
-      findDot,
       contentCenter,
       bannerRight,
       bannerHelp,

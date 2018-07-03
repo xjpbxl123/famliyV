@@ -13,7 +13,7 @@ const MY_RECENT_INDEX = 'MY_RECENT_INDEX' /// 我的最近打开index
 export default {
   namespaced: true,
   state: {
-    myScoreTapIndex: 0,
+    myScoreTapIndex: 4,
     localSource: [],
     localSourceIndex: 0,
     localSourcePath: '$userUpload',
@@ -80,7 +80,9 @@ export default {
      * */
     getLocalSource ({commit}, path) {
       file.readFolderFile(path).then((res) => {
-        console.log(path)
+        if (res.length === 0) {
+          return
+        }
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
@@ -157,6 +159,9 @@ export default {
      * */
     getMyRecord ({commit}) {
       file.readFolderFile('$userRecord').then((res) => {
+        if (res.length === 0) {
+          return
+        }
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
@@ -179,6 +184,9 @@ export default {
      * */
     getMyPlay ({commit}) {
       file.readFolderFile('$userHistory').then((res) => {
+        if (res.length === 0) {
+          return
+        }
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]

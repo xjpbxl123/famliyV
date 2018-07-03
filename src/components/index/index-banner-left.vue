@@ -72,6 +72,7 @@
       generateQrCode () {
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
+            clearInterval(this.interval)
             this.interval = window.setInterval(() => {
               this.dispatch('getUserInfo').then(res => {
                 if (res.isLogin) {
