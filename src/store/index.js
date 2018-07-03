@@ -38,7 +38,9 @@ export default function createStore () {
             famousAuthor: {},
             allArtists: {authors: []},
             hottest: {bookList: []},
+            hottestAll: {bookList: []},
             recentUpdate: {bookList: []},
+            recentUpdateAll: {bookList: []},
             recentOpenList: [],
             popularGenre: [],
             collectList: [],
@@ -72,6 +74,12 @@ export default function createStore () {
       },
       recentBooks: state => {
         return state.storage.cache.renderCache.recentUpdate
+      },
+      hotBooksAll: state => {
+        return state.storage.cache.renderCache.hottestAll
+      },
+      recentBooksAll: state => {
+        return state.storage.cache.renderCache.recentUpdateAll
       },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists

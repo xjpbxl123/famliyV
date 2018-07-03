@@ -1,48 +1,31 @@
 <template>
   <div class="box">
     <div class="box-left">
-      <contentLine name="最近更新"/>
+      <contentLine :name="title"/>
       <div class="book-content">
-        <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
+        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
-          <div class="date">{{ data.time | format}}</div>
-        </div>
-        <div class="margin-none">
-          <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}"/>
-        </div>
-      </div>
-    </div>
-    <div class="box-right">
-      <contentLine name="热门曲谱"/>
-      <div class="book-content">
-        <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
-          <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===selectedIndex}"/>
-          <findStar :starNum="data.starNum"/>
-          <div class="slip-line"></div>
-          <div class="date">
+          <div class="date" v-if="title==='最近更新'">{{ data.time | format}}</div>
+          <div class="date" v-if="title==='热门曲谱'">
             <span class="viewIcon iconfont icon-popularity"></span>
             <span>{{ data.hotNum }}</span>
           </div>
         </div>
-        <div class="margin-none">
-          <contentBook :bookData="moreData" :class="{active:(hotMoreindex===selectedIndex)}"/>
-        </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-  import contentBook from './index-content-book'
-  import contentLine from './index-content-line'
+  import contentBook from './indexMore-book'
+  import contentLine from './indexMore-line'
   import { formatDate } from 'scripts/utils/index'
   import findStar from '../common/find-star/find-star'
   export default {
     props: {
-      recentBooks: {
+      books: {
         type: Object,
         default: () => {
           return {bookList: []}
@@ -57,8 +40,11 @@
       selectedIndex: {
         type: Number
       },
-      endIndex: {
-        type: Number
+      title: {
+        type: String,
+        default: () => {
+          return ''
+        }
       }
     },
     components: {
@@ -68,12 +54,6 @@
     },
     data () {
       return {
-        moreData: {
-          coverSmall: require('./images/more.png')
-        },
-        recentMoreindex: -1,
-        hotMoreindex: -1,
-        hotbookIndex: -1
       }
     },
     filters: {
@@ -83,15 +63,6 @@
       }
     },
     watch: {
-      recentBooks () {
-        this.recentMoreindex = this.recentBooks.bookList.length
-        this.hotbookIndex = this.recentMoreindex + 1
-      },
-      hotBooks () {
-        this.hotMoreindex =
-          this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
-        this.$emit('update:endIndex', this.hotMoreindex)
-      }
     }
   }
 </script>
@@ -104,9 +75,9 @@
       &.box-left,
       &.box-right {
         height: 80%;
-        width: 1393px;
+        width: 3480;
         display: flex;
-        padding-left: 104px;
+        margin-left: 220px;
         padding-top: 23px;
         flex-direction: column;
         .book-content {

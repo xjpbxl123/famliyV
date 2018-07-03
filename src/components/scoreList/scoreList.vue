@@ -175,7 +175,7 @@
         scoreList: function (state) {
           let query = this.query
           if (query.differ) {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || [{name: ''}]
+            return state.storage.cache.rendersCache.scoreList[JSON.parse(query.differ).id] || [{name: ''}]
           } else if (query.year) {
             return state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || [{name: ''}]
           } else {

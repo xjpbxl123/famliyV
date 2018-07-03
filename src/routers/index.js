@@ -17,6 +17,8 @@ import famousPlay from 'components/famous/famous-play/famousPlay-router'
 import softwareUpdate from 'components/softwareUpdate/softwareUpdate-router'
 import shutdown from 'components/shutdown/shutdown-router'
 import search from 'components/search/search-router'
+import indexMore from 'components/indexMore/indexMore-router'
+import openImg from 'components/myScore/openImg/openImg-router'
 const routers = [
   index,
   home,
@@ -31,7 +33,9 @@ const routers = [
   myScore,
   softwareUpdate,
   shutdown,
-  search
+  search,
+  indexMore,
+  openImg
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV

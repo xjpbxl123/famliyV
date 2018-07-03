@@ -34,6 +34,7 @@
   import findLocalMid from './find-localMid'
   import findTapButtons from './find-tap-buttons'
   import findUserMess from './find-userMess'
+  import { file } from 'find-sdk'
   import {
     INTERCEPT_DOWN
   } from 'vue-find'
@@ -205,7 +206,6 @@
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
         isLogin (state) {
-          console.log(state)
           let {storage} = state
           return storage.isLogin
         }
@@ -232,6 +232,22 @@
       }
     },
     methods: {
+      /**
+       * @desc 右侧最近打开数据
+       * */
+      getRecentOpenList () {
+        if (this.isLogin) {
+          this.$store.dispatch({type: 'index/getRecentOpenList'})
+        }
+      },
+      /**
+       * @desc 右侧我的收藏数据
+       * */
+      getCollectList () {
+        if (this.isLogin) {
+          this.$store.dispatch({type: 'index/getCollectList'})
+        }
+      },
       getLocalSource () {
         return this.$store.dispatch('myScore/getLocalSource', this.localSourcePath)
       },
@@ -240,18 +256,6 @@
       },
       getMyPlay () {
         return this.$store.dispatch('myScore/getMyPlay')
-      },
-      /**
-       * @desc 最近打开数据
-       * */
-      getMyRecentOpen () {
-        this.$store.dispatch({type: 'index/getRecentOpenList'})
-      },
-      /**
-       * @desc 我的收藏数据
-       * */
-      getMyCollect () {
-        this.$store.dispatch({type: 'index/getCollectList'})
       },
       /**
        * @desc 本地资源
@@ -276,7 +280,6 @@
           case 'ok':
             let data = localSource[localSourceIndex]
             if (data) {
-              console.log(data)
               if (data.type === 'dir') {
                 let newPath = this.localSourcePath + '/' + data.name
                 console.log(newPath)
@@ -285,6 +288,11 @@
                 this.$store.dispatch('myScore/getLocalSource', newPath)
               } else {
                 // 去打开文件
+                if (data.typeName === 'picture') {
+                  file.pathComplement(this.localSourcePath).then((res) => {
+                    this.$router.push({path: '/openImg', query: {url: res + '/' + data.name}})
+                  })
+                }
               }
             }
             break
@@ -296,9 +304,8 @@
               this.$store.dispatch('myScore/setLocalSourcePath', newPath)
               this.$store.dispatch('myScore/getLocalSource', newPath)
             } else {
-              this.destroyedFunc()
-
               this.$router.back()
+              this.destroyedFunc()
             }
         }
       },
@@ -330,8 +337,8 @@
             console.log('删除这条录音')
             break
           case 'back':
+            this.$router.back()
             this.destroyedFunc()
-            return this.$router.back()
         }
       },
       /**
@@ -455,8 +462,8 @@
             }
             break
           case 'back':
-            this.destroyedFunc()
-            return this.$router.back()
+            this.$router.back()
+            return this.destroyedFunc()
           case 'scoreList':
             if (bookId && musicId) {
               this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
@@ -496,7 +503,7 @@
        * @desc 退到首页的时候清空
        * */
       destroyedFunc () {
-        this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)
         this.$store.dispatch('myScore/setMyRecordIndex', 0)
         this.$store.dispatch('myScore/setMyPlayIndex', 0)
@@ -506,12 +513,11 @@
 
     },
     created () {
+      this.getRecentOpenList()
+      this.getCollectList()
       this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
-      this.getMyCollect()
-      this.getMyRecentOpen()
-      console.log(this.collectList, 'list')
     },
     components: {
       findWrap,

@@ -16,7 +16,6 @@
 
 <script>
   import { mapState, mapGetters } from 'vuex'
-  import findButton from '../../common/find-button/find-button'
   import findTitle from '../../common/find-title/find-title'
   import famousBookSwiper from './famous-book-swiper'
   import { KEY78, KEY80, KEY82 } from 'vue-find'
@@ -106,7 +105,6 @@
       }
     },
     components: {
-      findButton,
       findTitle,
       famousBookSwiper
     }
