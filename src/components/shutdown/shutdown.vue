@@ -1,6 +1,7 @@
 <template>
   <div class='shutdown'>
     <!-- <h1>关机界面</h1> -->
+    <statusBar/>
     <div class="btnsbg"></div>
     <toolbar>
       <icon-item v-for="(button,index) in controlButtons"
@@ -18,6 +19,7 @@
 <script type='text/javascript'>
   import { global } from 'find-sdk'
   import { KEY75, KEY78, KEY80, KEY82, KEY85, KEY87, KEY90 } from 'vue-find'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   export default {
     data () {
       return {
@@ -144,7 +146,9 @@
       }
     },
     created () {},
-    components: {}
+    components: {
+      statusBar
+    }
   }
 </script>
 <style lang='scss' scoped>

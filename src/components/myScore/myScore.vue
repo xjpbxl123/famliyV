@@ -1,5 +1,6 @@
 <template>
   <div class="myScore">
+    <statusBar/>
     <find-wrap :title="title" :pagination=false>
         <div class="logo iconfont icon-logo"> </div>
         <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex"/>
@@ -34,6 +35,7 @@
   import findLocalMid from './find-localMid'
   import findTapButtons from './find-tap-buttons'
   import findUserMess from './find-userMess'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import { file } from 'find-sdk'
   import {
     INTERCEPT_DOWN
@@ -524,7 +526,8 @@
       findLocalSource,
       findTapButtons,
       findLocalMid,
-      findUserMess
+      findUserMess,
+      statusBar
     }
   }
 </script>

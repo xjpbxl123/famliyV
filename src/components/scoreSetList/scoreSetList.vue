@@ -1,5 +1,6 @@
 <template>
   <div class="scoreSetList">
+    <statusBar/>
     <findTitle :title="setName"></findTitle>
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
@@ -17,6 +18,7 @@
   import findImg from '../common/find-img/find-img'
   import findTitle from '../common/find-title/find-title'
   import pageNation from './scoreSetList-pagenation'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
   import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
@@ -185,7 +187,8 @@
       findImg,
       findTitle,
       pageNation,
-      listBox
+      listBox,
+      statusBar
     }
   }
 </script>

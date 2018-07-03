@@ -1,5 +1,6 @@
 <template>
   <div>
+    <statusBar/>
     <famous-swiper :famousList="allArtists.authors" :select="famousSetSelect" :defaultLeft="defaultLeft"/>
     <find-title title="名师课程"></find-title>
     <toolbar>
@@ -18,6 +19,7 @@
   import { mapState, mapGetters } from 'vuex'
   import famousSwiper from './famous-swiper'
   import findTitle from 'components/common/find-title/find-title'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import { KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
 
   export default {
@@ -91,7 +93,8 @@
     },
     components: {
       famousSwiper,
-      findTitle
+      findTitle,
+      statusBar
     }
   }
 </script>

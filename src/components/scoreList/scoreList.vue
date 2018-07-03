@@ -1,5 +1,6 @@
 <template>
   <div class="scoreList">
+      <statusBar/>
       <div class="left">
         <scoreListLeftDeffer v-if="query.differ" :differ="JSON.parse(query.differ)"></scoreListLeftDeffer>
         <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
@@ -32,6 +33,7 @@
   import scoreListLeftDeffer from './scoreList-left-deffer'
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import {
     KEY73,
     KEY75,
@@ -362,6 +364,11 @@
     created () {
       this.getScoreList()
     },
+    mounted () {
+      setTimeout(() => {
+        this.chooseType = false
+      }, 500)
+    },
     components: {
       scoreListCenter,
       scoreListMusicDetail,
@@ -369,7 +376,8 @@
       scoreListLeftDeffer,
       scoreListLeftYear,
       scoreListLeftStyle,
-      scoreListChooseButtons
+      scoreListChooseButtons,
+      statusBar
     }
   }
 </script>
@@ -384,6 +392,5 @@
       top: 0;
       left: 0;
     }
-
   }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="softwareUpdate">
+    <statusBar/>
     <div class="left">
     </div>
     <div class="right">
@@ -36,6 +37,7 @@
   import { download, file, global } from 'find-sdk'
   import progressBar from '../common/find-progress-bar/find-progress-bar'
   import findPrompt from '../common/find-prompt/find-prompt'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   export default {
     data () {
       return {
@@ -214,7 +216,8 @@
     },
     components: {
       progressBar,
-      findPrompt
+      findPrompt,
+      statusBar
     },
     watch: {
       needupdate: function (val, oldval) {

@@ -1,5 +1,6 @@
 <template>
   <div class="popular">
+    <statusBar/>
     <contentLine name="流行经典" class="title"/>
     <div class="year" v-show="(popularTapIndex===0)">
       <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
@@ -40,6 +41,7 @@
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import {
     KEY73,
     KEY75,
@@ -292,7 +294,8 @@
       popularDifferList,
       popularDifferDetail,
       popularGenre,
-      popularYearList
+      popularYearList,
+      statusBar
     }
   }
 </script>

@@ -587,7 +587,7 @@
             }
             break
           case 'right':
-            if (activeIndex === this.endIndex) {
+            if (activeIndex === 13) {
               return
             }
             let rightIndex = rights.indexOf(activeIndex)
@@ -707,6 +707,9 @@
       if (!this.sessionId) {
         this.createSession()
       }
+    },
+    beforeDestroy () {
+      this.toolbarHidden = true
     },
     destroyed () {
       clearInterval(window.interval)

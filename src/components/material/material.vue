@@ -1,5 +1,6 @@
 <template>
   <div>
+    <statusBar />
     <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
       <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
                        :index="index" :select="materialSelect" :ablum="item"
@@ -32,6 +33,7 @@
   import { mapState, mapGetters } from 'vuex'
   import findWrap from 'components/common/find-wrap/find-wrap'
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import {
     KEY75,
     KEY78,
@@ -149,7 +151,8 @@
     },
     components: {
       findWrap,
-      findAblumCard
+      findAblumCard,
+      statusBar
     },
     computed: {
       ...mapState({
