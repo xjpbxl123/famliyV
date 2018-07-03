@@ -8871,16 +8871,7 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-find-hybrid@^1.0.7:
-  version "1.1.6"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.1.6.tgz#9dae314e8d3b5b50c4c6cf96a9395838a7be01b2"
-  dependencies:
-    deep-diff "^1.0.1"
-    find-toolbar "^1.1.2"
-    lodash "^4.17.10"
-    vue "^2.5.2"
-
-vue-find-hybrid@^1.1.3:
+vue-find-hybrid@^1.0.7, vue-find-hybrid@^1.1.3:
   version "1.1.7"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.1.7.tgz#b98e387c324aeb4e5667184f234218f1634afe13"
   dependencies:
@@ -8890,9 +8881,10 @@ vue-find-hybrid@^1.1.3:
     vue "^2.5.2"
 
 vue-find@^1.2.1:
-  version "1.2.1"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.2.1.tgz#96708e11cf66037ebc1391c693158a0d624aad98"
+  version "1.2.2"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.2.2.tgz#6b19f4bfc34d137a9bda30bc1de77d603687b7f0"
   dependencies:
+    babel-runtime "^6.26.0"
     lodash "^4.17.10"
     vue "^2.5.16"
     vue-find-hybrid "^1.0.7"
