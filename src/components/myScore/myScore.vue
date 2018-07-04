@@ -16,7 +16,7 @@
         :listIndex="myRecentIndex"/>
     </find-wrap>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
-    <toolbar>
+    <toolbar :hidden="toolbarHidden">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
@@ -43,6 +43,7 @@
   export default {
     data () {
       return {
+        toolbarHidden: true,
         controlButtons: [
           {
             pianoKey: 39,
@@ -520,6 +521,11 @@
       this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
+    },
+    mounted () {
+      setTimeout(() => {
+        this.toolbarHidden = false
+      }, 500)
     },
     components: {
       findWrap,

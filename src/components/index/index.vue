@@ -265,7 +265,7 @@
         metronome: false,
         speed: 120,
         metre: '3/8',
-        toolbarHidden: false
+        toolbarHidden: true
       }
     },
     find: {
@@ -675,7 +675,6 @@
               musicObj = list1[rightActiveIndex]
               musicObj.time = new Date().getTime()
             }
-
             if (!this.isLogin) {
               this.$store.dispatch('index/localRecent', musicObj)
             } else {
@@ -707,6 +706,11 @@
       if (!this.sessionId) {
         this.createSession()
       }
+    },
+    mounted () {
+      setTimeout(() => {
+        this.toolbarHidden = false
+      }, 500)
     },
     beforeDestroy () {
       this.toolbarHidden = true

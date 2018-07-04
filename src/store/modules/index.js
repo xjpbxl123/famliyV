@@ -158,15 +158,13 @@ export default {
      * @desc 获取本地最近打开
      * */
     localRecent ({dispatch}, musicObj) {
-      console.log(musicObj)
       let localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
-      console.log(localRecent)
       if (musicObj) {
         let flag = false
         let num = 0
         if (localRecent.length !== 0) {
           localRecent.forEach((item, index) => {
-            if (item.musicId === musicObj) {
+            if (item.musicId === musicObj.musicId) {
               flag = true
               num = index
             }
