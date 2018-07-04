@@ -587,7 +587,7 @@
 .vioceBox {
   position: absolute;
   width: 214px;
-  height: 620px;
+  height: 660px;
   top: 80px;
   flex-direction: column;
 }
@@ -606,19 +606,19 @@
 
 .vioceBox4 {
   left: 2000px;
-  height: 632px;
+  height: 672px;
   top: 68px;
 }
 
 .vioceBox5 {
   left: 2222px;
-  height: 632px;
+  height: 672px;
   top: 70px;
 }
 
 .vioceBox6 {
   left: 2432px;
-  height: 632px;
+  height: 672px;
   top: 70px;
 }
 
@@ -671,13 +671,13 @@
 .bar {
   position: absolute;
   left: 0px;
-  bottom: -28px;
+  bottom: 12px;
   width: 168px;
   height: 545px;
 }
 
 .barA {
-   bottom: -27px;
+   bottom: 13px;
 }
 
 .slider1 {
