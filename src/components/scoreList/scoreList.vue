@@ -222,7 +222,6 @@
             this.scoreList.forEach((item, index) => {
               if (item.files) {
                 item.files.forEach((item1) => {
-                  console.log(item1.musicId)
                   if (item1.musicId === musicId) {
                     return this.$store.dispatch('scoreList/setScoreListIndex', index)
                   }

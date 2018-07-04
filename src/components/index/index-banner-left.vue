@@ -57,8 +57,7 @@
     },
     data () {
       return {
-        imgError: 'this.src="' + require('./images/admin.png') + '"',
-        interval: null
+        imgError: 'this.src="' + require('./images/admin.png') + '"'
       }
     },
     watch: {
@@ -72,11 +71,11 @@
       generateQrCode () {
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-            clearInterval(this.interval)
-            this.interval = window.setInterval(() => {
+            clearInterval(window.interval)
+            window.interval = window.setInterval(() => {
               this.dispatch('getUserInfo').then(res => {
                 if (res.isLogin) {
-                  clearInterval(this.interval)
+                  clearInterval(window.interval)
                 }
               })
             }, 2000)
