@@ -38,7 +38,17 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import { file } from 'find-sdk'
   import {
-    INTERCEPT_DOWN
+    KEY39,
+    KEY42,
+    KEY46,
+    KEY49,
+    KEY54,
+    KEY78,
+    KEY80,
+    KEY82,
+    KEY85,
+    KEY90,
+    BACK_PRESSED
   } from 'vue-find'
   export default {
     data () {
@@ -141,51 +151,48 @@
       }
     },
     find: {
-      [INTERCEPT_DOWN] (key) {
-        switch (key) {
-          case 39:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = false
-            break
-          case 42:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = true
-            break
-          case 46:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = false
-            break
-          case 49:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.legnth - 1].show = false
-            break
-          case 54:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = true
-            break
-          case 78:
-            this.buttonActions('up')
-            break
-          case 80:
-            this.buttonActions('down')
-            break
-          case 82:
-            this.buttonActions('ok')
-            break
-          case 85:
-            this.buttonActions('delete')
-            break
-          case 90:
-            this.buttonActions('scoreList')
-            break
-          case 108:
-            this.buttonActions('back')
-        }
+      [KEY39] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 1].show = false
+      },
+      [KEY42] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
+        this.controlButtons[this.controlButtons.length - 2].show = true
+        this.controlButtons[this.controlButtons.length - 1].show = true
+      },
+      [KEY46] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
+        this.controlButtons[this.controlButtons.length - 2].show = true
+        this.controlButtons[this.controlButtons.length - 1].show = false
+      },
+      [KEY49] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.legnth - 1].show = false
+      },
+      [KEY54] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 1].show = true
+      },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
+      },
+      [KEY82] () {
+        this.buttonActions('ok')
+      },
+      [KEY85] () {
+        this.buttonActions('delete')
+      },
+      [KEY90] () {
+        this.buttonActions('scoreList')
+      },
+      [BACK_PRESSED] () {
+        this.buttonActions('back')
       }
     },
     computed: {

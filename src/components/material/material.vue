@@ -40,7 +40,7 @@
     KEY73,
     KEY80,
     KEY82,
-    KEY108
+    BACK_PRESSED
   } from 'vue-find'
 
   export default {
@@ -109,7 +109,7 @@
       [KEY82] () {
         this.buttonActions('ok')
       },
-      [KEY108] () {
+      [BACK_PRESSED] () {
         this.buttonActions('back')
       }
     },
