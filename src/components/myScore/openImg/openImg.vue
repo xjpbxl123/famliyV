@@ -1,14 +1,28 @@
 <template>
    <div class="content">
        <img :src="imgUrl" alt="">
-       <toolbar></toolbar>
+       <toolbar :hidden="true">
+          <icon-item id="222"
+                      key="222"
+                      icon="0xe63d"
+                      pianoKey="82"
+                      hidden="true"/>
+       </toolbar>
    </div>
 </template>
 <script type="text/javascript">
+  import {
+    BACK_PRESSED
+  } from 'vue-find'
   export default {
     data () {
       return {
-        imgUrl: require(this.$route.query.url)
+        imgUrl: this.$route.query.url
+      }
+    },
+    find: {
+      [BACK_PRESSED] () {
+        this.$router.back()
       }
     },
     methods: {},

@@ -36,7 +36,6 @@
   import findTapButtons from './find-tap-buttons'
   import findUserMess from './find-userMess'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import { file } from 'find-sdk'
   import {
     KEY39,
     KEY42,
@@ -299,9 +298,10 @@
               } else {
                 // 去打开文件
                 if (data.typeName === 'picture') {
-                  file.pathComplement(this.localSourcePath).then((res) => {
-                    this.$router.push({path: '/openImg', query: {url: res + '/' + data.name}})
-                  })
+                  // file.pathComplement(this.localSourcePath).then((res) => {
+                  // console.log(res)
+                  this.$router.push({path: '/openImg', query: {url: data.http}})
+                  // })
                 }
               }
             }

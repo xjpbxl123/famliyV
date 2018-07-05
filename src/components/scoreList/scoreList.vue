@@ -34,6 +34,7 @@
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import {modules} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -272,6 +273,7 @@
               return
             }
             console.log('直接去播放曲谱')
+            modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
             break
           case 'back':
             this.$router.back()
@@ -349,7 +351,8 @@
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                 this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
-                console.log('去播放')
+                console.log('去播放曲谱')
+                modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               }
             }
             break

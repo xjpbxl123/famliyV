@@ -75,13 +75,16 @@
   import {
     TOOLBAR_PRESSED,
     KEY22,
-    KEY27,
+    // KEY27,
     KEY30,
     KEY32,
+    KEY34,
     KEY37,
+    KEY39,
     KEY42,
     KEY44,
     KEY46,
+    KEY49,
     KEY54,
     KEY55,
     KEY57,
@@ -93,6 +96,7 @@
     KEY80,
     KEY82,
     KEY85,
+    KEY87,
     KEY90,
     KEY92,
     KEY94,
@@ -115,19 +119,19 @@
         endIndex: -1,
         userActionButtons: [
           {
-            pianoKey: 27,
+            pianoKey: 30,
             text: '帮助',
             icon: '0xe69c',
             id: 1
           },
           {
-            pianoKey: 30,
+            pianoKey: 32,
             text: '登陆',
             icon: '0xe651',
             id: 2
           },
           {
-            pianoKey: 32,
+            pianoKey: 34,
             text: '设置',
             icon: '0xe638',
             id: 3
@@ -230,6 +234,14 @@
             id: 100
           },
           {
+            pianoKey: 87,
+            text: '',
+            icon: '0xe610',
+            backgroundColor: '#e92e66',
+            dotColor: '#e92e66',
+            id: 101
+          },
+          {
             pianoKey: 90,
             text: '',
             icon: '0xe63c',
@@ -279,23 +291,30 @@
       [KEY22] () {
         this.buttonActions('closeMetro')
       },
-      [KEY27] () {
+      [KEY30] () {
         this.buttonActions('help')
       },
-      [KEY30] () {
+      [KEY32] () {
         this.buttonActions('login')
       },
-      [KEY32] () {
+      [KEY34] () {
         this.buttonActions('set')
       },
       [KEY37] () {
         this.buttonActions('myScore')
+      },
+      [KEY39] () {
+        this.buttonActions('playRecord')
       },
       [KEY42] () {
         this.buttonActions('material')
       },
       [KEY44] () {
         this.buttonActions('popular')
+      },
+      [KEY49] () {
+        // 乐理与技巧
+        this.buttonActions('skill')
       },
       [KEY46] () {
         this.buttonActions('famous')
@@ -337,6 +356,9 @@
       },
       [KEY85] () {
         this.buttonActions('search')
+      },
+      [KEY87] () {
+        this.buttonActions('tone')
       },
       [KEY90] () {
         this.buttonActions('right-up')
@@ -539,8 +561,13 @@
             return this.go('/popular')
           case 'material':
             return this.go('/material')
+          case 'skill':
+            return modules.nativeRouter.openAppsView()
+          case 'playRecord':
+            return modules.nativeRouter.openMidiRecordView()
           case 'famous':
-            return this.go('/famous')
+            return modules.nativeRouter.openArtistCourseView()
+          // return this.go('/famous')
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
@@ -613,13 +640,8 @@
               activeIndex += 4
             }
             break
-          case 'logout':
-            // 临时写的用来注销账号
-            // this.$store.dispatch('logoutCache', {root: true})
-            // this.$store.dispatch('logout', {root: true}).then(() => {
-            //   this.$store.dispatch('setSession', '')
-            // })
-            break
+          case 'tone':
+            return modules.nativeRouter.openTimbreView()
           case 'ok':
             console.log(activeIndex)
             if (activeIndex === 7) {

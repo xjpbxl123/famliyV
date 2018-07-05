@@ -1,8 +1,8 @@
 <template>
   <div class='find-ablum-card' :class="{active:select===index}">
-    <img :src="ablum.shareCover" v-if="type===2" alt="" class="coverImg">
+    <!-- <img :src="ablum.shareCover" v-if="type===2" alt="" class="coverImg"> -->
     <findAblumTitle :name="ablum.name"></findAblumTitle>
-    <findAlbum :albumArr="ablum.bookCover" v-if="type!==2"></findAlbum>
+    <findAlbum :albumArr="ablum.bookCover" ></findAlbum>
   </div>
 </template>
 <style lang=scss scoped type=text/scss>
