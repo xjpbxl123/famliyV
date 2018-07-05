@@ -1,7 +1,7 @@
 <template>
   <div class="login">
+    <statusBar/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
-
     <find-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
     <toolbar>
@@ -20,6 +20,7 @@
   import loginBanner from './login-banner'
   import {INTERCEPT_DOWN} from 'vue-find'
   import findPrompt from '../common/find-prompt/find-prompt'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   export default {
     name: 'login',
     data () {
@@ -140,7 +141,8 @@
     components: {
       findKeyboard,
       loginBanner,
-      findPrompt
+      findPrompt,
+      statusBar
     }
   }
 </script>

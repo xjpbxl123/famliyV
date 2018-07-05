@@ -2,7 +2,7 @@
   <div class="popular-genre">
     <find-ablum-card v-for="(item,index) in popularGenre" class="find-popular-card" :key="index"
                      :index="index" :ablum="item" :class="{maxMargin:(index+1)%2===0}"
-                     :select="select"></find-ablum-card>
+                     :select="select" :type="2"></find-ablum-card>
   </div>
 </template>
 <style lang=scss type=text/scss scoped>

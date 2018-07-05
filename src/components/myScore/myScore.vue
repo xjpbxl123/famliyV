@@ -1,5 +1,6 @@
 <template>
   <div class="myScore">
+    <statusBar/>
     <find-wrap :title="title" :pagination=false>
         <div class="logo iconfont icon-logo"> </div>
         <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex"/>
@@ -15,7 +16,7 @@
         :listIndex="myRecentIndex"/>
     </find-wrap>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
-    <toolbar>
+    <toolbar :hidden="toolbarHidden">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
@@ -34,13 +35,24 @@
   import findLocalMid from './find-localMid'
   import findTapButtons from './find-tap-buttons'
   import findUserMess from './find-userMess'
-  import { file } from 'find-sdk'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import {
-    INTERCEPT_DOWN
+    KEY39,
+    KEY42,
+    KEY46,
+    KEY49,
+    KEY54,
+    KEY78,
+    KEY80,
+    KEY82,
+    KEY85,
+    KEY90,
+    BACK_PRESSED
   } from 'vue-find'
   export default {
     data () {
       return {
+        toolbarHidden: true,
         controlButtons: [
           {
             pianoKey: 39,
@@ -138,51 +150,48 @@
       }
     },
     find: {
-      [INTERCEPT_DOWN] (key) {
-        switch (key) {
-          case 39:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = false
-            break
-          case 42:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = true
-            break
-          case 46:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
-            this.controlButtons[this.controlButtons.length - 2].show = true
-            this.controlButtons[this.controlButtons.length - 1].show = false
-            break
-          case 49:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.legnth - 1].show = false
-            break
-          case 54:
-            this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
-            this.controlButtons[this.controlButtons.length - 2].show = false
-            this.controlButtons[this.controlButtons.length - 1].show = true
-            break
-          case 78:
-            this.buttonActions('up')
-            break
-          case 80:
-            this.buttonActions('down')
-            break
-          case 82:
-            this.buttonActions('ok')
-            break
-          case 85:
-            this.buttonActions('delete')
-            break
-          case 90:
-            this.buttonActions('scoreList')
-            break
-          case 108:
-            this.buttonActions('back')
-        }
+      [KEY39] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 1].show = false
+      },
+      [KEY42] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
+        this.controlButtons[this.controlButtons.length - 2].show = true
+        this.controlButtons[this.controlButtons.length - 1].show = true
+      },
+      [KEY46] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
+        this.controlButtons[this.controlButtons.length - 2].show = true
+        this.controlButtons[this.controlButtons.length - 1].show = false
+      },
+      [KEY49] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.legnth - 1].show = false
+      },
+      [KEY54] () {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 1].show = true
+      },
+      [KEY78] () {
+        this.buttonActions('up')
+      },
+      [KEY80] () {
+        this.buttonActions('down')
+      },
+      [KEY82] () {
+        this.buttonActions('ok')
+      },
+      [KEY85] () {
+        this.buttonActions('delete')
+      },
+      [KEY90] () {
+        this.buttonActions('scoreList')
+      },
+      [BACK_PRESSED] () {
+        this.buttonActions('back')
       }
     },
     computed: {
@@ -289,9 +298,10 @@
               } else {
                 // 去打开文件
                 if (data.typeName === 'picture') {
-                  file.pathComplement(this.localSourcePath).then((res) => {
-                    this.$router.push({path: '/openImg', query: {url: res + '/' + data.name}})
-                  })
+                  // file.pathComplement(this.localSourcePath).then((res) => {
+                  // console.log(res)
+                  this.$router.push({path: '/openImg', query: {url: data.http}})
+                  // })
                 }
               }
             }
@@ -519,12 +529,18 @@
       this.getMyRecord()
       this.getMyPlay()
     },
+    mounted () {
+      setTimeout(() => {
+        this.toolbarHidden = false
+      }, 500)
+    },
     components: {
       findWrap,
       findLocalSource,
       findTapButtons,
       findLocalMid,
-      findUserMess
+      findUserMess,
+      statusBar
     }
   }
 </script>

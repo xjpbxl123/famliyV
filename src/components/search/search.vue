@@ -1,5 +1,6 @@
 <template>
-  <div class="login">
+  <div class="search">
+    <statusBar/>
     <find-keyboard ref="keyboard" :setValue="setValue"/>
     <musicList :list="musicList" :listIndex="listIndex"/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
@@ -19,12 +20,13 @@
 <script>
   import findKeyboard from '../common/find-keyboard/find-keyboard'
   import findPrompt from '../common/find-prompt/find-prompt'
+  import statusBar from '../common/find-status-bar/find-status-bar'
   import musicList from './musicList'
   import {search} from 'find-sdk'
   import {INTERCEPT_DOWN} from 'vue-find'
   import { mapGetters } from 'vuex'
   export default {
-    name: 'login',
+    name: 'search',
     data () {
       return {
         value: '',
@@ -183,7 +185,8 @@
     components: {
       findKeyboard,
       findPrompt,
-      musicList
+      musicList,
+      statusBar
     }
   }
 </script>

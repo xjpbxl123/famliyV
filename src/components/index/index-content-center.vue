@@ -71,9 +71,9 @@
         moreData: {
           coverSmall: require('./images/more.png')
         },
-        recentMoreindex: -1,
-        hotMoreindex: -1,
-        hotbookIndex: -1
+        recentMoreindex: 7,
+        hotMoreindex: 13,
+        hotbookIndex: 8
       }
     },
     filters: {
@@ -83,15 +83,18 @@
       }
     },
     watch: {
-      recentBooks () {
-        this.recentMoreindex = this.recentBooks.bookList.length
-        this.hotbookIndex = this.recentMoreindex + 1
-      },
-      hotBooks () {
-        this.hotMoreindex =
-          this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
-        this.$emit('update:endIndex', this.hotMoreindex)
-      }
+      // recentBooks () {
+      //   this.recentMoreindex = this.recentBooks.bookList.length
+      //   this.hotbookIndex = this.recentMoreindex + 1
+      // },
+      // hotBooks () {
+      //   this.hotMoreindex =
+      //     this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
+      //   this.$emit('update:endIndex', this.hotMoreindex)
+      // }
+    },
+    created () {
+      console.log(this.hotbookIndex)
     }
   }
 </script>

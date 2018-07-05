@@ -1,5 +1,6 @@
 <template>
   <div class="scoreList">
+      <statusBar/>
       <div class="left">
         <scoreListLeftDeffer v-if="query.differ" :differ="JSON.parse(query.differ)"></scoreListLeftDeffer>
         <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
@@ -32,6 +33,8 @@
   import scoreListLeftDeffer from './scoreList-left-deffer'
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
+  import statusBar from '../common/find-status-bar/find-status-bar'
+  import {modules} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -220,7 +223,6 @@
             this.scoreList.forEach((item, index) => {
               if (item.files) {
                 item.files.forEach((item1) => {
-                  console.log(item1.musicId)
                   if (item1.musicId === musicId) {
                     return this.$store.dispatch('scoreList/setScoreListIndex', index)
                   }
@@ -271,6 +273,7 @@
               return
             }
             console.log('直接去播放曲谱')
+            modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
             break
           case 'back':
             this.$router.back()
@@ -348,7 +351,8 @@
                 scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                 this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
-                console.log('去播放')
+                console.log('去播放曲谱')
+                modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               }
             }
             break
@@ -362,6 +366,11 @@
     created () {
       this.getScoreList()
     },
+    mounted () {
+      setTimeout(() => {
+        this.chooseType = false
+      }, 500)
+    },
     components: {
       scoreListCenter,
       scoreListMusicDetail,
@@ -369,7 +378,8 @@
       scoreListLeftDeffer,
       scoreListLeftYear,
       scoreListLeftStyle,
-      scoreListChooseButtons
+      scoreListChooseButtons,
+      statusBar
     }
   }
 </script>
@@ -384,6 +394,5 @@
       top: 0;
       left: 0;
     }
-
   }
 </style>

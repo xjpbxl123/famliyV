@@ -110,8 +110,8 @@
     text-align: right;
     color: rgba(255, 255, 255, 0.8);
     font-size: 22px;
-    height: 40px;
-    line-height: 40px;
+    height: 48px;
+    line-height: 48px;
 
     li {
       margin-right: 6px;

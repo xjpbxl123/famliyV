@@ -1,5 +1,6 @@
 <template>
   <div :style="{background:`url(${cover})`}">
+    <statusBar/>
     <find-title :title="famousAuthor.courseSetList[0].authorName" :style="styles"></find-title>
     <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="famousBookSelect"></famous-book-swiper>
     <toolbar>
@@ -18,6 +19,7 @@
   import { mapState, mapGetters } from 'vuex'
   import findTitle from '../../common/find-title/find-title'
   import famousBookSwiper from './famous-book-swiper'
+  import statusBar from '../../common/find-status-bar/find-status-bar'
   import { KEY78, KEY80, KEY82 } from 'vue-find'
 
   export default {
@@ -106,7 +108,8 @@
     },
     components: {
       findTitle,
-      famousBookSwiper
+      famousBookSwiper,
+      statusBar
     }
   }
 </script>
