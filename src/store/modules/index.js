@@ -46,7 +46,6 @@ export default {
     [MORE_INDEX] (state, data) {
       state.moreIndex = data
     }
-
   },
   actions: {
     /**
@@ -185,6 +184,19 @@ export default {
      * */
     setRightType ({commit} = {}, str) {
       commit(RIGHT_TYPE, str)
+    },
+    /**
+     * @desc 获取曲子信息
+     * */
+    getMusicInfo ({dispatch, commit} = {}, musicId) {
+      console.log(musicId)
+      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
+        if (!header.code) {
+          if (body) {
+            return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
+          }
+        }
+      })
     }
 
   }
