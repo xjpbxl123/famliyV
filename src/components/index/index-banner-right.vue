@@ -163,6 +163,9 @@
       } else if (this.rightType === 'myCollect') {
         this.title = '我的收藏'
       }
+      if (this.rightSelectedIndex >= 7) {
+        this.rightTop = (this.rightSelectedIndex - 6) * 120 * -1
+      }
     }
   }
 </script>
