@@ -99,6 +99,8 @@
     KEY87,
     KEY90,
     KEY92,
+    LONG_KEY90,
+    LONG_KEY92,
     KEY94,
     KEY97,
     INTERCEPT_DOWN
@@ -117,6 +119,8 @@
         showHelpBanner: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1,
+        clickInterval: null,
+        timer: 0,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -359,6 +363,14 @@
       },
       [KEY87] () {
         this.buttonActions('tone')
+      },
+      [LONG_KEY90] () {
+        console.log('up')
+        this.buttonActions('right-up')
+      },
+      [LONG_KEY92] () {
+        console.log('down')
+        this.buttonActions('right-down')
       },
       [KEY90] () {
         this.buttonActions('right-up')
@@ -682,7 +694,6 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            console.log('去播放')
             let list = []
             let list1 = []
             let musicObj = {}
@@ -697,11 +708,26 @@
               musicObj = list1[rightActiveIndex]
               musicObj.time = new Date().getTime()
             }
-            if (!this.isLogin) {
-              this.$store.dispatch('index/localRecent', musicObj)
-            } else {
-
+            if (!this.timer) {
+              this.timer = +new Date()
+            } else if (new Date() - this.timer <= 700) {
+              console.log('双击')
+              clearInterval(this.clickInterval)
+              this.clickInterval = null
+              this.timer = 0
+              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
+              return
             }
+            this.clickInterval = setTimeout(() => {
+              console.log('单击')
+              this.timer = 0
+            }, 700)
+
+            // if (!this.isLogin) {
+            //   this.$store.dispatch('index/localRecent', musicObj)
+            // } else {
+
+            // }
             break
           case 'changeRightData':
             // 切换右侧数据
