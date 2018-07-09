@@ -64,7 +64,7 @@
       <icon-item v-for="(button,index) in controlButtons"
                  :longClick="button.longClick"
                  :key="index"
-                 :id=button.id
+                 :id="button.id"
                  :icon="button.icon"
                  :pianoKey="button.pianoKey"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
@@ -261,7 +261,8 @@
             icon: '0xe63c',
             backgroundColor: '#6000',
             dotColor: '#000',
-            id: 16
+            id: 16,
+            longClick: true
           },
           {
             pianoKey: 92,

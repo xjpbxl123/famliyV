@@ -57,7 +57,6 @@
       }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
-          console.log('cacheUrl', data.url)
           let image = new Image()
           image.src = data.url
           image.onload = () => {
