@@ -183,13 +183,13 @@ export default {
      * @desc 登录时加入最近打开加入
      * */
     addRecentOpen ({dispatch}, musicObj) {
-      return http.post('', {
+      http.post('', {
         cmd: 'musicScore.addPracticeRecent',
         musicId: musicObj.musicId,
         practiceTime: musicObj.practiceTime
       }).then(res => {
         if (res.header.code === 0) {
-          this.$store.dispatch({type: 'index/getRecentOpenList'})
+          return dispatch('getRecentOpenList')
         }
       })
     },
