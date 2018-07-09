@@ -1,24 +1,26 @@
 <template>
   <div class="box">
     <span>{{bookData.name}}</span>
-    <img :src="bookData.coverSmall" alt="" :onerror="imgError" >
+    <findImg :src="bookData.coverSmall" ></findImg>
   </div>
 </template>
 
 <script>
+  import findImg from '../common/find-img/find-img'
   export default {
     props: {
       bookData: {
-
         type: Object
       }
     },
     data () {
       return {
-        imgError: 'this.src="' + require('./images/default.jpg') + '"'
       }
     },
-    created () {}
+    created () {},
+    components: {
+      findImg
+    }
   }
 </script>
 

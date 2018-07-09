@@ -51,17 +51,28 @@
     //   )
     // },
     created () {
-      let image = new Image()
-      image.src = this.src
-      image.onload = () => {
-        let checkoutImg = setInterval(() => {
-          if (image.complete) { // 加载完成
-            this.showTitle = false
-            this.url = this.src
-            clearInterval(checkoutImg)
-          }
-        }, 1000)
+      if (this.src === './static/images/more.8015af2.png') {
+        this.url = this.src
+        return
       }
+      window.fp.modules.file.cacheUrl(this.src).then(data => {
+        if (data.code === 0) {
+          console.log(data.url)
+          let image = new Image()
+          image.src = data.url
+          image.onload = () => {
+            let checkoutImg = setInterval(() => {
+              if (image.complete) { // 加载完成
+                this.showTitle = false
+                this.url = data.url
+                clearInterval(checkoutImg)
+              }
+            }, 1000)
+          }
+        } else {
+          console.log(data.desc)
+        }
+      })
     }
   }
 </script>
@@ -72,6 +83,7 @@
     position: relative;
     img {
       width:100%;
+      height: 100%;
       position: absolute;
       bottom: 0;
     }

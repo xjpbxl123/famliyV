@@ -32,6 +32,9 @@
         :buttonActions="buttonActions"
       />
     </find-cover>
+    <fh-player ref="player" :source="playerSource" :hidden="playerHidden" :style="{width:0,height:0}"
+               @initComplete="playerInitComplete">
+    </fh-player>
     <toolbar :hidden="toolbarHidden">
       <text-icon-item v-for="(button,index) in userActionButtons"
                       :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
@@ -65,7 +68,6 @@
                  :pianoKey="button.pianoKey"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
-    <!-- <fh-weex :hidden="showWeex" :style="weexStyle" ref="weex"/> -->
   </div>
 </template>
 <script type="text/javascript">
@@ -103,13 +105,14 @@
     LONG_KEY92,
     KEY94,
     KEY97,
-    INTERCEPT_DOWN
+    INTERCEPT_DOWN,
+    BACK_PRESSED
   } from 'vue-find'
   import bannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import { modules } from 'find-sdk'
+  import { modules, download } from 'find-sdk'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -121,6 +124,12 @@
         endIndex: -1,
         clickInterval: null,
         timer: 0,
+        playerHidden: false,
+        hasClicked: false,
+        playerSource: {
+          midiUrl: ''
+        },
+        isPlaying: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -264,7 +273,7 @@
           {
             pianoKey: 94,
             text: '',
-            icon: '0xe69a',
+            icon: '0xe657',
             backgroundColor: '#6000',
             dotColor: '#000',
             id: 18
@@ -287,6 +296,12 @@
     find: {
       [TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
+        if (!hidden && this.isPlaying) {
+          this.$refs.player.pause()
+          this.toolbarHidden = false
+          this.isPlaying = false
+          return
+        }
         if (hidden && this.metronome) {
           return
         }
@@ -384,6 +399,13 @@
       [KEY97] () {
         this.buttonActions('changeRightData')
       },
+      [BACK_PRESSED] () {
+        if (this.isPlaying && this.toolbarHidden) {
+          this.$refs.player.pause()
+          this.toolbarHidden = false
+          this.isPlaying = false
+        }
+      },
       banner: {
         [INTERCEPT_DOWN] (keys) {
           this.clickHelp(keys)
@@ -416,7 +438,7 @@
         },
         rightType: state => state.index.rightType
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent'])
+      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
     },
     watch: {
       /**
@@ -437,6 +459,11 @@
           this.getCollectList()
         } else {
           this.userActionButtons[1].text = '登陆'
+        }
+      },
+      rightSelectedIndex (val) {
+        if (val) {
+          this.hasClicked = false
         }
       }
     },
@@ -556,9 +583,11 @@
               return this.go('/login')
             } else {
               // 临时写的用来注销账号
+
               this.$store.dispatch('logoutCache', {root: true})
               this.$store.dispatch('logout', {root: true}).then(() => {
                 this.$store.dispatch('setSession', '')
+                this.$store.dispatch('index/setRightSelect', 0)
               })
               return
             }
@@ -694,6 +723,7 @@
             break
           case 'right-play':
             // 右侧列表play事件
+
             let list = []
             let list1 = []
             let musicObj = {}
@@ -701,12 +731,10 @@
               list = this.isLogin ? this.recentOpenList : this.localRecent
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
-              musicObj.practiceTime = new Date().getTime()
             } else if (this.rightType === 'myCollect') {
               list = this.isLogin ? this.collectList : this.localCollect
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
-              musicObj.time = new Date().getTime()
             }
             if (!this.timer) {
               this.timer = +new Date()
@@ -721,13 +749,15 @@
             this.clickInterval = setTimeout(() => {
               console.log('单击')
               this.timer = 0
+              if (this.hasClicked) {
+                this.$refs.player.play()
+                this.isPlaying = true
+                this.toolbarHidden = true
+                return
+              }
+              this.playMidi(musicObj.musicId)
             }, 700)
 
-            // if (!this.isLogin) {
-            //   this.$store.dispatch('index/localRecent', musicObj)
-            // } else {
-
-            // }
             break
           case 'changeRightData':
             // 切换右侧数据
@@ -743,6 +773,86 @@
             console.log('108')
         }
         this.$store.dispatch('index/setSelected', activeIndex)
+      },
+      playMidi (musicId) {
+        let midiData = {url: '', md5: '', fsize: 0}
+        this.$store.dispatch('index/getMusicInfo', musicId).then(() => {
+          console.log(this.musicInfo)
+          let musicInfo = this.musicInfo[musicId]
+          musicInfo.files.forEach((value) => {
+            if (value.musicId === musicId) {
+              let Mid = value.bMid
+              if (!value.bMid.url) {
+                if (!value.mMid.url) {
+                  alert('mid加载失败')
+                  return
+                }
+                Mid = value.mMid
+              }
+              midiData.url = Mid.url
+              midiData.fsize = Mid.fsize
+              midiData.md5 = Mid.md5
+            }
+          })
+          console.log(midiData)
+          let exixtObj = {
+            url: midiData.url,
+            md5: midiData.md5,
+            localPath: '$filesCache/' + musicId
+          }
+          console.log(exixtObj, 'exixtObj')
+
+          // 判断文件是否存在
+          modules.download.fileIsExists(exixtObj).then((data) => {
+            console.log(data, 'exit')
+
+            if (!data.path) {
+              // 去下载
+              let downloadObj = {...exixtObj, fsize: midiData.fsize}
+              console.log(downloadObj, 'downloadObj')
+              download.downloadFile(downloadObj).then((data) => {
+                console.log(data, 'download')
+                this.playerSource.midiUrl = data.path
+              })
+            } else {
+              // 直接打开
+              this.playerSource.midiUrl = data.path
+            }
+          })
+        })
+      },
+      playerInitComplete (data) {
+        // 播放器加载成功
+        console.log(data, 'playerInitComplete')
+        if (!data.result) {
+          return
+        }
+        this.$refs.player.play().then(() => {
+          console.log('end')
+          this.isPlaying = false
+          let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
+          let collectList = this.isLogin ? this.collectList : this.localCollect
+          let rightActiveIndex = this.rightSelectedIndex
+          let data = []
+          if (this.rightType === 'myCollect') {
+            data = collectList
+          } else if (this.rightType === 'recentOpen') {
+            data = recentOpenList
+          }
+          if (rightActiveIndex === data.length - 1) {
+            // 已经是最后一首了
+            return
+          }
+          rightActiveIndex++
+          rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
+          if (rightActiveIndex > 0) {
+            this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+          }
+          this.buttonActions('right-play')
+        })
+        this.isPlaying = true
+        this.toolbarHidden = true
+        this.hasClicked = true
       }
     },
     created () {

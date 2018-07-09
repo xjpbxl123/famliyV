@@ -46,7 +46,6 @@ export default {
     [MORE_INDEX] (state, data) {
       state.moreIndex = data
     }
-
   },
   actions: {
     /**
@@ -181,10 +180,37 @@ export default {
       })
     },
     /**
+     * @desc 登录时加入最近打开加入
+     * */
+    addRecentOpen ({dispatch}, musicObj) {
+      return http.post('', {
+        cmd: 'musicScore.addPracticeRecent',
+        musicId: musicObj.musicId,
+        practiceTime: musicObj.practiceTime
+      }).then(res => {
+        if (res.header.code === 0) {
+          this.$store.dispatch({type: 'index/getRecentOpenList'})
+        }
+      })
+    },
+    /**
      * @desc 获取右侧列表状态
      * */
     setRightType ({commit} = {}, str) {
       commit(RIGHT_TYPE, str)
+    },
+    /**
+     * @desc 获取曲子信息
+     * */
+    getMusicInfo ({dispatch, commit} = {}, musicId) {
+      console.log(musicId)
+      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
+        if (!header.code) {
+          if (body) {
+            return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
+          }
+        }
+      })
     }
 
   }

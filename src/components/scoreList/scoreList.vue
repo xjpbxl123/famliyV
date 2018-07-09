@@ -274,6 +274,7 @@
             }
             console.log('直接去播放曲谱')
             modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
+            this.addRecentOpen(scoreList[scoreIndex], 0)
             break
           case 'back':
             this.$router.back()
@@ -352,6 +353,7 @@
                 this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
               } else {
                 console.log('去播放曲谱')
+                this.addRecentOpen(scoreList[scoreIndex], typeNum)
                 modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               }
             }
@@ -360,6 +362,24 @@
             console.log('108')
 
             // this.goBack()
+        }
+      },
+      // 加入最近打开
+      addRecentOpen (musicObj, typeNum) {
+        let recentObj = {
+          musicId: musicObj.musicId,
+          bookId: musicObj.bookId,
+          bookName: musicObj.bookName,
+          name: musicObj.name,
+          styleName: [musicObj.files[typeNum].styleName],
+          practiceTime: +new Date()
+        }
+        if (recentObj) {
+          if (!this.isLogin) {
+            this.$store.dispatch('index/localRecent', recentObj)
+          } else {
+            this.$store.dispatch('index/addRecentOpen', recentObj)
+          }
         }
       }
     },

@@ -56,7 +56,8 @@ export default function createStore () {
             localCollect: [],
             localRecent: [],
             famousPlayCoursesBySet: [],
-            bookInfo: []
+            bookInfo: [],
+            musicInfo: []
           }
         } // 数据本地缓存
       },
@@ -116,6 +117,9 @@ export default function createStore () {
       },
       bookInfo: state => {
         return state.storage.cache.renderCache.bookInfo
+      },
+      musicInfo: state => {
+        return state.storage.cache.renderCache.musicInfo
       }
     },
     mutations: {
