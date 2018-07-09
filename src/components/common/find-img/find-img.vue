@@ -51,17 +51,24 @@
     //   )
     // },
     created () {
-      let image = new Image()
-      image.src = this.src
-      image.onload = () => {
-        let checkoutImg = setInterval(() => {
-          if (image.complete) { // 加载完成
-            this.showTitle = false
-            this.url = this.src
-            clearInterval(checkoutImg)
+      window.fp.modules.file.cacheUrl(this.src).then(data => {
+        if (data.code === 0) {
+          console.log(data.url)
+          let image = new Image()
+          image.src = data.url
+          image.onload = () => {
+            let checkoutImg = setInterval(() => {
+              if (image.complete) { // 加载完成
+                this.showTitle = false
+                this.url = data.url
+                clearInterval(checkoutImg)
+              }
+            }, 1000)
           }
-        }, 1000)
-      }
+        } else {
+          console.log(data.desc)
+        }
+      })
     }
   }
 </script>

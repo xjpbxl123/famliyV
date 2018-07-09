@@ -723,11 +723,7 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            if (this.hasClicked) {
-              this.$refs.player.play()
-              this.isPlaying = true
-              this.toolbarHidden = true
-            }
+
             let list = []
             let list1 = []
             let musicObj = {}
@@ -735,12 +731,10 @@
               list = this.isLogin ? this.recentOpenList : this.localRecent
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
-              // musicObj.practiceTime = new Date().getTime()
             } else if (this.rightType === 'myCollect') {
               list = this.isLogin ? this.collectList : this.localCollect
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
-              // musicObj.time = new Date().getTime()
             }
             if (!this.timer) {
               this.timer = +new Date()
@@ -754,15 +748,16 @@
             }
             this.clickInterval = setTimeout(() => {
               console.log('单击')
-              this.playMidi(musicObj.musicId)
               this.timer = 0
+              if (this.hasClicked) {
+                this.$refs.player.play()
+                this.isPlaying = true
+                this.toolbarHidden = true
+                return
+              }
+              this.playMidi(musicObj.musicId)
             }, 700)
 
-            // if (!this.isLogin) {
-            //   this.$store.dispatch('index/localRecent', musicObj)
-            // } else {
-
-            // }
             break
           case 'changeRightData':
             // 切换右侧数据
@@ -786,9 +781,17 @@
           let musicInfo = this.musicInfo[musicId]
           musicInfo.files.forEach((value) => {
             if (value.musicId === musicId) {
-              midiData.url = value.bMid.url
-              midiData.fsize = value.bMid.fsize
-              midiData.md5 = value.bMid.md5
+              let Mid = value.bMid
+              if (!value.bMid.url) {
+                if (!value.mMid.url) {
+                  alert('mid加载失败')
+                  return
+                }
+                Mid = value.mMid
+              }
+              midiData.url = Mid.url
+              midiData.fsize = Mid.fsize
+              midiData.md5 = Mid.md5
             }
           })
           console.log(midiData)

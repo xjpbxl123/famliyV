@@ -36,6 +36,7 @@
   import findTapButtons from './find-tap-buttons'
   import findUserMess from './find-userMess'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import {modules} from 'find-sdk'
   import {
     KEY39,
     KEY42,
@@ -407,7 +408,9 @@
           case 'ok':
             let data = collectList[myCollectIndex]
             if (data) {
-              //  去播放midi
+              //  去播放曲谱
+              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.addRecentOpen(data)
             }
             break
           case 'scoreList':
@@ -468,7 +471,9 @@
           case 'ok':
             let data = recentList[myRecentIndex]
             if (data) {
-              //  去播放midi
+              //  去播放曲谱
+              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.addRecentOpen(data)
             }
             break
           case 'back':
@@ -507,6 +512,24 @@
           case 4:
             this.recentOpenButtonAction(type)
             break
+        }
+      },
+      // 加入最近打开
+      addRecentOpen (musicObj, typeNum) {
+        let recentObj = {
+          musicId: musicObj.musicId,
+          bookId: musicObj.bookId,
+          bookName: musicObj.bookName,
+          name: musicObj.name,
+          styleName: musicObj.styleName,
+          practiceTime: +new Date()
+        }
+        if (recentObj) {
+          if (!this.isLogin) {
+            this.$store.dispatch('index/localRecent', recentObj)
+          } else {
+            this.$store.dispatch('index/addRecentOpen', recentObj)
+          }
         }
       },
       /**
