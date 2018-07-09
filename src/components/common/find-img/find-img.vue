@@ -51,6 +51,10 @@
     //   )
     // },
     created () {
+      if (this.src === './static/images/more.8015af2.png') {
+        this.url = this.src
+        return
+      }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
           console.log(data.url)
