@@ -57,6 +57,7 @@
       }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
+          console.log('cacheUrl', data.url)
           let image = new Image()
           image.src = data.url
           image.onload = () => {
@@ -66,7 +67,7 @@
                 this.url = data.url
                 clearInterval(checkoutImg)
               }
-            }, 1000)
+            }, Math.random() * 1000)
           }
         } else {
           console.log(data.desc)
