@@ -190,7 +190,7 @@
 .banner-right {
   width: 688px;
   height: 1080px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .banner-title {
   display: flex;

@@ -285,6 +285,7 @@ export default function createStore () {
        * @desc 用户注销
        * */
       logout ({dispatch}) {
+        modules.user.logOut()
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
       },
       /**

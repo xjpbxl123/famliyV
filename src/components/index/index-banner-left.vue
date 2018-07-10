@@ -103,7 +103,7 @@
     height: 100%;
     text-align: center;
     box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
   }
 
   .hide {
