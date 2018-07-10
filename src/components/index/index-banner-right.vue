@@ -17,6 +17,7 @@
         <div class="outBox">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
             <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+              <div class="item-logo iconfont icon-song" :class="{'play': index===rightSelectedIndex && isPlaying,  'icon-go-album': isPlaying && index===rightSelectedIndex}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -26,6 +27,7 @@
           </div>
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
             <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+              <div class="item-logo iconfont icon-song " :class="{'play': index===rightSelectedIndex && isPlaying, 'icon-go-album': isPlaying && index===rightSelectedIndex}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -52,12 +54,14 @@
       },
       rightSelectedIndex: {
         type: Number
+      },
+      isPlaying: {
+        type: Boolean
       }
     },
     watch: {
       rightSelectedIndex (value, oldValue) {
         // 控制列表位置
-
         console.log(value)
         let rightData = []
         this.rightType === 'recentOpen' ? rightData = this.recentOpenList : rightData = this.collectList
@@ -182,6 +186,10 @@
     background-position-x: 100%;
   }
 }
+@keyframes turn {
+  from {transform:rotate(0deg)}
+  to {transform:rotate(360deg)}
+}
 .banner-rights {
   display: flex;
   flex: 1;
@@ -263,6 +271,16 @@
           rgba(255, 255, 255, 0.1),
           rgba(255, 255, 255, 0));
       }
+      .item-logo {
+        font-size: 42px;
+        color: #fff;
+        position: absolute;
+        top: 40px;
+        left: 35px;
+        &.play {
+          animation:turn 2s infinite linear;
+        }
+      }
       .musicInfo {
         width: 406px;
         height: 100%;
@@ -296,17 +314,7 @@
           opacity: 0.55;
           font-size: 24px;
         }
-      &::before {
-        position: absolute;
-        content: "";
-        background: url("./images/icon_music_right.png") no-repeat center;
-        width: 40px;
-        height: 40px;
-        background-size: 100% 100%;
-        left: 40px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
+
     }
 
   }

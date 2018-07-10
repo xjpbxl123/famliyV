@@ -20,7 +20,8 @@
         :recentOpenList="isLogin?recentOpenList:localRecent"
         :rightSelectedIndex="rightSelectedIndex"
         :collectList="isLogin?collectList:localCollect"
-        :rightType="rightType"/>
+        :rightType="rightType"
+        :isPlaying="isPlaying"/>
     </div>
     <!-- <div class="footBack"></div> -->
     <find-cover :activeNamespace="namespace">
@@ -510,6 +511,11 @@
         if (val) {
           this.hasClicked = false
         }
+      },
+      isPlaying (val) {
+        if (val) {
+          modules.device.turnOnOffScreen(!val)
+        }
       }
     },
     methods: {
@@ -830,10 +836,11 @@
             })
             break
           case 'keyBoardMute':
-            if (this.controlButtons[0].checked) {
-
-            }
-
+            this.controlButtons[0].checked = !this.controlButtons[0].checked
+            modules.mutePedal.setPedalMuteOnOff()
+            modules.settings.getProperty('isPedalMuteOn').then((data) => {
+              this.controlButtons[0].checked = data
+            })
             break
           default:
             console.log('108')
