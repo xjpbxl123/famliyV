@@ -1,6 +1,6 @@
 <template>
   <div class="find-ablum-title">
-    <p class="name" v-text="name"></p>
+    <p class="name" v-text="name" :class="{active: isActive}"></p>
     <span class="num"><span></span><span></span></span>
   </div>
 </template>
@@ -13,6 +13,10 @@
       border-bottom: 1px solid #597399;
       padding-bottom: 10px;
       margin: 0;
+      &.active {
+        color: #fff;
+        border-bottom: 1px solid #fff;
+      }
     }
     .num {
       padding-top: 10px;
@@ -22,6 +26,7 @@
       justify-content: space-between;
       font-size: 20px;
       color: #597399;
+      font-family: PingFangSC-Medium;
     }
   }
 </style>
@@ -29,7 +34,8 @@
   export default {
     name: 'find-ablum-title',
     props: {
-      name: String
+      name: String,
+      isActive: Boolean
     },
     data () {
       return {}

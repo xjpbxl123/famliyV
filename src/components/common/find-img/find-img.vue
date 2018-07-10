@@ -85,6 +85,7 @@
       height: 100%;
       position: absolute;
       bottom: 0;
+      left: 0;
     }
     h1 {
       font-size: 70px;

@@ -1,8 +1,8 @@
 <template>
-  <div class='find-ablum-card' :class="{active:select===index}">
-    <!-- <img :src="ablum.shareCover" v-if="type===2" alt="" class="coverImg"> -->
-    <findAblumTitle :name="ablum.name"></findAblumTitle>
-    <findAlbum :albumArr="ablum.bookCover" ></findAlbum>
+  <div class='find-ablum-card'  :class="{active:select === index&&type !== 2, styleActive:select===index&&type === 2,type2: type===2}">
+    <findImg :src="ablum.cover" v-if="type === 2" alt="" class="coverImg" :beforeImage="defaultImg" :errorImage="defaultImg"></findImg>
+    <findAblumTitle :name="ablum.name" class="white" :isActive="select === index"></findAblumTitle>
+    <findAlbum :albumArr="ablum.bookCover" v-if="type !== 2"></findAlbum>
   </div>
 </template>
 <style lang=scss scoped type=text/scss>
@@ -19,13 +19,20 @@
       -webkit-background-size: 100% 100%;
       background-size: 100% 100%;
     }
-    .coverImg{
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
+    &.styleActive{
+      background: url("./bg_bgchoose.png") no-repeat;
+      -webkit-background-size: 100% 100%;
+      background-size: 100% 100%;
     }
+    .coverImg{
+      width: 364px;
+      height: 266px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 69px;
+    }
+
     ul {
       position: absolute;
       height: 246px;
@@ -38,12 +45,15 @@
       top: 115px;
     }
   }
+  .type2{
+    background: url("./bg_normal.png") no-repeat;
+  }
 </style>
 
 <script>
   import findAlbum from 'components/common/find-Album/find-Album'
   import findAblumTitle from 'components/common/find-ablum-title/find-ablum-title'
-
+  import findImg from '../find-img/find-img'
   export default {
     name: 'popular',
     props: {
@@ -58,11 +68,14 @@
       type: Number
     },
     data () {
-      return {}
+      return {
+        defaultImg: require('../../popular/images/pic_books_nomal.png')
+      }
     },
     components: {
       findAlbum,
-      findAblumTitle
+      findAblumTitle,
+      findImg
     }
   }
 </script>

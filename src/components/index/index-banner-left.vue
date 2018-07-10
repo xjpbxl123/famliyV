@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <div>
-          <img class="avatar" :src="userInfo.imageUrl || require('./images/admin.png')" alt="" >
+          <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" ></findImg>
         </div>
         <span class="nick-name" v-text="userInfo.nickName"></span>
         <div class="used-time">
@@ -43,7 +43,7 @@
 <script>
   import qrCode from './index-qrcode'
   import calendar from './index-calendar'
-
+  import findImg from '../common/find-img/find-img'
   export default {
     name: 'index-banner-left',
     props: {
@@ -57,7 +57,7 @@
     },
     data () {
       return {
-        imgError: 'this.src="' + require('./images/admin.png') + '"'
+        adminUrl: require('./images/admin.png')
       }
     },
     watch: {
@@ -88,7 +88,8 @@
     },
     components: {
       qrCode,
-      calendar
+      calendar,
+      findImg
     }
   }
 </script>
@@ -124,6 +125,7 @@
 
   .avatar {
     width: 163px;
+    margin: 0 auto;
     height: 163px;
     border-radius: 50%;
   }
