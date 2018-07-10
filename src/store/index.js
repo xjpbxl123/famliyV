@@ -14,7 +14,7 @@ import material from './modules/material'
 import staff from './modules/staff'
 import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
-import {nativeStorage} from 'find-sdk'
+import {nativeStorage, modules} from 'find-sdk'
 import {getCurEnvs} from '../scripts/utils'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const INIT_ENV = 'INIT_ENV' // 初始化环境变量
@@ -251,7 +251,7 @@ export default function createStore () {
       /**
        * @desc 获取用户信息
        * */
-      getUserInfo ({dispatch}) {
+      getUserInfo ({dispatch, state}) {
         // let root = process.env.production.HTTP_ROOT
         return http.post('', {
           cmd: 'account.getInfo'
@@ -262,7 +262,21 @@ export default function createStore () {
                 body[value] = ''
               }
             }
-            return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
+            // 通知原生登陆了
+            // session userType userId mark userName
+            let userInfoObj = {
+              session: state.storage.sessionId,
+              userType: body.userType,
+              mark: body.mark,
+              userId: parseInt(body.userId),
+              userName: body.userName
+            }
+            modules.user.setUserInfo(userInfoObj).then((data) => {
+              if (data) {
+                // 原生设置成功
+                return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
+              }
+            })
           }
           return {userInfo: body, isLogin: false}
         })

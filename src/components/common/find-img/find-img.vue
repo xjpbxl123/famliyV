@@ -57,7 +57,6 @@
       }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
-          console.log('cacheUrl', data.url)
           let image = new Image()
           image.src = data.url
           image.onload = () => {
@@ -86,6 +85,7 @@
       height: 100%;
       position: absolute;
       bottom: 0;
+      left: 0;
     }
     h1 {
       font-size: 70px;
