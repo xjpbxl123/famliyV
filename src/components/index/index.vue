@@ -21,6 +21,7 @@
         :rightSelectedIndex="rightSelectedIndex"
         :collectList="isLogin?collectList:localCollect"
         :rightType="rightType"
+        :isPlaying="isPlaying"
         :isPlayingMusicId="isPlayingMusicId"/>
     </div>
     <!-- <div class="footBack"></div> -->
@@ -37,7 +38,7 @@
     <fh-player ref="player" :source="playerSource" :hidden="playerHidden" :style="{width:0,height:0}"
         @initComplete="playerInitComplete">
     </fh-player>
-    <toolbar :hidden="toolbarHidden">
+    <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button,index) in userActionButtons"
             :hidden="isPlaying"
             :key="index"
@@ -59,15 +60,15 @@
             :icon="button.icon"/>
       <group id="501" :hidden="isPlaying">
         <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
-                   :style="{color:'#fff',backgroundColor:'#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
+                   :style="{color:'#fff',backgroundColor:'#52931E',textColor:'#fff',dotColor: '#52931E',gradient: true}"/>
         <icon-item id="401" pianoKey="67" text="" icon="0xe601"
-                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
+                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',gradient: true}"/>
         <icon-item id="402" pianoKey="68" titlePosition="in" :text="speed"
-                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
+                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18,gradient: true}"/>
         <icon-item id="403" pianoKey="69" text="" icon="0xe605"
-                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
+                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',gradient: true}"/>
         <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre"
-                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
+                   :style="{color:'#fff',backgroundColor:'#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18,gradient: true}"/>
       </group>
       <icon-item v-for="(button,index) in controlButtons"
         :longClick="button.longClick"
@@ -79,7 +80,8 @@
         :hidden="button.hidden || isPlaying"
         :checkable="button.checkable"
         :checked="button.checked"
-        :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+        :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor, gradient: button.gradient}"/>
+
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
           :key="index"
@@ -90,7 +92,7 @@
           :hidden="button.hidden"
           :checkable="button.checkable"
           :checked="button.checked"
-          :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
 </template>
@@ -151,7 +153,7 @@
         clickInterval: null,
         timer: 0,
         playerHidden: false,
-        hasClicked: false,
+        playRightType: '',
         playerSource: {
           mid: {
             midiUrl: ''
@@ -182,12 +184,12 @@
           }
         ],
         bigBUtton: [
-          {id: 4, pianoKey: 37, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256'}},
-          {id: 5, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#B47119', dotColor: '#B47119'}},
-          {id: 7, pianoKey: 49, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF'}},
-          {id: 8, pianoKey: 54, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#4E59E1', dotColor: '#4E59E1'}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F'}}
+          {id: 4, pianoKey: 37, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256', gradient: true}},
+          {id: 5, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45', gradient: true}},
+          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#B47119', dotColor: '#B47119', gradient: true}},
+          {id: 7, pianoKey: 49, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF', gradient: true}},
+          {id: 8, pianoKey: 54, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#4E59E1', dotColor: '#4E59E1', gradient: true}},
+          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F', gradient: true}}
         ],
         controlButtons: [
           {
@@ -207,7 +209,8 @@
             icon: '0xe609',
             backgroundColor: '#616161',
             dotColor: '#616161',
-            id: 10
+            id: 10,
+            gradient: true
           },
           {
             pianoKey: 73,
@@ -500,11 +503,6 @@
           this.getCollectList()
         } else {
           this.userActionButtons[1].text = '登陆'
-        }
-      },
-      rightSelectedIndex (val) {
-        if (val) {
-          this.hasClicked = false
         }
       },
       isPlaying (val) {
@@ -814,12 +812,6 @@
             this.clickInterval = setTimeout(() => {
               console.log('单击')
               this.timer = 0
-              if (this.hasClicked) {
-                this.$refs.player.play()
-                this.isPlaying = true
-                this.isPlayingMusicId = musicObj.musicId
-                return
-              }
               this.playMidi(musicObj.musicId)
             }, 700)
 
@@ -917,19 +909,23 @@
         this.$refs.player.play().then(() => {
           console.log('end')
           this.isPlaying = false
+          if (this.playRightType !== this.rightType) {
+            // 列表切换了
+            return
+          }
           if (rightActiveIndex === list.length - 1) {
             // 已经是最后一首了
             return
           }
           rightActiveIndex++
-          rightActiveIndex = Math.min(rightActiveIndex, data.length - 1)
+          rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
           if (rightActiveIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
           this.buttonActions('right-play')
         })
+        this.playRightType = this.rightType
         this.isPlaying = true
-        this.hasClicked = true
         this.isPlayingMusicId = list[rightActiveIndex].musicId
       }
     },

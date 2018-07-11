@@ -1,0 +1,400 @@
+.bottom {
+  position: absolute;
+  height: 60px;
+  width: 100%;
+  z-index: 100;
+  bottom: 0;
+}
+.bottom button {
+  position: absolute;
+  border: 0;
+}
+.bottom button.key-27 {
+  left: 40px;
+  transform: translateX(-50%);
+}
+.bottom button.key-28 {
+  left: 90.5px;
+  transform: translateX(-50%);
+}
+.bottom button.key-29 {
+  left: 141px;
+  transform: translateX(-50%);
+}
+.bottom button.key-30 {
+  left: 200px;
+  transform: translateX(-50%);
+}
+.bottom button.key-31 {
+  left: 242px;
+  transform: translateX(-50%);
+}
+.bottom button.key-32 {
+  left: 300px;
+  transform: translateX(-50%);
+}
+.bottom button.key-33 {
+  left: 336px;
+  transform: translateX(-50%);
+}
+.bottom button.key-34 {
+  left: 396px;
+  transform: translateX(-50%);
+}
+.bottom button.key-35 {
+  left: 434px;
+  transform: translateX(-50%);
+}
+.bottom button.key-36 {
+  left: 486px;
+  transform: translateX(-50%);
+}
+.bottom button.key-37 {
+  left: 536px;
+  transform: translateX(-50%);
+}
+.bottom button.key-38 {
+  left: 592px;
+  transform: translateX(-50%);
+}
+.bottom button.key-39 {
+  left: 640px;
+  transform: translateX(-50%);
+}
+.bottom button.key-40 {
+  left: 696.5px;
+  transform: translateX(-50%);
+}
+.bottom button.key-41 {
+  left: 747px;
+  transform: translateX(-50%);
+}
+.bottom button.key-42 {
+  left: 790px;
+  transform: translateX(-50%);
+}
+.bottom button.key-43 {
+  left: 844px;
+  transform: translateX(-50%);
+}
+.bottom button.key-44 {
+  left: 890px;
+  transform: translateX(-50%);
+}
+.bottom button.key-45 {
+  left: 942px;
+  transform: translateX(-50%);
+}
+.bottom button.key-46 {
+  left: 988px;
+  transform: translateX(-50%);
+}
+.bottom button.key-47 {
+  left: 1038px;
+  transform: translateX(-50%);
+}
+.bottom button.key-48 {
+  left: 1090px;
+  transform: translateX(-50%);
+}
+.bottom button.key-49 {
+  left: 1145px;
+  transform: translateX(-50%);
+}
+.bottom button.key-50 {
+  left: 1190px;
+  transform: translateX(-50%);
+}
+.bottom button.key-51 {
+  left: 1240px;
+  transform: translateX(-50%);
+}
+.bottom button.key-52 {
+  left: 1290px;
+  transform: translateX(-50%);
+}
+.bottom button.key-53 {
+  left: 1342px;
+  transform: translateX(-50%);
+}
+.bottom button.key-54 {
+  left: 1400px;
+  transform: translateX(-50%);
+}
+.bottom button.key-55 {
+  left: 1444px;
+  transform: translateX(-50%);
+}
+.bottom button.key-56 {
+  left: 1495px;
+  transform: translateX(-50%);
+}
+.bottom button.key-57 {
+  left: 1540px;
+  transform: translateX(-50%);
+}
+.bottom button.key-58 {
+  left: 1585px;
+  transform: translateX(-50%);
+}
+.bottom button.key-59 {
+  left: 1638px;
+  transform: translateX(-50%);
+}
+.bottom button.key-60 {
+  left: 1690px;
+  transform: translateX(-50%);
+}
+.bottom button.key-61 {
+  left: 1740px;
+  transform: translateX(-50%);
+}
+.bottom button.key-62 {
+  left: 1792px;
+  transform: translateX(-50%);
+}
+.bottom button.key-63 {
+  left: 1850px;
+  transform: translateX(-50%);
+}
+.bottom button.key-64 {
+  left: 1888px;
+  transform: translateX(-50%);
+}
+.bottom button.key-65 {
+  left: 1938px;
+  transform: translateX(-50%);
+}
+.bottom button.key-66 {
+  left: 1982px;
+  transform: translateX(-50%);
+}
+.bottom button.key-67 {
+  left: 2028px;
+  transform: translateX(-50%);
+}
+.bottom button.key-68 {
+  left: 2078px;
+  transform: translateX(-50%);
+}
+.bottom button.key-69 {
+  left: 2128px;
+  transform: translateX(-50%);
+}
+.bottom button.key-70 {
+  left: 2178px;
+  transform: translateX(-50%);
+}
+.bottom button.key-71 {
+  left: 2230px;
+  transform: translateX(-50%);
+}
+.bottom button.key-72 {
+  left: 2280px;
+  transform: translateX(-50%);
+}
+.bottom button.key-73 {
+  left: 2332px;
+  transform: translateX(-50%);
+}
+.bottom button.key-74 {
+  left: 2382px;
+  transform: translateX(-50%);
+}
+.bottom button.key-75 {
+  left: 2434px;
+  transform: translateX(-50%);
+}
+.bottom button.key-76 {
+  left: 2484px;
+  transform: translateX(-50%);
+}
+.bottom button.key-77 {
+  left: 2534px;
+  transform: translateX(-50%);
+}
+.bottom button.key-78 {
+  left: 2585px;
+  transform: translateX(-50%);
+}
+.bottom button.key-79 {
+  left: 2636px;
+  transform: translateX(-50%);
+}
+.bottom button.key-80 {
+  left: 2683px;
+  transform: translateX(-50%);
+}
+.bottom button.key-81 {
+  left: 2734px;
+  transform: translateX(-50%);
+}
+.bottom button.key-82 {
+  left: 2778px;
+  transform: translateX(-50%);
+}
+.bottom button.key-83 {
+  left: 2830px;
+  transform: translateX(-50%);
+}
+.bottom button.key-84 {
+  left: 2880px;
+  transform: translateX(-50%);
+}
+.bottom button.key-85 {
+  left: 2932px;
+  transform: translateX(-50%);
+}
+.bottom button.key-86 {
+  left: 2982px;
+  transform: translateX(-50%);
+}
+.bottom button.key-87 {
+  left: 3032px;
+  transform: translateX(-50%);
+}
+.bottom button.key-88 {
+  left: 3084px;
+  transform: translateX(-50%);
+}
+.bottom button.key-89 {
+  left: 3138px;
+  transform: translateX(-50%);
+}
+.bottom button.key-90 {
+  left: 3180px;
+  transform: translateX(-50%);
+}
+.bottom button.key-91 {
+  left: 3234px;
+  transform: translateX(-50%);
+}
+.bottom button.key-92 {
+  left: 3282px;
+  transform: translateX(-50%);
+}
+.bottom button.key-93 {
+  left: 3334px;
+  transform: translateX(-50%);
+}
+.bottom button.key-94 {
+  left: 3380px;
+  transform: translateX(-50%);
+}
+.bottom button.key-95 {
+  left: 3432px;
+  transform: translateX(-50%);
+}
+.bottom button.key-96 {
+  left: 3484px;
+  transform: translateX(-50%);
+}
+.bottom button.key-97 {
+  left: 3527px;
+  transform: translateX(-50%);
+}
+.bottom button.key-98 {
+  left: 3590px;
+  transform: translateX(-50%);
+}
+.bottom button.key-99 {
+  left: 3638px;
+  transform: translateX(-50%);
+}
+.bottom button.key-100 {
+  left: 3688px;
+  transform: translateX(-50%);
+}
+.bottom button.key-101 {
+  left: 3736px;
+  transform: translateX(-50%);
+}
+.bottom button.key-102 {
+  left: 3786px;
+  transform: translateX(-50%);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  user-select: none;
+}
+@media screen and (max-width: 3840px) {
+  html {
+    transform: scale(1);
+  }
+}
+@media screen and (max-width: 1920px) {
+  html {
+    transform: scale(0.5);
+  }
+}
+@media screen and (max-width: 1440px) {
+  html {
+    transform: scale(0.375);
+  }
+}
+@media screen and (max-width: 1366px) {
+  html {
+    transform: scale(0.356);
+  }
+}
+@media screen and (max-width: 1280px) {
+  html {
+    transform: scale(0.333);
+  }
+}
+@media screen and (max-width: 1024px) {
+  html {
+    transform: scale(0.267);
+  }
+}
+html {
+  transform-origin: 0 0;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  position: relative;
+  width: 3840px;
+  height: 1080px;
+  font-family: "pingfang SC", Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body #app {
+  background: url("./images/bg_background3.png") 0 0 / cover no-repeat;
+}
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+li {
+  display: inline-block;
+}
+a {
+  color: #42b983;
+}
+button {
+  outline: none;
+}
+#app {
+  height: 100%;
+}
+#app > div {
+  position: relative;
+  height: 100%;
+}
+.fade-enter-active,
+.fade-leave-to {
+  transition: all 0.5s ease-in;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 1200px, 0);
+}
