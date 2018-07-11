@@ -21,11 +21,12 @@
         :rightSelectedIndex="rightSelectedIndex"
         :collectList="isLogin?collectList:localCollect"
         :rightType="rightType"
-        :isPlaying="isPlaying"/>
+        :isPlayingMusicId="isPlayingMusicId"/>
     </div>
     <!-- <div class="footBack"></div> -->
     <find-cover :activeNamespace="namespace">
       <banner-help
+        v-if="showHelpBanner"
         class="help-banner"
         :showHelpBanner="showHelpBanner"
         :helpImg="helpImg"
@@ -37,11 +38,8 @@
         @initComplete="playerInitComplete">
     </fh-player>
     <toolbar :hidden="toolbarHidden">
-      <!-- <text-icon-item v-for="(button,index) in userActionButtons"
-        :key="index" :id=button.id :style="{color:'#fff',textColor:'#fff'}"
-        :pianoKey="button.pianoKey" :text="button.text" titlePosition="in" :icon="button.icon"
-        longClick="false"/> -->
         <icon-item v-for="(button,index) in userActionButtons"
+            :hidden="isPlaying"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -49,16 +47,9 @@
             :pianoKey="button.pianoKey"
             titlePosition="below"
             :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
-      <!-- <image-item v-for="(button,index) in courseButtons"
-        :key="index"
-        :id="button.id"
-        titlePosition="below"
-        :image="button.image"
-        :text="button.text"
-        :pianoKey="button.pianoKey"
-        imageType="big"
-        :style="{color: '#fff',textColor: '#fff'}"/> -->
+
          <text-icon-item v-for="(button) in bigBUtton"
+            :hidden="isPlaying"
             :key="button.id"
             :id="button.id"
             :text="button.text"
@@ -66,7 +57,7 @@
             :positionOffset="button.positionOffset"
             :style="button.style"
             :icon="button.icon"/>
-      <group id="501">
+      <group id="501" :hidden="isPlaying">
         <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
                    :style="{color:'#fff',backgroundColor:'#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
         <icon-item id="401" pianoKey="67" text="" icon="0xe601"
@@ -85,10 +76,21 @@
         :icon="button.icon"
         :pianoKey="button.pianoKey"
         :selected="button.selected"
-        :hidden="button.hidden"
+        :hidden="button.hidden || isPlaying"
         :checkable="button.checkable"
         :checked="button.checked"
         :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+        <icon-item v-for="(button,index) in playButtons"
+          :longClick="button.longClick"
+          :key="index"
+          :id="button.id"
+          :icon="button.icon"
+          :pianoKey="button.pianoKey"
+          :selected="button.selected"
+          :hidden="button.hidden"
+          :checkable="button.checkable"
+          :checked="button.checked"
+          :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
 </template>
@@ -111,7 +113,7 @@
     KEY54,
     KEY66,
     KEY67,
-    KEY68,
+    KEY69,
     KEY70,
     KEY102,
     KEY73,
@@ -121,6 +123,7 @@
     KEY82,
     KEY85,
     KEY87,
+    KEY90,
     KEY97,
     KEY92,
     LONG_KEY94,
@@ -142,6 +145,7 @@
       return {
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
+        closeScreen: false,
         helpImg: [require('./images/help-1.png'), require('./images/help-2.png'), require('./images/help-3.jpg')],
         endIndex: -1,
         clickInterval: null,
@@ -149,9 +153,13 @@
         playerHidden: false,
         hasClicked: false,
         playerSource: {
-          midiUrl: ''
+          mid: {
+            midiUrl: ''
+          },
+          midiUrl: 'ddd'
         },
         isPlaying: false,
+        isPlayingMusicId: 0,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -173,44 +181,6 @@
 
           }
         ],
-        // courseButtons: [
-        //   {
-        //     pianoKey: 37,
-        //     text: '我的曲谱',
-        //     image: require('./images/my-score.png'),
-        //     id: 4
-        //   },
-        //   {
-        //     pianoKey: 39,
-        //     text: '弹奏录制',
-        //     image: require('./images/recording.png'),
-        //     id: 5
-        //   },
-        //   {
-        //     pianoKey: 42,
-        //     text: '教材练习',
-        //     image: require('./images/material.png'),
-        //     id: 6
-        //   },
-        //   {
-        //     pianoKey: 44,
-        //     text: '流行经典',
-        //     image: require('./images/popular.png'),
-        //     id: 7
-        //   },
-        //   {
-        //     pianoKey: 46,
-        //     text: '名师课程',
-        //     image: require('./images/master.png'),
-        //     id: 8
-        //   },
-        //   {
-        //     pianoKey: 49,
-        //     text: '音乐王国',
-        //     image: require('./images/game.png'),
-        //     id: 9
-        //   }
-        // ],
         bigBUtton: [
           {id: 4, pianoKey: 37, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256'}},
           {id: 5, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45'}},
@@ -294,6 +264,24 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 101
+          }
+        ],
+        playButtons: [
+          {
+            pianoKey: 90,
+            text: '',
+            icon: '0xe625',
+            backgroundColor: '#2fff',
+            dotColor: '#fff',
+            id: 200
+          },
+          {
+            pianoKey: 92,
+            text: '',
+            icon: '0xe6da',
+            backgroundColor: '#2fff',
+            dotColor: '#fff',
+            id: 19
           },
           {
             pianoKey: 94,
@@ -320,14 +308,6 @@
             backgroundColor: '#2fff',
             dotColor: '#fff',
             id: 18
-          },
-          {
-            pianoKey: 92,
-            text: '',
-            icon: '0xe6da',
-            backgroundColor: '#2fff',
-            dotColor: '#fff',
-            id: 19
           }
         ],
         metronome: false,
@@ -338,13 +318,14 @@
     },
     find: {
       [TOOLBAR_PRESSED] ({hidden}) {
+        // if (this.isPlaying) {
+        //   this.$refs.player.pause()
+        //   this.$refs.player.reset()
+        //   this.isPlaying = false
+        //   this.isPlayingMusicId = 0
+        //   return
+        // }
         this.toolbarHidden = hidden
-        if (!hidden && this.isPlaying) {
-          this.$refs.player.pause()
-          this.toolbarHidden = false
-          this.isPlaying = false
-          return
-        }
         if (hidden && this.metronome) {
           return
         }
@@ -392,7 +373,7 @@
         // 节拍器减速
         this.buttonActions('speedDown')
       },
-      [KEY68] () {
+      [KEY69] () {
         // 节拍器加速
         this.buttonActions('speedUp')
       },
@@ -425,6 +406,10 @@
       [KEY87] () {
         this.buttonActions('tone')
       },
+      [KEY90] () {
+        // 熄屏
+        this.buttonActions('closeScreen', true)
+      },
       [LONG_KEY94] () {
         console.log('up')
         this.buttonActions('right-up')
@@ -446,15 +431,22 @@
         this.buttonActions('changeRightData')
       },
       [BACK_PRESSED] () {
-        if (this.isPlaying && this.toolbarHidden) {
+        if (this.isPlaying) {
           this.$refs.player.pause()
-          this.toolbarHidden = false
+          this.$refs.player.reset()
           this.isPlaying = false
+          this.isPlayingMusicId = 0
         }
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
           this.clickHelp(keys)
+        }
+      },
+      screenClose: {
+        [INTERCEPT_DOWN] (keys) {
+          // 亮屏
+          this.buttonActions('closeScreen', false)
         }
       }
     },
@@ -480,6 +472,9 @@
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
         namespace () {
+          if (this.closeScreen) {
+            return 'screenClose'
+          }
           return this.showHelpBanner ? 'banner' : ''
         },
         rightType: state => state.index.rightType
@@ -632,7 +627,7 @@
       /**
        * @desc 按钮组件按钮事件
        * */
-      buttonActions (type) {
+      buttonActions (type, bool) {
         let activeIndex = this.selectedIndex
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
@@ -789,7 +784,11 @@
             break
           case 'right-play':
             // 右侧列表play事件
-
+            if (this.isPlaying) {
+              this.$refs.player.pause()
+              this.$refs.player.reset()
+              this.isPlaying = false
+            }
             let list = []
             let list1 = []
             let musicObj = {}
@@ -818,7 +817,7 @@
               if (this.hasClicked) {
                 this.$refs.player.play()
                 this.isPlaying = true
-                this.toolbarHidden = true
+                this.isPlayingMusicId = musicObj.musicId
                 return
               }
               this.playMidi(musicObj.musicId)
@@ -841,6 +840,11 @@
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
             })
+            break
+          case 'closeScreen':
+            console.log(bool)
+            this.closeScreen = bool
+            modules.device.turnOnOffScreen(bool)
             break
           default:
             console.log('108')
@@ -885,11 +889,12 @@
               console.log(downloadObj, 'downloadObj')
               download.downloadFile(downloadObj).then((data) => {
                 console.log(data, 'download')
-                this.playerSource.midiUrl = data.path
+                this.playerSource.mid.midiUrl = data.path
+                console.log(this.playerSource)
               })
             } else {
               // 直接打开
-              this.playerSource.midiUrl = data.path
+              this.playerSource.mid.midiUrl = data.path
             }
           })
         })
@@ -900,19 +905,19 @@
         if (!data.result) {
           return
         }
+        let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
+        let collectList = this.isLogin ? this.collectList : this.localCollect
+        let rightActiveIndex = this.rightSelectedIndex
+        let list = []
+        if (this.rightType === 'myCollect') {
+          list = collectList
+        } else if (this.rightType === 'recentOpen') {
+          list = recentOpenList
+        }
         this.$refs.player.play().then(() => {
           console.log('end')
           this.isPlaying = false
-          let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
-          let collectList = this.isLogin ? this.collectList : this.localCollect
-          let rightActiveIndex = this.rightSelectedIndex
-          let data = []
-          if (this.rightType === 'myCollect') {
-            data = collectList
-          } else if (this.rightType === 'recentOpen') {
-            data = recentOpenList
-          }
-          if (rightActiveIndex === data.length - 1) {
+          if (rightActiveIndex === list.length - 1) {
             // 已经是最后一首了
             return
           }
@@ -924,8 +929,8 @@
           this.buttonActions('right-play')
         })
         this.isPlaying = true
-        this.toolbarHidden = true
         this.hasClicked = true
+        this.isPlayingMusicId = list[rightActiveIndex].musicId
       }
     },
     created () {
@@ -942,6 +947,7 @@
     mounted () {
       setTimeout(() => {
         this.toolbarHidden = false
+        modules.global.checkAppletsUpgrade()
       }, 500)
     },
     beforeDestroy () {
