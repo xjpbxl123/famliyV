@@ -18,14 +18,14 @@ module.exports = webpackMerge(webpackBase, {
     filename: assist.assetPath('javascript/[name].[chunkhash].js'),
     chunkFilename: assist.assetPath('javascript/[name].[chunkhash].js')
   },
-  module: {
-    rules: [
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'image-webpack-loader'
-      }
-    ]
-  },
+  //  module: {
+  //    rules: [
+  //      {
+  //        test: /\.(png|jpg|gif|svg)$/,
+  //        loader: 'image-webpack-loader'
+  //      }
+  //    ]
+  //  },
   devtool: shouldUseSourceMap && 'source-map',
   plugins: [
     new webpack.HashedModuleIdsPlugin(),
