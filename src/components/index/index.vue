@@ -838,6 +838,7 @@
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
             }
+
             if (this.isPlaying) {
               // 获取进度进去播放
               this.$refs.player.pause()
@@ -851,11 +852,15 @@
               }
             }
             if (this.enterPlay) {
-              this.$refs.player.play().then(() => {
-                this.isPlaying = false
-              })
-              this.enterPlay = false
-              this.isPlaying = true
+              if (musicObj.musicId !== this.isPlayingMusicId) {
+                this.$refs.player.reset()
+                this.$refs.player.play().then(() => {
+                  this.isPlaying = false
+                })
+                this.enterPlay = false
+                this.isPlaying = true
+              }
+              return
             }
             if (!this.timer) {
               this.timer = +new Date()
@@ -966,7 +971,14 @@
               })
             } else {
               // 直接打开
-              this.playerSource.mid.midiUrl = data.path
+              console.log('直接打开')
+              console.log(data.path)
+              this.playerSource = {
+                mid: {
+                  midiUrl: data.path
+                },
+                midiUrl: 'ddd'
+              }
             }
           })
         })

@@ -374,6 +374,7 @@
             let data = myPlay[myPlayIndex]
             if (data) {
               //  去播放midi
+
             }
             break
           case 'back':
