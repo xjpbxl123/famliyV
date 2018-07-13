@@ -160,7 +160,7 @@ export default {
     getMyRecord ({commit}) {
       file.readFolderFile('$userRecord').then((res) => {
         if (res.length === 0) {
-          return
+          return commit(MY_RECORD, [])
         }
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
@@ -185,7 +185,7 @@ export default {
     getMyPlay ({commit}) {
       file.readFolderFile('$userHistory').then((res) => {
         if (res.length === 0) {
-          return
+          return commit(MY_PLAY, [])
         }
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')

@@ -169,7 +169,7 @@
       [KEY49] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
         this.controlButtons[this.controlButtons.length - 2].show = false
-        this.controlButtons[this.controlButtons.legnth - 1].show = false
+        this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY54] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
@@ -303,6 +303,13 @@
                   // console.log(res)
                   this.$router.push({path: '/openImg', query: {url: data.http}})
                   // })
+                } else if (data.typeName === 'pdf') {
+                  modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    modules.nativeRouter.openPDFFile({'path': res.path})
+                  })
                 }
               }
             }
@@ -342,10 +349,19 @@
             let data = myRecord[myRecordIndex]
             if (data) {
               //  去播放midi
+              this.playMidi('$userRecord/' + data.name)
             }
             break
           case 'delete':
-            console.log('删除这条录音')
+            let data1 = myRecord[myRecordIndex]
+            if (!data1) {
+              return
+            }
+            modules.file.removeFile('$userRecord/' + data1.name).then(res => {
+              if (res) {
+                this.getMyRecord()
+              }
+            })
             break
           case 'back':
             this.$router.back()
@@ -374,7 +390,7 @@
             let data = myPlay[myPlayIndex]
             if (data) {
               //  去播放midi
-
+              this.playMidi('$userHistory/' + data.name)
             }
             break
           case 'back':
@@ -535,6 +551,13 @@
             this.$store.dispatch('index/addRecentOpen', recentObj)
           }
         }
+      },
+      playMidi (path) {
+        modules.file.pathComplement(path).then((res) => {
+          if (res.path) {
+            modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': {'midiPath': res.path}})
+          }
+        })
       },
       /**
        * @desc 退到首页的时候清空

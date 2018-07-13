@@ -9,11 +9,11 @@
         <span class="scan">扫描二维码登录</span>
       </div>
       <div v-else>
-        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" ></findImg>
+        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true"></findImg>
         <span class="nick-name" v-text="userInfo.nickName"></span>
       </div>
 
-      <calendar :setCalendarData="setCalendarData" />
+      <calendar :setCalendarData="setCalendarData" v-if="isActivation && isCalendar"/>
       <div v-if="isActivation && !isCalendar">
 
         <div class="used-time">
@@ -131,13 +131,15 @@
     width: 163px;
     margin: 0 auto;
     height: 163px;
-    border-radius: 50%;
+    img {
+       border-radius: 50% !important;
+    }
   }
 
   .scan,
   .nick-name {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 20px;
     font-size: 26px;
     color: #fff;
   }

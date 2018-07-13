@@ -199,13 +199,13 @@
           }
         ],
         bigBUtton: [
-          {id: 4, pianoKey: 37, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256', gradient: true}},
-          {id: 5, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45', gradient: true}},
+          {id: 7, pianoKey: 37, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256', gradient: true}},
+          {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45', gradient: true}},
           {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#B47119', dotColor: '#B47119', gradient: true}},
-          {id: 7, pianoKey: 49, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF', gradient: true}},
-          {id: 8, pianoKey: 54, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#4E59E1', dotColor: '#4E59E1', gradient: true}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F', gradient: true}},
-          {id: 10, pianoKey: 61, text: '乐理技巧', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#B47119', dotColor: '#B47119', gradient: true}}
+          {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF', gradient: true}},
+          {id: 5, pianoKey: 54, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#4E59E1', dotColor: '#4E59E1', gradient: true}},
+          {id: 10, pianoKey: 58, text: '乐理&技巧', icon: '0xe69f', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F', gradient: true}},
+          {id: 9, pianoKey: 61, text: '音乐王国', icon: '0xe604', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF', gradient: true}}
         ],
         controlButtons: [
           {
@@ -223,8 +223,8 @@
             pianoKey: 102,
             text: '',
             icon: '0xe609',
-            backgroundColor: '#616161',
-            dotColor: '#616161',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 100,
             gradient: true
           },
@@ -287,21 +287,21 @@
         ],
         playButtons: [
           {
-            pianoKey: 92,
+            pianoKey: 99,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
             id: 19
           },
           {
-            pianoKey: 94,
+            pianoKey: 92,
             text: '',
             icon: '0xe63c',
             backgroundColor: '#2fff',
             id: 16
           },
           {
-            pianoKey: 97,
+            pianoKey: 94,
             longClick: true,
             text: '',
             icon: '0xe654',
@@ -309,7 +309,7 @@
             id: 17
           },
           {
-            pianoKey: 99,
+            pianoKey: 97,
             longClick: true,
             text: '',
             icon: '0xe657',
@@ -354,27 +354,27 @@
         this.buttonActions('set')
       },
       [KEY37] () {
-        this.buttonActions('myScore')
+        this.buttonActions('popular')
       },
       [KEY42] () {
-        this.buttonActions('playRecord')
+        this.buttonActions('famous')
       },
       [KEY46] () {
         this.buttonActions('material')
       },
       [KEY49] () {
-        this.buttonActions('popular')
+        this.buttonActions('myScore')
       },
       [KEY54] () {
-        this.buttonActions('famous')
+        this.buttonActions('playRecord')
       },
       [KEY61] () {
-        // 乐理与技巧
-        this.buttonActions('skill')
-      },
-      [KEY58] () {
         // 音乐王国
         this.buttonActions('game')
+      },
+      [KEY58] () {
+        //  乐理与技巧
+        this.buttonActions('skill')
       },
       [KEY66] () {
         // 打开节拍器
@@ -434,16 +434,16 @@
         this.buttonActions('right-down')
       },
       [KEY94] () {
-        this.buttonActions('right-up')
-      },
-      [KEY97] () {
         this.buttonActions('right-down')
       },
-      [KEY99] () {
+      [KEY97] () {
         this.buttonActions('right-play')
       },
-      [KEY92] () {
+      [KEY99] () {
         this.buttonActions('changeRightData')
+      },
+      [KEY92] () {
+        this.buttonActions('right-up')
       },
       [BACK_PRESSED] () {
         if (this.isPlaying) {
@@ -609,6 +609,12 @@
        * @desc 用户数据模式
        * */
       userDataMode () {
+        modules.settings.getProperty('isPracticeDataActive').then((data) => {
+          this.isActivation = Boolean(data)
+        })
+        modules.settings.getProperty('practiceDataMode').then((data) => {
+          this.isCalendar = Boolean(!data)
+        })
         modules.notification.regist('UserCountDataMode', data => {
           this.isActivation = data.isActivation
           this.isCalendar = data.isCalendar
@@ -852,7 +858,7 @@
               }
             }
             if (this.enterPlay) {
-              if (musicObj.musicId !== this.isPlayingMusicId) {
+              if (musicObj.musicId === this.isPlayingMusicId) {
                 this.$refs.player.reset()
                 this.$refs.player.play().then(() => {
                   this.isPlaying = false

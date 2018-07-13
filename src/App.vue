@@ -29,11 +29,14 @@
 
       // 监听背景设置
       modules.notification.regist('SetBackgroundImage', data => {
-        if (data) {
-          this.backgroundUrl = data
+        if (data.backGroundImageName) {
+          this.backgroundUrl = data.backGroundImageName
         }
       })
-
+      // 毛玻璃效果初始值设置
+      modules.settings.getProperty('isFrostedGlassOn').then((data) => {
+        this.isFrosted = data
+      })
       // 监听毛玻璃效果
       modules.notification.regist('BackgroundFrostedGlass', data => {
         this.isFrosted = data.isFrosted

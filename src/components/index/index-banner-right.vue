@@ -200,12 +200,13 @@
 }
 .banner-right {
   width: 688px;
-  height: 1080px;
+  height: 1040px;
+  margin-top: 40px;
   background-color: rgba(0, 0, 0, 0.1);
 }
 .banner-title {
   display: flex;
-  height: 142px;
+  height: 122px;
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
@@ -222,7 +223,7 @@
       font-size: 65px;
       line-height: 48px;
       color: #ffffff;
-      margin-top: 40px;
+      margin-top: 24px;
     }
     & > span:nth-child(2) {
       font-size: 20px;
@@ -242,7 +243,7 @@
   .near {
     font-size: 34px;
     color: #fff;
-    margin-top: 56px;
+    margin-top: 36px;
   }
   .animate {
     margin-right: 50px;
@@ -251,7 +252,7 @@
     background: url(./images/icon_nearly_right.png) no-repeat;
     background-size: 200% 100%;
     animation: bgrepeat 2s linear 0s infinite alternate;
-    margin-top: 56px;
+    margin-top: 36px;
   }
 }
 .outBox {
