@@ -308,6 +308,20 @@ export default function createStore () {
           commit(DEL_SELECT, key)
           resolve(key)
         })
+      },
+      addPractice ({dispatch, state}) {
+        let month = `${new Date().getMonth() + 1}`
+        let day = `${new Date().getDate()}`
+        if (!state.storage.playCalendar[month]) {
+          return
+        }
+        let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
+        if (playCalendarData[day - 1].practiced) {
+          // 当天已经加入了练琴日历
+          return
+        }
+        playCalendarData[day - 1].practiced = true
+        return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
       }
     },
     modules: {

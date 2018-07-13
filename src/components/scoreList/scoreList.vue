@@ -275,6 +275,7 @@
             console.log('直接去播放曲谱')
             modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
             this.addRecentOpen(scoreList[scoreIndex], 0)
+            this.$store.dispatch('addPractice')
             break
           case 'back':
             this.$router.back()
@@ -355,6 +356,7 @@
                 console.log('去播放曲谱')
                 this.addRecentOpen(scoreList[scoreIndex], typeNum)
                 modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+                this.$store.dispatch('addPractice')
               }
             }
             break

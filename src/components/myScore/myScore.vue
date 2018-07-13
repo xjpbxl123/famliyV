@@ -16,7 +16,7 @@
         :listIndex="myRecentIndex"/>
     </find-wrap>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
-    <toolbar :hidden="toolbarHidden">
+    <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
@@ -104,8 +104,8 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 5,
             show: true
           },
@@ -113,8 +113,8 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 6,
             show: true
           },
@@ -122,8 +122,8 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 7,
             show: true
           },
@@ -411,6 +411,7 @@
               //  去播放曲谱
               modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               this.addRecentOpen(data)
+              this.$store.dispatch('addPractice')
             }
             break
           case 'scoreList':
@@ -473,7 +474,9 @@
             if (data) {
               //  去播放曲谱
               modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.$store.dispatch('myScore/setRecentIndex', 0)
               this.addRecentOpen(data)
+              this.$store.dispatch('addPractice')
             }
             break
           case 'back':

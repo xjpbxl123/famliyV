@@ -197,8 +197,7 @@
     height: 450px;
     position: absolute;
     top: 275px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 2043px;
   }
 
   .searchInput {

@@ -23,6 +23,7 @@
       background: url("./bg_bgchoose.png") no-repeat;
       -webkit-background-size: 100% 100%;
       background-size: 100% 100%;
+      border: 6px solid #A6FFFA;
     }
     .coverImg{
       width: 364px;

@@ -450,10 +450,7 @@ body {
   font-family: "pingfang SC", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body #app {
-  background: url("./images/bg_background3.png") 0 0 / cover no-repeat;
+  overflow: hidden;
 }
 
 h1,

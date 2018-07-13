@@ -49,6 +49,10 @@
     watch: {
       listIndex (value, oldValue) {
         console.log(value)
+        if (value === 0) {
+          this.rightTop = 0
+          return
+        }
         let height = value * 120 * -1
         if (value - oldValue === -1) {
           // up

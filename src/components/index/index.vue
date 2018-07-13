@@ -10,6 +10,8 @@
         :usedTime="usedTime"
         :setCalendarData="setCalendarData"
         :dispatch="dispatchUserInfo"
+        :isActivation="isActivation"
+        :isCalendar="isCalendar"
       />
       <content-center
         :endIndex.sync="endIndex"
@@ -92,7 +94,14 @@
           :hidden="button.hidden"
           :checkable="button.checkable"
           :checked="button.checked"
-          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
+          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: '#fff'}"/>
+        <icon-item
+          key="201"
+          id="201"
+          icon="0xe625"
+          pianoKey="90"
+          :hidden="!isPlaying"
+          :style="{backgroundColor:'#2000',textColor: '#fff',dotColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
@@ -113,8 +122,10 @@
     KEY49,
     KEY58,
     KEY54,
+    KEY61,
     KEY66,
     KEY67,
+    KEY68,
     KEY69,
     KEY70,
     KEY102,
@@ -154,6 +165,7 @@
         timer: 0,
         playerHidden: false,
         playRightType: '',
+        enterPlay: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -162,6 +174,9 @@
         },
         isPlaying: false,
         isPlayingMusicId: 0,
+        isCalendar: false,
+        isActivation: false,
+        interval: null,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -171,7 +186,7 @@
           },
           {
             pianoKey: 32,
-            text: '登陆',
+            text: '登录',
             icon: '0xe651',
             id: 2
           },
@@ -189,7 +204,8 @@
           {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#B47119', dotColor: '#B47119', gradient: true}},
           {id: 7, pianoKey: 49, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#A15CFF', dotColor: '#A15CFF', gradient: true}},
           {id: 8, pianoKey: 54, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#4E59E1', dotColor: '#4E59E1', gradient: true}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F', gradient: true}}
+          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionOffset: 0, style: {backgroundColor: '#F4462F', dotColor: '#F4462F', gradient: true}},
+          {id: 10, pianoKey: 61, text: '乐理技巧', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#B47119', dotColor: '#B47119', gradient: true}}
         ],
         controlButtons: [
           {
@@ -209,7 +225,7 @@
             icon: '0xe609',
             backgroundColor: '#616161',
             dotColor: '#616161',
-            id: 10,
+            id: 100,
             gradient: true
           },
           {
@@ -258,7 +274,7 @@
             icon: '0xe64d',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 100
+            id: 102
           },
           {
             pianoKey: 87,
@@ -271,19 +287,10 @@
         ],
         playButtons: [
           {
-            pianoKey: 90,
-            text: '',
-            icon: '0xe625',
-            backgroundColor: '#2fff',
-            dotColor: '#fff',
-            id: 200
-          },
-          {
             pianoKey: 92,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
-            dotColor: '#fff',
             id: 19
           },
           {
@@ -291,7 +298,6 @@
             text: '',
             icon: '0xe63c',
             backgroundColor: '#2fff',
-            dotColor: '#fff',
             id: 16
           },
           {
@@ -300,7 +306,6 @@
             text: '',
             icon: '0xe654',
             backgroundColor: '#2fff',
-            dotColor: '#fff',
             id: 17
           },
           {
@@ -309,7 +314,6 @@
             text: '',
             icon: '0xe657',
             backgroundColor: '#2fff',
-            dotColor: '#fff',
             id: 18
           }
         ],
@@ -364,9 +368,13 @@
       [KEY54] () {
         this.buttonActions('famous')
       },
-      [KEY58] () {
+      [KEY61] () {
         // 乐理与技巧
         this.buttonActions('skill')
+      },
+      [KEY58] () {
+        // 音乐王国
+        this.buttonActions('game')
       },
       [KEY66] () {
         // 打开节拍器
@@ -375,6 +383,10 @@
       [KEY67] () {
         // 节拍器减速
         this.buttonActions('speedDown')
+      },
+      [KEY68] () {
+        // 节拍器恢复120
+        this.buttonActions('speedRecover')
       },
       [KEY69] () {
         // 节拍器加速
@@ -440,6 +452,10 @@
           this.isPlaying = false
           this.isPlayingMusicId = 0
         }
+        if (this.metronome) {
+          // 节拍器开着 关闭节拍器
+          this.buttonActions('closeMetro')
+        }
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
@@ -502,7 +518,7 @@
           this.getRecentOpenList()
           this.getCollectList()
         } else {
-          this.userActionButtons[1].text = '登陆'
+          this.userActionButtons[1].text = '登录'
         }
       },
       isPlaying (val) {
@@ -580,15 +596,23 @@
        * */
       isSupportMutePedal () {
         modules.settings.getProperty('isSupportMutePedal').then((data) => {
-          console.log(data, 'isSupportMutePedal')
           if (data) {
             // 支持
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
-              console.log(data, 'isPedalMuteOn')
               this.controlButtons[0].checked = data
             })
           }
+        })
+      },
+      /**
+       * @desc 用户数据模式
+       * */
+      userDataMode () {
+        modules.notification.regist('UserCountDataMode', data => {
+          this.isActivation = data.isActivation
+          this.isCalendar = data.isCalendar
+          console.log(data, 'UserCountDataMode')
         })
       },
       /**
@@ -663,6 +687,8 @@
             return this.go('/material')
           case 'skill':
             return modules.nativeRouter.openAppsView()
+          case 'game':
+            return modules.game.openKingdom()
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
           case 'famous':
@@ -696,6 +722,22 @@
             modules.metronome.changeTempoSpeed(true).then(() => {
               this.getMetronomeStatus()
             })
+            break
+          case 'speedRecover':
+            // 恢复节拍器数值到120
+            let time = Math.abs(this.speed - 120) / 10
+            if (this.speed < 120) {
+              for (let i = 0; i < time; i++) {
+                modules.metronome.changeTempoSpeed(true).then(() => {
+                })
+              }
+            } else if (this.speed > 120) {
+              for (let i = 0; i < time; i++) {
+                modules.metronome.changeTempoSpeed(false).then(() => {
+                })
+              }
+            }
+            this.getMetronomeStatus()
             break
           case 'metroTip':
             modules.metronome.changeTempo().then(() => {
@@ -782,11 +824,8 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            if (this.isPlaying) {
-              this.$refs.player.pause()
-              this.$refs.player.reset()
-              this.isPlaying = false
-            }
+            this.$store.dispatch('addPractice')
+
             let list = []
             let list1 = []
             let musicObj = {}
@@ -799,6 +838,25 @@
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
             }
+            if (this.isPlaying) {
+              // 获取进度进去播放
+              this.$refs.player.pause()
+              this.$refs.player.reset()
+              this.isPlaying = false
+              if (musicObj.musicId === this.isPlayingMusicId) {
+                modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
+                this.enterPlay = true
+                this.addRecentOpen(musicObj)
+                return
+              }
+            }
+            if (this.enterPlay) {
+              this.$refs.player.play().then(() => {
+                this.isPlaying = false
+              })
+              this.enterPlay = false
+              this.isPlaying = true
+            }
             if (!this.timer) {
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
@@ -807,6 +865,7 @@
               this.clickInterval = null
               this.timer = 0
               modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
+              this.addRecentOpen(musicObj)
               return
             }
             this.clickInterval = setTimeout(() => {
@@ -842,6 +901,27 @@
             console.log('108')
         }
         this.$store.dispatch('index/setSelected', activeIndex)
+      },
+      // 加入最近打开
+      addRecentOpen (musicObj) {
+        let recentObj = {
+          musicId: musicObj.musicId,
+          bookId: musicObj.bookId,
+          bookName: musicObj.bookName,
+          name: musicObj.name,
+          styleName: musicObj.styleName,
+          practiceTime: +new Date()
+        }
+        if (recentObj) {
+          if (!this.isLogin) {
+            this.$store.dispatch('index/localRecent', recentObj)
+          } else {
+            this.$store.dispatch('index/addRecentOpen', recentObj)
+          }
+        }
+        if (this.rightType === 'recentOpen') {
+          this.$store.dispatch('index/setRightSelect', 0)
+        }
       },
       playMidi (musicId) {
         let midiData = {url: '', md5: '', fsize: 0}
@@ -936,14 +1016,19 @@
       this.getRecentOpenList()
       this.getCollectList()
       this.getMetronomeStatus()
+      this.userDataMode()
       if (!this.sessionId) {
         this.createSession()
       }
     },
     mounted () {
-      setTimeout(() => {
-        this.toolbarHidden = false
+      this.interval = setInterval(() => {
         modules.global.checkAppletsUpgrade()
+        if (this.toolbarHidden === false) {
+          clearInterval(this.interval)
+          return
+        }
+        this.toolbarHidden = false
       }, 500)
     },
     beforeDestroy () {

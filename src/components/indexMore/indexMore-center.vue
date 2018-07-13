@@ -89,11 +89,11 @@
             margin-right: 118px;
             display: flex;
             flex-direction: column;
-            margin-bottom: 7px;
+            margin-bottom: 16px;
             .star {
               display: flex;
               justify-content: center;
-              margin-top: 15px;
+              margin-top: 10px;
             }
             .date {
               font-size: 22px;

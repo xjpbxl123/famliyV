@@ -7,13 +7,15 @@
           <qr-code ref="qrCode" :sessionId="sessionId"/>
         </div>
         <span class="scan">扫描二维码登录</span>
-        <calendar :setCalendarData="setCalendarData"/>
       </div>
       <div v-else>
-        <div>
-          <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" ></findImg>
-        </div>
+        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" ></findImg>
         <span class="nick-name" v-text="userInfo.nickName"></span>
+      </div>
+
+      <calendar :setCalendarData="setCalendarData" />
+      <div v-if="isActivation && !isCalendar">
+
         <div class="used-time">
           <div>
             <i class="iconfont icon-period"></i>
@@ -53,7 +55,9 @@
       isLogin: Boolean,
       userInfo: Object,
       usedTime: Object,
-      dispatch: Function
+      dispatch: Function,
+      isActivation: Boolean,
+      isCalendar: Boolean
     },
     data () {
       return {
