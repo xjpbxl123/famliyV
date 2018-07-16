@@ -83,6 +83,7 @@ export default {
         if (res.length === 0) {
           return
         }
+        let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
@@ -100,21 +101,41 @@ export default {
               item.typeName = 'xml'
             } else if (suffix === 'pdf') {
               item.typeName = 'pdf'
+            } else if (suffix === 'mp4') {
+              item.typeName = 'video'
             }
           }
           let filesName = []
-          res.forEach((item1, index) => {
+          res.forEach((item1, index1) => {
             let nameArr1 = item1.name.split('.')
             let name1 = nameArr1[0]
             let suffix1 = nameArr1[nameArr1.length - 1]
-            if ((name1.indexOf(name) !== -1 && name1.indexOf('_sp') !== -1 && suffix1 === 'mid') || name1 === name) {
+            if (name1 === name) {
               filesName.push(item1.name)
+            } else {
+              if (name1.indexOf(name) !== -1 && name1.indexOf('_sp') !== -1 && suffix1 === 'mid') {
+                deleteIndex.push(index1)
+                filesName.push(item1.name)
+              }
+              if (name1.indexOf(name) !== -1 && name1.indexOf('_video_4k') !== -1 && suffix1 === 'mp4') {
+                filesName.push(item1.name)
+                deleteIndex.push(index1)
+              }
             }
           })
           if (filesName.length > 1) {
             item.name = name
             item.filesName = filesName
             item.typeName = 'song'
+          }
+        })
+
+        let delArr = [...new Set(deleteIndex)]
+        delArr.forEach((data, index) => {
+          if (index === 0) {
+            res.splice(data, 1)
+          } else {
+            res.splice(data - index, 1)
           }
         })
         let newArr = []

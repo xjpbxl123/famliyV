@@ -606,6 +606,14 @@
         })
       },
       /**
+       * @desc 监听清空缓存
+       * */
+      clearCache () {
+        modules.notification.regist('ClearCache', data => {
+          this.$store.dispatch('clearCache')
+        })
+      },
+      /**
        * @desc 用户数据模式
        * */
       userDataMode () {
@@ -937,7 +945,6 @@
       playMidi (musicId) {
         let midiData = {url: '', md5: '', fsize: 0}
         this.$store.dispatch('index/getMusicInfo', musicId).then(() => {
-          console.log(this.musicInfo)
           let musicInfo = this.musicInfo[musicId]
           musicInfo.files.forEach((value) => {
             if (value.musicId === musicId) {
@@ -954,31 +961,22 @@
               midiData.md5 = Mid.md5
             }
           })
-          console.log(midiData)
           let exixtObj = {
             url: midiData.url,
             md5: midiData.md5,
             localPath: '$filesCache/' + musicId
           }
-          console.log(exixtObj, 'exixtObj')
 
           // 判断文件是否存在
           modules.download.fileIsExists(exixtObj).then((data) => {
-            console.log(data, 'exit')
-
             if (!data.path) {
               // 去下载
               let downloadObj = {...exixtObj, fsize: midiData.fsize}
-              console.log(downloadObj, 'downloadObj')
               download.downloadFile(downloadObj).then((data) => {
-                console.log(data, 'download')
                 this.playerSource.mid.midiUrl = data.path
-                console.log(this.playerSource)
               })
             } else {
               // 直接打开
-              console.log('直接打开')
-              console.log(data.path)
               this.playerSource = {
                 mid: {
                   midiUrl: data.path
@@ -1035,6 +1033,7 @@
       this.getCollectList()
       this.getMetronomeStatus()
       this.userDataMode()
+      this.clearCache()
       if (!this.sessionId) {
         this.createSession()
       }

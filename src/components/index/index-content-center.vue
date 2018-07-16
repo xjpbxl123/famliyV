@@ -190,7 +190,7 @@
   }
 
   .active {
-    animation: shadowRepeat 0.6s linear 0s infinite alternate;
+    animation: shadowRepeat 1s linear 0s infinite alternate;
   }
 
   @keyframes shadowRepeat {

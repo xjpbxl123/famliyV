@@ -22,6 +22,7 @@ const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
+const CLEAR_CACHE = 'CLEAR_CACHE'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -131,6 +132,9 @@ export default function createStore () {
       },
       [LOGIN_OUT_CACHE] (state, data) {
         state.storage.cache.renderCache = data
+      },
+      [CLEAR_CACHE] (state) {
+        state.storage.cache = {}
       },
       [SET_SELECT] (state, data) {
         Object.assign(state, data)
@@ -287,6 +291,12 @@ export default function createStore () {
       logout ({dispatch}) {
         modules.user.logOut()
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+      },
+      /**
+       * @desc 清除缓存
+       * */
+      clearCache ({commit}) {
+        commit(CLEAR_CACHE)
       },
       /**
        * @desc 用户注销时的数据映射view

@@ -297,12 +297,10 @@
                 this.$store.dispatch('myScore/setLocalSourcePath', newPath)
                 this.$store.dispatch('myScore/getLocalSource', newPath)
               } else {
+                console.log(data)
                 // 去打开文件
                 if (data.typeName === 'picture') {
-                  // file.pathComplement(this.localSourcePath).then((res) => {
-                  // console.log(res)
                   this.$router.push({path: '/openImg', query: {url: data.http}})
-                  // })
                 } else if (data.typeName === 'pdf') {
                   modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
                     if (!res.path) {
@@ -310,6 +308,45 @@
                     }
                     modules.nativeRouter.openPDFFile({'path': res.path})
                   })
+                } else if (data.typeName === 'song') {
+                  // 合成曲谱播放
+                  let scoreObj = {}
+                  let houzhuiArr = []
+                  let houzhui = ''
+                  let eachName = ''
+                  let type = {
+                    mid: 'midiPath',
+                    mp4: 'videoPath',
+                    mp3: 'mp3Path',
+                    xml: 'xmlPath'
+                  }
+                  modules.file.pathComplement(this.localSourcePath).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    data.filesName.forEach((item, index) => {
+                      houzhuiArr = item.split('.')
+                      houzhui = houzhuiArr[houzhuiArr.length - 1]
+                      eachName = houzhuiArr[0]
+                      if (eachName.indexOf('_video_4k') !== -1) {
+                        // 4k视频
+                        scoreObj.videoPath4k = res.path + '/' + item
+                      } else if (eachName.indexOf('_sp') !== -1) {
+                        // videoMidi
+                        scoreObj.videoMidiPath = res.path + '/' + item
+                      } else {
+                        let name = type[houzhui]
+                        if (name) {
+                          scoreObj[name] = res.path + '/' + item
+                        }
+                      }
+                    })
+                    console.log(scoreObj)
+                    modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
+                  })
+                } else if (data.typeName === 'midi') {
+                  this.playMidi(this.localSourcePath + '/' + data.name)
+                  break
                 }
               }
             }
