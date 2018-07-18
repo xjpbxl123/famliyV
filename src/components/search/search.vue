@@ -6,7 +6,7 @@
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
     <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
-    <toolbar>
+    <toolbar :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
               :id="index"
@@ -45,30 +45,30 @@
             pianoKey: 85,
             text: '',
             icon: '0xe608',
-            backgroundColor: '#f44242',
-            dotColor: '#f44242'
+            backgroundColor: '#3000',
+            dotColor: '#fff'
           },
           {
             pianoKey: 90,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#4467d4',
-            dotColor: '#4467d4'
+            backgroundColor: '#3000',
+            dotColor: '#fff'
 
           },
           {
             pianoKey: 92,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#4467d4',
-            dotColor: '#4467d4'
+            backgroundColor: '#3000',
+            dotColor: '#fff'
           },
           {
             pianoKey: 94,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#4467d4',
-            dotColor: '#4467d4'
+            backgroundColor: '#3000',
+            dotColor: '#fff'
           }
         ],
         searchName: ''

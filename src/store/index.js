@@ -22,7 +22,6 @@ const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
-const CLEAR_CACHE = 'CLEAR_CACHE'
 export default function createStore () {
   return new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -133,9 +132,6 @@ export default function createStore () {
       [LOGIN_OUT_CACHE] (state, data) {
         state.storage.cache.renderCache = data
       },
-      [CLEAR_CACHE] (state) {
-        state.storage.cache = {}
-      },
       [SET_SELECT] (state, data) {
         Object.assign(state, data)
       },
@@ -143,34 +139,38 @@ export default function createStore () {
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
+        let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
       }
     },
     actions: {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, dispatch}) {
-        return Promise.all([
-          nativeStorage.getDefault('playCalendar'),
-          nativeStorage.getDefault('isLogin'),
-          nativeStorage.getDefault('userInfo'),
-          nativeStorage.getDefault('sessionId')
-        ])
-          .then(data => {
-            commit(SET_STORAGE, {
-              playCalendar: data[0] && data[0].value ? data[0].value : {},
-              isLogin: data[1] && data[1].value ? data[1].value : false,
-              userInfo: data[2] && data[2].value ? data[2].value : {},
-              sessionId: data[3] && data[3].value ? data[3].value : null,
-              isSynced: true
+      initialNativeStorage ({commit, dispatch, state}) {
+        getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          return Promise.all([
+            nativeStorage.get(tableName, 'playCalendar'),
+            nativeStorage.get(tableName, 'isLogin'),
+            nativeStorage.get(tableName, 'userInfo'),
+            nativeStorage.get(tableName, 'sessionId')
+          ])
+            .then(data => {
+              commit(SET_STORAGE, {
+                playCalendar: data[0] && data[0].value ? data[0].value : {},
+                isLogin: data[1] && data[1].value ? data[1].value : false,
+                userInfo: data[2] && data[2].value ? data[2].value : {},
+                sessionId: data[3] && data[3].value ? data[3].value : null,
+                isSynced: true
+              })
+              return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
-            return dispatch('initCacheStorage', data)
-          })
+        })
       },
       /**
        * @desc 获取当前环境变量,如果是开发环境,则永远是开发环境,不会跟着App的环境切换,如果打包之后,则当前环境变量会跟着当前APP切换
@@ -183,10 +183,11 @@ export default function createStore () {
       /**
        * @desc 将数据写入原生中
        * */
-      setNativeStorage ({commit}, data) {
+      setNativeStorage ({commit, state}, data) {
+        let root = state.environments.HTTP_ROOT
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.setDefault(key, {value}).then(() => {
+            nativeStorage.set('findFamily-' + root, key, {value}).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
@@ -203,8 +204,9 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
             let cache = {}
+            console.log(JSON.parse(param.value))
             cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
             commit(SET_STORAGE, {
               cache
@@ -295,14 +297,17 @@ export default function createStore () {
       /**
        * @desc 清除缓存
        * */
-      clearCache ({commit}) {
-        commit(CLEAR_CACHE)
+      clearCache ({dispatch, state}) {
+        dispatch('setCacheToStorage', {collectList: []}, {root: true}).then(() => {
+          return dispatch('setCacheToStorage', {localRecent: []}, {root: true})
+        })
       },
       /**
        * @desc 用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
-        nativeStorage.getDefault('-1').then(param => {
+        let root = state.environments.HTTP_ROOT
+        nativeStorage.get('findFamily-' + root, '-1').then(param => {
           let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
           commit(LOGIN_OUT_CACHE, data)
         })

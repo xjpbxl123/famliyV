@@ -1,6 +1,6 @@
 <template>
   <div class="image">
-      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius}">
+      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius}" @error="error">
       <h1 v-show="showTitle">{{text}}</h1>
   </div>
 </template>
@@ -60,17 +60,7 @@
       }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
-          let image = new Image()
-          image.src = data.url
-          image.onload = () => {
-            let checkoutImg = setInterval(() => {
-              if (image.complete) { // 加载完成
-                this.showTitle = false
-                this.url = data.url
-                clearInterval(checkoutImg)
-              }
-            }, Math.random() * 1000)
-          }
+          this.url = data.url
         } else {
           console.log(data.desc)
         }

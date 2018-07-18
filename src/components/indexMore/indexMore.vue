@@ -7,7 +7,7 @@
         :books="title==='最近更新'?recentBooksAll:hotBooksAll"
         :selectedIndex="moreIndex"/>
     </div>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="button in controlButtons"
                  :key="button.id"
                  :id="button.id"
@@ -38,40 +38,40 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 110
           },
           {
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 111
           },
           {
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 112
           },
           {
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 113
           },
           {
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 114
           }
         ],

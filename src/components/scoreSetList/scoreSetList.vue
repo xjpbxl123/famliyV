@@ -4,7 +4,7 @@
     <findTitle :title="setName"></findTitle>
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
             :id="button.id"
             :key="button.id"
@@ -32,8 +32,8 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 1,
             show: true
           },
@@ -41,8 +41,8 @@
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 2,
             show: true
           },
@@ -50,8 +50,8 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 3,
             show: true
           },
@@ -59,8 +59,8 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 4,
             show: true
           },
@@ -68,8 +68,8 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 5,
             show: true
           }

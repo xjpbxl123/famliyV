@@ -146,7 +146,7 @@
     INTERCEPT_DOWN,
     BACK_PRESSED
   } from 'vue-find'
-  import bannerLeft from './index-banner-left'
+  import BannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
@@ -542,6 +542,8 @@
       getRecentOpenList () {
         if (this.isLogin) {
           this.$store.dispatch({type: 'index/getRecentOpenList'})
+        } else {
+          this.$store.dispatch('index/localRecent', this.localRecent)
         }
       },
       /**
@@ -550,6 +552,8 @@
       getCollectList () {
         if (this.isLogin) {
           this.$store.dispatch({type: 'index/getCollectList'})
+        } else {
+          this.$store.dispatch('index/localCollect', this.localCollect)
         }
       },
       /**
@@ -706,8 +710,8 @@
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
           case 'famous':
-            return modules.nativeRouter.openArtistCourseView()
-          // return this.go('/famous')
+            // return modules.nativeRouter.openArtistCourseView()
+            return this.go('/famous')
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
@@ -1055,7 +1059,7 @@
       clearInterval(window.interval)
     },
     components: {
-      bannerLeft,
+      BannerLeft,
       findButtonBanner,
       contentCenter,
       bannerRight,

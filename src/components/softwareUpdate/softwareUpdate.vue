@@ -18,7 +18,7 @@
       </div>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
             :id="button.id"

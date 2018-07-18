@@ -70,7 +70,7 @@ export default {
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      return http.post('', {
+      http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
@@ -88,7 +88,7 @@ export default {
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      return http.post('', {
+      http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
@@ -157,8 +157,13 @@ export default {
      * @desc 获取本地最近打开
      * */
     localRecent ({dispatch}, musicObj) {
-      let localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
-      if (musicObj) {
+      let localRecent = []
+      if (Array.prototype.isPrototypeOf(musicObj)) {
+        // 存入数组
+        localRecent = musicObj
+      } else {
+        // 存入对象
+        localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
         let flag = false
         let num = 0
         if (localRecent.length !== 0) {

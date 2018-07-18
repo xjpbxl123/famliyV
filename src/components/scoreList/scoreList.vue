@@ -13,7 +13,7 @@
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-buttons  v-if="chooseType" :files="files" />
       </find-cover>
-      <toolbar :hidden="chooseType">
+      <toolbar :hidden="chooseType" :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
                 :key="index"
                 :id=button.id
@@ -57,48 +57,48 @@
             pianoKey: 73,
             text: '',
             icon: '0xe636',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 11
           },
           {
             pianoKey: 75,
             text: '',
             icon: '0xe64c',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 12
           },
           {
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 13
           },
           {
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 14
           },
           {
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 15
           },
           {
             pianoKey: 85,
             text: '',
             icon: '0xe653',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 16
           }
         ]
@@ -274,7 +274,7 @@
             }
             console.log('直接去播放曲谱')
             modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
-            this.addRecentOpen(scoreList[scoreIndex], 0)
+            this.addRecentOpen(scoreList[scoreIndex], 1)
             this.$store.dispatch('addPractice')
             break
           case 'back':
@@ -373,7 +373,7 @@
           bookId: musicObj.bookId,
           bookName: musicObj.bookName,
           name: musicObj.name,
-          styleName: [musicObj.files[typeNum].styleName],
+          styleName: [musicObj.files[typeNum - 1].styleName || ''],
           practiceTime: +new Date()
         }
         if (recentObj) {

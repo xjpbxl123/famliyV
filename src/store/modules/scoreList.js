@@ -28,11 +28,9 @@ export default {
         cmd = 'musicScore.getMusicsByTag'
         netObj = {page, tagId: id, cmd: cmd}
       }
-      console.log(netObj)
       return http.post('', {
         ...netObj
       }).then(res => {
-        console.log(res)
         if (res.header.code === 0) {
           let payment = ''
           let subParts = {base: '0', accompany: '0', video: '0'}
@@ -88,7 +86,9 @@ export default {
             }
             musicIdList = []
           })
-          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          if (res.body) {
+            return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          }
         }
       })
     },

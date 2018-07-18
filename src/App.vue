@@ -12,7 +12,7 @@
     name: 'app',
     data () {
       return {
-        backgroundUrl: './images/bg_background3.png',
+        backgroundUrl: '',
         isFrosted: false
       }
     },
@@ -21,9 +21,18 @@
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
-          this.backgroundUrl = data
+          let image = new Image()
+          image.src = data
+          image.onload = () => {
+            let checkoutImg = setInterval(() => {
+              if (image.complete) { // 加载完成
+                this.backgroundUrl = data
+                clearInterval(checkoutImg)
+              }
+            }, Math.random() * 1000)
+          }
         } else {
-          this.backgroundUrl = require('./images/bg_background3.png')
+          this.backgroundUrl = require('./images/background0.jpg')
         }
       })
 

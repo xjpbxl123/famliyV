@@ -3,7 +3,7 @@
     <!-- <h1>关机界面</h1> -->
     <statusBar/>
     <div class="btnsbg"></div>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="(button,index) in controlButtons"
             :key="index"
             :id="button.id"

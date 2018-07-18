@@ -16,7 +16,7 @@
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
             :id="button.id"
@@ -62,8 +62,8 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 11,
             show: true
           },
@@ -71,8 +71,8 @@
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 12,
             show: true
           },
@@ -80,8 +80,8 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 13,
             show: true
           },
@@ -89,8 +89,8 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 14,
             show: true
           },
@@ -98,16 +98,16 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 15,
             show: true
           }
         ],
         bigBUtton: [
-          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
+          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4', gradient: true}},
+          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4', gradient: true}},
+          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a', gradient: true}}
         ]
       }
     },

@@ -131,8 +131,8 @@
             pianoKey: 85,
             text: '',
             icon: '0xe642',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 8,
             show: false
           },
@@ -140,8 +140,8 @@
             pianoKey: 90,
             text: '',
             icon: '0xe63d',
-            backgroundColor: '#8D45FF',
-            dotColor: '#8D45FF',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 9,
             show: false
           }
@@ -439,6 +439,10 @@
        * @desc 我的收藏
        * */
       myCollectButtonAction (type) {
+        if (type === 'back') {
+          this.destroyedFunc()
+          return this.$router.back()
+        }
         let myCollectIndex = this.myCollectIndex
         let collectList1 = this.isLogin ? this.collectList : this.localCollect
         let collectList = [].concat(JSON.parse(JSON.stringify(collectList1)))
@@ -495,19 +499,20 @@
               this.$store.dispatch('myScore/setMyCollectIndex', myCollectIndex - 1)
             }
             break
-          case 'back':
-            this.destroyedFunc()
-            return this.$router.back()
         }
       },
       /**
        * @desc 最近打开
        * */
       recentOpenButtonAction (type) {
+        if (type === 'back') {
+          this.destroyedFunc()
+          return this.$router.back()
+        }
         let myRecentIndex = this.myRecentIndex
         let recentList = this.isLogin ? this.recentOpenList : this.localRecent
         let length = recentList.length
-        if (length === 0) {
+        if (length === 0 && type !== 'back') {
           return
         }
         let bookId = recentList[myRecentIndex].bookId
@@ -533,9 +538,6 @@
               this.$store.dispatch('addPractice')
             }
             break
-          case 'back':
-            this.$router.back()
-            return this.destroyedFunc()
           case 'scoreList':
             if (bookId && musicId) {
               this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
@@ -573,21 +575,21 @@
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
-        let recentObj = {
-          musicId: musicObj.musicId,
-          bookId: musicObj.bookId,
-          bookName: musicObj.bookName,
-          name: musicObj.name,
-          styleName: musicObj.styleName,
-          practiceTime: +new Date()
-        }
-        if (recentObj) {
-          if (!this.isLogin) {
-            this.$store.dispatch('index/localRecent', recentObj)
-          } else {
-            this.$store.dispatch('index/addRecentOpen', recentObj)
-          }
-        }
+        // let recentObj = {
+        //   musicId: musicObj.musicId,
+        //   bookId: musicObj.bookId,
+        //   bookName: musicObj.bookName,
+        //   name: musicObj.name,
+        //   styleName: musicObj.styleName,
+        //   practiceTime: +new Date()
+        // }
+        // if (recentObj) {
+        //   if (!this.isLogin) {
+        //     this.$store.dispatch('index/localRecent', recentObj)
+        //   } else {
+        //     this.$store.dispatch('index/addRecentOpen', recentObj)
+        //   }
+        // }
       },
       playMidi (path) {
         modules.file.pathComplement(path).then((res) => {
@@ -617,7 +619,11 @@
       this.getMyPlay()
     },
     mounted () {
-      setTimeout(() => {
+      let timer = setInterval(() => {
+        if (this.toolbarHidden === false) {
+          clearInterval(timer)
+          return
+        }
         this.toolbarHidden = false
       }, 500)
     },
