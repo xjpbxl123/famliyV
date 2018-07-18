@@ -190,12 +190,12 @@
   }
 
   .active {
-    animation: shadowRepeat 1s linear 0s infinite alternate;
+    animation: shadowRepeat 0.8s ease 0s infinite alternate;
   }
 
   @keyframes shadowRepeat {
     0% {
-      box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, 1);
+      box-shadow: 0px 0px 80px 10px rgba(255, 255, 255, 1);
     }
     100% {
       box-shadow: 0px 0px 100px 30px rgba(255, 255, 255, 1);

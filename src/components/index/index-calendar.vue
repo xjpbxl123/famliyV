@@ -91,7 +91,6 @@
       } else {
         this.calendarData = this.playCalendar[this.month]
       }
-      console.log(this.calendarData, 'calendarData')
     }
   }
 </script>

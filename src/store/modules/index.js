@@ -69,7 +69,7 @@ export default {
     /**
      * @desc 获取最近更新
      * */
-    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 7}} = {}) {
       http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
@@ -87,7 +87,7 @@ export default {
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 5}} = {}) {
       http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,

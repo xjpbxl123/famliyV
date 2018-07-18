@@ -2,6 +2,7 @@
  * Created by Moersing on 2018/4/3 .
  * */
 import { device, nativeStorage } from 'find-sdk'
+import {getCurEnvs} from '../utils'
 /**
  *@desc Get default params
  * */
@@ -26,8 +27,11 @@ export const getDefaultParams = (() => {
      * */
     const mergeSessionId = () => {
       if (!defaultParams.sess) {
-        return nativeStorage.getDefault('sessionId').then((data) => {
-          return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          return nativeStorage.get(tableName, 'sessionId').then((data) => {
+            return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
+          })
         })
       }
       return Object.assign(defaultParams, {orn})

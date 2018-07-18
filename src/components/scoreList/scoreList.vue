@@ -282,6 +282,7 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
+
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true

@@ -630,7 +630,6 @@
         modules.notification.regist('UserCountDataMode', data => {
           this.isActivation = data.isActivation
           this.isCalendar = data.isCalendar
-          console.log(data, 'UserCountDataMode')
         })
       },
       /**
@@ -685,8 +684,9 @@
               return this.go('/login')
             } else {
               // 临时写的用来注销账号
-              this.$store.dispatch('logoutCache', {root: true})
+              // this.$store.dispatch('logoutCache', {root: true})
               this.$store.dispatch('logout', {root: true}).then(() => {
+                this.createSession()
                 this.$store.dispatch('setSession', '')
                 this.$store.dispatch('index/setRightSelect', 0)
               })
@@ -710,8 +710,8 @@
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
           case 'famous':
-            // return modules.nativeRouter.openArtistCourseView()
-            return this.go('/famous')
+            return modules.nativeRouter.openArtistCourseView()
+          // return this.go('/famous')
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
@@ -1038,9 +1038,9 @@
       this.getMetronomeStatus()
       this.userDataMode()
       this.clearCache()
-      if (!this.sessionId) {
-        this.createSession()
-      }
+      // if (!this.sessionId) {
+      //   this.createSession()
+      // }
     },
     mounted () {
       this.interval = setInterval(() => {

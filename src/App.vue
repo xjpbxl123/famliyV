@@ -57,8 +57,8 @@
   #app {
     background-color: #fff;
     .backImg {
-      width: 3900px;
-      height: 1140px;
+      width: 3890px;
+      height: 1130px;
       position: absolute;
       top: 50%;
       left: 50%;

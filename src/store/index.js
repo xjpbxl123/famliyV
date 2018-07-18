@@ -206,7 +206,6 @@ export default function createStore () {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
           nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
             let cache = {}
-            console.log(JSON.parse(param.value))
             cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
             commit(SET_STORAGE, {
               cache
@@ -246,7 +245,7 @@ export default function createStore () {
           return http.post('', {
             cmd: 'shareingPiano.createSession'
           }).then(res => {
-            return dispatch('setNativeStorage', {sessionId: res.body.sessionId})
+            return dispatch('setNativeStorage', {sessionId: res.body.sessionId, isLogin: false})
           })
         }
         return new Promise((resolve) => {

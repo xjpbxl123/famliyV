@@ -78,7 +78,7 @@
             clearInterval(window.interval)
             window.interval = window.setInterval(() => {
               this.dispatch('getUserInfo').then(res => {
-                if (res.isLogin) {
+                if (res.userInfo.userId) {
                   clearInterval(window.interval)
                 }
               })
