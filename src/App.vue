@@ -21,16 +21,7 @@
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
-          let image = new Image()
-          image.src = data
-          image.onload = () => {
-            let checkoutImg = setInterval(() => {
-              if (image.complete) { // 加载完成
-                this.backgroundUrl = data
-                clearInterval(checkoutImg)
-              }
-            }, Math.random() * 1000)
-          }
+          this.backgroundUrl = data
         } else {
           this.backgroundUrl = require('./images/background0.jpg')
         }
@@ -57,21 +48,27 @@
   #app {
     background-color: #fff;
     .backImg {
-      width: 3890px;
-      height: 1130px;
+      width: 3840px;
+      height: 1080px;
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      z-index: -1;
+      top: 0;
+      left: 0;
+      z-index: -2;
       background-attachment: fixed;
       overflow: hidden;
       &::-webkit-scrollbar {display:none;}
-      &.frosted {
+      &.frosted::before {
+        content: "";
+        width:100%;
+        height:100%;
+        position: absolute;
+        left:0;
+        top:0;
+        background: inherit;
         filter: blur(20px);
+        z-index: -1;
       }
     }
-
   }
 
 </style>
