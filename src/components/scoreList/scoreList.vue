@@ -370,7 +370,7 @@
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
         let recentObj = {
-          musicId: musicObj.musicId,
+          musicId: musicObj.files[typeNum - 1].musicId,
           bookId: musicObj.bookId,
           bookName: musicObj.bookName,
           name: musicObj.name,
