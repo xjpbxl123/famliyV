@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" :class="{'frosted': isFrosted}"></div>
-    <!-- <transition name="fade"> -->
+    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" :class="{'frosted': isFrosted}">
       <router-view></router-view>
+    </div>
+    <!-- <transition name="fade"> -->
+
     <!-- </transition> -->
   </div>
 </template>
@@ -67,6 +69,10 @@
         background: inherit;
         filter: blur(20px);
         z-index: -1;
+        backface-visibility: hidden;
+        perspective: 1000;
+        transform: translate3d(0,0,0);
+        transform: translateZ(0);
       }
     }
   }
