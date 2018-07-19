@@ -687,7 +687,6 @@
               // this.$store.dispatch('logoutCache', {root: true})
               this.$store.dispatch('logout', {root: true}).then(() => {
                 this.createSession()
-                this.$store.dispatch('setSession', '')
                 this.$store.dispatch('index/setRightSelect', 0)
               })
               return

@@ -18,7 +18,6 @@
         isFrosted: false
       }
     },
-    components: {},
     created () {
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
