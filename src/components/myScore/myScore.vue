@@ -474,10 +474,10 @@
             break
           case 'scoreList':
             if (bookId && musicId) {
-              if (!this.bookInfo[bookId]) {
-                return
-              }
               this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
+                if (!this.bookInfo[bookId]) {
+                  return
+                }
                 this.$router.push({path: '/scoreList', query: {book: JSON.stringify(this.bookInfo[bookId]), musicId: musicId}})
               })
             }
@@ -575,21 +575,21 @@
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
-        // let recentObj = {
-        //   musicId: musicObj.musicId,
-        //   bookId: musicObj.bookId,
-        //   bookName: musicObj.bookName,
-        //   name: musicObj.name,
-        //   styleName: musicObj.styleName,
-        //   practiceTime: +new Date()
-        // }
-        // if (recentObj) {
-        //   if (!this.isLogin) {
-        //     this.$store.dispatch('index/localRecent', recentObj)
-        //   } else {
-        //     this.$store.dispatch('index/addRecentOpen', recentObj)
-        //   }
-        // }
+        let recentObj = {
+          musicId: musicObj.musicId,
+          bookId: musicObj.bookId,
+          bookName: musicObj.bookName,
+          name: musicObj.name,
+          styleName: musicObj.styleName,
+          practiceTime: +new Date()
+        }
+        if (recentObj) {
+          if (!this.isLogin) {
+            this.$store.dispatch('index/localRecent', recentObj)
+          } else {
+            this.$store.dispatch('index/addRecentOpen', recentObj)
+          }
+        }
       },
       playMidi (path) {
         modules.file.pathComplement(path).then((res) => {

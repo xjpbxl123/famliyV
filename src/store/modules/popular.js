@@ -113,25 +113,25 @@ export default {
         console.log(res)
         let data = [
           {
-            name: '1970年代',
+            name: res.body[0].name,
             coverSmall: require('../../components/popular/images/pic_1970.png'),
             sleCoverSmall: require('../../components/popular/images/pic_1970_sle.png'),
             id: res.body[0].id
           },
           {
-            name: '1980年代',
+            name: res.body[1].name,
             coverSmall: require('../../components/popular/images/pic_1980.png'),
             sleCoverSmall: require('../../components/popular/images/pic_1980_sle.png'),
             id: res.body[1].id
           },
           {
-            name: '1990年代',
+            name: res.body[2].name,
             coverSmall: require('../../components/popular/images/pic_1990.png'),
             sleCoverSmall: require('../../components/popular/images/pic_1990_sle.png'),
             id: res.body[2].id
           },
           {
-            name: '2000~2010年代',
+            name: res.body[3].name,
             coverSmall: require('../../components/popular/images/pic_2000.png'),
             sleCoverSmall: require('../../components/popular/images/pic_2000_sle.png'),
             id: res.body[3].id

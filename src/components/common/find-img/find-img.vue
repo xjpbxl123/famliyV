@@ -54,7 +54,7 @@
     //   )
     // },
     created () {
-      if (this.src === './static/images/more.8015af2.png') {
+      if (this.src.indexOf('./static') !== -1) {
         this.url = this.src
         return
       }

@@ -58,6 +58,22 @@
     },
     methods: {
     },
+    watch: {
+      scoreIndex: function (val) {
+        let musicData = this.scoreList[this.scoreIndex]
+        if (!musicData || !musicData.files) {
+          return
+        }
+        this.playType = ''
+        musicData.files.forEach(item => {
+          if (this.playType) {
+            this.playType = this.playType + ' | ' + item.styleName
+          } else {
+            this.playType = item.styleName
+          }
+        })
+      }
+    },
     created () {
       let musicData = this.scoreList[this.scoreIndex]
       if (!musicData || !musicData.files) {
