@@ -152,7 +152,7 @@ export default function createStore () {
        * @desc 初始化NativeStorage数据
        * */
       initialNativeStorage ({commit, dispatch, state}) {
-        getCurEnvs().then(env => {
+        return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
           return Promise.all([
             nativeStorage.get(tableName, 'playCalendar'),
