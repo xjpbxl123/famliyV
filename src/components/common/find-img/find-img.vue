@@ -1,6 +1,6 @@
 <template>
   <div class="image">
-      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius}" @error="error">
+      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius,'hasBorder': hasBorder}" @error="error" >
       <h1 v-show="showTitle">{{text}}</h1>
   </div>
 </template>
@@ -31,6 +31,9 @@
         default: () => ''
       },
       borderRadius: {
+        type: Boolean
+      },
+      hasBorder: {
         type: Boolean
       }
     },
@@ -81,6 +84,9 @@
       left: 0;
       &.borderRaeius {
         border-radius: 50%;
+      }
+      &.hasBorder {
+        border-radius: 5px 10px 10px 5px;
       }
     }
     h1 {

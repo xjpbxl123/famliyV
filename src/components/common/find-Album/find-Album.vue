@@ -1,13 +1,13 @@
 <template>
   <ul>
     <li :style="imgSize(0)">
-      <findImg :src="albumArr[0] || 'dsds'" :beforeImage="errorImage"></findImg>
+      <findImg :src="albumArr[0] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
     </li>
     <li :style="imgSize(1)">
-      <findImg :src="albumArr[1] || 'dsds'" :beforeImage="errorImage"></findImg>
+      <findImg :src="albumArr[1] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
     </li>
     <li :style="imgSize(2)">
-      <findImg :src="albumArr[2] || 'dsds'" :beforeImage="errorImage"></findImg>
+      <findImg :src="albumArr[2] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
     </li>
   </ul>
 </template>

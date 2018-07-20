@@ -608,6 +608,9 @@
           this.$store.dispatch('clearCache')
         })
       },
+      getUserInfo () {
+        this.$store.dispatch('getUserInfo')
+      },
       /**
        * @desc 用户数据模式
        * */
@@ -853,9 +856,23 @@
               this.$refs.player.reset()
               this.isPlaying = false
               if (musicObj.musicId === this.isPlayingMusicId) {
-                modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
-                this.enterPlay = true
-                this.addRecentOpen(musicObj)
+                window.fp.uis.player.getProgress().then(data => {
+                  console.log(data)
+
+                  if (data.curTick) {
+                    modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
+                  }
+                  this.enterPlay = true
+                  this.addRecentOpen(musicObj)
+                })
+                // this.$refs.player.getProgress().then(data => {
+                //   console.log(data)
+                //   if (data.curTick) {
+                //     modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
+                //   }
+                //   this.enterPlay = true
+                //   this.addRecentOpen(musicObj)
+                // })
                 return
               }
             }
@@ -906,8 +923,8 @@
             })
             break
           case 'closeScreen':
-            // this.closeScreen = bool
-            // modules.device.turnOnOffScreen(bool)
+            this.closeScreen = bool
+            modules.device.turnOnOffScreen(bool)
             break
           default:
             console.log('108')
@@ -1027,9 +1044,7 @@
       this.getMetronomeStatus()
       this.userDataMode()
       this.clearCache()
-      // if (!this.sessionId) {
-      //   this.createSession()
-      // }
+      this.getUserInfo()
     },
     mounted () {
       this.interval = setInterval(() => {
