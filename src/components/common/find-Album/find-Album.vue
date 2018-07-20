@@ -1,13 +1,17 @@
 <template>
   <ul>
     <li :style="imgSize(0)">
-      <findImg :src="albumArr[0] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
+      <span class="cover"></span>
+      <span class="shadow"></span>
+      <findImg :src="albumArr[0] || 'dsds'" :beforeImage="errorImage" ></findImg>
     </li>
     <li :style="imgSize(1)">
-      <findImg :src="albumArr[1] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
+      <span class="shadow" ></span>
+      <findImg :src="albumArr[1] || 'dsds'" :beforeImage="errorImage" ></findImg>
     </li>
     <li :style="imgSize(2)">
-      <findImg :src="albumArr[2] || 'dsds'" :beforeImage="errorImage" :hasBorder="true"></findImg>
+      <span class="cover"></span>
+      <findImg :src="albumArr[2] || 'dsds'" :beforeImage="errorImage" ></findImg>
     </li>
   </ul>
 </template>
@@ -19,9 +23,30 @@
       width: 180px;
       bottom: 0;
       position: absolute;
+      border-radius: 15px 30px 30px 15px;
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;
+      }
+      .cover {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(0,0,0,0.20);
+        z-index: 50;
+      }
+      .shadow {
+        width: 15px;
+        height: 100%;
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        border-radius: 15px 30px 30px 15px;
+        background-image: linear-gradient(-90deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.10) 32%, rgba(0,0,0,0.20) 58%, rgba(0,0,0,0.00) 85%);
       }
     }
   }
@@ -51,7 +76,7 @@
     },
     data () {
       return {
-        errorImage: require('../../../images/famousbg.png')
+        errorImage: require('../../popular/images/pic_bg_bookcover.png')
       }
     },
     methods: {

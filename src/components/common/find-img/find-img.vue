@@ -1,6 +1,6 @@
 <template>
-  <div class="image">
-      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius,'hasBorder': hasBorder}" @error="error" >
+  <div class="image" >
+      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius}" @error="error" >
       <h1 v-show="showTitle">{{text}}</h1>
   </div>
 </template>
@@ -76,19 +76,15 @@
     width: 100%;
     height: 100%;
     position: relative;
+    overflow: hidden;
     img {
       width:100%;
       height: 100%;
       position: absolute;
       bottom: 0;
       left: 0;
-      &.borderRaeius {
-        border-radius: 50%;
-      }
-      &.hasBorder {
-        border-radius: 5px 10px 10px 5px;
-      }
     }
+
     h1 {
       font-size: 70px;
       color: #fff;
