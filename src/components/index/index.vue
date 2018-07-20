@@ -459,13 +459,12 @@
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
-          this.clickHelp(keys)
-        }
-      },
-      screenClose: {
-        [INTERCEPT_DOWN] (keys) {
-          // 亮屏
-          this.buttonActions('closeScreen', false)
+          if (this.showHelpBanner) {
+            this.clickHelp(keys)
+          } else {
+            // 亮屏
+            this.buttonActions('closeScreen', false)
+          }
         }
       }
     },
@@ -491,10 +490,7 @@
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
         namespace () {
-          if (this.closeScreen) {
-            return 'screenClose'
-          }
-          return this.showHelpBanner ? 'banner' : ''
+          return this.showHelpBanner || this.closeScreen ? 'banner' : ''
         },
         rightType: state => state.index.rightType
       }),
@@ -519,11 +515,6 @@
           this.getCollectList()
         } else {
           this.userActionButtons[1].text = '登录'
-        }
-      },
-      isPlaying (val) {
-        if (val) {
-          modules.device.turnOnOffScreen(!val)
         }
       }
     },
@@ -915,9 +906,8 @@
             })
             break
           case 'closeScreen':
-            console.log(bool)
-            this.closeScreen = bool
-            modules.device.turnOnOffScreen(bool)
+            // this.closeScreen = bool
+            // modules.device.turnOnOffScreen(bool)
             break
           default:
             console.log('108')
