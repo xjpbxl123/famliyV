@@ -853,12 +853,10 @@
             if (this.isPlaying) {
               // 获取进度进去播放
               this.$refs.player.pause()
-              this.$refs.player.reset()
               this.isPlaying = false
               if (musicObj.musicId === this.isPlayingMusicId) {
                 window.fp.uis.player.getProgress().then(data => {
-                  console.log(data)
-
+                  this.$refs.player.reset()
                   if (data.curTick) {
                     modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
                   }
@@ -873,6 +871,7 @@
                 //   this.enterPlay = true
                 //   this.addRecentOpen(musicObj)
                 // })
+
                 return
               }
             }
