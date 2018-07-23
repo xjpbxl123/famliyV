@@ -46,7 +46,7 @@ export default {
           if (state.scoreListIndex >= res.body.bookList.length) {
             commit('scoreListIndex', res.body.bookList.length - 1)
           }
-          dispatch('setCacheToStorage', {scoreSetList: res.body.bookList}, {root: true})
+          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true})
         }
       })
     }

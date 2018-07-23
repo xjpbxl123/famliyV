@@ -102,9 +102,12 @@
       ...mapState({
         scoreListIndex: state => state.scoreSetList.scoreListIndex,
         currentPage: state => state.scoreSetList.currentPage,
-        totalPage: state => state.scoreSetList.totalPage
+        totalPage: state => state.scoreSetList.totalPage,
+        scoreSetList: function (state) {
+          return state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
+        }
       }),
-      ...mapGetters(['scoreSetList'])
+      ...mapGetters([])
     },
     methods: {
       getScoreSetList (page) {
