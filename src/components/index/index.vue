@@ -138,9 +138,9 @@
     KEY87,
     KEY90,
     KEY97,
+    LONG_KEY92,
     KEY92,
     LONG_KEY94,
-    LONG_KEY97,
     KEY94,
     KEY99,
     INTERCEPT_DOWN,
@@ -296,6 +296,7 @@
           {
             pianoKey: 92,
             text: '',
+            longClick: true,
             icon: '0xe63c',
             backgroundColor: '#2fff',
             id: 16
@@ -310,7 +311,7 @@
           },
           {
             pianoKey: 97,
-            longClick: true,
+            longClick: false,
             text: '',
             icon: '0xe657',
             backgroundColor: '#2fff',
@@ -425,11 +426,14 @@
         // 熄屏
         this.buttonActions('closeScreen', true)
       },
-      [LONG_KEY94] () {
+      [LONG_KEY92] () {
         console.log('up')
         this.buttonActions('right-up')
       },
-      [LONG_KEY97] () {
+      [KEY92] () {
+        this.buttonActions('right-up')
+      },
+      [LONG_KEY94] () {
         console.log('down')
         this.buttonActions('right-down')
       },
@@ -441,9 +445,6 @@
       },
       [KEY99] () {
         this.buttonActions('changeRightData')
-      },
-      [KEY92] () {
-        this.buttonActions('right-up')
       },
       [BACK_PRESSED] () {
         if (this.isPlaying) {

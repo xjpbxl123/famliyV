@@ -154,18 +154,25 @@
       },
       chooseType: {
         [INTERCEPT_DOWN] (key) {
-          if (key >= 67 && key <= 72) {
-            this.buttonActions('choseType', 1)
-          } else if (key >= 74 && key <= 79) {
-            this.buttonActions('choseType', 2)
-          } else if (key >= 81 && key <= 86) {
-            this.buttonActions('choseType', 3)
-          } else if (key >= 88 && key <= 93) {
-            this.buttonActions('choseType', 4)
-          } else if (key >= 95 && key <= 100) {
-            this.buttonActions('choseType', 5)
-          } else if (key === 108) {
-            this.chooseType = false
+          switch (key) {
+            case 70:
+              this.buttonActions('choseType', 1)
+              break
+            case 78:
+              this.buttonActions('choseType', 2)
+              break
+            case 85:
+              this.buttonActions('choseType', 3)
+              break
+            case 92:
+              this.buttonActions('choseType', 4)
+              break
+            case 99:
+              this.buttonActions('choseType', 5)
+              break
+            case 108:
+              this.chooseType = false
+              break
           }
         }
       }
@@ -282,7 +289,6 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
-
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
@@ -294,7 +300,6 @@
             }
             break
           case 'choseType':
-
             console.log('choseType')
             let bookId = scoreList[scoreIndex].bookId
             let id = 0

@@ -85,7 +85,38 @@ export default {
               })
             }
             musicIdList = []
+            if (item.files.length > 1) {
+              // 版本重新排序
+              let filterFile = []
+              item.files.forEach(data => {
+                if (data.styleId === 1) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 7) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 6) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 5) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 2) {
+                  filterFile.push(data)
+                }
+              })
+              item.files = filterFile
+            }
           })
+
           if (res.body) {
             return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
           }
