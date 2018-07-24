@@ -4,7 +4,7 @@
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <find-keyboard ref="keyboard" :setValue="setValue"/>
     <login-banner ref="banner" :login="login"/>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
               :id="index"
@@ -64,7 +64,8 @@
           delay: 2000,
           width: 750,
           height: 450
-        }
+        },
+        toolbarHidden: false
       }
     },
     find: {
@@ -72,6 +73,13 @@
        * @desc 处理所有按键
        * */
       [INTERCEPT_DOWN] (key) {
+        if (key === 21) {
+          this.toolbarHidden = !this.toolbarHidden
+          return
+        }
+        if (this.toolbarHidden) {
+          return
+        }
         if (key >= 27 && key <= 82) {
           /// 钢琴上的27是左边的按键,所以要减去27
           key = key - 27

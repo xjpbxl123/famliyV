@@ -10,9 +10,9 @@
       <icon-item v-for="button in materialButton"
                  :pianoKey="button.pianoKey"
                  :key="button.icon"
-                 longClick="true"
                  :id="button.id"
                  :icon="button.icon"
+                 :longClick="button.longClick"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
 
@@ -40,6 +40,10 @@
     KEY73,
     KEY80,
     KEY82,
+    LONG_KEY73,
+    LONG_KEY75,
+    LONG_KEY78,
+    LONG_KEY80,
     BACK_PRESSED
   } from 'vue-find'
 
@@ -56,7 +60,8 @@
             icon: '0xe660',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 201
+            id: 201,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -64,7 +69,8 @@
             icon: '0xe65b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 202
+            id: 202,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -72,7 +78,8 @@
             icon: '0xe63b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 203
+            id: 203,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -80,7 +87,8 @@
             icon: '0xe650',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 14
+            id: 14,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -106,6 +114,18 @@
       [KEY80] () {
         this.buttonActions('down')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
+      },
       [KEY82] () {
         this.buttonActions('ok')
       },
@@ -125,7 +145,11 @@
             activeIndex > 0 && activeIndex--
             break
           case 'down':
-            if (materialLen >= activeIndex + 4) activeIndex += 4
+            if (materialLen >= activeIndex + 4) {
+              activeIndex += 4
+            } else {
+              activeIndex = materialLen
+            }
             break
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4
@@ -148,6 +172,9 @@
     },
     beforeCreate () {
       this.$store.dispatch('material/getAllBookSets')
+    },
+    created () {
+      this.materialPage = Math.ceil((this.materialSelect + 1) / 8)
     },
     components: {
       findWrap,

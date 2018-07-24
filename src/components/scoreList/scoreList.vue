@@ -16,9 +16,10 @@
       <toolbar :hidden="chooseType" :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
                 :key="index"
-                :id=button.id
+                :id="button.id"
                 :icon="button.icon"
                 :pianoKey="button.pianoKey"
+                :longClick="button.longClick"
                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
       </toolbar>
   </div>
@@ -41,6 +42,10 @@
     KEY78,
     KEY80,
     KEY82,
+    LONG_KEY73,
+    LONG_KEY75,
+    LONG_KEY78,
+    LONG_KEY80,
     KEY85,
     INTERCEPT_DOWN,
     BACK_PRESSED
@@ -59,7 +64,8 @@
             icon: '0xe636',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 11
+            id: 11,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -67,7 +73,8 @@
             icon: '0xe64c',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 12
+            id: 12,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -75,7 +82,8 @@
             icon: '0xe63b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 13
+            id: 13,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -83,7 +91,8 @@
             icon: '0xe650',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 14
+            id: 14,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -141,6 +150,18 @@
         this.buttonActions('up')
       },
       [KEY80] () {
+        this.buttonActions('down')
+      },
+      [LONG_KEY73] () {
+        this.buttonActions('prevPage')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('nextPage')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
@@ -393,11 +414,6 @@
     },
     created () {
       this.getScoreList()
-    },
-    mounted () {
-      setTimeout(() => {
-        this.chooseType = false
-      }, 500)
     },
     components: {
       scoreListCenter,

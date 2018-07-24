@@ -20,7 +20,7 @@
         return import(/* webpackChunkName:"qrCode" */ 'qrcode').then(qrCode => {
           qrCode.toCanvas(
             document.querySelector('canvas'),
-            `http://spapi.findpiano.cn/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=''&sessionId=${
+            `https://fcwx.ktunes.cn/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=''&sessionId=${
               this.sessionId
             }&ct=LoginFindPiano&ip=''port=''`,
             { width: qrCodeOptions.width }

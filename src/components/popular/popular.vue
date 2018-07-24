@@ -29,6 +29,7 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
+            :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -51,6 +52,10 @@
     KEY46,
     KEY49,
     KEY54,
+    LONG_KEY73,
+    LONG_KEY75,
+    LONG_KEY78,
+    LONG_KEY80,
     BACK_PRESSED
   } from 'vue-find'
 
@@ -65,7 +70,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 11,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -74,7 +80,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 12,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -83,7 +90,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 13,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -92,7 +100,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 14,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -133,9 +142,22 @@
       [KEY80] () {
         this.buttonActions('down')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
+      },
       [KEY82] () {
         this.buttonActions('ok')
       },
+
       [BACK_PRESSED] () {
         this.$store.dispatch('popular/setPopularTapSelected', 2)
         this.$store.dispatch('popular/setYearSelected', 0)
@@ -190,7 +212,11 @@
             activeIndex > 0 && activeIndex--
             break
           case 'down':
-            if (popularGenreLen >= activeIndex + 4) activeIndex += 4
+            if (popularGenreLen >= activeIndex + 4) {
+              activeIndex += 4
+            } else {
+              activeIndex = popularGenreLen
+            }
             break
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4

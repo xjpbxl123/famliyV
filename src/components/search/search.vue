@@ -6,7 +6,7 @@
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
     <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
               :key="index"
               :id="index"
@@ -33,6 +33,7 @@
         initDataComplete: false,
         listIndex: 0,
         musicList: [],
+        toolbarHidden: false,
         promptInfo: {
           text: '成功',
           icon: 'icon-grade-right',
@@ -79,6 +80,13 @@
        * @desc 处理所有按键
        * */
       [INTERCEPT_DOWN] (key) {
+        if (key === 21) {
+          this.toolbarHidden = !this.toolbarHidden
+          return
+        }
+        if (this.toolbarHidden) {
+          return
+        }
         if (key >= 27 && key <= 82) {
           /// 钢琴上的27是左边的按键,所以要减去27
           key = key - 27

@@ -1,6 +1,6 @@
 <template>
   <div class="image" >
-      <img :src="url" alt="Find" :class="{'borderRaeius': borderRadius}" @error="error" >
+      <img :src="url" alt="Find" :class="{'borderRadius': borderRadius}" @error="error" >
       <h1 v-show="showTitle">{{text}}</h1>
   </div>
 </template>
@@ -83,8 +83,10 @@
       position: absolute;
       bottom: 0;
       left: 0;
+      &.borderRadius {
+        border-radius: 50%;
+      }
     }
-
     h1 {
       font-size: 70px;
       color: #fff;

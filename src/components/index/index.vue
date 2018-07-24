@@ -130,9 +130,13 @@
     KEY70,
     KEY102,
     KEY73,
+    LONG_KEY73,
     KEY75,
+    LONG_KEY75,
     KEY78,
+    LONG_KEY78,
     KEY80,
+    LONG_KEY80,
     KEY82,
     KEY85,
     KEY87,
@@ -234,7 +238,8 @@
             icon: '0xe660',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 11
+            id: 11,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -242,7 +247,8 @@
             icon: '0xe65b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 12
+            id: 12,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -250,7 +256,8 @@
             icon: '0xe63b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 13
+            id: 13,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -258,7 +265,8 @@
             icon: '0xe650',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 14
+            id: 14,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -321,7 +329,7 @@
         metronome: false,
         speed: 120,
         metre: '3/8',
-        toolbarHidden: true
+        toolbarHidden: false
       }
     },
     find: {
@@ -404,13 +412,25 @@
       [KEY73] () {
         this.buttonActions('left')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
       [KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY75] () {
         this.buttonActions('right')
       },
       [KEY78] () {
         this.buttonActions('up')
       },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
       [KEY80] () {
+        this.buttonActions('down')
+      },
+      [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
@@ -566,7 +586,9 @@
        * @desc 创建会话ID
        * */
       createSession () {
-        return this.$store.dispatch('setSession')
+        if (!this.isLogin) {
+          return this.$store.dispatch('setSession')
+        }
       },
       /**
        * @desc 设置练琴数据
@@ -1038,6 +1060,7 @@
     created () {
       this.initializeData()
       this.getUserStatus()
+      this.createSession()
       this.isSupportMutePedal()
       this.getRecentOpenList()
       this.getCollectList()
@@ -1045,16 +1068,6 @@
       this.userDataMode()
       this.clearCache()
       this.getUserInfo()
-    },
-    mounted () {
-      this.interval = setInterval(() => {
-        modules.global.checkAppletsUpgrade()
-        if (this.toolbarHidden === false) {
-          clearInterval(this.interval)
-          return
-        }
-        this.toolbarHidden = false
-      }, 500)
     },
     beforeDestroy () {
       this.toolbarHidden = true

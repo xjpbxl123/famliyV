@@ -23,6 +23,7 @@
             :icon="button.icon"
             :pianoKey="button.pianoKey"
             :hidden="!button.show"
+            :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -48,12 +49,14 @@
     KEY82,
     KEY85,
     KEY90,
+    LONG_KEY78,
+    LONG_KEY80,
     BACK_PRESSED
   } from 'vue-find'
   export default {
     data () {
       return {
-        toolbarHidden: true,
+        toolbarHidden: false,
         controlButtons: [
           {
             pianoKey: 39,
@@ -107,7 +110,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 5,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -116,7 +120,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 6,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -180,6 +185,12 @@
         this.buttonActions('up')
       },
       [KEY80] () {
+        this.buttonActions('down')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
@@ -598,6 +609,10 @@
           }
         })
       },
+      setTitle () {
+        let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
+        this.title = title[this.myScoreTapIndex]
+      },
       /**
        * @desc 退到首页的时候清空
        * */
@@ -617,15 +632,7 @@
       this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
-    },
-    mounted () {
-      let timer = setInterval(() => {
-        if (this.toolbarHidden === false) {
-          clearInterval(timer)
-          return
-        }
-        this.toolbarHidden = false
-      }, 500)
+      this.setTitle()
     },
     components: {
       findWrap,

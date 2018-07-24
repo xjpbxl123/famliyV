@@ -13,6 +13,7 @@
                  :id="button.id"
                  :icon="button.icon"
                  :pianoKey="button.pianoKey"
+                 :longClick="button.longClick"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -26,6 +27,8 @@
     KEY75,
     KEY78,
     KEY80,
+    LONG_KEY73,
+    LONG_KEY75,
     KEY82,
     BACK_PRESSED
   } from 'vue-find'
@@ -40,7 +43,8 @@
             icon: '0xe660',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 110
+            id: 110,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -48,7 +52,8 @@
             icon: '0xe65b',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 111
+            id: 111,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -90,6 +95,12 @@
       },
       [KEY80] () {
         this.buttonActions('down')
+      },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
       },
       [KEY82] () {
         this.buttonActions('ok')

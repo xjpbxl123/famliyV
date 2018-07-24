@@ -10,6 +10,7 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
+            :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -21,7 +22,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
+  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80 } from 'vue-find'
 
   export default {
     data () {
@@ -35,7 +36,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 1,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 75,
@@ -44,7 +46,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 2,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 78,
@@ -53,7 +56,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 3,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 80,
@@ -62,7 +66,8 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 4,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 82,
@@ -91,6 +96,18 @@
       },
       [KEY82] () {
         this.buttonActions('ok')
+      },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
       },
       [BACK_PRESSED] () {
         this.$router.back()
