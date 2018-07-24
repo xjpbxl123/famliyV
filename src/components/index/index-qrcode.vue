@@ -5,6 +5,7 @@
 </template>
 
 <script>
+  import {getCurEnvs} from '../../scripts/utils'
   export default {
     name: 'index-qr-code',
     props: {
@@ -16,15 +17,21 @@
        * @param {Object} qrCodeOptions -  qrCode库的参数，详见 https://github.com/soldair/node-qrcode
        * */
       generateQrCode (qrCodeOptions) {
-        /// 异步获取qrcode模块，生成二维码
-        return import(/* webpackChunkName:"qrCode" */ 'qrcode').then(qrCode => {
-          qrCode.toCanvas(
-            document.querySelector('canvas'),
-            `https://fcwx.ktunes.cn/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=''&sessionId=${
-              this.sessionId
-            }&ct=LoginFindPiano&ip=''port=''`,
-            { width: qrCodeOptions.width }
-          )
+        return getCurEnvs().then(env => {
+          let url = 'https://spapi.findpiano.cn'
+          if (env.HTTP_ROOT.indexOf('ktunes') !== -1) {
+            url = 'https://spapi.ktunes.cn'
+          }
+          /// 异步获取qrcode模块，生成二维码
+          return import(/* webpackChunkName:"qrCode" */ 'qrcode').then(qrCode => {
+            qrCode.toCanvas(
+              document.querySelector('canvas'),
+              url + `/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=''&sessionId=${
+                this.sessionId
+              }&ct=LoginFindPiano&ip=''port=''`,
+              { width: qrCodeOptions.width }
+            )
+          })
         })
       }
     }
