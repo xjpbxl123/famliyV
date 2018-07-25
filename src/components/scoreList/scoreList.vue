@@ -8,7 +8,7 @@
       </div>
       <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
-
+      <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-buttons  v-if="chooseType" :files="files" />
@@ -35,6 +35,7 @@
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
   import {modules} from 'find-sdk'
   import {
     KEY73,
@@ -110,7 +111,14 @@
             dotColor: '#fff',
             id: 16
           }
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     watch: {
@@ -232,6 +240,10 @@
     },
     methods: {
       getScoreList () {
+        // let self = this
+        // self.promptInfo.text = '成功'
+        // self.promptInfo.icon = 'icon-grade-right'
+        // self.$refs.prompt.showPrompt()
         console.log(this.$route.query, 'this.$route')
         let query = this.query
         let id = 0
@@ -409,6 +421,8 @@
           } else {
             this.$store.dispatch('index/addRecentOpen', recentObj)
           }
+          // 重新拿数据
+          this.getScoreList()
         }
       }
     },
@@ -423,7 +437,8 @@
       scoreListLeftYear,
       scoreListLeftStyle,
       scoreListChooseButtons,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>

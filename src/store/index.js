@@ -276,7 +276,7 @@ export default function createStore () {
               userId: parseInt(body.userId),
               userName: body.userName
             }
-            modules.user.setUserInfo(userInfoObj).then((data) => {
+            return modules.user.setUserInfo(userInfoObj).then((data) => {
               if (data) {
                 // 原生设置成功
                 return dispatch('setNativeStorage', {userInfo: body, isLogin: true})

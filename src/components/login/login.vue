@@ -116,9 +116,8 @@
         this.$store
           .dispatch('login/login', {userName, password})
           .then((data) => {
-            console.log(1212, data)
             if (data.isLogin) {
-              this.$store.dispatch('getUserInfo', {root: true}).then(() => {
+              this.$store.dispatch('getUserInfo', {root: true}).then((data) => {
                 this.$router.push('/')
               })
             } else {
