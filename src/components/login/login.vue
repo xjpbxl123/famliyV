@@ -19,8 +19,9 @@
   import findKeyboard from '../common/find-keyboard/find-keyboard'
   import loginBanner from './login-banner'
   import {INTERCEPT_DOWN} from 'vue-find'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   export default {
     name: 'login',
     data () {
@@ -108,6 +109,15 @@
         this.$refs.banner.setValue(value)
       },
       login (userName, password) {
+        // 断网提示
+        global.getStatusBarItem().then((data) => {
+          if (!data.wifi.title) {
+            // 断网
+            this.promptInfo.text = '网络连接出错，请检查网络'
+            this.promptInfo.icon = 'icon-sync-info'
+            this.$refs.prompt.showPrompt()
+          }
+        })
         let env = this.$store.state.environments
         if (process.env.NODE_ENV !== 'production') {
           userName = userName || env.default_user_name
