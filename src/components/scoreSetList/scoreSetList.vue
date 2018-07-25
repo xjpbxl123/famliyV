@@ -240,7 +240,7 @@
         position: absolute;
         top: 275px;
         left: 2043px;
-      }
+    }
   ul.listBox {
     position: absolute;
     top: 180px;

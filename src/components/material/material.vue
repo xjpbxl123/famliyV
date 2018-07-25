@@ -6,6 +6,7 @@
                        :index="index" :select="materialSelect" :ablum="item"
                        :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
     </find-wrap>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true">
       <icon-item v-for="button in materialButton"
                  :pianoKey="button.pianoKey"
@@ -20,6 +21,13 @@
 
 </template>
 <style lang="scss" scoped type=text/scss>
+  .find-prompt {
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 275px;
+    left: 2043px;
+  }
   .find-ablum-card {
     margin-right: 30px;
     float: left;
@@ -34,6 +42,8 @@
   import findWrap from 'components/common/find-wrap/find-wrap'
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import {
     KEY75,
     KEY78,
@@ -98,7 +108,14 @@
             dotColor: '#fff',
             id: 204
           }
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -176,10 +193,19 @@
     created () {
       this.materialPage = Math.ceil((this.materialSelect + 1) / 8)
     },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        if (this.materialList.body.length === 0 && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       findWrap,
       findAblumCard,
-      statusBar
+      statusBar,
+      findPrompt
     },
     computed: {
       ...mapState({

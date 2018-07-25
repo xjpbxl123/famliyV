@@ -5,7 +5,7 @@
     <div class="year" v-show="(popularTapIndex===0)">
       <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
     </div>
-    <div class="differ" v-show="(popularTapIndex===1)">
+    <div class="differ" v-show="popularTapIndex===1 && differList.length !== 0">
       <popular-differ-list
         :differList="differList"
         :popularIndex="popularIndex"/>
@@ -16,6 +16,7 @@
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
@@ -43,6 +44,8 @@
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -117,7 +120,14 @@
           {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4', gradient: true}},
           {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4', gradient: true}},
           {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a', gradient: true}}
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -315,18 +325,34 @@
         }
       })
     },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        if (this.differList.length === 0 && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       contentLine,
       popularDifferList,
       popularDifferDetail,
       popularGenre,
       popularYearList,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped type=text/scss>
   .popular {
+    .find-prompt {
+      width: 750px;
+      height: 450px;
+      position: absolute;
+      top: 275px;
+      left: 2043px;
+    }
     .title {
         position: absolute;
         top: 46px;

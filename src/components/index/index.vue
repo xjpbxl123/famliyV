@@ -26,6 +26,7 @@
         :isPlaying="isPlaying"
         :isPlayingMusicId="isPlayingMusicId"/>
     </div>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <!-- <div class="footBack"></div> -->
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -154,7 +155,8 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import { modules, download } from 'find-sdk'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import { modules, download, global } from 'find-sdk'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -202,6 +204,13 @@
 
           }
         ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        },
         bigBUtton: [
           {id: 7, pianoKey: 37, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#EB3256', dotColor: '#EB3256', gradient: true}},
           {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#8E2F45', dotColor: '#8E2F45', gradient: true}},
@@ -1075,17 +1084,33 @@
     destroyed () {
       clearInterval(window.interval)
     },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        if ((this.hotBooks.bookList.length === 0 || this.recentBooks.bookList.length === 0) && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       BannerLeft,
       findButtonBanner,
       contentCenter,
       bannerRight,
       bannerHelp,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped>
+  .find-prompt {
+      width: 750px;
+      height: 450px;
+      position: absolute;
+      top: 275px;
+      left: 2043px;
+  }
   .banner-wrapper {
     height: 100%;
 
