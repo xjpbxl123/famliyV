@@ -4,6 +4,7 @@
     <findTitle :title="setName"></findTitle>
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
             :id="button.id"
@@ -22,6 +23,8 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80 } from 'vue-find'
 
   export default {
@@ -78,7 +81,14 @@
             id: 5,
             show: true
           }
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -203,19 +213,34 @@
       this.getScoreSetList(this.currentPage)
       console.log(this.scoreSetList, 'scoreSetList')
     },
+    mounted () {
+      global.getStatusBarItem().then((data) => {
+        if (this.scoreSetList.length === 0 && !data.wifi.title) {
+          // 断网
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       findImg,
       findTitle,
       pageNation,
       listBox,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped>
 .scoreSetList {
   color: #fff;
-
+  .find-prompt {
+        width: 750px;
+        height: 450px;
+        position: absolute;
+        top: 275px;
+        left: 2043px;
+      }
   ul.listBox {
     position: absolute;
     top: 180px;

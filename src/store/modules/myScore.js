@@ -80,9 +80,6 @@ export default {
      * */
     getLocalSource ({commit}, path) {
       file.readFolderFile(path).then((res) => {
-        if (res.length === 0) {
-          return
-        }
         let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
@@ -165,7 +162,6 @@ export default {
             filteredArr.push(item)
           }
         })
-        console.log(filteredArr)
         commit(LOCAL_SOURCE, filteredArr)
       })
     },

@@ -57,7 +57,6 @@
     //   )
     // },
     created () {
-      console.log(this.src, 'this.src')
       if (this.src.indexOf('./static') !== -1) {
         this.url = this.src
         return

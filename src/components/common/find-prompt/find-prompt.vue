@@ -32,6 +32,10 @@
       height: {
         type: Number,
         default: () => 450
+      },
+      allExit: {
+        type: Boolean,
+        default: () => false
       }
     },
     data () {
@@ -44,7 +48,9 @@
       showPrompt () {
         this.show = true
         setTimeout(() => {
-          this.show = false
+          if (!this.allExit) {
+            this.show = false
+          }
         }, this.delay)
       }
     },

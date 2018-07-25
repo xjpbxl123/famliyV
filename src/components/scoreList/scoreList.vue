@@ -1,14 +1,14 @@
 <template>
   <div class="scoreList">
-      <statusBar/>
+      <statusBar ref="statusBar"/>
       <div class="left">
         <scoreListLeftDeffer v-if="query.differ" :differ="JSON.parse(query.differ)"></scoreListLeftDeffer>
         <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
         <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
       </div>
-      <scoreList-center :scoreList="scoreList" :scoreIndex="scoreIndex"/>
-      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex"/>
-      <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
+      <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex"/>
+      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-if="!dataError"/>
+      <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-buttons  v-if="chooseType" :files="files" />
@@ -36,7 +36,7 @@
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import findPrompt from '../common/find-prompt/find-prompt'
-  import {modules} from 'find-sdk'
+  import {modules, global} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -118,7 +118,8 @@
           delay: 1000,
           width: 750,
           height: 450
-        }
+        },
+        dataError: false
       }
     },
     watch: {
@@ -240,10 +241,6 @@
     },
     methods: {
       getScoreList () {
-        // let self = this
-        // self.promptInfo.text = '成功'
-        // self.promptInfo.icon = 'icon-grade-right'
-        // self.$refs.prompt.showPrompt()
         console.log(this.$route.query, 'this.$route')
         let query = this.query
         let id = 0
@@ -429,6 +426,17 @@
     created () {
       this.getScoreList()
     },
+    mounted () {
+      global.getStatusBarItem().then((data) => {
+        if (this.scoreList.length === 0) {
+          this.dataError = true
+          if (!data.wifi.title) {
+            // 断网
+            this.$refs.prompt.showPrompt()
+          }
+        }
+      })
+    },
     components: {
       scoreListCenter,
       scoreListMusicDetail,
@@ -446,6 +454,13 @@
   .scoreList {
       width: 100%;
       height: 100%;
+      .find-prompt {
+        width: 750px;
+        height: 450px;
+        position: absolute;
+        top: 275px;
+        left: 2043px;
+      }
     .left {
       position: absolute;
       width: 850px;

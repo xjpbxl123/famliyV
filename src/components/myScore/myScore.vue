@@ -296,6 +296,7 @@
           case 'down':
             localSourceIndex++
             localSourceIndex = Math.min(localSourceIndex, length - 1)
+            localSourceIndex = Math.max(localSourceIndex, 0)
             this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex)
             break
           case 'ok':
@@ -623,6 +624,7 @@
         this.$store.dispatch('myScore/setMyPlayIndex', 0)
         this.$store.dispatch('myScore/setMyCollectIndex', 0)
         this.$store.dispatch('myScore/setRecentIndex', 0)
+        this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
       }
 
     },
