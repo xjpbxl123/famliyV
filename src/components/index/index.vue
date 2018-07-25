@@ -27,7 +27,6 @@
         :isPlayingMusicId="isPlayingMusicId"/>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <!-- <div class="footBack"></div> -->
     <find-cover :activeNamespace="namespace">
       <banner-help
         v-if="showHelpBanner"
@@ -149,7 +148,8 @@
     KEY94,
     KEY99,
     INTERCEPT_DOWN,
-    BACK_PRESSED
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
   import BannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
@@ -475,17 +475,22 @@
       [KEY99] () {
         this.buttonActions('changeRightData')
       },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.metronome ? this.buttonActions('speedDown') : this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.metronome ? this.buttonActions('speedUp') : this.buttonActions('right')
+          case 118:
+            return this.buttonActions('ok')
+          case 119:
+            return this.goBack()
+        }
+      },
       [BACK_PRESSED] () {
-        if (this.isPlaying) {
-          this.$refs.player.pause()
-          this.$refs.player.reset()
-          this.isPlaying = false
-          this.isPlayingMusicId = 0
-        }
-        if (this.metronome) {
-          // 节拍器开着 关闭节拍器
-          this.buttonActions('closeMetro')
-        }
+        this.goBack()
       },
       banner: {
         [INTERCEPT_DOWN] (keys) {
@@ -683,10 +688,15 @@
         this.$router.push(params)
       },
       goBack () {
-        if (this.showHelpBanner) {
-          this.showHelpBanner = false
-        } else {
-          this.$router.back()
+        if (this.isPlaying) {
+          this.$refs.player.pause()
+          this.$refs.player.reset()
+          this.isPlaying = false
+          this.isPlayingMusicId = 0
+        }
+        if (this.metronome) {
+          // 节拍器开着 关闭节拍器
+          this.buttonActions('closeMetro')
         }
       },
       /**
@@ -1125,12 +1135,4 @@
     padding: 0 20px;
   }
 
-  .footBack {
-    position: absolute;
-    width: 2682px;
-    height: 7%;
-    left: 470px;
-    bottom: -2px;
-    background: url(./images/bottomBackground.png) no-repeat;
-  }
 </style>
