@@ -152,7 +152,7 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 8,
-            show: false
+            show: true
           },
           {
             pianoKey: 90,
@@ -197,7 +197,7 @@
     find: {
       [KEY39] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 2].show = true
         this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY42] () {
@@ -212,7 +212,7 @@
       },
       [KEY49] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-        this.controlButtons[this.controlButtons.length - 2].show = false
+        this.controlButtons[this.controlButtons.length - 2].show = true
         this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY54] () {
@@ -256,8 +256,8 @@
     computed: {
       ...mapState({
         myScoreTapIndex: function (state) {
-          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 2) {
-            this.controlButtons[this.controlButtons.length - 2].show = true
+          if (state.myScore.myScoreTapIndex === 4) {
+            this.controlButtons[this.controlButtons.length - 2].show = false
           }
           if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
             this.controlButtons[this.controlButtons.length - 1].show = true
@@ -410,6 +410,27 @@
               }
             }
             break
+          case 'delete':
+            let data1 = localSource[localSourceIndex]
+            if (!data1) {
+              return
+            }
+            if (this.deleteCover) {
+              this.deleteCover = !this.deleteCover
+              this.$refs.prompt.showPrompt()
+            } else {
+              modules.file.removeFile('$userUpload/' + data1.name).then(res => {
+                if (res) {
+                  this.deleteCover = !this.deleteCover
+                  this.$refs.prompt.hidePrompt()
+                  this.getLocalSource()
+                  if (this.localSourceIndex - 1 >= 0) {
+                    this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+                  }
+                }
+              })
+            }
+            break
           case 'back':
             if (myScoreTapIndex === 0 && localSourcePath !== '$userUpload') {
               let pathArr = localSourcePath.split('/')
@@ -462,6 +483,9 @@
                   this.deleteCover = !this.deleteCover
                   this.$refs.prompt.hidePrompt()
                   this.getMyRecord()
+                  if (this.myRecordIndex - 1 >= 0) {
+                    this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+                  }
                 }
               })
             }
@@ -495,6 +519,27 @@
             if (data) {
               //  去播放midi
               this.playMidi('$userHistory/' + data.name)
+            }
+            break
+          case 'delete':
+            let data1 = myPlay[myPlayIndex]
+            if (!data1) {
+              return
+            }
+            if (this.deleteCover) {
+              this.deleteCover = !this.deleteCover
+              this.$refs.prompt.showPrompt()
+            } else {
+              modules.file.removeFile('$userHistory/' + data1.name).then(res => {
+                if (res) {
+                  this.deleteCover = !this.deleteCover
+                  this.$refs.prompt.hidePrompt()
+                  this.getMyPlay()
+                  if (this.myPlayIndex - 1 >= 0) {
+                    this.$store.dispatch('myScore/setMyPlayIndex', myPlayIndex - 1)
+                  }
+                }
+              })
             }
             break
           case 'back':
