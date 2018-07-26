@@ -62,15 +62,15 @@
             :icon="button.icon"/>
       <group id="501" :hidden="isPlaying">
         <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
-                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E',gradient: true}"/>
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
         <icon-item id="401" pianoKey="67" text="" icon="0xe601"
-                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',gradient: true}"/>
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
         <icon-item id="402" pianoKey="68" titlePosition="in" :text="speed"
-                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18,gradient: true}"/>
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
         <icon-item id="403" pianoKey="69" text="" icon="0xe605"
-                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',gradient: true}"/>
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
         <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre"
-                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18,gradient: true}"/>
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
       </group>
       <icon-item v-for="(button,index) in controlButtons"
         :longClick="button.longClick"
@@ -82,7 +82,7 @@
         :hidden="button.hidden || isPlaying"
         :checkable="button.checkable"
         :checked="button.checked"
-        :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor, gradient: button.gradient}"/>
+        :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
 
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
@@ -212,13 +212,13 @@
           height: 450
         },
         bigBUtton: [
-          {id: 7, pianoKey: 37, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256', gradient: true}},
-          {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45', gradient: true}},
-          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119', gradient: true}},
-          {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#C499FF,#A15CFF', dotColor: '#A15CFF', gradient: true}},
-          {id: 5, pianoKey: 54, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1', gradient: true}},
-          {id: 10, pianoKey: 58, text: '乐理&技巧', icon: '0xe69f', positionOffset: 0, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F', gradient: true}},
-          {id: 9, pianoKey: 61, text: '音乐王国', icon: '0xe604', positionOffset: 1, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#A15CFF', gradient: true}}
+          {id: 7, pianoKey: 37, text: '流行经典', icon: '0xe69f', positionOffset: 1, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
+          {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionOffset: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
+          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionOffset: 0, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
+          {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionOffset: 1, style: {backgroundColor: '#C499FF,#A15CFF', dotColor: '#A15CFF'}},
+          {id: 5, pianoKey: 54, text: '弹奏录制', icon: '0xe615', positionOffset: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
+          {id: 10, pianoKey: 58, text: '乐理&技巧', icon: '0xe69f', positionOffset: 0, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}},
+          {id: 9, pianoKey: 61, text: '音乐王国', icon: '0xe604', positionOffset: 1, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#A15CFF'}}
         ],
         controlButtons: [
           {
@@ -238,8 +238,7 @@
             icon: '0xe609',
             backgroundColor: '#3000',
             dotColor: '#fff',
-            id: 100,
-            gradient: true
+            id: 100
           },
           {
             pianoKey: 73,

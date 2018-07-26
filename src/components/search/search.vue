@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <statusBar/>
-    <find-keyboard ref="keyboard" :setValue="setValue"/>
+    <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/>
     <musicList :list="musicList" :listIndex="listIndex"/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>

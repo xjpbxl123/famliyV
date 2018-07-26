@@ -2,7 +2,7 @@
   <div class="login">
     <statusBar/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
-    <find-keyboard ref="keyboard" :setValue="setValue"/>
+    <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/>
     <login-banner ref="banner" :login="login"/>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
