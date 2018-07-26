@@ -88,7 +88,7 @@
       }
     },
     method: {},
-    created () {
+    mounted () {
       this.scrollTop = this.defaultScrollTop * (this.activePage - 1)
     },
     components: {
