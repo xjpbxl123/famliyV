@@ -18,7 +18,7 @@
 </template>
 <script type='text/javascript'>
   import { global } from 'find-sdk'
-  import { KEY75, KEY78, KEY80, KEY82, KEY85, KEY87, KEY90 } from 'vue-find'
+  import { KEY75, KEY78, KEY80, KEY82, KEY85, KEY87 } from 'vue-find'
   import statusBar from '../common/find-status-bar/find-status-bar'
   export default {
     data () {
@@ -71,15 +71,15 @@
             id: 6,
             backgroundColor: '#555',
             show: true
-          },
-          {
-            pianoKey: 90,
-            text: '更新App',
-            icon: '0xe60c',
-            id: 7,
-            backgroundColor: '#555',
-            show: true
           }
+          // {
+          //   pianoKey: 90,
+          //   text: '更新App',
+          //   icon: '0xe60c',
+          //   id: 7,
+          //   backgroundColor: '#555',
+          //   show: true
+          // }
         ]
       }
     },
@@ -101,10 +101,10 @@
       },
       [KEY87] () {
         this.buttonAction('restartApp')
-      },
-      [KEY90] () {
-        this.buttonAction('updateApp')
       }
+      // [KEY90] () {
+      //   this.buttonAction('updateApp')
+      // }
     },
     computed: {},
     methods: {
