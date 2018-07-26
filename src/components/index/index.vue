@@ -27,6 +27,7 @@
         :isPlayingMusicId="isPlayingMusicId"/>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <findPrompt ref="musicPrompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="false"></findPrompt>
     <find-cover :activeNamespace="namespace">
       <banner-help
         v-if="showHelpBanner"
@@ -974,6 +975,8 @@
                 this.$refs.player.play().then(() => {
                   this.isPlaying = false
                 })
+                this.promptInfo.text = '再次点击进入曲谱'
+                this.$refs.musicPrompt.showPrompt()
                 this.enterPlay = false
                 this.isPlaying = true
               }
@@ -1046,8 +1049,18 @@
       },
       playMidi (musicId) {
         let midiData = {url: '', md5: '', fsize: 0}
-        this.$store.dispatch('index/getMusicInfo', musicId).then(() => {
+        this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           let musicInfo = this.musicInfo[musicId]
+          if (!musicInfo) {
+            // 提示用户
+            global.getStatusBarItem().then((data) => {
+              if (!data.wifi.title) {
+                this.promptInfo.text = '网络连接出错，请检查网络'
+                this.$refs.musicPrompt.musicPrompt()
+              }
+            })
+            return
+          }
           musicInfo.files.forEach((value) => {
             if (value.musicId === musicId) {
               let Mid = value.bMid
@@ -1072,10 +1085,18 @@
           // 判断文件是否存在
           modules.download.fileIsExists(exixtObj).then((data) => {
             if (!data.path) {
-              // 去下载
-              let downloadObj = {...exixtObj, fsize: midiData.fsize}
-              download.downloadFile(downloadObj).then((data) => {
-                this.playerSource.mid.midiUrl = data.path
+              global.getStatusBarItem().then((data) => {
+                if (!data.wifi.title) {
+                  // 提示用户
+                  this.promptInfo.text = '网络连接出错，请检查网络'
+                  this.$refs.musicPrompt.showPrompt()
+                } else {
+                  // 去下载
+                  let downloadObj = {...exixtObj, fsize: midiData.fsize}
+                  download.downloadFile(downloadObj).then((data) => {
+                    this.playerSource.mid.midiUrl = data.path
+                  })
+                }
               })
             } else {
               // 直接打开
@@ -1095,6 +1116,8 @@
         if (!data.result) {
           return
         }
+        this.promptInfo.text = '再次点击进入曲谱'
+        this.$refs.musicPrompt.showPrompt()
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
@@ -1149,6 +1172,7 @@
       // 断网提醒
       global.getStatusBarItem().then((data) => {
         if ((this.hotBooks.bookList.length === 0 || this.recentBooks.bookList.length === 0) && !data.wifi.title) {
+          this.promptInfo.text = '网络连接出错，请检查网络'
           this.$refs.prompt.showPrompt()
         }
       })

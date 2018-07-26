@@ -238,6 +238,8 @@ export default {
             return dispatch('setCacheToStorage', {bookInfo: body, id: bookId}, {root: true})
           }
         }
+      }).catch((error) => {
+        console.log(error)
       })
     }
   }

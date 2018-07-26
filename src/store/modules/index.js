@@ -207,7 +207,7 @@ export default {
     /**
      * @desc 获取曲子信息
      * */
-    getMusicInfo ({dispatch, commit} = {}, musicId) {
+    getMusicInfo ({dispatch} = {}, musicId) {
       console.log(musicId)
       return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
         if (!header.code) {
@@ -215,6 +215,8 @@ export default {
             return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
           }
         }
+      }).catch((error) => {
+        console.log(error)
       })
     }
   }
