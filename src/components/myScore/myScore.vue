@@ -15,6 +15,7 @@
         :list="isLogin?recentOpenList:localRecent"
         :listIndex="myRecentIndex"/>
     </find-wrap>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
@@ -22,9 +23,19 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
-            :hidden="!button.show"
+            :hidden="!button.show || !deleteCover"
             :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
+        <icon-item v-for="(button,index) in logoutButtons"
+            :hidden="deleteCover"
+            :key="index"
+            :id="button.id"
+            :icon="button.icon"
+            :text="button.text"
+            :pianoKey="button.pianoKey"
+            titlePosition="below"
+            v-if="button.show"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
     </toolbar>
   </div>
 
@@ -38,12 +49,14 @@
   import findUserMess from './find-userMess'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import {modules} from 'find-sdk'
+  import findPrompt from '../common/find-prompt/find-prompt'
   import {
     KEY39,
     KEY42,
     KEY46,
     KEY49,
     KEY54,
+    KEY75,
     KEY78,
     KEY80,
     KEY82,
@@ -151,8 +164,34 @@
             show: false
           }
         ],
+        logoutButtons: [
+          {
+            pianoKey: 78,
+            text: '取消',
+            icon: '0xe60a',
+            id: 288,
+            backgroundColor: '#3000',
+            show: true
+          },
+          {
+            pianoKey: 75,
+            text: '删除',
+            icon: '0xe642',
+            id: 289,
+            backgroundColor: '#3000',
+            show: true
+          }
+        ],
+        deleteCover: true,
         title: '最近打开',
-        dirName: ''
+        dirName: '',
+        promptInfo: {
+          text: '确认删除吗？',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -181,8 +220,16 @@
         this.controlButtons[this.controlButtons.length - 2].show = false
         this.controlButtons[this.controlButtons.length - 1].show = true
       },
+      [KEY75] () {
+        if (!this.deleteCover) this.buttonActions('delete')
+      },
       [KEY78] () {
-        this.buttonActions('up')
+        if (!this.deleteCover) {
+          this.deleteCover = !this.deleteCover
+          this.$refs.prompt.hidePrompt()
+        } else {
+          this.buttonActions('up')
+        }
       },
       [KEY80] () {
         this.buttonActions('down')
@@ -406,11 +453,19 @@
             if (!data1) {
               return
             }
-            modules.file.removeFile('$userRecord/' + data1.name).then(res => {
-              if (res) {
-                this.getMyRecord()
-              }
-            })
+            if (this.deleteCover) {
+              this.deleteCover = !this.deleteCover
+              this.$refs.prompt.showPrompt()
+            } else {
+              modules.file.removeFile('$userRecord/' + data1.name).then(res => {
+                if (res) {
+                  this.deleteCover = !this.deleteCover
+                  this.$refs.prompt.hidePrompt()
+                  this.getMyRecord()
+                }
+              })
+            }
+
             break
           case 'back':
             this.$router.back()
@@ -642,7 +697,8 @@
       findTapButtons,
       findLocalMid,
       findUserMess,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
@@ -651,6 +707,13 @@
     width: 100%;
     height: 100%;
     position: relative;
+    .find-prompt {
+      width: 750px;
+      height: 450px;
+      position: absolute;
+      top: 275px;
+      left: 2043px;
+    }
     .logo {
         font-size: 360px;
         position: absolute;

@@ -52,6 +52,9 @@
             this.show = false
           }
         }, this.delay)
+      },
+      hidePrompt () {
+        this.show = false
       }
     },
     created () {
