@@ -50,7 +50,7 @@ export default {
       }).then(res => {
         if (res.header.code === 0) {
           let data = []
-          if (data.length === 5) {
+          if (res.body.length === 5) {
             data = [{
               coverSmall: require('../../components/popular/images/pic_01.png'),
               sleCoverSmall: require('../../components/popular/images/pic_01_sle.png'),
@@ -120,7 +120,7 @@ export default {
       }).then((res) => {
         console.log(res)
         let data = []
-        if (data.length > 1) {
+        if (res.body.length > 1) {
           data = [
             {
               name: res.body[0].name,

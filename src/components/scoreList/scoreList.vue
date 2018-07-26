@@ -422,10 +422,19 @@
           // 重新拿数据
           this.getScoreList()
         }
+      },
+      addBookViewMount (bookId) {
+        let book = this.query.book
+        if (book) {
+          if (JSON.parse(book).bookId) {
+            this.$store.dispatch('scoreList/addBookViewMount', {bookId: JSON.parse(book).bookId})
+          }
+        }
       }
     },
     created () {
       this.getScoreList()
+      this.addBookViewMount()
     },
     mounted () {
       global.getStatusBarItem().then((data) => {

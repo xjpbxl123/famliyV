@@ -173,6 +173,15 @@ export default {
           console.log('移除收藏')
         })
       }
+    },
+    addBookViewMount ({dispatch}, { bookId }) {
+      // 添加书籍浏览量
+      http.post('', {
+        cmd: 'musicScore.addBookClicks',
+        bookId
+      }).then(res => {
+        console.log('添加书籍浏览量')
+      })
     }
   }
 }
