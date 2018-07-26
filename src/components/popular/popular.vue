@@ -17,7 +17,7 @@
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
             :id="button.id"
@@ -127,7 +127,8 @@
           delay: 1000,
           width: 750,
           height: 450
-        }
+        },
+        toolbarHidden: false
       }
     },
     find: {
@@ -330,6 +331,7 @@
       global.getStatusBarItem().then((data) => {
         if (this.differList.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
+          this.toolbarHidden = true
         }
       })
     },

@@ -7,7 +7,8 @@
         :books="title==='最近更新'?recentBooksAll:hotBooksAll"
         :selectedIndex="moreIndex"/>
     </div>
-    <toolbar :darkBgHidden="true">
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in controlButtons"
                  :key="button.id"
                  :id="button.id"
@@ -22,6 +23,8 @@
   import { mapState, mapGetters } from 'vuex'
   import contentCenter from './indexMore-center'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -80,7 +83,15 @@
             id: 114
           }
         ],
-        title: this.$route.query.title
+        title: this.$route.query.title,
+        toolbarHidden: false,
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -176,19 +187,37 @@
         this.$store.dispatch({type: 'index/getHotBooks'})
       }
     },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        let books = []
+        this.title === '最近更新' ? books = this.recentBooksAll : books = this.hotBooksAll
+        if (books.length === 0 && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+          this.toolbarHidden = true
+        }
+      })
+    },
     destroyed () {
       clearInterval(window.interval)
     },
     components: {
       statusBar,
-      contentCenter
+      contentCenter,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped>
   .banner-wrapper {
     height: 100%;
-
+  .find-prompt {
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 275px;
+    left: 2043px;
+  }
   .banner-content {
     display: flex;
     height: 100%;

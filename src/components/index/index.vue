@@ -230,7 +230,7 @@
           {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionPixels: -30, style: {backgroundColor: '#C499FF,#A15CFF', dotColor: '#A15CFF'}},
           {id: 5, pianoKey: 51, text: '弹奏录制', icon: '0xe615', positionPixels: 30, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
           {id: 10, pianoKey: 54, text: '乐理&技巧', icon: '0xe69f', positionPixels: 40, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionPixels: 0, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#A15CFF'}}
+          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionPixels: 0, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#FC8F1B'}}
         ],
         controlButtons: [
           {
@@ -893,10 +893,15 @@
             }
             if (activeIndex >= 0 && activeIndex < 7) {
               // 最近更新
-              console.log(recentBooks.bookList[activeIndex])
+              if (recentBooks.bookList.length === 0) {
+                return
+              }
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex < 13) {
+              if (hotBooks.bookList.length === 0) {
+                return
+              }
               // 热门曲谱
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }

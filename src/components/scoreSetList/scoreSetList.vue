@@ -5,7 +5,7 @@
     <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
             :id="button.id"
             :key="button.id"
@@ -88,7 +88,8 @@
           delay: 1000,
           width: 750,
           height: 450
-        }
+        },
+        toolbarHidden: false
       }
     },
     find: {
@@ -218,6 +219,7 @@
         if (this.scoreSetList.length === 0 && !data.wifi.title) {
           // 断网
           this.$refs.prompt.showPrompt()
+          this.toolbarHidden = true
         }
       })
     },

@@ -7,7 +7,7 @@
                        :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
     </find-wrap>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in materialButton"
                  :pianoKey="button.pianoKey"
                  :key="button.icon"
@@ -63,6 +63,7 @@
       return {
         materialPage: 1,
         pagination: true,
+        toolbarHidden: false,
         materialButton: [
           {
             pianoKey: 73,
@@ -198,6 +199,7 @@
       global.getStatusBarItem().then((data) => {
         if (this.materialList.body.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
+          this.toolbarHidden = true
         }
       })
     },

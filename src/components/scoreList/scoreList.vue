@@ -13,7 +13,7 @@
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-buttons  v-if="chooseType" :files="files" />
       </find-cover>
-      <toolbar :hidden="chooseType" :darkBgHidden="true">
+      <toolbar :hidden="chooseType || toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
                 :key="index"
                 :id="button.id"
@@ -112,6 +112,7 @@
             id: 16
           }
         ],
+        toolbarHidden: false,
         promptInfo: {
           text: '网络连接出错，请检查网络',
           icon: 'icon-sync-info',
@@ -433,6 +434,7 @@
           if (!data.wifi.title) {
             // 断网
             this.$refs.prompt.showPrompt()
+            this.toolbarHidden = true
           }
         }
       })
