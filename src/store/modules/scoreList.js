@@ -26,7 +26,7 @@ export default {
       let netObj = {page, bookId: id, cmd: cmd}
       if (typeName === 'other') {
         cmd = 'musicScore.getMusicsByTag'
-        netObj = {page, tagId: id, cmd: cmd}
+        netObj = {page, tagId: id, cmd: cmd, type: 1}
       }
       return http.post('', {
         ...netObj

@@ -4,7 +4,7 @@
         <span class="price free" v-else-if="item.isFree">免费</span>
         <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
         <span class="price buy" v-else>{{item.payment}}</span>
-        <span class="video iconfont icon-with-video"></span>
+        <span class="video iconfont icon-with-video" v-if="hasVideo"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
         <span class="viewNum">{{item.hotNum}}+</span>
         <span class="musicName">{{item.name}}</span>
@@ -29,6 +29,7 @@
     },
     data () {
       return {
+        hasVideo: false
       }
     },
     watch: {
@@ -36,7 +37,12 @@
     },
     methods: {
     },
-    created () {
+    mounted () {
+      this.item.files.forEach((item) => {
+        if (item.mMp44k.url || item.mMp41080p.url) {
+          this.hasVideo = true
+        }
+      })
     },
     components: {
     }

@@ -382,6 +382,7 @@
                       localCollect.splice(localCollectIndex, 1)
                     }
                   }
+                  localCollect = localCollect.slice(0, 20)
                   this.$store.dispatch('index/localCollect', localCollect).then(() => {
                     scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
                     console.log(flag)

@@ -998,7 +998,7 @@
             this.clickInterval = setTimeout(() => {
               console.log('单击')
               this.timer = 0
-              this.playMidi(musicObj.musicId)
+              this.playMidi(musicObj.musicId, list1, rightActiveIndex)
             }, 700)
 
             break
@@ -1049,16 +1049,21 @@
           this.$store.dispatch('index/setRightSelect', 0)
         }
       },
-      playMidi (musicId) {
+      playMidi (musicId, musicList, musicIndex) {
         let midiData = {url: '', md5: '', fsize: 0}
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           let musicInfo = this.musicInfo[musicId]
-          if (!musicInfo) {
+          if (!musicInfo || !musicInfo.files) {
             // 提示用户
             global.getStatusBarItem().then((data) => {
               if (!data.wifi.title) {
                 this.promptInfo.text = '网络连接出错，请检查网络'
-                this.$refs.musicPrompt.musicPrompt()
+                this.$refs.musicPrompt.showPrompt()
+                // 继续播放下一首
+                if (musicIndex + 1 <= musicList.length - 1) {
+                  this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                  this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                }
               }
             })
             return
@@ -1092,6 +1097,11 @@
                   // 提示用户
                   this.promptInfo.text = '网络连接出错，请检查网络'
                   this.$refs.musicPrompt.showPrompt()
+                  // 继续播放下一首
+                  if (musicIndex + 1 <= musicList.length - 1) {
+                    this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                    this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                  }
                 } else {
                   // 去下载
                   let downloadObj = {...exixtObj, fsize: midiData.fsize}
