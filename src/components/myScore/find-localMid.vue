@@ -4,7 +4,7 @@
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
                 <li  v-for="(item,index) in list"  :key="index" :class="{active: listIndex == index}">
-                    <span class="typeIcon iconfont icon-midi" ></span>
+                    <span class="typeIcon iconfont" :class="item.icon" ></span>
                     <span class="name">{{item.name}}</span>
                 </li>
             </ul>
@@ -32,6 +32,10 @@
     watch: {
       listIndex (value, oldValue) {
         console.log(value)
+        if (value === 0) {
+          this.rightTop = 0
+          return
+        }
         let height = value * 120 * -1
         if (value - oldValue === -1) {
           // up
@@ -48,6 +52,8 @@
               this.rightTop = (value - 4) * 120 * -1
             }
           }
+        } else {
+          this.rightTop = (value - 4) * 120 * -1
         }
       }
     },

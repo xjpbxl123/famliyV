@@ -185,6 +185,7 @@
         deleteCover: true,
         title: '最近打开',
         dirName: '',
+        myRecordDirName: '',
         promptInfo: {
           text: '确认删除吗？',
           icon: 'icon-sync-info',
@@ -269,6 +270,7 @@
         localSource: state => state.myScore.localSource,
         myRecordIndex: state => state.myScore.myRecordIndex,
         myRecord: state => state.myScore.myRecord,
+        myRecordPath: state => state.myScore.myRecordPath,
         myPlayIndex: state => state.myScore.myPlayIndex,
         myPlay: state => state.myScore.myPlay,
         myCollectIndex: state => state.myScore.myCollectIndex,
@@ -286,6 +288,13 @@
         value.forEach((item, index) => {
           if (item.name === this.dirName) {
             this.$store.dispatch('myScore/setLocalSourceIndex', index)
+          }
+        })
+      },
+      myRecord (value, old) {
+        value.forEach((item, index) => {
+          if (item.name === this.myRecordDirName) {
+            this.$store.dispatch('myScore/setMyRecordIndex', index)
           }
         })
       },
@@ -320,7 +329,7 @@
         return this.$store.dispatch('myScore/getLocalSource', this.localSourcePath)
       },
       getMyRecord () {
-        return this.$store.dispatch('myScore/getMyRecord')
+        return this.$store.dispatch('myScore/getMyRecord', this.myRecordPath)
       },
       getMyPlay () {
         return this.$store.dispatch('myScore/getMyPlay')
@@ -451,6 +460,8 @@
         let myRecordIndex = this.myRecordIndex
         let myRecord = this.myRecord
         let length = myRecord.length
+        let myScoreTapIndex = this.myScoreTapIndex
+        let myRecordPath = this.myRecordPath
         switch (type) {
           case 'up':
             myRecordIndex--
@@ -464,9 +475,15 @@
             break
           case 'ok':
             let data = myRecord[myRecordIndex]
-            if (data) {
+            if (data.type === 'dir') {
+              //  去打开文件
+              this.$store.dispatch('myScore/setMyRecordPath', this.myRecordPath + '/' + data.name).then(() => {
+                this.getMyRecord()
+                this.$store.dispatch('myScore/setMyRecordIndex', 0)
+              })
+            } else {
               //  去播放midi
-              this.playMidi('$userRecord/' + data.name)
+              this.playMidi(this.myRecordPath + '/' + data.name)
             }
             break
           case 'delete':
@@ -492,8 +509,17 @@
 
             break
           case 'back':
-            this.$router.back()
-            this.destroyedFunc()
+            if (myScoreTapIndex === 2 && myRecordPath !== '$userRecord') {
+              let pathArr = myRecordPath.split('/')
+              this.myRecordDirName = pathArr.pop()
+              let newPath = pathArr.join('/')
+              this.$store.dispatch('myScore/setMyRecordPath', newPath)
+              this.$store.dispatch('myScore/getMyRecord', newPath)
+            } else {
+              this.$router.back()
+              this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+              this.destroyedFunc()
+            }
         }
       },
       /**

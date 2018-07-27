@@ -6,6 +6,7 @@ const LOCAL_SOURCE_INDEX = 'LOCAL_SOURCE_INDEX' /// 本地资源index
 const LOCAL_SOURCE_PATH = 'LOCAL_SOURCE_PATH' /// 本地资源路径
 const MY_RECORD = 'MY_RECORD' /// 我的录音
 const MY_RECORD_INDEX = 'MY_RECORD_INDEX' /// 我的录音index
+const MY_RECORD_PATH = 'MY_RECORD_PATH'
 const MY_PLAY = 'MY_PLAY' /// 我的弹奏
 const MY_PLAY_INDEX = 'MY_PLAY_INDEX' /// 我的弹奏index
 const MY_COLLECT_INDEX = 'MY_COLLECT_INDEX' /// 我的收藏index
@@ -17,6 +18,7 @@ export default {
     localSource: [],
     localSourceIndex: 0,
     localSourcePath: '$userUpload',
+    myRecordPath: '$userRecord',
     myRecord: [],
     myRecordIndex: 0,
     myPlay: [],
@@ -36,6 +38,9 @@ export default {
     },
     [LOCAL_SOURCE_PATH] (state, path) {
       state.localSourcePath = path
+    },
+    [MY_RECORD_PATH] (state, path) {
+      state.myRecordPath = path
     },
     [MY_RECORD] (state, data) {
       state.myRecord = data
@@ -74,6 +79,12 @@ export default {
      * */
     setLocalSourcePath ({commit}, path) {
       commit(LOCAL_SOURCE_PATH, path)
+    },
+    /**
+     * @desc 我的录音path
+     * */
+    setMyRecordPath ({commit}, path) {
+      commit(MY_RECORD_PATH, path)
     },
     /**
      * @desc 获取我的曲谱本地资源列表
@@ -174,20 +185,27 @@ export default {
     /**
      * @desc 获取我的曲谱我的录音列表
      * */
-    getMyRecord ({commit}) {
-      file.readFolderFile('$userRecord').then((res) => {
+    getMyRecord ({commit}, path) {
+      file.readFolderFile(path).then((res) => {
         if (res.length === 0) {
           return commit(MY_RECORD, [])
         }
+        let recordData = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
-          console.log(suffix)
-          if (suffix !== 'mid') {
-            res.splice(index, 1)
+          if (item.type === 'file' && suffix === 'mid') {
+            item.icon = 'icon-midi'
+            recordData.push(item)
           }
         })
-        commit(MY_RECORD, res)
+        res.forEach((item, index) => {
+          if (item.type === 'dir') {
+            item.icon = 'icon-open-now'
+            recordData.push(item)
+          }
+        })
+        commit(MY_RECORD, recordData)
       })
     },
     /**
@@ -208,7 +226,8 @@ export default {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
           console.log(suffix)
-          if (suffix !== 'mid') {
+          item.icon = 'icon-midi'
+          if (item.type !== 'file' || suffix !== 'mid') {
             res.splice(index, 1)
           }
         })

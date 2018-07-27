@@ -1019,7 +1019,7 @@
             break
           case 'closeScreen':
             this.closeScreen = bool
-            modules.device.turnOnOffScreen(bool)
+            modules.device.turnOnScreen(bool)
             break
           default:
             console.log('108')
