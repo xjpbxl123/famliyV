@@ -12,6 +12,7 @@
               :id="index"
               :icon="button.icon"
               :pianoKey="button.pianoKey"
+              :longClick="button.longClick"
               :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>

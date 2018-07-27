@@ -187,8 +187,7 @@
         playerSource: {
           mid: {
             midiUrl: ''
-          },
-          midiUrl: 'ddd'
+          }
         },
         isPlaying: false,
         isPlayingMusicId: 0,
@@ -220,7 +219,7 @@
         promptInfo: {
           text: '网络连接出错，请检查网络',
           icon: 'icon-sync-info',
-          delay: 1000,
+          delay: 3000,
           width: 750,
           height: 450
         },
@@ -373,13 +372,6 @@
     },
     find: {
       [TOOLBAR_PRESSED] ({hidden}) {
-        // if (this.isPlaying) {
-        //   this.$refs.player.pause()
-        //   this.$refs.player.reset()
-        //   this.isPlaying = false
-        //   this.isPlayingMusicId = 0
-        //   return
-        // }
         this.toolbarHidden = hidden
         if (hidden && this.metronome) {
           return
@@ -1051,6 +1043,7 @@
       },
       playMidi (musicId, musicList, musicIndex) {
         let midiData = {url: '', md5: '', fsize: 0}
+        let mp3Data = {url: '', md5: '', fsize: 0}
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
@@ -1078,11 +1071,19 @@
                 }
                 Mid = value.mMid
               }
+              mp3Data.url = value.aMp3.url
+              mp3Data.fsize = value.aMp3.fsize
+              mp3Data.md5 = value.aMp3.md5
               midiData.url = Mid.url
               midiData.fsize = Mid.fsize
               midiData.md5 = Mid.md5
             }
           })
+          let mp3ExitObj = {
+            url: mp3Data.url,
+            md5: mp3Data.md5,
+            localPath: '$filesCache/' + musicId
+          }
           let exixtObj = {
             url: midiData.url,
             md5: midiData.md5,
@@ -1090,10 +1091,10 @@
           }
 
           // 判断文件是否存在
-          modules.download.fileIsExists(exixtObj).then((data) => {
-            if (!data.path) {
-              global.getStatusBarItem().then((data) => {
-                if (!data.wifi.title) {
+          modules.download.fileIsExists(exixtObj).then((res) => {
+            if (!res.path) {
+              global.getStatusBarItem().then((status) => {
+                if (!status.wifi.title) {
                   // 提示用户
                   this.promptInfo.text = '网络连接出错，请检查网络'
                   this.$refs.musicPrompt.showPrompt()
@@ -1111,13 +1112,23 @@
                 }
               })
             } else {
-              // 直接打开
-              this.playerSource = {
-                mid: {
-                  midiUrl: data.path
-                },
-                midiUrl: 'ddd'
-              }
+              // 判断有无mp3
+              modules.download.fileIsExists(mp3ExitObj).then((data) => {
+                if (data.path) {
+                  this.playerSource = {
+                    mp3: {
+                      midiUrl: res.path,
+                      accompanyUrl: data.path
+                    }
+                  }
+                } else {
+                  this.playerSource = {
+                    mid: {
+                      midiUrl: res.path
+                    }
+                  }
+                }
+              })
             }
           })
         })
