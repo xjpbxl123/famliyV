@@ -85,7 +85,7 @@
           this.toolbarHidden = !this.toolbarHidden
           return
         }
-        if (this.toolbarHidden) {
+        if (this.toolbarHidden && key !== 108) {
           return
         }
         if (key >= 27 && key <= 82) {

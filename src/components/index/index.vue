@@ -1070,7 +1070,8 @@
               let Mid = value.bMid
               if (!value.bMid.url) {
                 if (!value.mMid.url) {
-                  alert('mid加载失败')
+                  this.promptInfo.text = 'mid加载失败'
+                  this.$refs.musicPrompt.showPrompt()
                   return
                 }
                 Mid = value.mMid

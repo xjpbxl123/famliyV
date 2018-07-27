@@ -16,7 +16,7 @@
         :listIndex="myRecentIndex"/>
     </find-wrap>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"/>
+    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex" :show="!toolbarHidden"/>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
@@ -64,7 +64,8 @@
     KEY90,
     LONG_KEY78,
     LONG_KEY80,
-    BACK_PRESSED
+    BACK_PRESSED,
+    TOOLBAR_PRESSED
   } from 'vue-find'
   export default {
     data () {
@@ -196,6 +197,9 @@
       }
     },
     find: {
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden = hidden
+      },
       [KEY39] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
         this.controlButtons[this.controlButtons.length - 2].show = true
