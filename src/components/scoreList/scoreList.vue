@@ -216,11 +216,11 @@
         scoreList: function (state) {
           let query = this.query
           if (query.differ) {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || [{name: ''}]
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || []
           } else if (query.year) {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || [{name: ''}]
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || []
           } else {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || [{name: ''}]
+            return state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
           }
         },
         isLogin (state) {

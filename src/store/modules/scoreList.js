@@ -36,6 +36,11 @@ export default {
           let subParts = {base: '0', accompany: '0', video: '0'}
           res.body.musicList.forEach((item) => {
             let musicIdList = []
+            item.files.forEach((each) => {
+              if (each.mMp44k.url || each.mMp41080p.url) {
+                item.hasVideo = true
+              }
+            })
             if (!item.isFree && !item.sales && item.have && !item.have.base) {
               // 需要购买
               let money = 0

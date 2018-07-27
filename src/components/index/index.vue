@@ -503,6 +503,10 @@
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
+        if (this.isPlaying) {
+          // 播放的时候禁用踏板
+          return
+        }
         switch (key.id) {
           case 116:
             // 踏板1号键
