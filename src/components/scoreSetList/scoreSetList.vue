@@ -2,8 +2,8 @@
   <div class="scoreSetList">
     <statusBar/>
     <findTitle :title="setName"></findTitle>
-    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" :currentPage="currentPage"></listBox>
-    <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
+    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" ></listBox>
+    <pageNation  :totalPage="totalPage" :scoreListIndex="scoreListIndex"></pageNation>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
@@ -123,13 +123,11 @@
       [BACK_PRESSED] () {
         this.$router.back()
         this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
-        this.$store.dispatch('scoreSetList/setCurrentPage', 1)
       }
     },
     computed: {
       ...mapState({
         scoreListIndex: state => state.scoreSetList.scoreListIndex,
-        currentPage: state => state.scoreSetList.currentPage,
         totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
           return state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
@@ -141,7 +139,6 @@
       getScoreSetList (page) {
         this.$store.dispatch({
           type: 'scoreSetList/getScoreSetList',
-          page,
           setId: this.$route.query.setId
         })
       },
@@ -197,8 +194,7 @@
       }
     },
     created () {
-      this.getScoreSetList(this.currentPage)
-      console.log(this.scoreSetList, 'scoreSetList')
+      this.getScoreSetList()
     },
     mounted () {
       global.getStatusBarItem().then((data) => {
