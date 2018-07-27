@@ -36,8 +36,8 @@ export default {
         cmd: 'musicScore.getBooksByTag',
         tagId: setId,
         page: {
-          offset: (page - 1) * 20,
-          count: 20
+          offset: 0,
+          count: 100
         }
       }).then(res => {
         console.log(res)

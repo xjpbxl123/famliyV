@@ -2,7 +2,7 @@
   <div class="scoreSetList">
     <statusBar/>
     <findTitle :title="setName"></findTitle>
-    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
+    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" :currentPage="currentPage"></listBox>
     <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -186,31 +186,14 @@
       },
       next (scoreListIndex) {
         let len = this.scoreSetList.length
-        let currentPage = this.currentPage
-        let totalPage = this.totalPage
-        if (scoreListIndex > len - 1) {
-          if (currentPage < totalPage) {
-            this.getScoreSetList(++currentPage)
-            scoreListIndex = scoreListIndex - 20
-          } else {
-            scoreListIndex = len - 1
-          }
+        if (scoreListIndex <= len - 1) {
+          this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
         }
-        this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
-        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
       },
       pre (scoreListIndex) {
-        let currentPage = this.currentPage
-        if (scoreListIndex < 0) {
-          if (currentPage > 1) {
-            this.getScoreSetList(--currentPage)
-            scoreListIndex = scoreListIndex + 20
-          } else {
-            scoreListIndex = 0
-          }
+        if (scoreListIndex >= 0) {
+          this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
         }
-        this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
-        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
       }
     },
     created () {
