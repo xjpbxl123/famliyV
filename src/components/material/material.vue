@@ -154,6 +154,9 @@
     methods: {
       buttonActions (type) {
         let activeIndex = this.materialSelect
+        if (this.materialList.body.length === 0 && type !== 'back') {
+          return
+        }
         let materialLen = this.materialList.body.length - 1
         switch (type) {
           case 'right':
@@ -199,7 +202,6 @@
       global.getStatusBarItem().then((data) => {
         if (this.materialList.body.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
-          this.toolbarHidden = true
         }
       })
     },

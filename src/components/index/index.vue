@@ -885,7 +885,9 @@
           case 'tone':
             return modules.nativeRouter.openTimbreView()
           case 'ok':
-            console.log(activeIndex)
+            if (recentBooks.bookList.length === 0) {
+              return
+            }
             if (activeIndex === 7) {
               return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
             }

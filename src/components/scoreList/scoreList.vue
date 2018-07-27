@@ -278,6 +278,9 @@
         let scoreList = [].concat(JSON.parse(JSON.stringify(this.scoreList)))
         let files = this.files
         let isLogin = this.isLogin
+        if (scoreList.length === 0 && type !== 'back') {
+          return
+        }
         switch (type) {
           case 'prevPage' :
             console.log('prevPage')
@@ -443,7 +446,6 @@
           if (!data.wifi.title) {
             // 断网
             this.$refs.prompt.showPrompt()
-            this.toolbarHidden = true
           }
         }
       })

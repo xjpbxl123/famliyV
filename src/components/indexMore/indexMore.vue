@@ -145,6 +145,9 @@
       buttonActions (type) {
         let moreIndex = this.moreIndex
         let books = this.recentBooksAll
+        if (books.bookList.length <= 0 && type !== 'back') {
+          return
+        }
         switch (type) {
           case 'left':
             moreIndex = Math.max(moreIndex - 1, 0)
@@ -194,7 +197,6 @@
         this.title === '最近更新' ? books = this.recentBooksAll : books = this.hotBooksAll
         if (books.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
-          this.toolbarHidden = true
         }
       })
     },

@@ -213,8 +213,11 @@
         return this.$store.dispatch('popular/getStyles')
       },
       stylesButtonAction (type) {
-        let activeIndex = this.popularGenreSelect
         let popularGenreLen = this.popularGenre.length - 1
+        if (popularGenreLen <= 0) {
+          return
+        }
+        let activeIndex = this.popularGenreSelect
         switch (type) {
           case 'right':
             popularGenreLen > activeIndex && activeIndex++
@@ -241,6 +244,9 @@
       yearButtonAction (type) {
         let yearIndex = this.yearIndex
         let len = this.yearList.length
+        if (len <= 0) {
+          return
+        }
         let yearList = this.yearList
         switch (type) {
           case 'left':
@@ -263,6 +269,9 @@
       differButtonAction (type) {
         let popularIndex = this.popularIndex
         let differList = this.differList
+        if (differList.length <= 0) {
+          return
+        }
         switch (type) {
           case 'left' :
             console.log('left')
@@ -331,7 +340,6 @@
       global.getStatusBarItem().then((data) => {
         if (this.differList.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
-          this.toolbarHidden = true
         }
       })
     },

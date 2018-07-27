@@ -148,6 +148,9 @@
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
         let scoreSetList = this.scoreSetList
+        if (scoreSetList.length === 0) {
+          return
+        }
         switch (type) {
           case 'up':
             console.log('up')
@@ -219,7 +222,6 @@
         if (this.scoreSetList.length === 0 && !data.wifi.title) {
           // 断网
           this.$refs.prompt.showPrompt()
-          this.toolbarHidden = true
         }
       })
     },
