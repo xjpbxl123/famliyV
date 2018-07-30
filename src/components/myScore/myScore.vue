@@ -795,6 +795,8 @@
         this.$store.dispatch('myScore/setMyCollectIndex', 0)
         this.$store.dispatch('myScore/setRecentIndex', 0)
         this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
+        this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
+        this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
       }
 
     },
