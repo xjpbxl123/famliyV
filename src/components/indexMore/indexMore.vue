@@ -33,7 +33,8 @@
     LONG_KEY73,
     LONG_KEY75,
     KEY82,
-    BACK_PRESSED
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
 
   export default {
@@ -118,6 +119,21 @@
       },
       [BACK_PRESSED] () {
         this.buttonActions('back')
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.buttonActions('back')
+        }
       }
     },
     computed: {

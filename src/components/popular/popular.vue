@@ -59,7 +59,8 @@
     LONG_KEY75,
     LONG_KEY78,
     LONG_KEY80,
-    BACK_PRESSED
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
 
   export default {
@@ -168,13 +169,23 @@
       [KEY82] () {
         this.buttonActions('ok')
       },
-
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.goBack()
+        }
+      },
       [BACK_PRESSED] () {
-        this.$store.dispatch('popular/setPopularTapSelected', 2)
-        this.$store.dispatch('popular/setYearSelected', 0)
-        this.$store.dispatch('popular/setPopularSelected', 0)
-        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
-        this.$router.back()
+        this.goBack()
       }
     },
     computed: {
@@ -211,6 +222,13 @@
       },
       getStyles () {
         return this.$store.dispatch('popular/getStyles')
+      },
+      goBack () {
+        this.$store.dispatch('popular/setPopularTapSelected', 2)
+        this.$store.dispatch('popular/setYearSelected', 0)
+        this.$store.dispatch('popular/setPopularSelected', 0)
+        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
+        this.$router.back()
       },
       stylesButtonAction (type) {
         let popularGenreLen = this.popularGenre.length - 1

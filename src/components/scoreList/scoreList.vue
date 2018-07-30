@@ -49,7 +49,8 @@
     LONG_KEY80,
     KEY85,
     INTERCEPT_DOWN,
-    BACK_PRESSED
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
 
   export default {
@@ -125,6 +126,9 @@
     },
     watch: {
       scoreList: function (value, old) {
+        if (value.length > 0) {
+          this.dataError = false
+        }
         this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
         let flag = false
         this.collet && this.collet.forEach((item) => {
@@ -182,6 +186,21 @@
       },
       [BACK_PRESSED] () {
         this.buttonActions('back')
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('up')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('down')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.buttonActions('back')
+        }
       },
       chooseType: {
         [INTERCEPT_DOWN] (key) {

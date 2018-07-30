@@ -25,7 +25,7 @@
   import { mapState, mapGetters } from 'vuex'
   import findPrompt from '../common/find-prompt/find-prompt'
   import {global} from 'find-sdk'
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80 } from 'vue-find'
+  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80, PEDAL_PRESSED } from 'vue-find'
 
   export default {
     data () {
@@ -123,6 +123,22 @@
       [BACK_PRESSED] () {
         this.$router.back()
         this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.$router.back()
+            this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
+        }
       }
     },
     computed: {
