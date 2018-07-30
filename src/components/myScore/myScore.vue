@@ -187,6 +187,7 @@
         title: '最近打开',
         dirName: '',
         myRecordDirName: '',
+        myPlayDirName: '',
         promptInfo: {
           text: '确认删除吗？',
           icon: 'icon-sync-info',
@@ -277,6 +278,7 @@
         myRecordPath: state => state.myScore.myRecordPath,
         myPlayIndex: state => state.myScore.myPlayIndex,
         myPlay: state => state.myScore.myPlay,
+        myPlayPath: state => state.myScore.myPlayPath,
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
         isLogin (state) {
@@ -288,17 +290,24 @@
 
     },
     watch: {
-      localSource (value, old) {
+      localSource (value) {
         value.forEach((item, index) => {
           if (item.name === this.dirName) {
             this.$store.dispatch('myScore/setLocalSourceIndex', index)
           }
         })
       },
-      myRecord (value, old) {
+      myRecord (value) {
         value.forEach((item, index) => {
           if (item.name === this.myRecordDirName) {
             this.$store.dispatch('myScore/setMyRecordIndex', index)
+          }
+        })
+      },
+      myPlay (value) {
+        value.forEach((item, index) => {
+          if (item.name === this.myPlayDirName) {
+            this.$store.dispatch('myScore/setMyPlayIndex', index)
           }
         })
       },
@@ -336,7 +345,7 @@
         return this.$store.dispatch('myScore/getMyRecord', this.myRecordPath)
       },
       getMyPlay () {
-        return this.$store.dispatch('myScore/getMyPlay')
+        return this.$store.dispatch('myScore/getMyPlay', this.myPlayPath)
       },
       /**
        * @desc 本地资源
@@ -499,7 +508,7 @@
               this.deleteCover = !this.deleteCover
               this.$refs.prompt.showPrompt()
             } else {
-              modules.file.removeFile('$userRecord/' + data1.name).then(res => {
+              modules.file.removeFile(this.myRecordPath + '/' + data1.name).then(res => {
                 if (res) {
                   this.deleteCover = !this.deleteCover
                   this.$refs.prompt.hidePrompt()
@@ -510,7 +519,6 @@
                 }
               })
             }
-
             break
           case 'back':
             if (myScoreTapIndex === 2 && myRecordPath !== '$userRecord') {
@@ -533,6 +541,7 @@
         let myPlayIndex = this.myPlayIndex
         let myPlay = this.myPlay
         let length = myPlay.length
+        let myPlayPath = this.myPlayPath
         switch (type) {
           case 'up':
             myPlayIndex--
@@ -546,9 +555,15 @@
             break
           case 'ok':
             let data = myPlay[myPlayIndex]
-            if (data) {
+            if (data.type === 'dir') {
+              //  去打开文件
+              this.$store.dispatch('myScore/setMyPlayPath', this.myPlayPath + '/' + data.name).then(() => {
+                this.getMyPlay()
+                this.$store.dispatch('myScore/setMyPlayIndex', 0)
+              })
+            } else {
               //  去播放midi
-              this.playMidi('$userHistory/' + data.name)
+              this.playMidi(this.myPlayPath + '/' + data.name)
             }
             break
           case 'delete':
@@ -560,7 +575,7 @@
               this.deleteCover = !this.deleteCover
               this.$refs.prompt.showPrompt()
             } else {
-              modules.file.removeFile('$userHistory/' + data1.name).then(res => {
+              modules.file.removeFile(this.myPlayPath + '/' + data1.name).then(res => {
                 if (res) {
                   this.deleteCover = !this.deleteCover
                   this.$refs.prompt.hidePrompt()
@@ -573,8 +588,17 @@
             }
             break
           case 'back':
-            this.destroyedFunc()
-            return this.$router.back()
+            if (this.myScoreTapIndex === 3 && this.myPlayPath !== '$userHistory') {
+              let pathArr = myPlayPath.split('/')
+              this.myPlayDirName = pathArr.pop()
+              let newPath = pathArr.join('/')
+              this.$store.dispatch('myScore/setMyPlayPath', newPath)
+              this.$store.dispatch('myScore/getMyPlay', newPath)
+            } else {
+              this.$router.back()
+              this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
+              this.destroyedFunc()
+            }
         }
       },
       /**

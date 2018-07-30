@@ -6,9 +6,10 @@ const LOCAL_SOURCE_INDEX = 'LOCAL_SOURCE_INDEX' /// 本地资源index
 const LOCAL_SOURCE_PATH = 'LOCAL_SOURCE_PATH' /// 本地资源路径
 const MY_RECORD = 'MY_RECORD' /// 我的录音
 const MY_RECORD_INDEX = 'MY_RECORD_INDEX' /// 我的录音index
-const MY_RECORD_PATH = 'MY_RECORD_PATH'
+const MY_RECORD_PATH = 'MY_RECORD_PATH' // 我的录音路径
 const MY_PLAY = 'MY_PLAY' /// 我的弹奏
 const MY_PLAY_INDEX = 'MY_PLAY_INDEX' /// 我的弹奏index
+const MY_PLAY_PATH = 'MY_PLAY_PATH' // 我的录音路径
 const MY_COLLECT_INDEX = 'MY_COLLECT_INDEX' /// 我的收藏index
 const MY_RECENT_INDEX = 'MY_RECENT_INDEX' /// 我的最近打开index
 export default {
@@ -24,7 +25,8 @@ export default {
     myPlay: [],
     myPlayIndex: 0,
     myCollectIndex: 0,
-    myRecentIndex: 0
+    myRecentIndex: 0,
+    myPlayPath: '$userHistory'
   },
   mutations: {
     [MY_SCORE_TAP_INDEX] (state, index) {
@@ -53,6 +55,9 @@ export default {
     },
     [MY_PLAY_INDEX] (state, index) {
       state.myPlayIndex = index
+    },
+    [MY_PLAY_PATH] (state, path) {
+      state.myPlayPath = path
     },
     [MY_COLLECT_INDEX] (state, index) {
       state.myCollectIndex = index
@@ -85,6 +90,12 @@ export default {
      * */
     setMyRecordPath ({commit}, path) {
       commit(MY_RECORD_PATH, path)
+    },
+    /**
+     * @desc 我的弹奏path
+     * */
+    setMyPlayPath ({commit}, path) {
+      commit(MY_PLAY_PATH, path)
     },
     /**
      * @desc 获取我的曲谱本地资源列表
@@ -217,21 +228,27 @@ export default {
     /**
      * @desc 获取我的曲谱我的弹奏列表
      * */
-    getMyPlay ({commit}) {
-      file.readFolderFile('$userHistory').then((res) => {
+    getMyPlay ({commit}, path) {
+      file.readFolderFile(path).then((res) => {
         if (res.length === 0) {
           return commit(MY_PLAY, [])
         }
+        let recordData = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
-          console.log(suffix)
-          item.icon = 'icon-midi'
-          if (item.type !== 'file' || suffix !== 'mid') {
-            res.splice(index, 1)
+          if (item.type === 'file' && suffix === 'mid') {
+            item.icon = 'icon-midi'
+            recordData.push(item)
           }
         })
-        commit(MY_PLAY, res)
+        res.forEach((item, index) => {
+          if (item.type === 'dir') {
+            item.icon = 'icon-open-now'
+            recordData.push(item)
+          }
+        })
+        commit(MY_PLAY, recordData)
       })
     },
     /**
