@@ -4,7 +4,6 @@ export default {
   namespaced: true,
   state: {
     scoreListIndex: 0,
-    currentPage: 1,
     totalPage: 1
   },
   mutations: {
@@ -13,9 +12,6 @@ export default {
     },
     'totalPage' (state, totalPage) {
       state.totalPage = totalPage
-    },
-    'currentPage' (state, currentPage) {
-      state.currentPage = currentPage
     }
   },
   actions: {
@@ -25,13 +21,8 @@ export default {
     setTotalPage ({commit}, num) {
       commit('totalPage', num)
     },
-    setCurrentPage ({commit}, num) {
-      commit('currentPage', num)
-    },
     getScoreSetList ({dispatch, commit, state} = {}, data) {
-      let page = data.page
       let setId = data.setId
-      commit('currentPage', page)
       http.post('', {
         cmd: 'musicScore.getBooksByTag',
         tagId: setId,

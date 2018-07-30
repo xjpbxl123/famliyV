@@ -244,7 +244,8 @@
       }
 
       & .active {
-        box-shadow: 0px 0px 50px 10px #fff;
+        border:4px solid #ff7e1b;
+        box-shadow: 0 0 20px 6px #ff7e1b;
       }
     }
   }

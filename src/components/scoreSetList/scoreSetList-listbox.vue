@@ -56,7 +56,7 @@
     top: 180px;
     left: 200px;
     width: 100%;
-    height: 720px;
+    height: 722px;
     overflow: hidden;
     ul.listBox {
       position: absolute;
@@ -75,7 +75,7 @@
           height: 100%;
         }
         &.active {
-          border: 10px solid #a6fffa
+          border:6px solid #ff7e1b;
         }
       }
     }
