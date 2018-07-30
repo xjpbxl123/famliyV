@@ -696,6 +696,7 @@
       searchName (val) {
         search.searchMusicName(val).then(data => {
           this.musicList = data
+          this.listIndex = 0
           console.log(data, 'musicList')
         })
       }
