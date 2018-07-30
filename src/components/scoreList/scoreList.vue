@@ -457,7 +457,7 @@
         })
         musicInfos.allMusics = allMusics
         console.log({info: {musicId, musicIds, allMusics}})
-        modules.nativeRouter.openMidiPlayQueue({info: {musicId, musicIds, allMusics}})
+        modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {

@@ -23,7 +23,7 @@
   import findPrompt from '../common/find-prompt/find-prompt'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import musicList from './musicList'
-  import {search} from 'find-sdk'
+  import {search, global} from 'find-sdk'
   import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, LONG_KEY90, LONG_KEY92, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, PEDAL_PRESSED
   } from 'vue-find'
   import { mapGetters } from 'vuex'
@@ -668,6 +668,7 @@
             this.listIndex = Math.min(this.listIndex + 1, this.musicList.length - 1)
             break
           case 'ok':
+            let self = this
             if (this.musicList.length === 0) {
               return
             }
@@ -678,14 +679,19 @@
               // 去曲谱列表
               this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
                 let bookData = this.bookInfo[bookId]
-                if (!bookData) {
-                  return
-                }
-                if (musicData.musicId) {
-                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData), musicId: musicData.musicId}})
-                } else {
-                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData)}})
-                }
+                global.getStatusBarItem().then((data) => {
+                  if (!bookData && !data.wifi.title) {
+                    self.promptInfo.text = '网络连接失败，请检查网络'
+                    self.promptInfo.icon = 'icon-sync-info'
+                    self.$refs.prompt.showPrompt()
+                    return
+                  }
+                  if (musicData.musicId) {
+                    this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData), musicId: musicData.musicId}})
+                  } else {
+                    this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData)}})
+                  }
+                })
               })
             }
             break
