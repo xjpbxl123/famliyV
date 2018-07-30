@@ -430,7 +430,7 @@
       },
       // 播放曲谱
       player (musicObj, typeNum) {
-        let musicId = musicObj.files[typeNum - 1].musicId
+        let musicId = parseInt(musicObj.files[typeNum - 1].musicId)
         let musicIds = []
         let musicInfos = {}
         let allMusics = []
@@ -438,7 +438,7 @@
         this.scoreList.forEach((data) => {
           let eachMusic = {}
           let musicVersions = []
-          musicIds.push(data.musicId)
+          musicIds.push(parseInt(data.musicId))
           eachMusic.bookName = data.bookName || ''
           eachMusic.musicOrigin = 'bookList'
           eachMusic.musicId = data.musicId
@@ -456,8 +456,8 @@
           allMusics.push(eachMusic)
         })
         musicInfos.allMusics = allMusics
-        console.log({musicId, musicIds, musicInfos})
-        modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, musicInfos})
+        console.log({info: {musicId, musicIds, allMusics}})
+        modules.nativeRouter.openMidiPlayQueue({info: {musicId, musicIds, allMusics}})
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
