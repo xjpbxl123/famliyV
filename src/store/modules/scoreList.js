@@ -21,7 +21,6 @@ export default {
      * @desc 获取曲谱列表
      * */
     getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
-      console.log(id)
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
       if (typeName === 'other') {
@@ -128,26 +127,36 @@ export default {
         }
       })
     },
-    getScoreListData ({dispatch}, {page = {'offset': 0, 'count': 100}, musicObj}) {
-      let cmd = 'musicScore.getMusicsByBook'
-      let netObj = {page, bookId: musicObj.bookId, cmd: cmd}
-      return http.post('', {
-        ...netObj
-      }).then(res => {
-        if (res.header.code === 0) {
-          if (res.body) {
-            let bookName = musicObj.bookName
-            console.log(bookName)
-            let musicOrigin = 'bookList'
-            console.log(musicOrigin)
-            let curMusicId = musicObj.musicId
-            console.log(curMusicId)
-            let styleId = musicObj.styleId
-            console.log(styleId)
-            return dispatch('setCacheToStorage', {scoreListData: res.body.musicList, id: musicObj.bookId}, {root: true})
-          }
-        }
-      })
+    getScoreListData ({dispatch}, musicObj) {
+      // let scoreListData = {
+      //   bookName: musicObj.bookName,
+      //   musicOrigin: 'bookList',
+      //   musicId: musicObj.musicId,
+      //   musicName: musicObj.musicName,
+      //   curMusicId: musicObj.musicId,
+      //   styleId: musicObj.styleId,
+      //   styleName: musicObj.styleName,
+      //   musicVersions: [[12884, '钢琴弹唱版']]
+      // }
+      // let cmd = 'musicScore.getMusicsByBook'
+      // let netObj = {page, bookId: musicObj.bookId, cmd: cmd}
+      // return http.post('', {
+      //   ...netObj
+      // }).then(res => {
+      //   if (res.header.code === 0) {
+      //     if (res.body) {
+      //       let bookName = musicObj.bookName
+      //       console.log(bookName)
+      //       let musicOrigin = 'bookList'
+      //       console.log(musicOrigin)
+      //       let curMusicId = musicObj.musicId
+      //       console.log(curMusicId)
+      //       let styleId = musicObj.styleId
+      //       console.log(styleId)
+      //       return dispatch('setCacheToStorage', {scoreListData: res.body.musicList, id: musicObj.bookId}, {root: true})
+      //     }
+      //   }
+      // })
     },
     /**
      * @desc 操作

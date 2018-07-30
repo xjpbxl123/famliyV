@@ -941,7 +941,9 @@
               list1 = [].concat(JSON.parse(JSON.stringify(list)))
               musicObj = list1[rightActiveIndex]
             }
-
+            if (list1.length === 0) {
+              return
+            }
             if (this.isPlaying) {
               // 获取进度进去播放
               this.$refs.player.pause()
@@ -1017,6 +1019,7 @@
             break
           case 'closeScreen':
             this.closeScreen = bool
+            console.log(bool, 'bool')
             modules.device.turnOnScreen(bool)
             break
           default:

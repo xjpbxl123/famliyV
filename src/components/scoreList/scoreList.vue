@@ -36,7 +36,7 @@
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import findPrompt from '../common/find-prompt/find-prompt'
-  import {modules, global} from 'find-sdk'
+  import {global, modules} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -333,7 +333,8 @@
               return
             }
             console.log('直接去播放曲谱')
-            modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
+            // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
+            this.player(scoreList[scoreIndex], 1)
             this.addRecentOpen(scoreList[scoreIndex], 1)
             this.$store.dispatch('addPractice')
             break
@@ -415,7 +416,8 @@
               } else {
                 console.log('去播放曲谱')
                 this.addRecentOpen(scoreList[scoreIndex], typeNum)
-                modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+                // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+                this.player(scoreList[scoreIndex], typeNum)
                 this.$store.dispatch('addPractice')
               }
             }
@@ -425,6 +427,37 @@
 
             // this.goBack()
         }
+      },
+      // 播放曲谱
+      player (musicObj, typeNum) {
+        let musicId = musicObj.files[typeNum - 1].musicId
+        let musicIds = []
+        let musicInfos = {}
+        let allMusics = []
+        let styleId = musicObj.files[typeNum - 1].styleId
+        this.scoreList.forEach((data) => {
+          let eachMusic = {}
+          let musicVersions = []
+          musicIds.push(data.musicId)
+          eachMusic.bookName = data.bookName || ''
+          eachMusic.musicOrigin = 'bookList'
+          eachMusic.musicId = data.musicId
+          eachMusic.musicName = data.name
+          eachMusic.curMusicId = data.files[0].musicId
+          eachMusic.styleId = data.files[0].styleId
+          data.files.forEach((item) => {
+            if (styleId === item.styleId) {
+              eachMusic.curMusicId = item.musicId
+              eachMusic.styleId = item.styleId
+            }
+            musicVersions.push([item.musicId, item.styleName || ''])
+          })
+          eachMusic.musicVersions = musicVersions
+          allMusics.push(eachMusic)
+        })
+        musicInfos.allMusics = allMusics
+        console.log({musicId, musicIds, musicInfos})
+        modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, musicInfos})
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
