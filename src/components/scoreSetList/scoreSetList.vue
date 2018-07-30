@@ -199,9 +199,8 @@
       },
       next (scoreListIndex) {
         let len = this.scoreSetList.length
-        if (scoreListIndex <= len - 1) {
-          this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
-        }
+        console.log(Math.min(scoreListIndex, len - 1))
+        this.$store.dispatch('scoreSetList/setScoreListIndex', Math.min(scoreListIndex, len - 1))
       },
       pre (scoreListIndex) {
         if (scoreListIndex >= 0) {

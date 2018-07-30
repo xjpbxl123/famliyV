@@ -34,7 +34,7 @@
           this.top = 0
           return
         }
-        this.top = 0 + (Math.ceil(this.scoreListIndex / 19) - 1) * -740
+        this.top = (Math.ceil((this.scoreListIndex + 1) / 20) - 1) * -762
       }
     },
     methods: {},
@@ -43,7 +43,7 @@
         this.top = 0
         return
       }
-      this.top = 0 + (Math.ceil(this.scoreListIndex / 19) - 1) * -760
+      this.top = (Math.ceil((this.scoreListIndex + 1) / 20) - 1) * -762
     },
     components: {
       findImg
@@ -56,7 +56,7 @@
     top: 180px;
     left: 200px;
     width: 100%;
-    height: 722px;
+    height: 762px;
     overflow: hidden;
     ul.listBox {
       position: absolute;
