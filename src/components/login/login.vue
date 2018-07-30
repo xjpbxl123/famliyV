@@ -585,13 +585,13 @@
         return this.buttonActions('delete')
       },
       [KEY90] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('up')
       },
       [KEY92] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('down')
       },
       [KEY94] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('ok')
       }
       // [INTERCEPT_DOWN] (key) {
       //   if (key === 21) {

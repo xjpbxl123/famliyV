@@ -24,7 +24,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import musicList from './musicList'
   import {search} from 'find-sdk'
-  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED
+  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, LONG_KEY90, LONG_KEY92, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, PEDAL_PRESSED
   } from 'vue-find'
   import { mapGetters } from 'vuex'
   export default {
@@ -593,13 +593,34 @@
         return this.buttonActions('delete')
       },
       [KEY90] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('up')
+      },
+      [LONG_KEY90] () {
+        this.buttonActions('up')
       },
       [KEY92] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('down')
+      },
+      [LONG_KEY92] () {
+        this.buttonActions('down')
       },
       [KEY94] () {
-        return this.buttonActions('delete')
+        return this.buttonActions('ok')
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('up')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('down')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.$router.back()
+        }
       }
     },
     computed: {
