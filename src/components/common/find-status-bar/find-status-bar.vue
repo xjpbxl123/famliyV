@@ -1,8 +1,8 @@
 <template>
   <ul>
     <li v-for="(item,index) in statusData" :key="index">
-      <span :if="item.showIcon" :class="item.className"></span>
-      <span :if="item.showTitle">{{item.title}}</span>
+      <span v-if="item.showIcon" :class="item.className"></span>
+      <span v-if="item.showTitle">{{item.title}}</span>
     </li>
   </ul>
 </template>
@@ -15,14 +15,14 @@
     data () {
       return {
         statusData: {
-          wifi: {},
-          localname: {},
-          server: {},
-          version: {},
-          daemon: {},
-          keyboard: {},
+          usb: {},
           midi: {},
-          usb: {}
+          keyboard: {},
+          daemon: {},
+          version: {},
+          server: {},
+          localname: {},
+          wifi: {}
         }
       }
     },
@@ -70,7 +70,7 @@
               value.showIcon = value.status
               break
             case 'daemon':
-              value.status === 1 ? value.className = '' : value.className = 'iconfont icon-daemon-s-warning '
+              value.status === 0 ? value.className = '' : value.className = 'iconfont icon-daemon-s-warning '
               value.showTitle = false
               value.showIcon = !value.status
               break
@@ -103,19 +103,19 @@
 
 <style lang="scss" scoped type=text/scss>
   ul {
-    width: 50%;
+    width: 80%;
     position: absolute;
     top: 0;
-    right: 1%;
+    right: 0;
     text-align: right;
     color: rgba(255, 255, 255, 0.8);
     font-size: 22px;
     height: 48px;
     line-height: 48px;
-
+    padding-right: 40px;
     li {
       margin-right: 6px;
-
+      float: right;
       span {
         display: inline-block;
       }
