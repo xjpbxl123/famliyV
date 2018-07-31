@@ -630,14 +630,12 @@
       initData () {
         let self = this
         search.loadSearchData().then(data => {
+          self.initDataComplete = true
           if (data.code === 0) {
             // 成功
             self.promptInfo.text = '成功'
             self.promptInfo.icon = 'icon-grade-right'
             self.$refs.prompt.showPrompt()
-            setTimeout(function () {
-              self.initDataComplete = true
-            }, 2000)
           } else {
             console.log(data.desc)
             self.promptInfo.text = data.desc || '拉取数据出错'
