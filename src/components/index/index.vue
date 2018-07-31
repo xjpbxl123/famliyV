@@ -950,7 +950,7 @@
             if (this.isPlaying) {
               // 获取进度进去播放
               this.$refs.player.pause()
-              this.isPlaying = false
+              // this.isPlaying = false
               if (musicObj.musicId === this.isPlayingMusicId) {
                 window.fp.uis.player.getProgress().then(data => {
                   this.$refs.player.reset()
