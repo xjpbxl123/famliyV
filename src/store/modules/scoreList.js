@@ -125,38 +125,9 @@ export default {
             return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
           }
         }
+      }).catch((error) => {
+        console.log(error)
       })
-    },
-    getScoreListData ({dispatch}, musicObj) {
-      // let scoreListData = {
-      //   bookName: musicObj.bookName,
-      //   musicOrigin: 'bookList',
-      //   musicId: musicObj.musicId,
-      //   musicName: musicObj.musicName,
-      //   curMusicId: musicObj.musicId,
-      //   styleId: musicObj.styleId,
-      //   styleName: musicObj.styleName,
-      //   musicVersions: [[12884, '钢琴弹唱版']]
-      // }
-      // let cmd = 'musicScore.getMusicsByBook'
-      // let netObj = {page, bookId: musicObj.bookId, cmd: cmd}
-      // return http.post('', {
-      //   ...netObj
-      // }).then(res => {
-      //   if (res.header.code === 0) {
-      //     if (res.body) {
-      //       let bookName = musicObj.bookName
-      //       console.log(bookName)
-      //       let musicOrigin = 'bookList'
-      //       console.log(musicOrigin)
-      //       let curMusicId = musicObj.musicId
-      //       console.log(curMusicId)
-      //       let styleId = musicObj.styleId
-      //       console.log(styleId)
-      //       return dispatch('setCacheToStorage', {scoreListData: res.body.musicList, id: musicObj.bookId}, {root: true})
-      //     }
-      //   }
-      // })
     },
     /**
      * @desc 操作

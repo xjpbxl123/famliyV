@@ -5,7 +5,7 @@
       <content-center
         :title="title"
         :books="title==='最近更新'?recentBooksAll:hotBooksAll"
-        :selectedIndex="moreIndex"/>
+        :selectedIndex="indexx"/>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -92,7 +92,8 @@
           delay: 1000,
           width: 750,
           height: 450
-        }
+        },
+        indexx: 0
       }
     },
     find: {
@@ -159,44 +160,45 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
-        let moreIndex = this.moreIndex
+        let indexx = this.indexx
         let books = this.recentBooksAll
         if (books.bookList.length <= 0 && type !== 'back') {
           return
         }
         switch (type) {
           case 'left':
-            moreIndex = Math.max(moreIndex - 1, 0)
+            this.indexx = Math.max(indexx - 1, 0)
             break
           case 'right':
-            moreIndex = Math.min(moreIndex + 1, 19)
+            this.indexx = Math.min(indexx + 1, 19)
             break
           case 'up':
             /// 处理热门曲谱的index
-            if (moreIndex - 10 >= 0) {
-              moreIndex = this.moreIndex - 10
+            if (indexx - 10 >= 0) {
+              this.indexx = this.indexx - 10
             }
             break
           case 'down':
             /// 处理热门曲谱的index
-            if (moreIndex + 10 < 20) {
-              moreIndex = moreIndex + 10
+            if (indexx + 10 < 20) {
+              this.indexx = indexx + 10
             }
             break
           case 'ok':
             if (this.title === '热门曲谱') {
               books = this.hotBooksAll
             }
-            return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
+            return this.$store.dispatch('index/setMoreIndex', this.indexx).then(() => {
+              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
+            })
           case 'back':
-            moreIndex = 0
+            this.$store.dispatch('index/setMoreIndex', 0)
             this.$router.back()
             break
           default:
             console.log('108')
         }
-        console.log(moreIndex)
-        this.$store.dispatch('index/setMoreIndex', moreIndex)
+        console.log(indexx)
       }
     },
     created () {
@@ -207,6 +209,7 @@
       }
     },
     mounted () {
+      this.indexx = this.moreIndex
       // 断网提醒
       global.getStatusBarItem().then((data) => {
         let books = []
@@ -215,9 +218,6 @@
           this.$refs.prompt.showPrompt()
         }
       })
-    },
-    destroyed () {
-      clearInterval(window.interval)
     },
     components: {
       statusBar,

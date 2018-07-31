@@ -300,6 +300,9 @@
         isLogin (state) {
           let {storage} = state
           return storage.isLogin
+        },
+        scoreList: function (state) {
+          return state.storage.cache.renderCache.scoreList
         }
       }),
       ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent', 'bookInfo'])
@@ -649,7 +652,8 @@
             let data = collectList[myCollectIndex]
             if (data) {
               //  去播放曲谱
-              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.player(data)
+              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               this.addRecentOpen(data)
               this.$store.dispatch('addPractice')
             }
@@ -714,7 +718,8 @@
             let data = recentList[myRecentIndex]
             if (data) {
               //  去播放曲谱
-              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.player(data)
+              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               this.$store.dispatch('myScore/setRecentIndex', 0)
               this.addRecentOpen(data)
               this.$store.dispatch('addPractice')
@@ -777,6 +782,58 @@
         modules.file.pathComplement(path).then((res) => {
           if (res.path) {
             modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': {'midiPath': res.path}})
+          }
+        })
+      },
+      player (musicObj) {
+        console.log(musicObj)
+        let musicId = parseInt(musicObj.musicId)
+        let bookId = parseInt(musicObj.bookId)
+        let musicIds = []
+        let allMusics = []
+        let styleId = 100
+        switch (musicObj.styleName[0]) {
+          case '钢琴独奏版':
+            styleId = 1
+            break
+          case '器乐合奏版':
+            styleId = 2
+            break
+          case '器乐弹唱版':
+            styleId = 6
+            break
+          case '钢琴弹唱版':
+            styleId = 5
+            break
+          case '初练版':
+            styleId = 7
+            break
+        }
+        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
+          let list = this.scoreList[bookId]
+          if (list) {
+            list.forEach((data) => {
+              let eachMusic = {}
+              let musicVersions = []
+              musicIds.push(parseInt(data.musicId))
+              eachMusic.bookName = data.bookName || ''
+              eachMusic.musicOrigin = 'bookList'
+              eachMusic.musicId = data.musicId
+              eachMusic.musicName = data.name
+              eachMusic.curMusicId = data.files[0].musicId
+              eachMusic.styleId = data.files[0].styleId
+              data.files.forEach((item) => {
+                if (styleId === item.styleId) {
+                  eachMusic.curMusicId = item.musicId
+                  eachMusic.styleId = item.styleId
+                }
+                musicVersions.push([item.musicId, item.styleName || ''])
+              })
+              eachMusic.musicVersions = musicVersions
+              allMusics.push(eachMusic)
+            })
+            console.log({musicId, musicIds, allMusics})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
           }
         })
       },

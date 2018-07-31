@@ -432,7 +432,6 @@
       player (musicObj, typeNum) {
         let musicId = parseInt(musicObj.files[typeNum - 1].musicId)
         let musicIds = []
-        let musicInfos = {}
         let allMusics = []
         let styleId = musicObj.files[typeNum - 1].styleId
         this.scoreList.forEach((data) => {
@@ -455,7 +454,6 @@
           eachMusic.musicVersions = musicVersions
           allMusics.push(eachMusic)
         })
-        musicInfos.allMusics = allMusics
         console.log({info: {musicId, musicIds, allMusics}})
         modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
       },
