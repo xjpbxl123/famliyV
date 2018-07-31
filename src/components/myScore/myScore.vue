@@ -786,12 +786,15 @@
         })
       },
       player (musicObj) {
-        console.log(musicObj)
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
         let allMusics = []
-        let styleId = 100
+        let styleId = null
+        let styleName = ''
+        if (musicObj.styleName !== '') {
+          styleName = musicObj.styleName[0]
+        }
         switch (musicObj.styleName[0]) {
           case '钢琴独奏版':
             styleId = 1
@@ -812,6 +815,7 @@
         this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
           let list = this.scoreList[bookId]
           if (list) {
+            // 有缓存
             list.forEach((data) => {
               let eachMusic = {}
               let musicVersions = []
@@ -827,11 +831,25 @@
                   eachMusic.curMusicId = item.musicId
                   eachMusic.styleId = item.styleId
                 }
-                musicVersions.push([item.musicId, item.styleName || ''])
+                musicVersions.push([item.musicId, styleName])
               })
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
+            console.log({musicId, musicIds, allMusics})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+          } else {
+            // 无缓存
+            let musicInfo = {}
+            musicInfo.bookName = musicObj.bookName || ''
+            musicInfo.musicOrigin = 'bookList'
+            musicInfo.musicId = musicId
+            musicInfo.musicName = musicObj.name || musicObj.musicName
+            musicInfo.curMusicId = musicId
+            musicInfo.styleId = styleId
+            musicInfo.musicVersions = [[musicId, styleName]]
+            allMusics.push(musicInfo)
+            musicIds.push(musicId)
             console.log({musicId, musicIds, allMusics})
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
           }
