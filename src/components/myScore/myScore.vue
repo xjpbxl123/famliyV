@@ -832,7 +832,7 @@
                   eachMusic.styleId = item.styleId
                   id = item.musicId
                 }
-                musicVersions.push([item.musicId, styleName])
+                musicVersions.push({musicId: item.musicId, version: item.styleName || ''})
               })
               musicIds.push(parseInt(id))
               eachMusic.musicVersions = musicVersions
