@@ -561,7 +561,10 @@
         namespace () {
           return this.showHelpBanner || this.closeScreen ? 'banner' : ''
         },
-        rightType: state => state.index.rightType
+        rightType: state => state.index.rightType,
+        scoreList: function (state) {
+          return state.storage.cache.renderCache.scoreList
+        }
       }),
       ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
     },
@@ -952,7 +955,8 @@
                 window.fp.uis.player.getProgress().then(data => {
                   this.$refs.player.reset()
                   if (data.curTick) {
-                    modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
+                    this.player(musicObj)
+                    // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
                   }
                   this.enterPlay = true
                   this.addRecentOpen(musicObj)
@@ -989,7 +993,8 @@
               clearInterval(this.clickInterval)
               this.clickInterval = null
               this.timer = 0
-              modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
+              this.player(musicObj)
+              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
               this.addRecentOpen(musicObj)
               return
             }
@@ -1046,6 +1051,76 @@
         if (this.rightType === 'recentOpen') {
           this.$store.dispatch('index/setRightSelect', 0)
         }
+      },
+      player (musicObj) {
+        let musicId = parseInt(musicObj.musicId)
+        let bookId = parseInt(musicObj.bookId)
+        let musicIds = []
+        let allMusics = []
+        let styleId = null
+        let styleName = ''
+        if (musicObj.styleName !== '') {
+          styleName = musicObj.styleName[0]
+        }
+        switch (musicObj.styleName[0]) {
+          case '钢琴独奏版':
+            styleId = 1
+            break
+          case '器乐合奏版':
+            styleId = 2
+            break
+          case '器乐弹唱版':
+            styleId = 6
+            break
+          case '钢琴弹唱版':
+            styleId = 5
+            break
+          case '初练版':
+            styleId = 7
+            break
+        }
+        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
+          let list = this.scoreList[bookId]
+          if (list) {
+            // 有缓存
+            list.forEach((data) => {
+              let eachMusic = {}
+              let musicVersions = []
+              musicIds.push(parseInt(data.musicId))
+              eachMusic.bookName = data.bookName || ''
+              eachMusic.musicOrigin = 'bookList'
+              eachMusic.musicId = data.musicId
+              eachMusic.musicName = data.name
+              eachMusic.curMusicId = data.files[0].musicId
+              eachMusic.styleId = data.files[0].styleId
+              data.files.forEach((item) => {
+                if (styleId === item.styleId) {
+                  eachMusic.curMusicId = item.musicId
+                  eachMusic.styleId = item.styleId
+                }
+                musicVersions.push([item.musicId, styleName])
+              })
+              eachMusic.musicVersions = musicVersions
+              allMusics.push(eachMusic)
+            })
+            console.log({musicId, musicIds, allMusics})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+          } else {
+            // 无缓存
+            let musicInfo = {}
+            musicInfo.bookName = musicObj.bookName || ''
+            musicInfo.musicOrigin = 'bookList'
+            musicInfo.musicId = musicId
+            musicInfo.musicName = musicObj.name || musicObj.musicName
+            musicInfo.curMusicId = musicId
+            musicInfo.styleId = styleId
+            musicInfo.musicVersions = [[musicId, styleName]]
+            allMusics.push(musicInfo)
+            musicIds.push(musicId)
+            console.log({musicId, musicIds, allMusics})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+          }
+        })
       },
       playMidi (musicId, musicList, musicIndex) {
         let midiData = {url: '', md5: '', fsize: 0}
