@@ -931,7 +931,6 @@
           case 'right-play':
             // 右侧列表play事件
             this.$store.dispatch('addPractice')
-
             let list = []
             let list1 = []
             let musicObj = {}
@@ -950,26 +949,17 @@
             if (this.isPlaying) {
               // 获取进度进去播放
               this.$refs.player.pause()
-              // this.isPlaying = false
+              this.isPlaying = false
               if (musicObj.musicId === this.isPlayingMusicId) {
                 window.fp.uis.player.getProgress().then(data => {
                   this.$refs.player.reset()
                   if (data.curTick) {
-                    this.player(musicObj)
+                    this.player(musicObj, data.curTick)
                     // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
                   }
                   this.enterPlay = true
                   this.addRecentOpen(musicObj)
                 })
-                // this.$refs.player.getProgress().then(data => {
-                //   console.log(data)
-                //   if (data.curTick) {
-                //     modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
-                //   }
-                //   this.enterPlay = true
-                //   this.addRecentOpen(musicObj)
-                // })
-
                 return
               }
             }
@@ -993,7 +983,7 @@
               clearInterval(this.clickInterval)
               this.clickInterval = null
               this.timer = 0
-              this.player(musicObj)
+              this.player(musicObj, 0)
               // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
               this.addRecentOpen(musicObj)
               return
@@ -1052,8 +1042,9 @@
           this.$store.dispatch('index/setRightSelect', 0)
         }
       },
-      player (musicObj) {
+      player (musicObj, tick) {
         let musicId = parseInt(musicObj.musicId)
+        let id = musicId
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
         let allMusics = []
@@ -1086,7 +1077,6 @@
             list.forEach((data) => {
               let eachMusic = {}
               let musicVersions = []
-              musicIds.push(parseInt(data.musicId))
               eachMusic.bookName = data.bookName || ''
               eachMusic.musicOrigin = 'bookList'
               eachMusic.musicId = data.musicId
@@ -1097,14 +1087,16 @@
                 if (styleId === item.styleId) {
                   eachMusic.curMusicId = item.musicId
                   eachMusic.styleId = item.styleId
+                  id = item.musicId
                 }
                 musicVersions.push([item.musicId, styleName])
               })
+              musicIds.push(parseInt(id))
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
-            console.log({musicId, musicIds, allMusics})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+            console.log({musicId, musicIds, allMusics, tick})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
           } else {
             // 无缓存
             let musicInfo = {}
@@ -1117,8 +1109,8 @@
             musicInfo.musicVersions = [[musicId, styleName]]
             allMusics.push(musicInfo)
             musicIds.push(musicId)
-            console.log({musicId, musicIds, allMusics})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+            console.log({musicId, musicIds, allMusics, tick})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
           }
         })
       },

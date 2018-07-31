@@ -354,7 +354,9 @@
             }
             break
           case 'choseType':
-            console.log('choseType')
+            if (files.length < typeNum) {
+              return
+            }
             let bookId = scoreList[scoreIndex].bookId
             let id = 0
             if (this.query.book) {
@@ -381,45 +383,42 @@
               time: new Date().getTime(),
               styleName: [scoreList[scoreIndex].files[typeNum - 1].styleName] || []
             }
-            if (files.length >= typeNum) {
-              if (this.bannerType === 'collect') {
-                if (!isLogin) {
-                  // 没有登录的话 操作本地收藏列表
-                  let localCollect = [].concat(JSON.parse(JSON.stringify(this.localCollect)))
-                  let localCollectIndex = 0
-                  localCollect.forEach((value, index) => {
-                    if (value.musicId === files[typeNum - 1].musicId) {
-                      hasCollected = true
-                      localCollectIndex = index
-                    }
-                  })
-                  if (!scoreList[scoreIndex].collect[typeNum - 1].collection) {
-                    // 加入收藏
-                    localCollect.unshift(musicData)
-                  } else {
-                    if (hasCollected) {
-                      // 删除这一条数据
-                      localCollect.splice(localCollectIndex, 1)
-                    }
+            if (this.bannerType === 'collect') {
+              if (!isLogin) {
+                // 没有登录的话 操作本地收藏列表
+                let localCollect = [].concat(JSON.parse(JSON.stringify(this.localCollect)))
+                let localCollectIndex = 0
+                localCollect.forEach((value, index) => {
+                  if (value.musicId === files[typeNum - 1].musicId) {
+                    hasCollected = true
+                    localCollectIndex = index
                   }
-                  localCollect = localCollect.slice(0, 20)
-                  this.$store.dispatch('index/localCollect', localCollect).then(() => {
-                    scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                    console.log(flag)
-                    this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id})
-                  })
-                  return
+                })
+                if (!scoreList[scoreIndex].collect[typeNum - 1].collection) {
+                  // 加入收藏
+                  localCollect.unshift(musicData)
+                } else {
+                  if (hasCollected) {
+                    // 删除这一条数据
+                    localCollect.splice(localCollectIndex, 1)
+                  }
                 }
-
-                scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
-                this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
-              } else {
-                console.log('去播放曲谱')
-                this.addRecentOpen(scoreList[scoreIndex], typeNum)
-                // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
-                this.player(scoreList[scoreIndex], typeNum)
-                this.$store.dispatch('addPractice')
+                localCollect = localCollect.slice(0, 20)
+                this.$store.dispatch('index/localCollect', localCollect).then(() => {
+                  scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
+                  console.log(flag)
+                  this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id})
+                })
+                return
               }
+              scoreList[scoreIndex].collect[typeNum - 1].collection = !flag
+              this.$store.dispatch('scoreList/setCollect', {scoreList: scoreList, bookId: id, musicId: musicId, flag: scoreList[scoreIndex].collect[typeNum - 1].collection})
+            } else {
+              console.log('去播放曲谱')
+              this.addRecentOpen(scoreList[scoreIndex], typeNum)
+              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
+              this.player(scoreList[scoreIndex], typeNum)
+              this.$store.dispatch('addPractice')
             }
             break
           default:
@@ -431,13 +430,13 @@
       // 播放曲谱
       player (musicObj, typeNum) {
         let musicId = parseInt(musicObj.files[typeNum - 1].musicId)
+        let id = musicId
         let musicIds = []
         let allMusics = []
         let styleId = musicObj.files[typeNum - 1].styleId
         this.scoreList.forEach((data) => {
           let eachMusic = {}
           let musicVersions = []
-          musicIds.push(parseInt(data.musicId))
           eachMusic.bookName = data.bookName || ''
           eachMusic.musicOrigin = 'bookList'
           eachMusic.musicId = data.musicId
@@ -448,9 +447,11 @@
             if (styleId === item.styleId) {
               eachMusic.curMusicId = item.musicId
               eachMusic.styleId = item.styleId
+              id = item.musicId
             }
             musicVersions.push([item.musicId, item.styleName || ''])
           })
+          musicIds.push(parseInt(id))
           eachMusic.musicVersions = musicVersions
           allMusics.push(eachMusic)
         })

@@ -787,6 +787,7 @@
       },
       player (musicObj) {
         let musicId = parseInt(musicObj.musicId)
+        let id = musicId
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
         let allMusics = []
@@ -819,7 +820,6 @@
             list.forEach((data) => {
               let eachMusic = {}
               let musicVersions = []
-              musicIds.push(parseInt(data.musicId))
               eachMusic.bookName = data.bookName || ''
               eachMusic.musicOrigin = 'bookList'
               eachMusic.musicId = data.musicId
@@ -830,9 +830,11 @@
                 if (styleId === item.styleId) {
                   eachMusic.curMusicId = item.musicId
                   eachMusic.styleId = item.styleId
+                  id = item.musicId
                 }
                 musicVersions.push([item.musicId, styleName])
               })
+              musicIds.push(parseInt(id))
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
