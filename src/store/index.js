@@ -24,7 +24,7 @@ const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
 export default function createStore () {
   return new Vuex.Store({
-    strict: process.env.NODE_ENV !== 'production',
+    // strict: process.env.NODE_ENV === 'development',
     state: {
       environments: {},
       storage: {
