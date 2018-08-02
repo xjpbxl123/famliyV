@@ -739,6 +739,11 @@
           // 节拍器开着 关闭节拍器
           this.buttonActions('closeMetro')
         }
+        if (!this.logoutCover) {
+          this.$refs.prompt.hidePrompt()
+          this.logoutCover = true
+          this.toolbarHidden = false
+        }
       },
       /**
        * @desc 按钮组件按钮事件

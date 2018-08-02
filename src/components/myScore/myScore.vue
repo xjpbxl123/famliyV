@@ -473,6 +473,7 @@
             }
             break
           case 'back':
+            if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
               this.deleteCover = true
@@ -546,6 +547,7 @@
             }
             break
           case 'back':
+            if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
               this.deleteCover = true
@@ -619,6 +621,7 @@
             }
             break
           case 'back':
+            if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
               this.deleteCover = true
