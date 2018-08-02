@@ -299,9 +299,9 @@ export default function createStore () {
        * @desc 清除缓存
        * */
       clearCache ({dispatch, state}) {
-        // let root = state.environments.HTTP_ROOT
-        // let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        // return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+        let root = state.environments.HTTP_ROOT
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
       },
       /**
        * @desc 用户注销时的数据映射view

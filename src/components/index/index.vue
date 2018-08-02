@@ -950,37 +950,6 @@
             if (list1.length === 0) {
               return
             }
-            if (this.isPlaying) {
-              // 获取进度进去播放
-              this.$refs.player.pause()
-              this.isPlaying = false
-              if (musicObj.musicId === this.isPlayingMusicId) {
-                window.fp.uis.player.getProgress().then(data => {
-                  this.$refs.player.reset()
-                  if (data.curTick) {
-                    this.player(musicObj, data.curTick)
-                    // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId, tick: data.curTick})
-                  }
-                  this.enterPlay = true
-                  this.addRecentOpen(musicObj)
-                })
-                return
-              }
-            }
-            if (this.enterPlay) {
-              if (musicObj.musicId === this.isPlayingMusicId) {
-                this.$refs.player.reset()
-                this.$refs.player.play().then(() => {
-                  this.isPlaying = false
-                })
-                this.autoPlay = false
-                this.promptInfo.text = '再次点击进入曲谱'
-                this.$refs.musicPrompt.showPrompt()
-                this.enterPlay = false
-                this.isPlaying = true
-              }
-              return
-            }
             if (!this.timer) {
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
@@ -988,22 +957,53 @@
               if (this.isPlaying) {
                 // 如果在播放 先暂停
                 this.$refs.player.pause()
+                this.isPlaying = false
               }
               clearInterval(this.clickInterval)
               this.clickInterval = null
               this.timer = 0
               this.player(musicObj, 0)
-              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicObj.musicId})
               this.addRecentOpen(musicObj)
               return
             }
             this.clickInterval = setTimeout(() => {
               console.log('单击')
+              if (this.isPlaying) {
+                // 获取进度进去播放
+                console.log(this.isPlaying, 'playing')
+                this.$refs.player.pause()
+                this.isPlaying = false
+                if (musicObj.musicId === this.isPlayingMusicId) {
+                  window.fp.uis.player.getProgress().then(data => {
+                    this.$refs.player.reset()
+                    if (data.curTick) {
+                      this.player(musicObj, data.curTick)
+                    }
+                    this.enterPlay = true
+                    this.addRecentOpen(musicObj)
+                  })
+                  return
+                }
+              }
+              if (this.enterPlay) {
+                // 已经进入过曲谱 如果没有移动光标直接播放即可
+                if (musicObj.musicId === this.isPlayingMusicId) {
+                  this.$refs.player.reset()
+                  this.$refs.player.play().then(() => {
+                    this.isPlaying = false
+                  })
+                  this.autoPlay = false
+                  this.promptInfo.text = '再次点击进入曲谱'
+                  this.$refs.musicPrompt.showPrompt()
+                  this.enterPlay = false
+                  this.isPlaying = true
+                  return
+                }
+              }
               this.timer = 0
               this.autoPlay = false
               this.playMidi(musicObj.musicId, list1, rightActiveIndex)
             }, 700)
-
             break
           case 'changeRightData':
             // 切换右侧数据
@@ -1134,12 +1134,12 @@
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
-            // 提示用户
+            // 曲谱数据没有缓存并且没有网络的时候提示
             global.getStatusBarItem().then((data) => {
               if (!data.wifi.title) {
                 this.promptInfo.text = '网络连接出错，请检查网络'
                 this.$refs.musicPrompt.showPrompt()
-                // 继续播放下一首
+                // 当前是自动播放则继续播放下一首
                 if (this.autoPlay) {
                   this.autoPlay = true
                   if (musicIndex + 1 <= musicList.length - 1) {
@@ -1188,12 +1188,11 @@
             if (!res.path) {
               global.getStatusBarItem().then((status) => {
                 if (!status.wifi.title) {
-                  // 提示用户
+                  // 当前曲谱文件没有缓存并且没有网络则提示
                   this.promptInfo.text = '网络连接出错，请检查网络'
                   this.$refs.musicPrompt.showPrompt()
-                  // 继续播放下一首
+                  // 如果是自动播放即继续播放下一首
                   if (this.autoPlay) {
-                    this.autoPlay = true
                     if (musicIndex + 1 <= musicList.length - 1) {
                       this.$store.dispatch('index/setRightSelect', musicIndex + 1)
                       this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
@@ -1265,7 +1264,8 @@
           if (rightActiveIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
-          this.buttonActions('right-play')
+          // this.buttonActions('right-play')
+          this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
         this.playRightType = this.rightType
         this.isPlaying = true
