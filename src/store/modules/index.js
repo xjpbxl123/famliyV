@@ -87,7 +87,7 @@ export default {
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+    getHotBooks ({dispatch, commit, state}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
       http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
@@ -208,7 +208,6 @@ export default {
      * @desc 获取曲子信息
      * */
     getMusicInfo ({dispatch} = {}, musicId) {
-      console.log(musicId)
       return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
         if (!header.code) {
           if (body) {

@@ -430,11 +430,11 @@
       // 播放曲谱
       player (musicObj, typeNum) {
         let musicId = parseInt(musicObj.files[typeNum - 1].musicId)
-        let id = musicId
         let musicIds = []
         let allMusics = []
         let styleId = musicObj.files[typeNum - 1].styleId
         this.scoreList.forEach((data) => {
+          let id = data.musicId
           let eachMusic = {}
           let musicVersions = []
           eachMusic.bookName = data.bookName || ''
@@ -443,11 +443,13 @@
           eachMusic.musicName = data.name
           eachMusic.curMusicId = data.files[0].musicId
           eachMusic.styleId = data.files[0].styleId
+          eachMusic.styleName = data.files[0].styleName
           data.files.forEach((item) => {
             if (styleId === item.styleId) {
               eachMusic.curMusicId = item.musicId
               eachMusic.styleId = item.styleId
               id = item.musicId
+              eachMusic.styleName = item.styleName
             }
             musicVersions.push({musicId: item.musicId, version: item.styleName || ''})
           })

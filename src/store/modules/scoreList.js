@@ -64,6 +64,7 @@ export default {
             })
             if (!this.state.storage.isLogin) {
               let collectData = []
+              console.log(this.state.storage.cache.renderCache)
               musicIdList.forEach((value) => {
                 if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
                   collectData.push({musicId: value, collection: 0})
@@ -120,10 +121,7 @@ export default {
               item.files = filterFile
             }
           })
-
-          if (res.body) {
-            return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
-          }
+          return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
       }).catch((error) => {
         console.log(error)

@@ -43,7 +43,7 @@
     </fh-player>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button,index) in userActionButtons"
-            :hidden="isPlaying || !logoutCover"
+            :hidden="hideOtherButtons || !logoutCover"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -53,7 +53,7 @@
             :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
 
         <text-icon-item v-for="(button) in bigBUtton"
-            :hidden="isPlaying || !logoutCover"
+            :hidden="hideOtherButtons || !logoutCover"
             :key="button.id"
             :id="button.id"
             :text="button.text"
@@ -61,7 +61,7 @@
             :positionPixels="button.positionPixels"
             :style="button.style"
             :icon="button.icon"/>
-        <group id="501" :hidden="isPlaying || !logoutCover">
+        <group id="501" :hidden="hideOtherButtons || !logoutCover">
           <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
           <icon-item id="401" pianoKey="67" text="" icon="0xe601"
@@ -80,7 +80,7 @@
         :icon="button.icon"
         :pianoKey="button.pianoKey"
         :selected="button.selected"
-        :hidden="button.hidden || isPlaying || !logoutCover"
+        :hidden="button.hidden || hideOtherButtons || !logoutCover"
         :checkable="button.checkable"
         :checked="button.checked"
         :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
@@ -101,7 +101,7 @@
           id="201"
           icon="0xe625"
           pianoKey="90"
-          :hidden="!isPlaying || !logoutCover"
+          :hidden="!hideOtherButtons || !logoutCover"
           :style="{backgroundColor:'#2000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
@@ -367,7 +367,10 @@
         metronome: false,
         speed: 120,
         metre: '3/8',
-        toolbarHidden: false
+        toolbarHidden: false,
+        clickedMusicId: 0,
+        hideOtherButtons: false,
+        autoPlay: false
       }
     },
     find: {
@@ -606,7 +609,7 @@
         if (this.isLogin) {
           this.$store.dispatch({type: 'index/getRecentOpenList'})
         } else {
-          this.$store.dispatch('index/localRecent', this.localRecent)
+          this.$store.dispatch('index/localRecent', this.localRecent || [])
         }
       },
       /**
@@ -616,7 +619,7 @@
         if (this.isLogin) {
           this.$store.dispatch({type: 'index/getCollectList'})
         } else {
-          this.$store.dispatch('index/localCollect', this.localCollect)
+          this.$store.dispatch('index/localCollect', this.localCollect || [])
         }
       },
       /**
@@ -730,6 +733,7 @@
           this.$refs.player.reset()
           this.isPlaying = false
           this.isPlayingMusicId = 0
+          this.hideOtherButtons = false
         }
         if (this.metronome) {
           // 节拍器开着 关闭节拍器
@@ -969,6 +973,7 @@
                 this.$refs.player.play().then(() => {
                   this.isPlaying = false
                 })
+                this.autoPlay = false
                 this.promptInfo.text = '再次点击进入曲谱'
                 this.$refs.musicPrompt.showPrompt()
                 this.enterPlay = false
@@ -980,6 +985,10 @@
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
               console.log('双击')
+              if (this.isPlaying) {
+                // 如果在播放 先暂停
+                this.$refs.player.pause()
+              }
               clearInterval(this.clickInterval)
               this.clickInterval = null
               this.timer = 0
@@ -991,6 +1000,7 @@
             this.clickInterval = setTimeout(() => {
               console.log('单击')
               this.timer = 0
+              this.autoPlay = false
               this.playMidi(musicObj.musicId, list1, rightActiveIndex)
             }, 700)
 
@@ -1044,7 +1054,6 @@
       },
       player (musicObj, tick) {
         let musicId = parseInt(musicObj.musicId)
-        let id = musicId
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
         let allMusics = []
@@ -1075,12 +1084,14 @@
           if (list) {
             // 有缓存
             list.forEach((data) => {
+              let id = data.musicId
               let eachMusic = {}
               let musicVersions = []
               eachMusic.bookName = data.bookName || ''
               eachMusic.musicOrigin = 'bookList'
               eachMusic.musicId = data.musicId
               eachMusic.musicName = data.name
+              eachMusic.styleName = data.files[0].styleName
               eachMusic.curMusicId = data.files[0].musicId
               eachMusic.styleId = data.files[0].styleId
               data.files.forEach((item) => {
@@ -1088,6 +1099,7 @@
                   eachMusic.curMusicId = item.musicId
                   eachMusic.styleId = item.styleId
                   id = item.musicId
+                  eachMusic.styleName = item.styleName
                 }
                 musicVersions.push({musicId: item.musicId, version: item.styleName || ''})
               })
@@ -1105,6 +1117,7 @@
             musicInfo.musicId = musicId
             musicInfo.musicName = musicObj.name || musicObj.musicName
             musicInfo.curMusicId = musicId
+            musicInfo.styleName = styleName
             musicInfo.styleId = styleId
             musicInfo.musicVersions = [[musicId, styleName]]
             allMusics.push(musicInfo)
@@ -1115,6 +1128,7 @@
         })
       },
       playMidi (musicId, musicList, musicIndex) {
+        this.clickedMusicId = musicId
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
@@ -1126,9 +1140,14 @@
                 this.promptInfo.text = '网络连接出错，请检查网络'
                 this.$refs.musicPrompt.showPrompt()
                 // 继续播放下一首
-                if (musicIndex + 1 <= musicList.length - 1) {
-                  this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                  this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                if (this.autoPlay) {
+                  this.autoPlay = true
+                  if (musicIndex + 1 <= musicList.length - 1) {
+                    this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                    this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                  }
+                } else {
+                  this.hideOtherButtons = false
                 }
               }
             })
@@ -1173,9 +1192,14 @@
                   this.promptInfo.text = '网络连接出错，请检查网络'
                   this.$refs.musicPrompt.showPrompt()
                   // 继续播放下一首
-                  if (musicIndex + 1 <= musicList.length - 1) {
-                    this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                    this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                  if (this.autoPlay) {
+                    this.autoPlay = true
+                    if (musicIndex + 1 <= musicList.length - 1) {
+                      this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                      this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+                    }
+                  } else {
+                    this.hideOtherButtons = false
                   }
                 } else {
                   // 去下载
@@ -1225,7 +1249,6 @@
           list = recentOpenList
         }
         this.$refs.player.play().then(() => {
-          console.log('end')
           this.isPlaying = false
           if (this.playRightType !== this.rightType) {
             // 列表切换了
@@ -1233,8 +1256,10 @@
           }
           if (rightActiveIndex === list.length - 1) {
             // 已经是最后一首了
+            this.hideOtherButtons = false
             return
           }
+          this.autoPlay = true
           rightActiveIndex++
           rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
           if (rightActiveIndex > 0) {
@@ -1244,7 +1269,8 @@
         })
         this.playRightType = this.rightType
         this.isPlaying = true
-        this.isPlayingMusicId = list[rightActiveIndex].musicId
+        this.isPlayingMusicId = this.clickedMusicId
+        this.hideOtherButtons = true
       }
     },
     created () {
