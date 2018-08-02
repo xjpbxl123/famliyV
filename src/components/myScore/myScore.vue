@@ -460,7 +460,7 @@
               this.deleteCover = !this.deleteCover
               this.$refs.prompt.showPrompt()
             } else {
-              modules.file.removeFile('$userUpload/' + data1.name).then(res => {
+              modules.file.removeFile(this.localSourcePath + '/' + data1.name).then(res => {
                 if (res) {
                   this.deleteCover = !this.deleteCover
                   this.$refs.prompt.hidePrompt()
@@ -473,6 +473,12 @@
             }
             break
           case 'back':
+            if (!this.deleteCover) {
+              // 选择框弹出
+              this.deleteCover = true
+              this.$refs.prompt.hidePrompt()
+              return
+            }
             if (myScoreTapIndex === 0 && localSourcePath !== '$userUpload') {
               let pathArr = localSourcePath.split('/')
               this.dirName = pathArr.pop()
@@ -540,6 +546,12 @@
             }
             break
           case 'back':
+            if (!this.deleteCover) {
+              // 选择框弹出
+              this.deleteCover = true
+              this.$refs.prompt.hidePrompt()
+              return
+            }
             if (myScoreTapIndex === 2 && myRecordPath !== '$userRecord') {
               let pathArr = myRecordPath.split('/')
               this.myRecordDirName = pathArr.pop()
@@ -607,6 +619,12 @@
             }
             break
           case 'back':
+            if (!this.deleteCover) {
+              // 选择框弹出
+              this.deleteCover = true
+              this.$refs.prompt.hidePrompt()
+              return
+            }
             if (this.myScoreTapIndex === 3 && this.myPlayPath !== '$userHistory') {
               let pathArr = myPlayPath.split('/')
               this.myPlayDirName = pathArr.pop()

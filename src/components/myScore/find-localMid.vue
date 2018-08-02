@@ -53,7 +53,7 @@
             }
           }
         } else {
-          this.rightTop = (value - 4) * 120 * -1
+          if (value >= 5) this.rightTop = (value - 4) * 120 * -1
         }
       }
     },
