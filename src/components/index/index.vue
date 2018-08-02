@@ -959,16 +959,28 @@
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
               console.log('双击')
+              clearInterval(this.clickInterval)
+              this.clickInterval = null
+              this.timer = 0
               if (this.isPlaying) {
                 // 如果在播放 先暂停
                 this.$refs.player.pause()
                 this.isPlaying = false
+                if (musicObj.musicId === this.isPlayingMusicId) {
+                  window.fp.uis.player.getProgress().then(data => {
+                    if (data.curTick) {
+                      this.player(musicObj, data.curTick)
+                    }
+                    this.$refs.player.reset()
+                    this.enterPlay = true
+                    this.addRecentOpen(musicObj)
+                  })
+                } else {
+                  this.player(musicObj, 0)
+                }
+              } else {
+                this.player(musicObj, 0)
               }
-              clearInterval(this.clickInterval)
-              this.clickInterval = null
-              this.timer = 0
-              this.player(musicObj, 0)
-              this.addRecentOpen(musicObj)
               return
             }
             this.clickInterval = setTimeout(() => {
@@ -997,6 +1009,7 @@
                   this.$refs.player.play().then(() => {
                     this.isPlaying = false
                   })
+                  this.hideOtherButtons = true
                   this.autoPlay = false
                   this.promptInfo.text = '再次点击进入曲谱'
                   this.$refs.musicPrompt.showPrompt()
@@ -1084,6 +1097,7 @@
             styleId = 7
             break
         }
+        this.hideOtherButtons = false
         this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
           let list = this.scoreList[bookId]
           if (list) {
@@ -1136,6 +1150,7 @@
         this.clickedMusicId = musicId
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
+        this.hideOtherButtons = true
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
