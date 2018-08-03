@@ -190,11 +190,14 @@
           }
         },
         isPlaying: false,
+        loaded: false,
+        loading: false,
         isPlayingMusicId: 0,
         isCalendar: false,
         isActivation: false,
         interval: null,
         logoutCover: true,
+        stopPlayMidi: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -397,18 +400,23 @@
         this.buttonActions('set')
       },
       [KEY39] () {
+        console.log(+new Date())
         this.buttonActions('popular')
       },
       [KEY42] () {
+        console.log(+new Date())
         this.buttonActions('famous')
       },
       [KEY46] () {
+        console.log(+new Date())
         this.buttonActions('material')
       },
       [KEY49] () {
+        console.log(+new Date())
         this.buttonActions('myScore')
       },
       [KEY51] () {
+        console.log(+new Date())
         this.buttonActions('playRecord')
       },
       [KEY54] () {
@@ -444,18 +452,22 @@
         this.buttonActions('shutdown')
       },
       [KEY73] () {
+        console.log(+new Date())
         this.buttonActions('left')
       },
       [LONG_KEY73] () {
         this.buttonActions('left')
       },
       [KEY75] () {
+        console.log(+new Date())
         !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
       },
       [LONG_KEY75] () {
+        console.log(+new Date())
         this.buttonActions('right')
       },
       [KEY78] () {
+        console.log(+new Date())
         if (!this.logoutCover) {
           this.$refs.prompt.hidePrompt()
           this.logoutCover = !this.logoutCover
@@ -467,18 +479,22 @@
         this.buttonActions('up')
       },
       [KEY80] () {
+        console.log(+new Date())
         this.buttonActions('down')
       },
       [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
+        console.log(+new Date())
         this.buttonActions('ok')
       },
       [KEY85] () {
+        console.log(+new Date())
         this.buttonActions('search')
       },
       [KEY87] () {
+        console.log(+new Date())
         this.buttonActions('tone')
       },
       [KEY90] () {
@@ -487,9 +503,11 @@
       },
       [LONG_KEY92] () {
         console.log('up')
+        console.log(+new Date())
         this.buttonActions('right-up')
       },
       [KEY92] () {
+        console.log(+new Date())
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
@@ -497,12 +515,15 @@
         this.buttonActions('right-down')
       },
       [KEY94] () {
+        console.log(+new Date())
         this.buttonActions('right-down')
       },
       [KEY97] () {
+        console.log(+new Date())
         this.buttonActions('right-play')
       },
       [KEY99] () {
+        console.log(+new Date())
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
@@ -790,10 +811,13 @@
           case 'settings':
             return false
           case 'popular':
+            console.log(+new Date())
             return this.go('/popular')
           case 'material':
+            console.log(+new Date())
             return this.go('/material')
           case 'skill':
+            console.log(+new Date())
             return modules.nativeRouter.openAppsView()
           case 'game':
             return modules.game.openKingdom()
@@ -805,6 +829,7 @@
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
+            console.log(+new Date())
             return this.go('/myScore')
           case 'closeMetro':
             console.log('close')
@@ -862,6 +887,7 @@
             } else {
               activeIndex--
             }
+            this.$store.dispatch('index/setSelected', activeIndex)
             break
           case 'right':
             if (activeIndex === 13) {
@@ -873,6 +899,7 @@
             } else {
               activeIndex++
             }
+            this.$store.dispatch('index/setSelected', activeIndex)
             break
           case 'up':
             /// 处理热门曲谱的index
@@ -881,6 +908,7 @@
             } else if (activeIndex >= 4 && activeIndex < 8) {
               activeIndex -= 4
             }
+            this.$store.dispatch('index/setSelected', activeIndex)
             break
           case 'down':
             /// 处理热门曲谱的index
@@ -889,6 +917,7 @@
             } else if (activeIndex < 4) {
               activeIndex += 4
             }
+            this.$store.dispatch('index/setSelected', activeIndex)
             break
           case 'tone':
             return modules.nativeRouter.openTimbreView()
@@ -907,6 +936,7 @@
               if (recentBooks.bookList.length === 0) {
                 return
               }
+              console.log(+new Date())
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex < 13) {
@@ -914,6 +944,7 @@
                 return
               }
               // 热门曲谱
+              console.log(+new Date())
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
             break
@@ -945,13 +976,11 @@
             let musicObj = {}
             if (this.rightType === 'recentOpen') {
               list = this.isLogin ? this.recentOpenList : this.localRecent
-              list1 = [].concat(JSON.parse(JSON.stringify(list)))
-              musicObj = list1[rightActiveIndex]
             } else if (this.rightType === 'myCollect') {
               list = this.isLogin ? this.collectList : this.localCollect
-              list1 = [].concat(JSON.parse(JSON.stringify(list)))
-              musicObj = list1[rightActiveIndex]
             }
+            list1 = [].concat(JSON.parse(JSON.stringify(list)))
+            musicObj = list1[rightActiveIndex]
             if (list1.length === 0) {
               return
             }
@@ -959,6 +988,12 @@
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
               console.log('双击')
+              console.log(this.stopPlayMidi)
+              if (this.stopPlayMidi) {
+                // 连续两次双击
+                this.stopPlayMidi = false
+                return
+              }
               clearInterval(this.clickInterval)
               this.clickInterval = null
               this.timer = 0
@@ -985,6 +1020,12 @@
             }
             this.clickInterval = setTimeout(() => {
               console.log('单击')
+              console.log(this.stopPlayMidi)
+              if (this.stopPlayMidi) {
+                // 连续点三下时 阻止单击事件
+                this.stopPlayMidi = false
+                return
+              }
               if (this.isPlaying) {
                 // 获取进度进去播放
                 console.log(this.isPlaying, 'playing')
@@ -1047,7 +1088,7 @@
           default:
             console.log('108')
         }
-        this.$store.dispatch('index/setSelected', activeIndex)
+        console.log(+new Date())
       },
       // 加入最近打开
       addRecentOpen (musicObj) {
@@ -1071,6 +1112,7 @@
         }
       },
       player (musicObj, tick) {
+        this.stopPlayMidi = true
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []

@@ -93,13 +93,11 @@ export default {
         tagId,
         page
       }).then(res => {
-        if (res.header.code === 0) {
-          let ho = JSON.parse(JSON.stringify(res.body))
-          return dispatch('setCacheToStorage', {hottestAll: res.body}, {root: true}).then(() => {
-            ho.bookList = ho.bookList.slice(0, 5)
-            dispatch('setCacheToStorage', {hottest: ho}, {root: true})
-          })
-        }
+        let ho = JSON.parse(JSON.stringify(res.body))
+        return dispatch('setCacheToStorage', {hottestAll: {}}, {root: true}).then(() => {
+          ho.bookList = ho.bookList.slice(0, 5)
+          dispatch('setCacheToStorage', {hottest: ho}, {root: true})
+        })
       })
     },
     /**

@@ -144,7 +144,8 @@ export default function createStore () {
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
+        })
       }
     },
     actions: {
