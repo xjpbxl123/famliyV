@@ -371,7 +371,8 @@
         toolbarHidden: false,
         clickedMusicId: 0,
         hideOtherButtons: false,
-        autoPlay: false
+        autoPlay: false,
+        canEnterModule: true
       }
     },
     find: {
@@ -399,32 +400,62 @@
       },
       [KEY39] () {
         console.log('KEY39---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('popular')
       },
       [KEY42] () {
         console.log('KEY42---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('famous')
       },
       [KEY46] () {
         console.log('KEY46---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('material')
       },
       [KEY49] () {
         console.log('KEY49---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('myScore')
       },
       [KEY51] () {
         console.log('KEY51---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('playRecord')
       },
       [KEY54] () {
         //  乐理与技巧
         console.log('KEY54---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        this.canEnterModule = true
         this.buttonActions('skill')
       },
       [KEY58] () {
         // 音乐王国
         console.log('KEY58---', +new Date())
+        if (!this.canEnterModule) {
+          return
+        }
+        if (this.isLogin) {
+          this.canEnterModule = true
+        }
         this.buttonActions('game')
       },
       [KEY66] () {
@@ -699,7 +730,18 @@
        * */
       clearCache () {
         modules.notification.regist('ClearCache', data => {
-          this.$store.dispatch('clearCache')
+          if (data) {
+            this.$store.dispatch('clearCache')
+          } else {
+          }
+        })
+      },
+      /**
+       * @desc 监听恢复出厂设置
+       * */
+      restoreFactorySettings () {
+        modules.notification.regist('ClearCache', data => {
+          this.$store.dispatch('restoreFactorySettings')
         })
       },
       getUserInfo () {
@@ -1122,7 +1164,6 @@
             styleId = 7
             break
         }
-        this.hideOtherButtons = false
         this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
           let list = this.scoreList[bookId]
           if (list) {
@@ -1333,6 +1374,8 @@
           }
           if (data.case === 'resume') {
             this.cancelClick = false
+            this.hideOtherButtons = false
+            this.canEnterModule = true
           }
         })
       }
