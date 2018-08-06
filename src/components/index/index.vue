@@ -401,60 +401,67 @@
       [KEY39] () {
         console.log('KEY39---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('popular')
       },
       [KEY42] () {
         console.log('KEY42---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('famous')
       },
       [KEY46] () {
         console.log('KEY46---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('material')
       },
       [KEY49] () {
         console.log('KEY49---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('myScore')
       },
       [KEY51] () {
         console.log('KEY51---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('playRecord')
       },
       [KEY54] () {
         //  乐理与技巧
         console.log('KEY54---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
-        this.canEnterModule = true
+        this.canEnterModule = false
         this.buttonActions('skill')
       },
       [KEY58] () {
         // 音乐王国
         console.log('KEY58---', +new Date())
         if (!this.canEnterModule) {
+          console.log('return')
           return
         }
         if (this.isLogin) {
-          this.canEnterModule = true
+          this.canEnterModule = false
         }
         this.buttonActions('game')
       },
