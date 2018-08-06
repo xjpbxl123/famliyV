@@ -207,7 +207,7 @@ export default function createStore () {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
           nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
             let cache = {}
-            cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+            cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
             commit(SET_STORAGE, {
               cache
             })

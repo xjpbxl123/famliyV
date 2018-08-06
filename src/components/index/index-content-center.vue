@@ -190,6 +190,16 @@
   }
 
   .active {
+    box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, .5);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .active::after {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
     animation: shadowRepeat 1s ease 0s infinite alternate;
   }
 

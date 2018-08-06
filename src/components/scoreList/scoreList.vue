@@ -11,16 +11,24 @@
       <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
-        <scoreList-choose-buttons  v-if="chooseType" :files="files" />
+        <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" />
       </find-cover>
-      <toolbar :hidden="chooseType || toolbarHidden" :darkBgHidden="true">
+      <toolbar :darkBgHidden="true" :hidden = "toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
+                :hidden="chooseType"
                 :key="index"
                 :id="button.id"
                 :icon="button.icon"
                 :pianoKey="button.pianoKey"
                 :longClick="button.longClick"
                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+        <icon-item v-for="(button,index) in typeButtons"
+              :hidden="!chooseType"
+              :key="index"
+              :id="index"
+              :icon="button.icon"
+              :pianoKey="button.pianoKey"
+              :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
       </toolbar>
   </div>
 
@@ -40,17 +48,20 @@
   import {
     KEY73,
     KEY75,
+    KEY70,
     KEY78,
     KEY80,
     KEY82,
+    KEY85,
+    KEY92,
+    KEY99,
     LONG_KEY73,
     LONG_KEY75,
     LONG_KEY78,
     LONG_KEY80,
-    KEY85,
-    INTERCEPT_DOWN,
     BACK_PRESSED,
-    PEDAL_PRESSED
+    PEDAL_PRESSED,
+    TOOLBAR_PRESSED
   } from 'vue-find'
 
   export default {
@@ -111,6 +122,38 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 16
+          }
+        ],
+        typeButtons: [
+          {
+            pianoKey: 70,
+            text: '',
+            icon: '',
+            dotColor: '#0000'
+          },
+          {
+            pianoKey: 78,
+            text: '',
+            icon: '',
+            dotColor: '#0000'
+          },
+          {
+            pianoKey: 85,
+            text: '',
+            icon: '',
+            dotColor: '#0000'
+          },
+          {
+            pianoKey: 92,
+            text: '',
+            icon: '',
+            dotColor: '#0000'
+          },
+          {
+            pianoKey: 99,
+            text: '',
+            icon: '',
+            dotColor: '#0000'
           }
         ],
         toolbarHidden: false,
@@ -203,27 +246,27 @@
         }
       },
       chooseType: {
-        [INTERCEPT_DOWN] (key) {
-          switch (key) {
-            case 70:
-              this.buttonActions('choseType', 1)
-              break
-            case 78:
-              this.buttonActions('choseType', 2)
-              break
-            case 85:
-              this.buttonActions('choseType', 3)
-              break
-            case 92:
-              this.buttonActions('choseType', 4)
-              break
-            case 99:
-              this.buttonActions('choseType', 5)
-              break
-            case 108:
-              this.chooseType = false
-              break
-          }
+        [TOOLBAR_PRESSED] ({hidden}) {
+          this.toolbarHidden = hidden
+        },
+        [KEY70] () {
+          this.buttonActions('choseType', 1)
+        },
+        [KEY78] () {
+          this.buttonActions('choseType', 2)
+        },
+        [KEY85] () {
+          this.buttonActions('choseType', 3)
+        },
+        [KEY92] () {
+          this.buttonActions('choseType', 4)
+        },
+        [KEY99] () {
+          this.buttonActions('choseType', 5)
+        },
+        [BACK_PRESSED] () {
+          if (this.toolbarHidden) this.toolbarHidden = false
+          this.chooseType = false
         }
       }
     },

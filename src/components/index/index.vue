@@ -190,14 +190,12 @@
           }
         },
         isPlaying: false,
-        loaded: false,
-        loading: false,
         isPlayingMusicId: 0,
         isCalendar: false,
         isActivation: false,
         interval: null,
         logoutCover: true,
-        stopPlayMidi: false,
+        cancelClick: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -369,7 +367,7 @@
         ],
         metronome: false,
         speed: 120,
-        metre: '3/8',
+        metre: '3',
         toolbarHidden: false,
         clickedMusicId: 0,
         hideOtherButtons: false,
@@ -400,31 +398,33 @@
         this.buttonActions('set')
       },
       [KEY39] () {
-        console.log(+new Date())
+        console.log('KEY39---', +new Date())
         this.buttonActions('popular')
       },
       [KEY42] () {
-        console.log(+new Date())
+        console.log('KEY42---', +new Date())
         this.buttonActions('famous')
       },
       [KEY46] () {
-        console.log(+new Date())
+        console.log('KEY46---', +new Date())
         this.buttonActions('material')
       },
       [KEY49] () {
-        console.log(+new Date())
+        console.log('KEY49---', +new Date())
         this.buttonActions('myScore')
       },
       [KEY51] () {
-        console.log(+new Date())
+        console.log('KEY51---', +new Date())
         this.buttonActions('playRecord')
       },
       [KEY54] () {
         //  乐理与技巧
+        console.log('KEY54---', +new Date())
         this.buttonActions('skill')
       },
       [KEY58] () {
         // 音乐王国
+        console.log('KEY58---', +new Date())
         this.buttonActions('game')
       },
       [KEY66] () {
@@ -452,22 +452,21 @@
         this.buttonActions('shutdown')
       },
       [KEY73] () {
-        console.log(+new Date())
+        console.log('KEY73---', +new Date())
         this.buttonActions('left')
       },
       [LONG_KEY73] () {
         this.buttonActions('left')
       },
       [KEY75] () {
-        console.log(+new Date())
+        console.log('KEY75---', +new Date())
         !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
       },
       [LONG_KEY75] () {
-        console.log(+new Date())
         this.buttonActions('right')
       },
       [KEY78] () {
-        console.log(+new Date())
+        console.log('KEY78---', +new Date())
         if (!this.logoutCover) {
           this.$refs.prompt.hidePrompt()
           this.logoutCover = !this.logoutCover
@@ -479,22 +478,22 @@
         this.buttonActions('up')
       },
       [KEY80] () {
-        console.log(+new Date())
+        console.log('KEY80---', +new Date())
         this.buttonActions('down')
       },
       [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
-        console.log(+new Date())
+        console.log('KEY82---', +new Date())
         this.buttonActions('ok')
       },
       [KEY85] () {
-        console.log(+new Date())
+        console.log('KEY85---', +new Date())
         this.buttonActions('search')
       },
       [KEY87] () {
-        console.log(+new Date())
+        console.log('KEY87---', +new Date())
         this.buttonActions('tone')
       },
       [KEY90] () {
@@ -503,27 +502,24 @@
       },
       [LONG_KEY92] () {
         console.log('up')
-        console.log(+new Date())
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        console.log(+new Date())
+        console.log('KEY92---', +new Date())
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
-        console.log('down')
         this.buttonActions('right-down')
       },
       [KEY94] () {
-        console.log(+new Date())
+        console.log('down')
+        console.log('KEY94---', +new Date())
         this.buttonActions('right-down')
       },
       [KEY97] () {
-        console.log(+new Date())
         this.buttonActions('right-play')
       },
       [KEY99] () {
-        console.log(+new Date())
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
@@ -811,13 +807,10 @@
           case 'settings':
             return false
           case 'popular':
-            console.log(+new Date())
             return this.go('/popular')
           case 'material':
-            console.log(+new Date())
             return this.go('/material')
           case 'skill':
-            console.log(+new Date())
             return modules.nativeRouter.openAppsView()
           case 'game':
             return modules.game.openKingdom()
@@ -829,7 +822,6 @@
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
-            console.log(+new Date())
             return this.go('/myScore')
           case 'closeMetro':
             console.log('close')
@@ -936,7 +928,6 @@
               if (recentBooks.bookList.length === 0) {
                 return
               }
-              console.log(+new Date())
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex < 13) {
@@ -944,7 +935,6 @@
                 return
               }
               // 热门曲谱
-              console.log(+new Date())
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
             break
@@ -988,11 +978,8 @@
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
               console.log('双击')
-              console.log(this.stopPlayMidi)
-              if (this.stopPlayMidi) {
-                // 连续两次双击
-                this.stopPlayMidi = false
-                return
+              if (this.cancelClick) {
+                return false
               }
               clearInterval(this.clickInterval)
               this.clickInterval = null
@@ -1020,11 +1007,8 @@
             }
             this.clickInterval = setTimeout(() => {
               console.log('单击')
-              console.log(this.stopPlayMidi)
-              if (this.stopPlayMidi) {
-                // 连续点三下时 阻止单击事件
-                this.stopPlayMidi = false
-                return
+              if (this.cancelClick) {
+                return false
               }
               if (this.isPlaying) {
                 // 获取进度进去播放
@@ -1088,7 +1072,6 @@
           default:
             console.log('108')
         }
-        console.log(+new Date())
       },
       // 加入最近打开
       addRecentOpen (musicObj) {
@@ -1112,7 +1095,7 @@
         }
       },
       player (musicObj, tick) {
-        this.stopPlayMidi = true
+        this.cancelClick = true
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
@@ -1148,13 +1131,15 @@
               let id = data.musicId
               let eachMusic = {}
               let musicVersions = []
-              eachMusic.bookName = data.bookName || ''
-              eachMusic.musicOrigin = 'bookList'
-              eachMusic.musicId = data.musicId
-              eachMusic.musicName = data.name
+              // eachMusic.bookName = data.bookName || ''
+              // eachMusic.musicOrigin = 'bookList'
+              // eachMusic.musicId = data.musicId
+              // eachMusic.musicName = data.name
               eachMusic.styleName = data.files[0].styleName
               eachMusic.curMusicId = data.files[0].musicId
               eachMusic.styleId = data.files[0].styleId
+              let {bookName, musicId, name: musicName} = data
+              Object.assign(eachMusic, {bookName, musicId, musicName, musicOrigin: 'bookList'})
               data.files.forEach((item) => {
                 if (styleId === item.styleId) {
                   eachMusic.curMusicId = item.musicId
@@ -1309,6 +1294,9 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
+        // if (this.cancelPlay) {
+        //   return
+        // }
         this.$refs.player.play().then(() => {
           this.isPlaying = false
           if (this.playRightType !== this.rightType) {
@@ -1333,9 +1321,24 @@
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
         this.hideOtherButtons = true
+      },
+      adjustPlayer () {
+        modules.notification.regist('pageLifecycle', data => {
+          console.log(data, 'pageLifecycle')
+          if (data.case === 'pause') {
+            if (this.isPlaying) {
+              this.isPlaying = false
+              this.$refs.player.pause()
+            }
+          }
+          if (data.case === 'resume') {
+            this.cancelClick = false
+          }
+        })
       }
     },
     created () {
+      this.adjustPlayer()
       this.initializeData()
       this.getUserStatus()
       this.createSession()
