@@ -127,8 +127,9 @@ ul {
   margin-top: 10px;
   li {
     display: inline-block;
-    width: 20px;
-    margin-right: 30px;
+    width: 40px;
+    margin-right: 10px;
+    text-align: center;
   }
 }
 
@@ -138,9 +139,14 @@ ul {
   margin-top: 20px;
   li {
     margin-bottom: 20px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 10px;
     span {
-      padding: 10px;
       display: inline-block;
+      width: 100%;
+      height: 100%;
     }
     span.practiced {
       background: url('./images/calendar.png') 0 0 / cover no-repeat;
