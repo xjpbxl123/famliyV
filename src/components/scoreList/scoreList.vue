@@ -13,7 +13,7 @@
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
         <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" />
       </find-cover>
-      <toolbar :darkBgHidden="true" :hidden = "toolbarHidden">
+      <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
                 :hidden="chooseType"
                 :key="index"

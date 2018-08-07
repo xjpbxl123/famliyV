@@ -12,32 +12,31 @@
         <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true"></findImg>
         <span class="nick-name" v-text="userInfo.nickName"></span>
       </div>
-
-      <calendar :setCalendarData="setCalendarData" v-if="isActivation && isCalendar"/>
-      <div v-if="isActivation && !isCalendar">
-
+      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
+      <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
         <div class="used-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">累计使用</span>
           </div>
-          <span class="time" v-text="usedTime.usedTime"></span>
+          <span class="time" v-text="isActivation?usedTime.usedTime:'--'"></span>
         </div>
         <div class="auto-play-time">
           <div>
             <i class="iconfont icon-auto-play"></i>
             <span class="text">自动弹奏时间</span>
           </div>
-          <span class="time" v-text="usedTime.autoPlayerTime"></span>
+          <span class="time" v-text="isActivation?usedTime.autoPlayerTime:'--'"></span>
         </div>
         <div class="rate-play-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">带评分弹奏</span>
           </div>
-          <span class="time" v-text="usedTime.ratePlayMoment"></span>
+          <span class="time" v-text="isActivation?usedTime.ratePlayMoment:'--'"></span>
         </div>
       </div>
+      <div class="noActive" v-if="!isActivation">*请在"设置 - 其他设置"中激活</div>
     </div>
   </div>
 </template>
@@ -125,6 +124,15 @@
 
   .user-status {
     padding-top: 110px;
+    .noActive {
+      width:100%;
+      font-size:14px;
+      text-align: center;
+      font-family: MicrosoftYaHei;
+      color:rgba(255,255,255,0.6);
+      margin-top: 22px;
+    }
+
   }
 
   .avatar {
@@ -142,6 +150,12 @@
     margin-top: 20px;
     font-size: 26px;
     color: #fff;
+  }
+  .userData {
+    color: rgba(255,255,255,1) !important;
+    &.noActiva {
+      color: rgba(255,255,255,0.6) !important;
+    }
   }
 
   .auto-play-time,
@@ -161,7 +175,6 @@
     ) 30 30;
     width: 256px;
     height: 80px;
-    color: #fff;
     > div {
       display: flex;
       flex-direction: column;

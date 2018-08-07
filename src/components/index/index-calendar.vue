@@ -4,13 +4,13 @@
       <span class="current-month" v-text="month+'月'"></span>
       <span class="description">练琴日历</span>
     </div>
-    <div class="content">
+    <div class="content" :class="{'noActiva': !isActivation}">
       <ul>
         <li v-for="text in weekText" :key="text">
           <span v-text="text"></span>
         </li>
       </ul>
-      <ul class="date-text">
+      <ul class="date-text" :class="{'noActiva': !isActivation}">
         <li v-for="(date,index) in calendarData" :key="date.text">
           <span v-text="date.date" :class="{'practiced': calendarData[index].practiced}"></span>
         </li>
@@ -25,7 +25,8 @@
   export default {
     name: 'index-calendar',
     props: {
-      setCalendarData: Function
+      setCalendarData: Function,
+      isActivation: Boolean
     },
     data () {
       return {
@@ -117,6 +118,7 @@
 
 .current-month {
   font-size: 50px;
+  margin-left: 12px;
 }
 
 .description {
@@ -126,6 +128,9 @@
 .content {
   @extend .title;
   font-size: 20px;
+  &.noActiva {
+    color: rgba(255,255,255,0.6)
+  }
 }
 
 ul {
