@@ -169,6 +169,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import findPrompt from '../common/find-prompt/find-prompt'
   import { modules, download, global } from 'find-sdk'
+  import initData from './initData.js'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -373,6 +374,7 @@
         skipTime: 0
       }
     },
+    mixins: [initData],
     find: {
       [TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
@@ -643,48 +645,6 @@
     },
     methods: {
       /**
-       * @desc  初始化首页曲谱
-       * */
-      initializeData () {
-        this.$store.dispatch({type: 'index/getHotBooks'}).then(() => {
-          this.$store.dispatch({type: 'index/getRecentBooks'})
-        })
-      },
-      /**
-       * @desc 右侧最近打开数据
-       * */
-      getRecentOpenList () {
-        if (this.isLogin) {
-          this.$store.dispatch({type: 'index/getRecentOpenList'})
-        } else {
-          this.$store.dispatch('index/localRecent', this.localRecent || [])
-        }
-      },
-      /**
-       * @desc 右侧我的收藏数据
-       * */
-      getCollectList () {
-        if (this.isLogin) {
-          this.$store.dispatch({type: 'index/getCollectList'})
-        } else {
-          this.$store.dispatch('index/localCollect', this.localCollect || [])
-        }
-      },
-      /**
-       * @desc dispatch 用户状态
-       * */
-      dispatchUserInfo () {
-        return this.$store.dispatch('getUserInfo')
-      },
-      /**
-       * @desc 获取用户状态和用琴时间
-       * */
-      getUserStatus () {
-        if (this.isSynced) {
-          this.$store.dispatch('index/getPianoUsedTime')
-        }
-      },
-      /**
        * @desc 创建会话ID
        * */
       createSession () {
@@ -693,21 +653,27 @@
         }
       },
       /**
-       * @desc 设置练琴数据
-       * @param {object} playCalendar - 练琴数据
-       * */
-      setCalendarData (playCalendar) {
-        this.$store.dispatch('setNativeStorage', {
-          playCalendar
-        })
-      },
-      /**
        * @desc 获取节拍器状态
        * */
       getMetronomeStatus () {
         modules.metronome.getCurrentTempo().then((data) => {
           this.speed = data.tempoSpeed
           this.metre = data.metre
+        })
+      },
+      /**
+       * @desc dispatch 用户状态
+       * */
+      dispatchUserInfo () {
+        return this.$store.dispatch('getUserInfo')
+      },
+      /**
+     * @desc 设置练琴数据
+     * @param {object} playCalendar - 练琴数据
+     * */
+      setCalendarData (playCalendar) {
+        this.$store.dispatch('setNativeStorage', {
+          playCalendar
         })
       },
       /**
@@ -736,19 +702,6 @@
             // 恢复出厂设置
             this.$store.dispatch('restoreFactorySettings')
           }
-        })
-      },
-      getUserInfo () {
-        this.$store.dispatch('getUserInfo')
-      },
-      /**
-       * @desc 用户数据模式
-       * */
-      userDataMode () {
-        this.$store.dispatch('index/getIsPracticeDataActive').then(() => {
-          this.$store.dispatch('index/getPracticeDataMode').then(() => {
-            this.$store.dispatch('index/registUserCountDataMode')
-          })
         })
       },
       /**
@@ -1383,16 +1336,10 @@
     },
     created () {
       this.adjustPlayer()
-      this.initializeData()
-      this.getUserStatus()
       this.createSession()
       this.isSupportMutePedal()
-      this.getRecentOpenList()
-      this.getCollectList()
       this.getMetronomeStatus()
-      this.userDataMode()
       this.clearCache()
-      this.getUserInfo()
     },
     beforeDestroy () {
       this.toolbarHidden = true

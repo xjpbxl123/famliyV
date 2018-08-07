@@ -18,7 +18,7 @@
 <script>
   import findKeyboard from '../common/find-keyboard/find-keyboard'
   import loginBanner from './login-banner'
-  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED
+  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, BACK_PRESSED
   } from 'vue-find'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import findPrompt from '../common/find-prompt/find-prompt'
@@ -403,7 +403,8 @@
           width: 640,
           height: 360
         },
-        toolbarHidden: false
+        toolbarHidden: false,
+        loadTime: 0
       }
     },
     find: {
@@ -592,37 +593,13 @@
       },
       [KEY94] () {
         return this.buttonActions('ok')
+      },
+      [BACK_PRESSED] () {
+        if (+new Date() - this.loadTime < 500) {
+          return
+        }
+        this.$router.back()
       }
-      // [INTERCEPT_DOWN] (key) {
-      //   if (key === 21) {
-      //     this.toolbarHidden = !this.toolbarHidden
-      //     return
-      //   }
-      //   if (this.toolbarHidden && key !== 108) {
-      //     return
-      //   }
-      //   if (key >= 27 && key <= 82) {
-      //     /// 钢琴上的27是左边的按键,所以要减去27
-      //     key = key - 27
-      //     this.$refs.keyboard.clickKeyboard(key)
-      //   }
-      //   switch (key) {
-      //     case 85:
-      //       /// delete
-      //       return this.buttonActions('delete')
-      //     case 90:
-      //       /// up
-      //       return this.buttonActions('up')
-      //     case 92:
-      //       /// down
-      //       return this.buttonActions('down')
-      //     case 94:
-      //       /// ok
-      //       return this.buttonActions('ok')
-      //     case 108:
-      //       return this.$router.back()
-      //   }
-      // }
     },
     methods: {
       setValue (value) {
@@ -674,6 +651,9 @@
             break
         }
       }
+    },
+    created () {
+      this.loadTime = +new Date()
     },
     components: {
       findKeyboard,
