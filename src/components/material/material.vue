@@ -25,7 +25,7 @@
     width: 640px;
     height: 360px;
     position: absolute;
-    top: 275px;
+    top: 500px;
     left: 2043px;
   }
   .find-ablum-card {

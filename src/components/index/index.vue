@@ -1423,11 +1423,11 @@
 </script>
 <style lang="scss" scoped>
   .find-prompt {
-      width: 750px;
-      height: 450px;
-      position: absolute;
-      top: 275px;
-      left: 2043px;
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 500px;
+    left: 2043px;
   }
   .banner-wrapper {
     height: 100%;

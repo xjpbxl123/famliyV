@@ -722,7 +722,7 @@
     width: 750px;
     height: 450px;
     position: absolute;
-    top: 275px;
+    top: 500px;
     left: 2043px;
   }
 

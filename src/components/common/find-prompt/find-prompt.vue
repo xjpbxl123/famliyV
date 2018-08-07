@@ -71,8 +71,9 @@
   .prompt {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 40px;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 16px;
     overflow: hidden;
     .prompt-icon {
       width: 120px;

@@ -233,12 +233,12 @@
 .scoreSetList {
   color: #fff;
   .find-prompt {
-        width: 750px;
-        height: 450px;
-        position: absolute;
-        top: 275px;
-        left: 2043px;
-    }
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 500px;
+    left: 2043px;
+  }
   ul.listBox {
     position: absolute;
     top: 180px;

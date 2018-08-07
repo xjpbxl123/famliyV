@@ -164,7 +164,8 @@
           width: 640,
           height: 360
         },
-        dataError: false
+        dataError: false,
+        stopEvent: false
       }
     },
     watch: {
@@ -466,12 +467,15 @@
             break
           default:
             console.log('108')
-
             // this.goBack()
         }
       },
       // 播放曲谱
       player (musicObj, typeNum) {
+        if (this.stopEvent) {
+          return
+        }
+        this.stopEvent = true
         let musicId = parseInt(musicObj.files[typeNum - 1].musicId)
         let musicIds = []
         let allMusics = []
@@ -530,11 +534,21 @@
             this.$store.dispatch('scoreList/addBookViewMount', {bookId: JSON.parse(book).bookId})
           }
         }
+      },
+      adjustPlayer () {
+        modules.notification.regist('pageLifecycle', data => {
+          console.log(data)
+          // 曲谱关闭
+          if (data.case === 'resume') {
+            this.stopEvent = false
+          }
+        })
       }
     },
     created () {
       this.getScoreList()
       this.addBookViewMount()
+      this.adjustPlayer()
     },
     mounted () {
       global.getStatusBarItem().then((data) => {
@@ -568,7 +582,7 @@
         width: 750px;
         height: 450px;
         position: absolute;
-        top: 275px;
+        top: 500px;
         left: 2043px;
       }
     .left {
