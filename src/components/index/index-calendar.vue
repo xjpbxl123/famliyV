@@ -63,6 +63,11 @@
         }
       })
     },
+    watch: {
+      playCalendar () {
+        this.initCalender()
+      }
+    },
     methods: {
       /**
        *@desc 生成练琴日期
@@ -80,17 +85,20 @@
           dateText.push({ date: totalDays + 1, practiced: false })
         }
         return dateText.reverse()
+      },
+      initCalender () {
+        this.month = `${new Date().getMonth() + 1}`
+        if (!this.playCalendar[this.month]) {
+          let dateText = this.generateDate()
+          this.calendarData = dateText
+          this.setCalendarData({ [this.month]: dateText })
+        } else {
+          this.calendarData = this.playCalendar[this.month]
+        }
       }
     },
     created () {
-      this.month = `${new Date().getMonth() + 1}`
-      if (!this.playCalendar[this.month]) {
-        let dateText = this.generateDate()
-        this.calendarData = dateText
-        this.setCalendarData({ [this.month]: dateText })
-      } else {
-        this.calendarData = this.playCalendar[this.month]
-      }
+      this.initCalender()
     }
   }
 </script>

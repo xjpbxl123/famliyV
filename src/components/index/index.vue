@@ -597,12 +597,8 @@
     },
     computed: {
       ...mapState({
-        sessionId (state) {
-          return state.storage.sessionId
-        },
-        isSynced (state) {
-          return state.storage.isSynced
-        },
+        sessionId: state => state.storage.sessionId,
+        isSynced: state => state.storage.isSynced,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -610,9 +606,7 @@
           }
           return storage.isLogin
         },
-        userInfo (state) {
-          return state.storage.userInfo
-        },
+        userInfo: state => state.storage.userInfo,
         selectedIndex: state => state.index.selectedIndex,
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
@@ -710,7 +704,6 @@
       },
       /**
        * @desc 获取节拍器状态
-       * @param {object} playCalendar - 练琴数据
        * */
       getMetronomeStatus () {
         modules.metronome.getCurrentTempo().then((data) => {
@@ -733,13 +726,16 @@
         })
       },
       /**
-       * @desc 监听清空缓存
+       * @desc 监听清空缓存/恢复出厂设置
        * */
       clearCache () {
         modules.notification.regist('ClearCache', data => {
-          if (data) {
+          if (data.isClearCache) {
+            // 清空缓存
             this.$store.dispatch('clearCache')
           } else {
+            // 恢复出厂设置
+            this.$store.dispatch('restoreFactorySettings')
           }
         })
       },

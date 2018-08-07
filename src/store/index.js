@@ -305,6 +305,31 @@ export default function createStore () {
         return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
       },
       /**
+       * @desc 恢复出厂设置
+       * */
+      restoreFactorySettings ({dispatch, state}) {
+        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
+          modules.user.logOut()
+          // 清用户信息
+          let root = state.environments.HTTP_ROOT
+          let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+          return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}}).then(() => {
+            // 清缓存数据 清除日历数据
+            let month = `${new Date().getMonth() + 1}`
+            if (!state.storage.playCalendar[month]) {
+              return
+            }
+            let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
+            playCalendarData.forEach((data) => {
+              if (data.practiced) {
+                data.practiced = false
+              }
+            })
+            return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
+          })
+        })
+      },
+      /**
        * @desc 用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
