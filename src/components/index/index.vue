@@ -646,8 +646,8 @@
        * @desc  初始化首页曲谱
        * */
       initializeData () {
-        this.$store.dispatch({type: 'index/getRecentBooks'}).then(() => {
-          this.$store.dispatch({type: 'index/getHotBooks'})
+        this.$store.dispatch({type: 'index/getHotBooks'}).then(() => {
+          this.$store.dispatch({type: 'index/getRecentBooks'})
         })
       },
       /**
