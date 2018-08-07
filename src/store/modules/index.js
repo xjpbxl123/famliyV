@@ -1,6 +1,5 @@
 import http from '../../scripts/http'
-import { getUsedTime } from 'find-sdk'
-
+import { getUsedTime, modules } from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
@@ -97,6 +96,32 @@ export default {
         return dispatch('setCacheToStorage', {hottestAll: {}}, {root: true}).then(() => {
           ho.bookList = ho.bookList.slice(0, 5)
           dispatch('setCacheToStorage', {hottest: ho}, {root: true})
+        })
+      })
+    },
+    /**
+     * @desc 获取用户数据模式是否激活
+     * */
+    getIsPracticeDataActive ({dispatch}) {
+      modules.settings.getProperty('isPracticeDataActive').then((data) => {
+        return dispatch('setNativeStorage', {isActivation: Boolean(data)}, {root: true})
+      })
+    },
+    /**
+     * @desc 获取用户数据模式是否是日历模式
+     * */
+    getPracticeDataMode ({dispatch}) {
+      modules.settings.getProperty('practiceDataMode').then((data) => {
+        return dispatch('setNativeStorage', {isCalendar: Boolean(!data)}, {root: true})
+      })
+    },
+    /**
+     * @desc 监听用户数据模式改变
+     * */
+    registUserCountDataMode ({dispatch}) {
+      modules.notification.regist('UserCountDataMode', data => {
+        return dispatch('setNativeStorage', {isActivation: data.isActivation}, {root: true}).then(() => {
+          return dispatch('setNativeStorage', {isCalendar: data.isCalendar}, {root: true})
         })
       })
     },

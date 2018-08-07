@@ -191,8 +191,6 @@
         },
         isPlaying: false,
         isPlayingMusicId: 0,
-        isCalendar: false,
-        isActivation: false,
         interval: null,
         logoutCover: true,
         cancelClick: false,
@@ -390,16 +388,19 @@
         this.buttonActions('keyBoardMute')
       },
       [KEY30] () {
+        console.log('KEY30---', new Date().toString())
         this.buttonActions('help')
       },
       [KEY32] () {
+        console.log('KEY32---', new Date().toString())
         this.buttonActions('login')
       },
       [KEY34] () {
+        console.log('KEY34---', new Date().toString())
         this.buttonActions('set')
       },
       [KEY39] () {
-        console.log('KEY39---', +new Date())
+        console.log('KEY39---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -408,7 +409,7 @@
         this.buttonActions('popular')
       },
       [KEY42] () {
-        console.log('KEY42---', +new Date())
+        console.log('KEY42---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -417,7 +418,7 @@
         this.buttonActions('famous')
       },
       [KEY46] () {
-        console.log('KEY46---', +new Date())
+        console.log('KEY46---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -426,7 +427,7 @@
         this.buttonActions('material')
       },
       [KEY49] () {
-        console.log('KEY49---', +new Date())
+        console.log('KEY49---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -435,7 +436,7 @@
         this.buttonActions('myScore')
       },
       [KEY51] () {
-        console.log('KEY51---', +new Date())
+        console.log('KEY51---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -445,7 +446,7 @@
       },
       [KEY54] () {
         //  乐理与技巧
-        console.log('KEY54---', +new Date())
+        console.log('KEY54---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -455,7 +456,7 @@
       },
       [KEY58] () {
         // 音乐王国
-        console.log('KEY58---', +new Date())
+        console.log('KEY58---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -490,21 +491,21 @@
         this.buttonActions('shutdown')
       },
       [KEY73] () {
-        console.log('KEY73---', +new Date())
+        console.log('KEY73---', new Date().toString())
         this.buttonActions('left')
       },
       [LONG_KEY73] () {
         this.buttonActions('left')
       },
       [KEY75] () {
-        console.log('KEY75---', +new Date())
+        console.log('KEY75---', new Date().toString())
         !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
       },
       [LONG_KEY75] () {
         this.buttonActions('right')
       },
       [KEY78] () {
-        console.log('KEY78---', +new Date())
+        console.log('KEY78---', new Date().toString())
         if (!this.logoutCover) {
           this.$refs.prompt.hidePrompt()
           this.logoutCover = !this.logoutCover
@@ -516,22 +517,22 @@
         this.buttonActions('up')
       },
       [KEY80] () {
-        console.log('KEY80---', +new Date())
+        console.log('KEY80---', new Date().toString())
         this.buttonActions('down')
       },
       [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
-        console.log('KEY82---', +new Date())
+        console.log('KEY82---', new Date().toString())
         this.buttonActions('ok')
       },
       [KEY85] () {
-        console.log('KEY85---', +new Date())
+        console.log('KEY85---', new Date().toString())
         this.buttonActions('search')
       },
       [KEY87] () {
-        console.log('KEY87---', +new Date())
+        console.log('KEY87---', new Date().toString())
         this.buttonActions('tone')
       },
       [KEY90] () {
@@ -539,11 +540,10 @@
         this.buttonActions('closeScreen', true)
       },
       [LONG_KEY92] () {
-        console.log('up')
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        console.log('KEY92---', +new Date())
+        console.log('KEY92---', new Date().toString())
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
@@ -551,13 +551,15 @@
       },
       [KEY94] () {
         console.log('down')
-        console.log('KEY94---', +new Date())
+        console.log('KEY94---', new Date().toString())
         this.buttonActions('right-down')
       },
       [KEY97] () {
+        console.log('KEY97---', new Date().toString())
         this.buttonActions('right-play')
       },
       [KEY99] () {
+        console.log('KEY99---', new Date().toString())
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
@@ -582,6 +584,7 @@
         }
       },
       [BACK_PRESSED] () {
+        console.log('KEY82---', +new Date())
         this.goBack()
       },
       banner: {
@@ -599,6 +602,8 @@
       ...mapState({
         sessionId: state => state.storage.sessionId,
         isSynced: state => state.storage.isSynced,
+        isActivation: state => state.storage.isActivation,
+        isCalendar: state => state.storage.isCalendar,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -739,14 +744,6 @@
           }
         })
       },
-      /**
-       * @desc 监听恢复出厂设置
-       * */
-      restoreFactorySettings () {
-        modules.notification.regist('ClearCache', data => {
-          this.$store.dispatch('restoreFactorySettings')
-        })
-      },
       getUserInfo () {
         this.$store.dispatch('getUserInfo')
       },
@@ -754,15 +751,10 @@
        * @desc 用户数据模式
        * */
       userDataMode () {
-        modules.settings.getProperty('isPracticeDataActive').then((data) => {
-          this.isActivation = Boolean(data)
-        })
-        modules.settings.getProperty('practiceDataMode').then((data) => {
-          this.isCalendar = Boolean(!data)
-        })
-        modules.notification.regist('UserCountDataMode', data => {
-          this.isActivation = data.isActivation
-          this.isCalendar = data.isCalendar
+        this.$store.dispatch('index/getIsPracticeDataActive').then(() => {
+          this.$store.dispatch('index/getPracticeDataMode').then(() => {
+            this.$store.dispatch('index/registUserCountDataMode')
+          })
         })
       },
       /**
@@ -1381,6 +1373,11 @@
             this.canEnterModule = true
           }
         })
+      },
+      removeRegist () {
+        // 移除通知
+        modules.notification.remove('ClearCache')
+        modules.notification.remove('pageLifecycle')
       }
     },
     created () {
@@ -1401,6 +1398,7 @@
     },
     destroyed () {
       clearInterval(window.interval)
+      this.removeRegist()
     },
     mounted () {
       // 断网提醒
@@ -1439,7 +1437,6 @@
   }
 
   }
-
   .button-banner {
     padding: 0 20px;
   }

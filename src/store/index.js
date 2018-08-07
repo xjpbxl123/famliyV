@@ -352,6 +352,9 @@ export default function createStore () {
         })
       },
       addPractice ({dispatch, state}) {
+        if (!state.storage.isActivation) {
+          return
+        }
         let month = `${new Date().getMonth() + 1}`
         let day = `${new Date().getDate()}`
         if (!state.storage.playCalendar[month]) {
