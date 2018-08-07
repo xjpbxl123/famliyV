@@ -584,7 +584,7 @@
         }
       },
       [BACK_PRESSED] () {
-        console.log('KEY82---', +new Date())
+        console.log('KEY108---', +new Date())
         this.goBack()
       },
       banner: {
