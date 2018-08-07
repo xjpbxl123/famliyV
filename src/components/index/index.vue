@@ -397,6 +397,11 @@
       },
       [KEY34] () {
         console.log('KEY34---', new Date().toString())
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
         this.buttonActions('set')
       },
       [KEY39] () {
@@ -533,6 +538,11 @@
       },
       [KEY87] () {
         console.log('KEY87---', new Date().toString())
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
         this.buttonActions('tone')
       },
       [KEY90] () {

@@ -9,7 +9,7 @@
           <div class="slip-line"></div>
           <div class="date">{{ data.time | format}}</div>
         </div>
-        <div class="margin-none">
+        <div class="margin-none" v-if="recentBooks.bookList.length>1">
           <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}"/>
         </div>
       </div>
@@ -26,7 +26,7 @@
             <span>{{ data.hotNum }}</span>
           </div>
         </div>
-        <div class="margin-none">
+        <div class="margin-none" v-if="hotBooks.bookList.length>1">
           <contentBook :bookData="moreData" :class="{active:(hotMoreindex===selectedIndex)}"/>
         </div>
       </div>
