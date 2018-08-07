@@ -85,21 +85,27 @@
     },
     find: {
       [KEY75] () {
+        console.log('KEY75---', +new Date())
         this.buttonAction('exitApp')
       },
       [KEY78] () {
+        console.log('KEY78---', +new Date())
         this.buttonAction('cancel')
       },
       [KEY80] () {
+        console.log('KEY80---', +new Date())
         this.buttonAction('shutdown')
       },
       [KEY82] () {
+        console.log('KEY82---', +new Date())
         this.buttonAction('restart')
       },
       [KEY85] () {
+        console.log('KEY85---', +new Date())
         this.buttonAction('sleep')
       },
       [KEY87] () {
+        console.log('KEY87---', +new Date())
         this.buttonAction('restartApp')
       }
       // [KEY90] () {
