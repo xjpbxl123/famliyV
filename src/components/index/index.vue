@@ -371,7 +371,8 @@
         hideOtherButtons: false,
         autoPlay: false,
         canEnterModule: true,
-        skipTime: 0
+        skipTime: 0,
+        isSupportMutePedal: false
       }
     },
     mixins: [initData],
@@ -565,6 +566,11 @@
           return
         }
         switch (key.id) {
+          case 114:
+            if (this.isSupportMutePedal) {
+              this.buttonActions('keyBoardMute')
+            }
+            break
           case 116:
             // 踏板1号键
             return this.metronome ? this.buttonActions('speedDown') : this.buttonActions('left')
@@ -679,8 +685,9 @@
       /**
        * @desc 获取是否支持静音踏板
        * */
-      isSupportMutePedal () {
+      getIsSupportMutePedal () {
         modules.settings.getProperty('isSupportMutePedal').then((data) => {
+          this.isSupportMutePedal = data
           if (data) {
             // 支持
             this.controlButtons[0].hidden = false
@@ -1337,7 +1344,7 @@
     created () {
       this.adjustPlayer()
       this.createSession()
-      this.isSupportMutePedal()
+      this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
     },
