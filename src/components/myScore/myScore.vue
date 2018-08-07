@@ -193,8 +193,8 @@
           text: '确认删除吗？',
           icon: 'icon-sync-info',
           delay: 1000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         }
       }
     },

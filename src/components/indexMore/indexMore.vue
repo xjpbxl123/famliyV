@@ -90,8 +90,8 @@
           text: '网络连接出错，请检查网络',
           icon: 'icon-sync-info',
           delay: 1000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         },
         indexx: 0
       }
@@ -210,6 +210,9 @@
     },
     mounted () {
       this.indexx = this.moreIndex
+
+      console.log(this.title)
+      console.log(this.hotBooksAll)
       // 断网提醒
       global.getStatusBarItem().then((data) => {
         let books = []

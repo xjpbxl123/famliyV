@@ -400,8 +400,8 @@
           text: '',
           icon: '',
           delay: 2000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         },
         toolbarHidden: false
       }

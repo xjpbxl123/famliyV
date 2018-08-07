@@ -40,8 +40,8 @@
           text: '成功',
           icon: 'icon-grade-right',
           delay: 1000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         },
         controlButtons: [
           {

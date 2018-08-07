@@ -78,7 +78,7 @@
       width: 120px;
       height: 120px;
       margin: 0 auto;
-      margin-top: 120px;
+      margin-top: 70px;
       .iconfont {
         font-size: 120px;
         color: #fff;
@@ -88,7 +88,7 @@
       font-size: 36px;
       width: 100%;
       text-align: center;
-      margin-top: 55px;
+      margin-top: 34px;
       color: #fff;
     }
   }

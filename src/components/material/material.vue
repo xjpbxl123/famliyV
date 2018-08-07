@@ -22,8 +22,8 @@
 </template>
 <style lang="scss" scoped type=text/scss>
   .find-prompt {
-    width: 750px;
-    height: 450px;
+    width: 640px;
+    height: 360px;
     position: absolute;
     top: 275px;
     left: 2043px;

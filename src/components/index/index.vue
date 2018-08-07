@@ -212,15 +212,14 @@
             text: '设置',
             icon: '0xe638',
             id: 3
-
           }
         ],
         promptInfo: {
           text: '网络连接出错，请检查网络',
           icon: 'icon-sync-info',
           delay: 3000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         },
         bigBUtton: [
           {id: 7, pianoKey: 39, text: '流行经典', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
@@ -370,7 +369,8 @@
         clickedMusicId: 0,
         hideOtherButtons: false,
         autoPlay: false,
-        canEnterModule: true
+        canEnterModule: true,
+        skipTime: 0
       }
     },
     find: {
@@ -385,18 +385,21 @@
         this.buttonActions('closeMetro')
       },
       [KEY27] () {
+        if (+new Date() - this.skipTime <= 5000) {
+          // 5秒之内不做处理
+          console.log('return')
+          return
+        }
+        this.skipTime = +new Date()
         this.buttonActions('keyBoardMute')
       },
       [KEY30] () {
-        console.log('KEY30---', new Date().toString())
         this.buttonActions('help')
       },
       [KEY32] () {
-        console.log('KEY32---', new Date().toString())
         this.buttonActions('login')
       },
       [KEY34] () {
-        console.log('KEY34---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -405,7 +408,6 @@
         this.buttonActions('set')
       },
       [KEY39] () {
-        console.log('KEY39---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -414,7 +416,6 @@
         this.buttonActions('popular')
       },
       [KEY42] () {
-        console.log('KEY42---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -423,7 +424,6 @@
         this.buttonActions('famous')
       },
       [KEY46] () {
-        console.log('KEY46---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -432,7 +432,6 @@
         this.buttonActions('material')
       },
       [KEY49] () {
-        console.log('KEY49---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -441,7 +440,6 @@
         this.buttonActions('myScore')
       },
       [KEY51] () {
-        console.log('KEY51---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -451,7 +449,6 @@
       },
       [KEY54] () {
         //  乐理与技巧
-        console.log('KEY54---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -461,7 +458,6 @@
       },
       [KEY58] () {
         // 音乐王国
-        console.log('KEY58---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -496,21 +492,18 @@
         this.buttonActions('shutdown')
       },
       [KEY73] () {
-        console.log('KEY73---', new Date().toString())
         this.buttonActions('left')
       },
       [LONG_KEY73] () {
         this.buttonActions('left')
       },
       [KEY75] () {
-        console.log('KEY75---', new Date().toString())
         !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
       },
       [LONG_KEY75] () {
         this.buttonActions('right')
       },
       [KEY78] () {
-        console.log('KEY78---', new Date().toString())
         if (!this.logoutCover) {
           this.$refs.prompt.hidePrompt()
           this.logoutCover = !this.logoutCover
@@ -522,22 +515,18 @@
         this.buttonActions('up')
       },
       [KEY80] () {
-        console.log('KEY80---', new Date().toString())
         this.buttonActions('down')
       },
       [LONG_KEY80] () {
         this.buttonActions('down')
       },
       [KEY82] () {
-        console.log('KEY82---', new Date().toString())
         this.buttonActions('ok')
       },
       [KEY85] () {
-        console.log('KEY85---', new Date().toString())
         this.buttonActions('search')
       },
       [KEY87] () {
-        console.log('KEY87---', new Date().toString())
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -553,7 +542,6 @@
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        console.log('KEY92---', new Date().toString())
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
@@ -561,15 +549,12 @@
       },
       [KEY94] () {
         console.log('down')
-        console.log('KEY94---', new Date().toString())
         this.buttonActions('right-down')
       },
       [KEY97] () {
-        console.log('KEY97---', new Date().toString())
         this.buttonActions('right-play')
       },
       [KEY99] () {
-        console.log('KEY99---', new Date().toString())
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
@@ -594,7 +579,6 @@
         }
       },
       [BACK_PRESSED] () {
-        console.log('KEY108---', +new Date())
         this.goBack()
       },
       banner: {
@@ -860,7 +844,14 @@
           case 'skill':
             return modules.nativeRouter.openAppsView()
           case 'game':
-            return modules.game.openKingdom()
+            return modules.game.openKingdom().then((data) => {
+              if (!data) {
+                // 做登录验证
+                if (this.isLogin) {
+                  return this.$store.dispatch('getUserInfo')
+                }
+              }
+            })
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
           case 'famous':
