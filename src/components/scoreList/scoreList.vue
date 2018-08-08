@@ -169,21 +169,23 @@
       }
     },
     watch: {
-      scoreList: function (value, old) {
-        if (value.length > 0) {
-          this.dataError = false
-        }
-        this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
-        let flag = false
-        this.collet && this.collet.forEach((item) => {
-          if (item.collection) { flag = true }
-        })
-        if (flag) {
-          this.controlButtons[5].icon = '0xe656'
-        } else {
-          this.controlButtons[5].icon = '0xe653'
-        }
-      },
+      // scoreList: function (value, old) {
+      //   console.log(value, 'uuuuuuuu')
+      //   if (value.length > 0) {
+      //     this.dataError = false
+      //   }
+      //   this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
+      //   console.log(value[this.scoreIndex])
+      //   let flag = false
+      //   this.collet && this.collet.forEach((item) => {
+      //     if (item.collection) { flag = true }
+      //   })
+      //   if (flag) {
+      //     this.controlButtons[5].icon = '0xe656'
+      //   } else {
+      //     this.controlButtons[5].icon = '0xe653'
+      //   }
+      // },
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
         let flag = false
@@ -284,13 +286,15 @@
         },
         scoreList: function (state) {
           let query = this.query
+          let arr = []
           if (query.differ) {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || []
           } else if (query.year) {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || []
           } else {
-            return state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
           }
+          return arr
         },
         isLogin (state) {
           let {storage} = state
@@ -571,6 +575,7 @@
       this.adjustPlayer()
     },
     mounted () {
+      let timer = null
       global.getStatusBarItem().then((data) => {
         if (this.scoreList.length === 0) {
           this.dataError = true
@@ -580,6 +585,21 @@
           }
         }
       })
+      timer = setTimeout(() => {
+        if (this.scoreList.length > 0) {
+          this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
+          let flag = false
+          this.collet && this.collet.forEach((item) => {
+            if (item.collection) { flag = true }
+          })
+          if (flag) {
+            this.controlButtons[5].icon = '0xe656'
+          } else {
+            this.controlButtons[5].icon = '0xe653'
+          }
+          clearTimeout(timer)
+        }
+      }, 2000)
     },
     components: {
       scoreListCenter,

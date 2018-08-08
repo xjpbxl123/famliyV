@@ -120,6 +120,7 @@ export default {
               item.files = filterFile
             }
           })
+          console.log(res.body.musicList, 'res.body.musicList')
           return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
       }).catch((error) => {

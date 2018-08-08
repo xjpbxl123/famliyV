@@ -701,6 +701,20 @@
         })
       },
       /**
+       * @desc 获取钢琴类型
+       * */
+      getPianoType () {
+        modules.device.getPianoType().then((data) => {
+          if (data === 0 || data === 1) {
+            // 真钢默认开启自动演奏
+            modules.settings.setProperty('isAutoPlayOn', true)
+          } else if (data === 2 || data === 3) {
+            // 真钢默认开启电子音源
+            modules.settings.setProperty('isSpeakerOn', true)
+          }
+        })
+      },
+      /**
        * @desc 监听清空缓存/恢复出厂设置
        * */
       clearCache () {
@@ -1366,6 +1380,7 @@
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
+      this.getPianoType()
     },
     beforeDestroy () {
       this.toolbarHidden = true
