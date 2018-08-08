@@ -692,6 +692,7 @@
           this.isSupportMutePedal = data
           if (data) {
             // 支持
+            this.helpImg[0] = require('./images/help-1-s.png')
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data

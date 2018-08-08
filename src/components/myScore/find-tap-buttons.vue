@@ -81,7 +81,7 @@
     width: 182px;
     height: 100px;
     left: -44px;
-    background: url("./images/localSource.png");
+    background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;
     color: #fff;
@@ -101,7 +101,7 @@
     width: 182px;
     height: 100px;
     left: -26px;
-    background: url("./images/myCollect.png");
+    background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;
     color: #fff;
@@ -121,7 +121,7 @@
     width: 182px;
     height: 100px;
     left: -55px;
-    background: url("./images/myRecord.png");
+    background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;
     color: #fff;
@@ -141,7 +141,7 @@
     width: 182px;
     height: 100px;
     left: -44px;
-    background: url("./images/myPlay.png");
+    background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;
     color: #fff;
@@ -161,7 +161,7 @@
     width: 182px;
     height: 100px;
     left: -130px;
-    background: url("./images/recentOpen.png");
+    background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;
     color: #fff;
@@ -170,7 +170,7 @@
     line-height: 100px;
   }
   .eachButton.active::before {
-    background: url("./images/choosed.png");
+    background: url("./images/btn_page_down.png");
     background-size: cover;
   }
 }

@@ -79,8 +79,8 @@
             pianoKey: 39,
             text: '',
             icon: '',
-            dotColor: '#1bb3ff',
-            activeColor: '#fff',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
             id: 0,
             show: true
           },
@@ -88,8 +88,8 @@
             pianoKey: 42,
             text: '',
             icon: '',
-            dotColor: '#dc50ff',
-            activeColor: '#fff',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
             id: 1,
             show: true
           },
@@ -97,8 +97,8 @@
             pianoKey: 46,
             text: '',
             icon: '',
-            dotColor: '#00be93',
-            activeColor: '#fff',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
             id: 2,
             show: true
           },
@@ -106,8 +106,8 @@
             pianoKey: 49,
             text: '',
             icon: '',
-            dotColor: '#dfbb39',
-            activeColor: '#fff',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
             id: 3,
             show: true
           },
@@ -115,8 +115,8 @@
             pianoKey: 54,
             text: '',
             icon: '',
-            dotColor: '#941bff',
-            activeColor: '#fff',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
             id: 4,
             show: true
           },
@@ -334,10 +334,7 @@
       },
       myScoreTapIndex (value, old) {
         if (value !== old) {
-          let dotColor = ['#1bb3ff', '#dc50ff', '#00be93', '#dfbb39', '#941bff']
           let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
-          this.controlButtons[value].dotColor = '#fff'
-          this.controlButtons[old].dotColor = dotColor[value]
           this.title = title[value]
         }
       }
