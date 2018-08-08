@@ -2,7 +2,7 @@
   <div class="login">
     <statusBar/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
-    <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/>
+    <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden && show"/>
     <login-banner ref="banner" :login="login"/>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
@@ -404,7 +404,8 @@
           height: 360
         },
         toolbarHidden: false,
-        loadTime: 0
+        loadTime: 0,
+        show: false
       }
     },
     find: {
@@ -598,6 +599,7 @@
         if (+new Date() - this.loadTime < 500) {
           return
         }
+        this.show = false
         this.$router.back()
       }
     },
@@ -653,7 +655,11 @@
       }
     },
     created () {
+      console.log('login--created', window.location.href)
       this.loadTime = +new Date()
+    },
+    mounted () {
+      this.show = true
     },
     components: {
       findKeyboard,

@@ -268,6 +268,7 @@
           this.buttonActions('choseType', 5)
         },
         [BACK_PRESSED] () {
+          console.log('closeChooseAType')
           if (this.toolbarHidden) this.toolbarHidden = false
           this.chooseType = false
         },
@@ -570,6 +571,7 @@
       }
     },
     created () {
+      console.log('scoreList--created', window.location.href)
       this.getScoreList()
       this.addBookViewMount()
       this.adjustPlayer()

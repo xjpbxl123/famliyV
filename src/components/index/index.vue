@@ -76,16 +76,16 @@
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
         </group>
         <icon-item v-for="(button,index) in controlButtons"
-        :longClick="button.longClick"
-        :key="index"
-        :id="button.id"
-        :icon="button.icon"
-        :pianoKey="button.pianoKey"
-        :selected="button.selected"
-        :hidden="button.hidden || hideOtherButtons || !logoutCover"
-        :checkable="button.checkable"
-        :checked="button.checked"
-        :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
+          :longClick="button.longClick"
+          :key="index"
+          :id="button.id"
+          :icon="button.icon"
+          :pianoKey="button.pianoKey"
+          :selected="button.selected"
+          :hidden="button.hidden || hideOtherButtons || !logoutCover"
+          :checkable="button.checkable"
+          :checked="button.checked"
+          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
 
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
@@ -1381,11 +1381,13 @@
       this.getMetronomeStatus()
       this.clearCache()
       this.getPianoType()
+      console.log('index--created', window.location.href)
     },
     beforeDestroy () {
       this.toolbarHidden = true
     },
     destroyed () {
+      console.log('index--destroyed', window.location.href)
       clearInterval(window.interval)
       this.removeRegist()
     },

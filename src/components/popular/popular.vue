@@ -130,7 +130,8 @@
           width: 640,
           height: 360
         },
-        toolbarHidden: false
+        toolbarHidden: false,
+        loadTime: 0
       }
     },
     find: {
@@ -186,6 +187,9 @@
         }
       },
       [BACK_PRESSED] () {
+        if (+new Date() - this.loadTime < 500) {
+          return
+        }
         this.goBack()
       }
     },
@@ -349,6 +353,8 @@
 
     },
     created () {
+      this.loadTime = +new Date()
+      console.log('popular--created', window.location.href)
       console.log(this.popularGenre, 'popularGenre')
       this.getDiffer()
       this.getStyles()

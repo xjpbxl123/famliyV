@@ -9,6 +9,7 @@
 </template>
 
 <script>
+  // import { modules } from 'find-sdk'
   export default {
     name: 'keyboard',
     props: {
@@ -295,6 +296,11 @@
         }
         this.setValue(keys[index].text)
       }
+    },
+    created () {
+      // modules.global.getKeyboardPosition().then((data) => {
+      //   console.log(data)
+      // })
     }
   }
 </script>

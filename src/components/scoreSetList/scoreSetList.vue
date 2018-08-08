@@ -215,6 +215,7 @@
       }
     },
     created () {
+      console.log('scoreSetList--created', window.location.href)
       this.getScoreSetList()
     },
     mounted () {
