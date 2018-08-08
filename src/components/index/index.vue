@@ -696,7 +696,7 @@
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', !data)
+              modules.settings.setProperty('isSpeakerOn', data)
             })
           }
         })
@@ -1095,7 +1095,7 @@
             modules.mutePedal.setPedalMuteOnOff()
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', !data)
+              modules.settings.setProperty('isSpeakerOn', data)
             })
             break
           case 'closeScreen':
