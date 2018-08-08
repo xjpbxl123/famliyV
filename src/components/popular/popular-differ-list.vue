@@ -43,10 +43,13 @@
     top: 260px;
     left: 430px;
     li {
-      width: 404px;
-      height: 574px;
+      width: 340px;
+      height: 485px;
+      border-radius: 10px;
       margin-right: 115px;
       &.active {
+        width: 400px;
+        height: 570px;
         .starBox {
           .star-empty {
             background: url('./images/icon_star_white.png') no-repeat !important;

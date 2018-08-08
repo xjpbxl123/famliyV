@@ -124,26 +124,22 @@ export default {
           data = [
             {
               name: res.body[0].name,
-              coverSmall: require('../../components/popular/images/pic_1970.png'),
-              sleCoverSmall: require('../../components/popular/images/pic_1970_sle.png'),
+              coverSmall: require('../../components/popular/images/img_70y.png'),
               id: res.body[0].id
             },
             {
               name: res.body[1].name,
-              coverSmall: require('../../components/popular/images/pic_1980.png'),
-              sleCoverSmall: require('../../components/popular/images/pic_1980_sle.png'),
+              coverSmall: require('../../components/popular/images/img_80y.png'),
               id: res.body[1].id
             },
             {
               name: res.body[2].name,
-              coverSmall: require('../../components/popular/images/pic_1990.png'),
-              sleCoverSmall: require('../../components/popular/images/pic_1990_sle.png'),
+              coverSmall: require('../../components/popular/images/img_90y.png'),
               id: res.body[2].id
             },
             {
               name: res.body[3].name,
-              coverSmall: require('../../components/popular/images/pic_2000.png'),
-              sleCoverSmall: require('../../components/popular/images/pic_2000_sle.png'),
+              coverSmall: require('../../components/popular/images/img_00hou.png'),
               id: res.body[3].id
             }
           ]
