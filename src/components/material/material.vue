@@ -2,9 +2,11 @@
   <div>
     <statusBar />
     <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
-      <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
-                       :index="index" :select="materialSelect" :ablum="item"
-                       :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
+      <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card"
+        :key="index"
+        :setSelect="setSelect"
+        :index="index" :select="materialSelect" :ablum="item"
+        :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
     </find-wrap>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -200,6 +202,11 @@
             }, 200)
         }
         this.$store.dispatch('setSelect', {materialSelect: activeIndex}, {root: true})
+      },
+      setSelect (index) {
+        this.$store.dispatch('setSelect', {materialSelect: index}, {root: true}).then(() => {
+          this.buttonActions('ok')
+        })
       }
     },
     watch: {

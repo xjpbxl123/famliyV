@@ -3,20 +3,22 @@
     <statusBar/>
     <find-wrap :title="title" :pagination=false>
         <div class="logo iconfont icon-logo"> </div>
-        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex"/>
-        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex"/>
-        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex"/>
+        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect"/>
+        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex" :setSelect="setSelect"/>
+        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex" :setSelect="setSelect"/>
         <find-userMess v-show="myScoreTapIndex === 1"
         :list="isLogin?collectList:localCollect"
         :rightTitle="`收藏时间`"
-        :listIndex="myCollectIndex"/>
+        :listIndex="myCollectIndex"
+        :setSelect="setSelect"/>
         <find-userMess v-show="myScoreTapIndex === 4"
         :rightTitle="`最近打开时间`"
         :list="isLogin?recentOpenList:localRecent"
-        :listIndex="myRecentIndex"/>
+        :listIndex="myRecentIndex"
+        :setSelect="setSelect"/>
     </find-wrap>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex" :show="!toolbarHidden"/>
+    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex" :show="!toolbarHidden" :setTapSelect="setTapSelect"/>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
@@ -348,6 +350,40 @@
         if (this.isLogin) {
           this.$store.dispatch({type: 'index/getRecentOpenList'})
         }
+      },
+      // 鼠标事件
+      setSelect (index) {
+        switch (this.myScoreTapIndex) {
+          case 0:
+            this.$store.dispatch('myScore/setLocalSourceIndex', index).then(() => {
+              this.localSourceButtonAction('ok')
+            })
+            break
+          case 1:
+            this.$store.dispatch('myScore/setMyCollectIndex', index).then(() => {
+              this.myCollectButtonAction('ok')
+            })
+            break
+          case 2:
+            this.$store.dispatch('myScore/setMyRecordIndex', index).then(() => {
+              this.myRecordButtonAction('ok')
+            })
+            break
+          case 3:
+            this.$store.dispatch('myScore/setMyPlayIndex', index).then(() => {
+              this.myPlayButtonAction('ok')
+            })
+            break
+          case 4:
+            this.$store.dispatch('myScore/setRecentIndex', index).then(() => {
+              this.recentOpenButtonAction('ok')
+            })
+            break
+        }
+      },
+      // 鼠标按钮事件
+      setTapSelect (index) {
+        this.$store.dispatch('myScore/setMyScoreTapIndex', index)
       },
       /**
        * @desc 右侧我的收藏数据

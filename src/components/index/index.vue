@@ -17,6 +17,7 @@
         :endIndex.sync="endIndex"
         :recentBooks="recentBooks"
         :hotBooks="hotBooks"
+        :setCenterSelect="setCenterSelect"
         :selectedIndex="selectedIndex"/>
       <bannerRight
         :recentOpenList="isLogin?recentOpenList:localRecent"
@@ -24,6 +25,7 @@
         :collectList="isLogin?collectList:localCollect"
         :rightType="rightType"
         :isPlaying="isPlaying"
+        :setRightSelect="setRightSelect"
         :isPlayingMusicId="isPlayingMusicId"/>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
@@ -709,6 +711,22 @@
             // 恢复出厂设置
             this.$store.dispatch('restoreFactorySettings')
           }
+        })
+      },
+      /**
+       * @desc 书籍列表鼠标选中
+       * */
+      setCenterSelect (index) {
+        this.$store.dispatch('index/setSelected', index).then(() => {
+          this.buttonActions('ok')
+        })
+      },
+      /**
+       * @desc 右侧列表鼠标选中
+       * */
+      setRightSelect (index) {
+        this.$store.dispatch('index/setRightSelect', index).then(() => {
+          this.buttonActions('right-play')
         })
       },
       /**

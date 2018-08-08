@@ -1,5 +1,5 @@
 <template>
-  <div class='find-ablum-card'  :class="{active:select === index&&type !== 2, styleActive:select===index&&type === 2,type2: type===2}">
+  <div class='find-ablum-card'  :class="{active:select === index&&type !== 2, styleActive:select===index&&type === 2,type2: type===2}"  @click="setSelect(index)">
     <!-- <findImg :src="ablum.cover" v-if="type === 2" alt="" class="coverImg" :beforeImage="defaultImg" :errorImage="defaultImg"></findImg> -->
     <findAblumTitle :name="ablum.name" class="white" :isActive="select === index"></findAblumTitle>
     <findAlbum :albumArr="ablum.bookCover"></findAlbum>
@@ -60,6 +60,7 @@
     props: {
       ablum: Object,
       index: Number,
+      setSelect: Function,
       select: {
         type: Number,
         default: () => {

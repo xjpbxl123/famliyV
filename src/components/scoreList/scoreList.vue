@@ -6,12 +6,12 @@
         <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
         <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
       </div>
-      <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex"/>
+      <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex" :setSelect="setSelect"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-if="!dataError"/>
       <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
-        <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" />
+        <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" :clickPlay="clickPlay"/>
       </find-cover>
       <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
@@ -332,6 +332,20 @@
             })
           }
         })
+      },
+      /**
+       * @desc 设置选中并点击
+       * */
+      setSelect (index) {
+        this.$store.dispatch('scoreList/setScoreListIndex', index).then(() => {
+          this.buttonActions('ok')
+        })
+      },
+      /**
+       * @desc 鼠标点击操作
+       * */
+      clickPlay (index) {
+        this.buttonActions('choseType', index)
       },
       /**
        * @desc 按钮组件按钮事件

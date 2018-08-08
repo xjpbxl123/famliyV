@@ -1,5 +1,5 @@
 <template>
-    <li :class="{active:(index===scoreIndex)}">
+    <li :class="{active:(index===scoreIndex)}"  @click="setSelect(index)">
         <span class="price sales" v-if="item.sales">限时免费</span>
         <span class="price free" v-else-if="item.isFree">免费</span>
         <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
@@ -25,6 +25,9 @@
       scoreIndex: {
         type: Number,
         default: () => (0)
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

@@ -3,18 +3,19 @@
     <statusBar/>
     <contentLine name="流行经典" class="title"/>
     <div class="year" v-show="(popularTapIndex===0)">
-      <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
+      <popular-year-list :yearList="yearList" :yearIndex="yearIndex" :setSelect="setSelect"></popular-year-list>
     </div>
     <div class="differ" v-show="popularTapIndex===1 && differList.length !== 0">
       <popular-differ-list
         :differList="differList"
-        :popularIndex="popularIndex"/>
+        :popularIndex="popularIndex"
+        :setSelect="setSelect"/>
       <popular-differ-detail
         :differList="differList"
         :popularIndex="popularIndex"/>
     </div>
     <div class="style" v-show="(popularTapIndex===2)">
-      <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
+      <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect" :setSelect="setSelect"></popular-genre>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -229,6 +230,22 @@
         this.$store.dispatch('popular/setPopularSelected', 0)
         this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
         this.$router.back()
+      },
+      // 鼠标操作
+      setSelect (index) {
+        if (this.popularTapIndex === 0) {
+          this.$store.dispatch('popular/setYearSelected', index).then(() => {
+            this.yearButtonAction('ok')
+          })
+        } else if (this.popularTapIndex === 1) {
+          this.$store.dispatch('popular/setPopularSelected', index).then(() => {
+            this.differButtonAction('ok')
+          })
+        } else {
+          this.$store.dispatch('setSelect', {popularGenreSelect: index}, {root: true}).then(() => {
+            this.stylesButtonAction('ok')
+          })
+        }
       },
       stylesButtonAction (type) {
         let popularGenreLen = this.popularGenre.length - 1

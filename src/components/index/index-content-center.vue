@@ -3,21 +3,21 @@
     <div class="box-left">
       <contentLine name="最近更新"/>
       <div class="book-content">
-        <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index">
+        <div :class="{'margin-none':(index===3)}" v-for="(data,index) in recentBooks.bookList" :key="index" @click="setCenterSelect(index)">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
           <div class="date">{{ data.time | format}}</div>
         </div>
-        <div class="margin-none" v-if="recentBooks.bookList.length>1">
+        <div class="margin-none" v-if="recentBooks.bookList.length>1" @click="setCenterSelect(7)">
           <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}"/>
         </div>
       </div>
     </div>
     <div class="box-right">
       <contentLine name="热门曲谱"/>
-      <div class="book-content">
-        <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index">
+      <div class="book-content" >
+        <div :class="{'margin-none':(index===2)}" v-for="(data,index) in hotBooks.bookList" :key="index" @click="setCenterSelect(8+index)">
           <contentBook :bookData="data" :class="{active:(hotbookIndex+index)===selectedIndex}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
@@ -26,7 +26,7 @@
             <span>{{ data.hotNum }}</span>
           </div>
         </div>
-        <div class="margin-none" v-if="hotBooks.bookList.length>1">
+        <div class="margin-none" v-if="hotBooks.bookList.length>1" @click="setCenterSelect(13)">
           <contentBook :bookData="moreData" :class="{active:(hotMoreindex===selectedIndex)}"/>
         </div>
       </div>
@@ -59,6 +59,9 @@
       },
       endIndex: {
         type: Number
+      },
+      setCenterSelect: {
+        type: Function
       }
     },
     components: {
@@ -81,17 +84,6 @@
         let t = new Date(parseInt(value))
         return formatDate(t, 'yyyy-MM-dd')
       }
-    },
-    watch: {
-      // recentBooks () {
-      //   this.recentMoreindex = this.recentBooks.bookList.length
-      //   this.hotbookIndex = this.recentMoreindex + 1
-      // },
-      // hotBooks () {
-      //   this.hotMoreindex =
-      //     this.hotBooks.bookList.length + this.recentBooks.bookList.length + 1
-      //   this.$emit('update:endIndex', this.hotMoreindex)
-      // }
     },
     created () {
       console.log(this.hotbookIndex)

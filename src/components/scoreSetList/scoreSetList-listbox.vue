@@ -1,7 +1,7 @@
 <template>
     <div class="maxBox">
       <ul class="listBox" :style="{'top': top+'px'}">
-        <li v-for="(item,index) of scoreSetList" :key="item.bookId" :class="{ active:index == scoreListIndex }">
+        <li v-for="(item,index) of scoreSetList" :key="item.bookId" :class="{ active:index == scoreListIndex }" @click="setSelect(index)">
             <findImg :src="item.coverSmall" ></findImg>
         </li>
     </ul>
@@ -23,6 +23,9 @@
         default: () => {
           return 0
         }
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

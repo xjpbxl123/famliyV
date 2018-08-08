@@ -5,7 +5,7 @@
         <span class="titleIcon iconfont icon-waiting"></span>
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
-                <li  v-for="(item,index) in list"  :key="index" :class="{active: listIndex == index}">
+                <li  v-for="(item,index) in list"  :key="index" :class="{active: listIndex == index}" @click="setSelect(index)">
                     <span class="typeIcon iconfont icon-song" ></span>
                     <div class="name">
                         <span class="musicName">{{item.name || item.musicName}}</span>
@@ -39,6 +39,9 @@
       listIndex: {
         type: Number,
         default: () => (0)
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

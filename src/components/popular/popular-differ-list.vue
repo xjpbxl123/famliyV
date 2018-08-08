@@ -1,6 +1,6 @@
 <template>
   <ul>
-    <li v-for="(item,index) in differList" :key="index" :class="{active:(index === popularIndex)}">
+    <li v-for="(item,index) in differList" :key="index" @click="setSelect(index)" :class="{active:(index === popularIndex)}">
       <img :src="(index === popularIndex)?item.sleCoverSmall:item.coverSmall" alt="">
       <popular-differ-year-eachItem
         :starNum="item.starNum"/>
@@ -20,6 +20,9 @@
       },
       popularIndex: {
         type: Number
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

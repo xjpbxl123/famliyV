@@ -2,7 +2,7 @@
   <div class="scoreSetList">
     <statusBar/>
     <findTitle :title="setName"></findTitle>
-    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" ></listBox>
+    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" :setSelect="setSelect"></listBox>
     <pageNation  :totalPage="totalPage" :scoreListIndex="scoreListIndex"></pageNation>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -156,6 +156,12 @@
         this.$store.dispatch({
           type: 'scoreSetList/getScoreSetList',
           setId: this.$route.query.setId
+        })
+      },
+      // 鼠标点击操作
+      setSelect (index) {
+        this.$store.dispatch('scoreSetList/setScoreListIndex', index).then(() => {
+          this.buttonActions('ok')
         })
       },
       buttonActions (type) {

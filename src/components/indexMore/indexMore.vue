@@ -5,7 +5,9 @@
       <content-center
         :title="title"
         :books="title==='最近更新'?recentBooksAll:hotBooksAll"
-        :selectedIndex="indexx"/>
+        :selectedIndex="indexx"
+        :setSelect="setSelect"
+        />
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -157,11 +159,20 @@
     },
     methods: {
       /**
+       * @desc 鼠标事件
+       * */
+      setSelect (index) {
+        let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
+        return this.$store.dispatch('index/setMoreIndex', index).then(() => {
+          return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[index])}})
+        })
+      },
+      /**
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
         let indexx = this.indexx
-        let books = this.recentBooksAll
+        let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
         if (books.bookList.length <= 0 && type !== 'back') {
           return
         }

@@ -3,6 +3,7 @@
        <div v-for="(item,index) in files"
         class="eachItem"
         :key="index"
+        @click="clickPlay(index+1)"
         :class="{type1:(item.styleName==='钢琴独奏版'),
         type2:(item.styleName==='初练版'),
         type3:(item.styleName==='器乐弹唱版'),
@@ -18,6 +19,9 @@
       files: {
         type: Array,
         default: () => ([])
+      },
+      clickPlay: {
+        type: Function
       }
     },
     data () {

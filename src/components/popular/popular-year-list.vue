@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <li v-for="(item,index) of yearList" :key="item.name" :class="{active:yearIndex===index}" >
+        <li v-for="(item,index) of yearList" :key="item.name" :class="{active:yearIndex===index}" @click="setSelect(index)" >
           <img :src="yearIndex===index?item.sleCoverSmall:item.coverSmall" alt="">
           <p>{{item.name}}</p>
         </li>
@@ -18,6 +18,9 @@
       yearIndex: {
         type: Number,
         default: () => 0
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

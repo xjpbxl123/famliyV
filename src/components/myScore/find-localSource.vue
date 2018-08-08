@@ -3,7 +3,7 @@
         <div class="leftTitle">文件列表</div>
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
-                <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}">
+                <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}" @click="setSelect(index)">
                     <span class="typeIcon iconfont" :class="'icon-'+item.typeName"></span>
                     <span class="name">{{item.name}}</span>
                 </li>
@@ -22,6 +22,9 @@
       localSourceIndex: {
         type: Number,
         default: () => (0)
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {

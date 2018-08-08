@@ -3,7 +3,7 @@
     <div class="box-left">
       <contentLine :name="title"/>
       <div class="book-content">
-        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index">
+        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index" @click="setSelect(index)">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
@@ -45,6 +45,9 @@
         default: () => {
           return ''
         }
+      },
+      setSelect: {
+        type: Function
       }
     },
     components: {
