@@ -710,7 +710,7 @@
             // 真钢默认开启自动演奏
             modules.settings.setProperty('isAutoPlayOn', true)
           } else if (data === 2 || data === 3) {
-            // 真钢默认开启电子音源
+            // 电钢默认开启电子音源
             modules.settings.setProperty('isSpeakerOn', true)
           }
         })
@@ -1066,6 +1066,8 @@
                   this.$refs.player.play().then(() => {
                     this.isPlaying = false
                   })
+                  // 判断是否电钢
+                  this.getPianoType()
                   this.hideOtherButtons = true
                   this.autoPlay = false
                   this.promptInfo.text = '再次点击进入曲谱'
@@ -1091,7 +1093,6 @@
             })
             break
           case 'keyBoardMute':
-            this.controlButtons[0].checked = !this.controlButtons[0].checked
             modules.mutePedal.setPedalMuteOnOff()
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
@@ -1349,6 +1350,7 @@
           // this.buttonActions('right-play')
           this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
+        this.getPianoType()
         this.playRightType = this.rightType
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
