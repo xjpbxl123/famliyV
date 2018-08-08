@@ -10,7 +10,7 @@
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-if="!dataError"/>
       <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
       <find-cover :activeNamespace="namespace">
-        <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect"/>
+        <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect" :clickPlay="clickPlay"/>
         <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" :clickPlay="clickPlay"/>
       </find-cover>
       <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -268,6 +268,12 @@
         [BACK_PRESSED] () {
           if (this.toolbarHidden) this.toolbarHidden = false
           this.chooseType = false
+        },
+        [PEDAL_PRESSED] (key) {
+          if (key.id === 119) {
+            if (this.toolbarHidden) this.toolbarHidden = false
+            this.chooseType = false
+          }
         }
       }
     },

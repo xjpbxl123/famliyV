@@ -4,6 +4,7 @@
           <div class="title" v-text="bannerType==='collect'?'请选择要收藏的版本':'请选择曲谱版本'"></div>
           <ul>
             <li v-for="(item,index) in files" :key="index"
+            @click="clickPlay(index+1)"
             :class="{type1:(item.styleName==='钢琴独奏版'),
                     type2:(item.styleName==='初练版'),
                     type3:(item.styleName==='器乐弹唱版'),
@@ -33,6 +34,9 @@
       bannerType: {
         type: String,
         default: () => ('')
+      },
+      clickPlay: {
+        type: Function
       }
     },
     data () {
