@@ -1,12 +1,14 @@
 <template>
    <div class="chooseButton">
        <div v-for="(item,index) in files"
+        class="eachItem"
         :key="index"
+        @click="clickPlay(index+1)"
         :class="{type1:(item.styleName==='钢琴独奏版'),
-        type2:(item.styleName==='钢琴弹唱版'),
-        type3:(item.styleName==='初练版'),
-        type4:(item.styleName==='器乐合奏版'),
-        type5:(item.styleName==='器乐弹唱版')}">
+        type2:(item.styleName==='初练版'),
+        type3:(item.styleName==='器乐弹唱版'),
+        type4:(item.styleName==='钢琴弹唱版'),
+        type5:(item.styleName==='器乐合奏版')}">
        </div>
    </div>
 
@@ -17,10 +19,14 @@
       files: {
         type: Array,
         default: () => ([])
+      },
+      clickPlay: {
+        type: Function
       }
     },
     data () {
       return {
+        filterFile: []
       }
     },
     methods: {
@@ -33,36 +39,49 @@
 </script>
 <style lang="scss" scoped>
   .chooseButton {
-    width: 50%;
-    left: 50%;
+    width: 100%;
+    left:0;
     position: absolute;
-    bottom: 0;
     z-index: 200;
+    bottom: 0;
+    padding-left: 2146px;
     div {
-        width: 240px;
-        height: 60px;
-        float: left;
-        margin-right: 140px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 10px;
         &.type1 {
-          background: url('./images/type1_b.png');
-          background-size: cover;
+          background-color: #1E7FFB;
         }
         &.type2 {
-          background: url('./images/type2_b.png');
-          background-size: cover;
+          background-color: #23C797;
         }
         &.type3 {
-          background: url('./images/type3_b.png');
-          background-size: cover;
+          background-color: #8E37FB;
         }
         &.type4 {
-          background: url('./images/type4_b.png');
-          background-size: cover;
+          background-color: #FB7E2E;
         }
         &.type5 {
-          background: url('./images/type5_b.png');
-          background-size: cover;
+          background-color: #FA5355;
         }
+        &:nth-child(1) {
+          left: 2177px;
+        }
+        &:nth-child(2) {
+          left: 2578px;
+        }
+        &:nth-child(3) {
+          left: 2929px;
+        }
+        &:nth-child(4) {
+          left: 3279px;
+        }
+        &:nth-child(5) {
+          left: 3630px;
+        }
+
     }
   }
 

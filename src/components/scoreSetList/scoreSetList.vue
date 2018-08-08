@@ -2,14 +2,16 @@
   <div class="scoreSetList">
     <statusBar/>
     <findTitle :title="setName"></findTitle>
-    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex"></listBox>
-    <pageNation :currentPage="currentPage" :totalPage="totalPage"></pageNation>
-    <toolbar>
+    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" :setSelect="setSelect"></listBox>
+    <pageNation  :totalPage="totalPage" :scoreListIndex="scoreListIndex"></pageNation>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
             :id="button.id"
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
+            :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -21,7 +23,9 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
+  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80, PEDAL_PRESSED } from 'vue-find'
 
   export default {
     data () {
@@ -32,48 +36,60 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 1,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 2,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 3,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 4,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 5,
             show: true
           }
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 640,
+          height: 360
+        },
+        toolbarHidden: false
       }
     },
     find: {
@@ -92,31 +108,68 @@
       [KEY82] () {
         this.buttonActions('ok')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
+      },
       [BACK_PRESSED] () {
         this.$router.back()
         this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
-        this.$store.dispatch('scoreSetList/setCurrentPage', 1)
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.$router.back()
+            this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
+        }
       }
     },
     computed: {
       ...mapState({
         scoreListIndex: state => state.scoreSetList.scoreListIndex,
-        currentPage: state => state.scoreSetList.currentPage,
-        totalPage: state => state.scoreSetList.totalPage
+        totalPage: state => state.scoreSetList.totalPage,
+        scoreSetList: function (state) {
+          return state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
+        }
       }),
-      ...mapGetters(['scoreSetList'])
+      ...mapGetters([])
     },
     methods: {
       getScoreSetList (page) {
         this.$store.dispatch({
           type: 'scoreSetList/getScoreSetList',
-          page,
           setId: this.$route.query.setId
+        })
+      },
+      // 鼠标点击操作
+      setSelect (index) {
+        this.$store.dispatch('scoreSetList/setScoreListIndex', index).then(() => {
+          this.buttonActions('ok')
         })
       },
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
         let scoreSetList = this.scoreSetList
+        if (scoreSetList.length === 0) {
+          return
+        }
         switch (type) {
           case 'up':
             console.log('up')
@@ -152,50 +205,46 @@
       },
       next (scoreListIndex) {
         let len = this.scoreSetList.length
-        let currentPage = this.currentPage
-        let totalPage = this.totalPage
-        if (scoreListIndex > len - 1) {
-          if (currentPage < totalPage) {
-            this.getScoreSetList(++currentPage)
-            scoreListIndex = scoreListIndex - 20
-          } else {
-            scoreListIndex = len - 1
-          }
-        }
-        this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
-        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
+        console.log(Math.min(scoreListIndex, len - 1))
+        this.$store.dispatch('scoreSetList/setScoreListIndex', Math.min(scoreListIndex, len - 1))
       },
       pre (scoreListIndex) {
-        let currentPage = this.currentPage
-        if (scoreListIndex < 0) {
-          if (currentPage > 1) {
-            this.getScoreSetList(--currentPage)
-            scoreListIndex = scoreListIndex + 20
-          } else {
-            scoreListIndex = 0
-          }
+        if (scoreListIndex >= 0) {
+          this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
         }
-        this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
-        this.$store.dispatch('scoreSetList/setCurrentPage', currentPage)
       }
     },
     created () {
-      this.getScoreSetList(this.currentPage)
-      console.log(this.scoreSetList, 'scoreSetList')
+      this.getScoreSetList()
+    },
+    mounted () {
+      global.getStatusBarItem().then((data) => {
+        if (this.scoreSetList.length === 0 && !data.wifi.title) {
+          // 断网
+          this.$refs.prompt.showPrompt()
+        }
+      })
     },
     components: {
       findImg,
       findTitle,
       pageNation,
       listBox,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped>
 .scoreSetList {
   color: #fff;
-
+  .find-prompt {
+    width: 750px;
+    height: 450px;
+    position: absolute;
+    top: 500px;
+    left: 2043px;
+  }
   ul.listBox {
     position: absolute;
     top: 180px;
@@ -216,7 +265,8 @@
       }
 
       & .active {
-        box-shadow: 0px 0px 50px 10px #fff;
+        border:4px solid #ff7e1b;
+        box-shadow: 0 0 20px 6px #ff7e1b;
       }
     }
   }

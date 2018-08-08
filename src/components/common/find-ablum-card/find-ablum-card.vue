@@ -1,8 +1,8 @@
 <template>
-  <div class='find-ablum-card'  :class="{active:select === index&&type !== 2, styleActive:select===index&&type === 2,type2: type===2}">
-    <findImg :src="ablum.cover" v-if="type === 2" alt="" class="coverImg" :beforeImage="defaultImg" :errorImage="defaultImg"></findImg>
+  <div class='find-ablum-card'  :class="{active:select === index&&type !== 2, styleActive:select===index&&type === 2,type2: type===2}"  @click="setSelect(index)">
+    <!-- <findImg :src="ablum.cover" v-if="type === 2" alt="" class="coverImg" :beforeImage="defaultImg" :errorImage="defaultImg"></findImg> -->
     <findAblumTitle :name="ablum.name" class="white" :isActive="select === index"></findAblumTitle>
-    <findAlbum :albumArr="ablum.bookCover" v-if="type !== 2"></findAlbum>
+    <findAlbum :albumArr="ablum.bookCover"></findAlbum>
   </div>
 </template>
 <style lang=scss scoped type=text/scss>
@@ -23,15 +23,16 @@
       background: url("./bg_bgchoose.png") no-repeat;
       -webkit-background-size: 100% 100%;
       background-size: 100% 100%;
+      border: 6px solid #A6FFFA;
     }
-    .coverImg{
+    /* .coverImg{
       width: 364px;
       height: 266px;
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       right: 69px;
-    }
+    } */
 
     ul {
       position: absolute;
@@ -59,6 +60,7 @@
     props: {
       ablum: Object,
       index: Number,
+      setSelect: Function,
       select: {
         type: Number,
         default: () => {

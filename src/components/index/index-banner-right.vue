@@ -16,7 +16,8 @@
         </div>
         <div class="outBox">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
-            <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+            <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
+              <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying,'icon-playing':isPlayingMusicId===data.musicId && isPlaying}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -25,7 +26,8 @@
             </div>
           </div>
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
-            <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" >
+            <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
+              <div class="item-logo iconfont icon-song " :class="{'play': isPlayingMusicId===data.musicId && isPlaying,'icon-playing':isPlayingMusicId===data.musicId && isPlaying}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -52,12 +54,20 @@
       },
       rightSelectedIndex: {
         type: Number
+      },
+      isPlayingMusicId: {
+        type: Number
+      },
+      isPlaying: {
+        type: Boolean
+      },
+      setRightSelect: {
+        type: Function
       }
     },
     watch: {
       rightSelectedIndex (value, oldValue) {
         // 控制列表位置
-
         console.log(value)
         let rightData = []
         this.rightType === 'recentOpen' ? rightData = this.recentOpenList : rightData = this.collectList
@@ -182,6 +192,10 @@
     background-position-x: 100%;
   }
 }
+@keyframes turn {
+  from {transform:rotate(0deg)}
+  to {transform:rotate(360deg)}
+}
 .banner-rights {
   display: flex;
   flex: 1;
@@ -189,12 +203,13 @@
 }
 .banner-right {
   width: 688px;
-  height: 1080px;
-  background-color: rgba(255, 255, 255, 0.2);
+  height: 1040px;
+  margin-top: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .banner-title {
   display: flex;
-  height: 142px;
+  height: 122px;
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
@@ -211,7 +226,7 @@
       font-size: 65px;
       line-height: 48px;
       color: #ffffff;
-      margin-top: 40px;
+      margin-top: 24px;
     }
     & > span:nth-child(2) {
       font-size: 20px;
@@ -231,7 +246,7 @@
   .near {
     font-size: 34px;
     color: #fff;
-    margin-top: 56px;
+    margin-top: 36px;
   }
   .animate {
     margin-right: 50px;
@@ -240,7 +255,7 @@
     background: url(./images/icon_nearly_right.png) no-repeat;
     background-size: 200% 100%;
     animation: bgrepeat 2s linear 0s infinite alternate;
-    margin-top: 56px;
+    margin-top: 36px;
   }
 }
 .outBox {
@@ -262,6 +277,16 @@
           rgba(255, 255, 255, .3),
           rgba(255, 255, 255, 0.1),
           rgba(255, 255, 255, 0));
+      }
+      .item-logo {
+        font-size: 42px;
+        color: #fff;
+        position: absolute;
+        top: 40px;
+        left: 35px;
+        &.play {
+          animation:turn 2s infinite linear;
+        }
       }
       .musicInfo {
         width: 406px;
@@ -296,17 +321,7 @@
           opacity: 0.55;
           font-size: 24px;
         }
-      &::before {
-        position: absolute;
-        content: "";
-        background: url("./images/icon_music_right.png") no-repeat center;
-        width: 40px;
-        height: 40px;
-        background-size: 100% 100%;
-        left: 40px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
+
     }
 
   }

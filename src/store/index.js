@@ -24,7 +24,7 @@ const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
 export default function createStore () {
   return new Vuex.Store({
-    strict: process.env.NODE_ENV !== 'production',
+    // strict: process.env.NODE_ENV === 'development',
     state: {
       environments: {},
       storage: {
@@ -139,34 +139,39 @@ export default function createStore () {
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
+        let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.setDefault(JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)})
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
+        })
       }
     },
     actions: {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, dispatch}) {
-        return Promise.all([
-          nativeStorage.getDefault('playCalendar'),
-          nativeStorage.getDefault('isLogin'),
-          nativeStorage.getDefault('userInfo'),
-          nativeStorage.getDefault('sessionId')
-        ])
-          .then(data => {
-            commit(SET_STORAGE, {
-              playCalendar: data[0] && data[0].value ? data[0].value : {},
-              isLogin: data[1] && data[1].value ? data[1].value : false,
-              userInfo: data[2] && data[2].value ? data[2].value : {},
-              sessionId: data[3] && data[3].value ? data[3].value : null,
-              isSynced: true
+      initialNativeStorage ({commit, dispatch, state}) {
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          return Promise.all([
+            nativeStorage.get(tableName, 'playCalendar'),
+            nativeStorage.get(tableName, 'isLogin'),
+            nativeStorage.get(tableName, 'userInfo'),
+            nativeStorage.get(tableName, 'sessionId')
+          ])
+            .then(data => {
+              commit(SET_STORAGE, {
+                playCalendar: data[0] && data[0].value ? data[0].value : {},
+                isLogin: data[1] && data[1].value ? data[1].value : false,
+                userInfo: data[2] && data[2].value ? data[2].value : {},
+                sessionId: data[3] && data[3].value ? data[3].value : null,
+                isSynced: true
+              })
+              return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
-            return dispatch('initCacheStorage', data)
-          })
+        })
       },
       /**
        * @desc 获取当前环境变量,如果是开发环境,则永远是开发环境,不会跟着App的环境切换,如果打包之后,则当前环境变量会跟着当前APP切换
@@ -179,10 +184,11 @@ export default function createStore () {
       /**
        * @desc 将数据写入原生中
        * */
-      setNativeStorage ({commit}, data) {
+      setNativeStorage ({commit, state}, data) {
+        let root = state.environments.HTTP_ROOT
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.setDefault(key, {value}).then(() => {
+            nativeStorage.set('findFamily-' + root, key, {value}).then(() => {
               commit(SET_STORAGE, data)
               resolve(data)
             })
@@ -199,9 +205,9 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.getDefault(JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
             let cache = {}
-            cache['renderCache'] = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+            cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
             commit(SET_STORAGE, {
               cache
             })
@@ -240,7 +246,7 @@ export default function createStore () {
           return http.post('', {
             cmd: 'shareingPiano.createSession'
           }).then(res => {
-            return dispatch('setNativeStorage', {sessionId: res.body.sessionId})
+            return dispatch('setNativeStorage', {sessionId: res.body.sessionId, isLogin: false})
           })
         }
         return new Promise((resolve) => {
@@ -271,12 +277,15 @@ export default function createStore () {
               userId: parseInt(body.userId),
               userName: body.userName
             }
-            modules.user.setUserInfo(userInfoObj).then((data) => {
+            return modules.user.setUserInfo(userInfoObj).then((data) => {
               if (data) {
                 // 原生设置成功
                 return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
               }
             })
+          } else {
+            // 通知原生当前未登录
+            modules.user.logOut()
           }
           return {userInfo: body, isLogin: false}
         })
@@ -284,14 +293,48 @@ export default function createStore () {
       /**
        * @desc 用户注销
        * */
-      logout ({dispatch}) {
+      logout ({dispatch, state}) {
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+      },
+      /**
+       * @desc 清除缓存
+       * */
+      clearCache ({dispatch, state}) {
+        let root = state.environments.HTTP_ROOT
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+      },
+      /**
+       * @desc 恢复出厂设置
+       * */
+      restoreFactorySettings ({dispatch, state}) {
+        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
+          modules.user.logOut()
+          // 清用户信息
+          let root = state.environments.HTTP_ROOT
+          let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+          return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}}).then(() => {
+            // 清缓存数据 清除日历数据
+            let month = `${new Date().getMonth() + 1}`
+            if (!state.storage.playCalendar[month]) {
+              return
+            }
+            let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
+            playCalendarData.forEach((data) => {
+              if (data.practiced) {
+                data.practiced = false
+              }
+            })
+            return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
+          })
+        })
       },
       /**
        * @desc 用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
-        nativeStorage.getDefault('-1').then(param => {
+        let root = state.environments.HTTP_ROOT
+        nativeStorage.get('findFamily-' + root, '-1').then(param => {
           let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
           commit(LOGIN_OUT_CACHE, data)
         })
@@ -307,6 +350,23 @@ export default function createStore () {
           commit(DEL_SELECT, key)
           resolve(key)
         })
+      },
+      addPractice ({dispatch, state}) {
+        if (!state.storage.isActivation) {
+          return
+        }
+        let month = `${new Date().getMonth() + 1}`
+        let day = `${new Date().getDate()}`
+        if (!state.storage.playCalendar[month]) {
+          return
+        }
+        let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
+        if (playCalendarData[day - 1].practiced) {
+          // 当天已经加入了练琴日历
+          return
+        }
+        playCalendarData[day - 1].practiced = true
+        return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
       }
     },
     modules: {

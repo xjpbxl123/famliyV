@@ -29,6 +29,7 @@ if (isInFindClient) {
   Vue.use(VueFind)
   const store = createStore()
   const router = new VueRouter({routes})
+  Vue.prototype.$store = store
   Promise.all([store.dispatch('initialNativeStorage'), store.dispatch('initEnv')]).then(() => {
     vue = new Vue({
       el: '#app',

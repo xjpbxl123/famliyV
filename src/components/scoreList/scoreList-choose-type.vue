@@ -4,11 +4,13 @@
           <div class="title" v-text="bannerType==='collect'?'请选择要收藏的版本':'请选择曲谱版本'"></div>
           <ul>
             <li v-for="(item,index) in files" :key="index"
+            @click="clickPlay(index+1)"
             :class="{type1:(item.styleName==='钢琴独奏版'),
-                    type2:(item.styleName==='钢琴弹唱版'),
-                    type3:(item.styleName==='初练版'),
-                    type4:(item.styleName==='器乐合奏版'),
-                    type5:(item.styleName==='器乐弹唱版')}">
+                    type2:(item.styleName==='初练版'),
+                    type3:(item.styleName==='器乐弹唱版'),
+                    type4:(item.styleName==='钢琴弹唱版'),
+                    type5:(item.styleName==='器乐合奏版'),
+                    }">
               <span class="styleName">{{item.styleName}}</span>
               <span class="styleDesc">{{item.styleDescription}}</span>
               <span class="collectIcon iconfont" :class="collect[index].collection?'icon-favorite-on':'icon-favorite'" v-if="bannerType==='collect'"></span>
@@ -32,6 +34,9 @@
       bannerType: {
         type: String,
         default: () => ('')
+      },
+      clickPlay: {
+        type: Function
       }
     },
     data () {
@@ -61,18 +66,19 @@
       left: 50%;
       top: 56%;
       .title {
-        width: 76%;
+        width: 86%;
         font-size: 48px;
         position: relative;
         text-align: center;
         color: #fff;
         font-weight: 600;
+        margin-left: 140px;
         &::before {
           content: '';
           width: 512px;
           height: 1px;
           top: 24px;
-          left: -1%;
+          left: 6%;
           position: absolute;
           background-image: -webkit-linear-gradient(left,rgba(255,255,255,.1),rgba(255,255,255,0.5),rgba(255,255,255,1));
         }
@@ -81,7 +87,7 @@
           width: 457px;
           height: 1px;
           top: 24px;
-          left: 66%;
+          left: 63%;
           position: absolute;
           background-image: -webkit-linear-gradient(left,rgba(255,255,255,1),rgba(255,255,255,0.5),rgba(255,255,255,.1));
         }
@@ -90,10 +96,11 @@
         display: flex;
         justify-content: left;
         margin-top: 20px;
+        margin-left: 130px;
         li {
           width: 240px;
           height: 368px;
-          margin-right: 140px;
+          margin-right: 110px;
           color: #fff;
           position: relative;
           font-weight: 600;

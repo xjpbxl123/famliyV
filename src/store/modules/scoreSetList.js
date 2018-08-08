@@ -4,7 +4,6 @@ export default {
   namespaced: true,
   state: {
     scoreListIndex: 0,
-    currentPage: 1,
     totalPage: 1
   },
   mutations: {
@@ -13,9 +12,6 @@ export default {
     },
     'totalPage' (state, totalPage) {
       state.totalPage = totalPage
-    },
-    'currentPage' (state, currentPage) {
-      state.currentPage = currentPage
     }
   },
   actions: {
@@ -25,19 +21,14 @@ export default {
     setTotalPage ({commit}, num) {
       commit('totalPage', num)
     },
-    setCurrentPage ({commit}, num) {
-      commit('currentPage', num)
-    },
     getScoreSetList ({dispatch, commit, state} = {}, data) {
-      let page = data.page
       let setId = data.setId
-      commit('currentPage', page)
       http.post('', {
         cmd: 'musicScore.getBooksByTag',
         tagId: setId,
         page: {
-          offset: (page - 1) * 20,
-          count: 20
+          offset: 0,
+          count: 100
         }
       }).then(res => {
         console.log(res)
@@ -46,7 +37,7 @@ export default {
           if (state.scoreListIndex >= res.body.bookList.length) {
             commit('scoreListIndex', res.body.bookList.length - 1)
           }
-          dispatch('setCacheToStorage', {scoreSetList: res.body.bookList}, {root: true})
+          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true})
         }
       })
     }

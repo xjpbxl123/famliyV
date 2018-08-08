@@ -1,13 +1,14 @@
 <template>
-    <ul class="listBox">
-        <li v-for="(item,index) of scoreSetList" :key="item.bookId" :class="{ active:index == scoreListIndex }">
+    <div class="maxBox">
+      <ul class="listBox" :style="{'top': top+'px'}">
+        <li v-for="(item,index) of scoreSetList" :key="item.bookId" :class="{ active:index == scoreListIndex }" @click="setSelect(index)">
             <findImg :src="item.coverSmall" ></findImg>
         </li>
     </ul>
+    </div>
 </template>
 <script type="text/javascript">
   import findImg from '../common/find-img/find-img'
-
   export default {
     name: 'scoreSetList-listbox',
     props: {
@@ -22,15 +23,30 @@
         default: () => {
           return 0
         }
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {
       return {}
     },
+    watch: {
+      scoreListIndex: function (val) {
+        if (this.scoreListIndex === 0) {
+          this.top = 0
+          return
+        }
+        this.top = (Math.ceil((this.scoreListIndex + 1) / 20) - 1) * -762
+      }
+    },
     methods: {},
     created () {
-      let scoreSetList = this.scoreSetList
-      console.log(scoreSetList)
+      if (this.scoreListIndex === 0) {
+        this.top = 0
+        return
+      }
+      this.top = (Math.ceil((this.scoreListIndex + 1) / 20) - 1) * -762
     },
     components: {
       findImg
@@ -38,24 +54,32 @@
   }
 </script>
 <style lang="scss" scoped>
-  ul.listBox {
+  .maxBox {
     position: absolute;
     top: 180px;
     left: 200px;
-    li {
-      color: #fff;
-      font-size: 40px;
-      width: 248px;
-      height: 340px;
-      box-sizing: border-box;
-      margin-right: 102px;
-      margin-bottom: 40px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-      &.active {
-        box-shadow: 0px 0px 50px 10px #fff;
+    width: 100%;
+    height: 762px;
+    overflow: hidden;
+    ul.listBox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      li {
+        color: #fff;
+        font-size: 40px;
+        width: 248px;
+        height: 340px;
+        box-sizing: border-box;
+        margin-right: 102px;
+        margin-bottom: 40px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+        &.active {
+          border:6px solid #ff7e1b;
+        }
       }
     }
   }

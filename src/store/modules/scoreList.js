@@ -21,23 +21,25 @@ export default {
      * @desc 获取曲谱列表
      * */
     getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
-      console.log(id)
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
       if (typeName === 'other') {
         cmd = 'musicScore.getMusicsByTag'
-        netObj = {page, tagId: id, cmd: cmd}
+        netObj = {page, tagId: id, cmd: cmd, type: 1}
       }
-      console.log(netObj)
       return http.post('', {
         ...netObj
       }).then(res => {
-        console.log(res)
         if (res.header.code === 0) {
           let payment = ''
           let subParts = {base: '0', accompany: '0', video: '0'}
           res.body.musicList.forEach((item) => {
             let musicIdList = []
+            item.files.forEach((each) => {
+              if (each.mMp44k.url || each.mMp41080p.url) {
+                item.hasVideo = true
+              }
+            })
             if (!item.isFree && !item.sales && item.have && !item.have.base) {
               // 需要购买
               let money = 0
@@ -87,9 +89,42 @@ export default {
               })
             }
             musicIdList = []
+            if (item.files.length > 1) {
+              // 版本重新排序
+              let filterFile = []
+              item.files.forEach(data => {
+                if (data.styleId === 1) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 7) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 6) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 5) {
+                  filterFile.push(data)
+                }
+              })
+              item.files.forEach(data => {
+                if (data.styleId === 2) {
+                  filterFile.push(data)
+                }
+              })
+              item.files = filterFile
+            }
           })
-          return res.body && dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          console.log(res.body.musicList, 'res.body.musicList')
+          return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
         }
+      }).catch((error) => {
+        console.log(error)
       })
     },
     /**
@@ -121,6 +156,15 @@ export default {
           console.log('移除收藏')
         })
       }
+    },
+    addBookViewMount ({dispatch}, { bookId }) {
+      // 添加书籍浏览量
+      http.post('', {
+        cmd: 'musicScore.addBookClicks',
+        bookId
+      }).then(res => {
+        console.log('添加书籍浏览量')
+      })
     }
   }
 }

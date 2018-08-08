@@ -46,7 +46,6 @@
 <script>
   import * as toolbar from 'find-toolbar'
   import mixins from '../mixin.js'
-
   const globalEvent = weex.requireModule('globalEvent')
   const find = weex.requireModule('find')
   export default {

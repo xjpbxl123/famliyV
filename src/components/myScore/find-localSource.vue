@@ -3,7 +3,7 @@
         <div class="leftTitle">文件列表</div>
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
-                <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}">
+                <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}" @click="setSelect(index)">
                     <span class="typeIcon iconfont" :class="'icon-'+item.typeName"></span>
                     <span class="name">{{item.name}}</span>
                 </li>
@@ -22,6 +22,9 @@
       localSourceIndex: {
         type: Number,
         default: () => (0)
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {
@@ -32,6 +35,10 @@
     watch: {
       localSourceIndex (value, oldValue) {
         console.log(value)
+        if (value === 0) {
+          this.rightTop = 0
+          return
+        }
         let height = value * 120 * -1
         if (value - oldValue === -1) {
           // up
@@ -48,6 +55,8 @@
               this.rightTop = (value - 4) * 120 * -1
             }
           }
+        } else {
+          if (value >= 5) this.rightTop = (value - 4) * 120 * -1
         }
       }
     },

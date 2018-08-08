@@ -32,6 +32,10 @@
       height: {
         type: Number,
         default: () => 450
+      },
+      allExit: {
+        type: Boolean,
+        default: () => false
       }
     },
     data () {
@@ -44,8 +48,13 @@
       showPrompt () {
         this.show = true
         setTimeout(() => {
-          this.show = false
+          if (!this.allExit) {
+            this.show = false
+          }
         }, this.delay)
+      },
+      hidePrompt () {
+        this.show = false
       }
     },
     created () {
@@ -62,14 +71,15 @@
   .prompt {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 40px;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 16px;
     overflow: hidden;
     .prompt-icon {
       width: 120px;
       height: 120px;
       margin: 0 auto;
-      margin-top: 120px;
+      margin-top: 70px;
       .iconfont {
         font-size: 120px;
         color: #fff;
@@ -79,7 +89,7 @@
       font-size: 36px;
       width: 100%;
       text-align: center;
-      margin-top: 55px;
+      margin-top: 34px;
       color: #fff;
     }
   }

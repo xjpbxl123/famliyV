@@ -1,12 +1,13 @@
 <template>
    <div class="differDetail">
       <div class="starBox">
-        <span class="differLever">LV.{{popularIndex}}</span>
+        <span class="differLever">LV.{{popularIndex+1}}</span>
         <div class="star-full" v-for="(num) in parseInt(popularIndex+1)" :key="num"></div>
         <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div>
       </div>
+      <div class="text">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
       <div class="text">本次难度包括：</div>
-      <div class="text">节奏型：{{differList[popularIndex]&&differList[popularIndex].differC}}</div>
+      <div class="text">节奏型：{{differList[popularIndex]&&differList[popularIndex].tap}}</div>
       <div class="text">技巧：{{differList[popularIndex]&&differList[popularIndex].skills}}</div>
   </div>
 </template>

@@ -1,10 +1,10 @@
 <template>
-    <li :class="{active:(index===scoreIndex)}">
+    <li :class="{active:(index===scoreIndex)}"  @click="setSelect(index)">
         <span class="price sales" v-if="item.sales">限时免费</span>
         <span class="price free" v-else-if="item.isFree">免费</span>
         <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
         <span class="price buy" v-else>{{item.payment}}</span>
-        <span class="video iconfont icon-with-video"></span>
+        <span class="video iconfont icon-with-video" v-if="item.hasVideo"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
         <span class="viewNum">{{item.hotNum}}+</span>
         <span class="musicName">{{item.name}}</span>
@@ -25,10 +25,14 @@
       scoreIndex: {
         type: Number,
         default: () => (0)
+      },
+      setSelect: {
+        type: Function
       }
     },
     data () {
       return {
+        hasVideo: false
       }
     },
     watch: {
@@ -36,7 +40,7 @@
     },
     methods: {
     },
-    created () {
+    mounted () {
     },
     components: {
     }

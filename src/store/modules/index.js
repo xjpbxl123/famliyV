@@ -1,6 +1,5 @@
 import http from '../../scripts/http'
-import { getUsedTime } from 'find-sdk'
-
+import { getUsedTime, modules } from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
 const HOT_BOOKS = 'HOT_BOOKS' /// 热门
@@ -70,7 +69,7 @@ export default {
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      return http.post('', {
+      http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
@@ -79,7 +78,7 @@ export default {
           let re = JSON.parse(JSON.stringify(res.body))
           return dispatch('setCacheToStorage', {recentUpdateAll: res.body}, {root: true}).then(() => {
             re.bookList = re.bookList.slice(0, 7)
-            dispatch('setCacheToStorage', {recentUpdate: re}, {root: true})
+            return dispatch('setCacheToStorage', {recentUpdate: re}, {root: true})
           })
         }
       })
@@ -87,8 +86,8 @@ export default {
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      return http.post('', {
+    getHotBooks ({dispatch, commit, state}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
@@ -97,9 +96,35 @@ export default {
           let ho = JSON.parse(JSON.stringify(res.body))
           return dispatch('setCacheToStorage', {hottestAll: res.body}, {root: true}).then(() => {
             ho.bookList = ho.bookList.slice(0, 5)
-            dispatch('setCacheToStorage', {hottest: ho}, {root: true})
+            return dispatch('setCacheToStorage', {hottest: ho}, {root: true})
           })
         }
+      })
+    },
+    /**
+     * @desc 获取用户数据模式是否激活
+     * */
+    getIsPracticeDataActive ({dispatch}) {
+      modules.settings.getProperty('isPracticeDataActive').then((data) => {
+        return dispatch('setNativeStorage', {isActivation: Boolean(data)}, {root: true})
+      })
+    },
+    /**
+     * @desc 获取用户数据模式是否是日历模式
+     * */
+    getPracticeDataMode ({dispatch}) {
+      modules.settings.getProperty('practiceDataMode').then((data) => {
+        return dispatch('setNativeStorage', {isCalendar: Boolean(!data)}, {root: true})
+      })
+    },
+    /**
+     * @desc 监听用户数据模式改变
+     * */
+    registUserCountDataMode ({dispatch}) {
+      modules.notification.regist('UserCountDataMode', data => {
+        return dispatch('setNativeStorage', {isActivation: data.isActivation}, {root: true}).then(() => {
+          return dispatch('setNativeStorage', {isCalendar: data.isCalendar}, {root: true})
+        })
       })
     },
     /**
@@ -157,8 +182,13 @@ export default {
      * @desc 获取本地最近打开
      * */
     localRecent ({dispatch}, musicObj) {
-      let localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
-      if (musicObj) {
+      let localRecent = []
+      if (Array.prototype.isPrototypeOf(musicObj)) {
+        // 存入数组
+        localRecent = musicObj
+      } else {
+        // 存入对象
+        localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
         let flag = false
         let num = 0
         if (localRecent.length !== 0) {
@@ -202,16 +232,16 @@ export default {
     /**
      * @desc 获取曲子信息
      * */
-    getMusicInfo ({dispatch, commit} = {}, musicId) {
-      console.log(musicId)
+    getMusicInfo ({dispatch} = {}, musicId) {
       return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
         if (!header.code) {
           if (body) {
             return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
           }
         }
+      }).catch((error) => {
+        console.log(error)
       })
     }
-
   }
 }

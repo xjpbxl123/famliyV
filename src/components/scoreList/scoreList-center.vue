@@ -5,6 +5,7 @@
         :key="index"
         :index="index"
         :item="item"
+        :setSelect="setSelect"
         :scoreIndex="scoreIndex"/>
     </ul>
   </div>
@@ -21,6 +22,9 @@
       scoreIndex: {
         type: Number,
         default: () => ([])
+      },
+      setSelect: {
+        type: Function
       }
     },
     watch: {

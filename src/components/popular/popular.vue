@@ -3,20 +3,22 @@
     <statusBar/>
     <contentLine name="流行经典" class="title"/>
     <div class="year" v-show="(popularTapIndex===0)">
-      <popular-year-list :yearList="yearList" :yearIndex="yearIndex"></popular-year-list>
+      <popular-year-list :yearList="yearList" :yearIndex="yearIndex" :setSelect="setSelect"></popular-year-list>
     </div>
-    <div class="differ" v-show="(popularTapIndex===1)">
+    <div class="differ" v-show="popularTapIndex===1 && differList.length !== 0">
       <popular-differ-list
         :differList="differList"
-        :popularIndex="popularIndex"/>
+        :popularIndex="popularIndex"
+        :setSelect="setSelect"/>
       <popular-differ-detail
         :differList="differList"
         :popularIndex="popularIndex"/>
     </div>
     <div class="style" v-show="(popularTapIndex===2)">
-      <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect"></popular-genre>
+      <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect" :setSelect="setSelect"></popular-genre>
     </div>
-    <toolbar>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
             :id="button.id"
@@ -29,6 +31,7 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
+            :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
   </div>
@@ -42,6 +45,8 @@
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import {
     KEY73,
     KEY75,
@@ -51,7 +56,12 @@
     KEY46,
     KEY49,
     KEY54,
-    BACK_PRESSED
+    LONG_KEY73,
+    LONG_KEY75,
+    LONG_KEY78,
+    LONG_KEY80,
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
 
   export default {
@@ -62,44 +72,48 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 11,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 12,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 13,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 14,
-            show: true
+            show: true,
+            longClick: true
           },
           {
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 15,
             show: true
           }
@@ -108,7 +122,15 @@
           {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
           {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
           {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 640,
+          height: 360
+        },
+        toolbarHidden: false
       }
     },
     find: {
@@ -133,15 +155,38 @@
       [KEY80] () {
         this.buttonActions('down')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
+      },
       [KEY82] () {
         this.buttonActions('ok')
       },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.goBack()
+        }
+      },
       [BACK_PRESSED] () {
-        this.$store.dispatch('popular/setPopularTapSelected', 2)
-        this.$store.dispatch('popular/setYearSelected', 0)
-        this.$store.dispatch('popular/setPopularSelected', 0)
-        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
-        this.$router.back()
+        this.goBack()
       }
     },
     computed: {
@@ -179,9 +224,35 @@
       getStyles () {
         return this.$store.dispatch('popular/getStyles')
       },
+      goBack () {
+        this.$store.dispatch('popular/setPopularTapSelected', 2)
+        this.$store.dispatch('popular/setYearSelected', 0)
+        this.$store.dispatch('popular/setPopularSelected', 0)
+        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
+        this.$router.back()
+      },
+      // 鼠标操作
+      setSelect (index) {
+        if (this.popularTapIndex === 0) {
+          this.$store.dispatch('popular/setYearSelected', index).then(() => {
+            this.yearButtonAction('ok')
+          })
+        } else if (this.popularTapIndex === 1) {
+          this.$store.dispatch('popular/setPopularSelected', index).then(() => {
+            this.differButtonAction('ok')
+          })
+        } else {
+          this.$store.dispatch('setSelect', {popularGenreSelect: index}, {root: true}).then(() => {
+            this.stylesButtonAction('ok')
+          })
+        }
+      },
       stylesButtonAction (type) {
-        let activeIndex = this.popularGenreSelect
         let popularGenreLen = this.popularGenre.length - 1
+        if (popularGenreLen <= 0) {
+          return
+        }
+        let activeIndex = this.popularGenreSelect
         switch (type) {
           case 'right':
             popularGenreLen > activeIndex && activeIndex++
@@ -190,7 +261,11 @@
             activeIndex > 0 && activeIndex--
             break
           case 'down':
-            if (popularGenreLen >= activeIndex + 4) activeIndex += 4
+            if (popularGenreLen >= activeIndex + 4) {
+              activeIndex += 4
+            } else {
+              activeIndex = popularGenreLen
+            }
             break
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4
@@ -204,6 +279,9 @@
       yearButtonAction (type) {
         let yearIndex = this.yearIndex
         let len = this.yearList.length
+        if (len <= 0) {
+          return
+        }
         let yearList = this.yearList
         switch (type) {
           case 'left':
@@ -226,6 +304,9 @@
       differButtonAction (type) {
         let popularIndex = this.popularIndex
         let differList = this.differList
+        if (differList.length <= 0) {
+          return
+        }
         switch (type) {
           case 'left' :
             console.log('left')
@@ -289,18 +370,34 @@
         }
       })
     },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        if (this.differList.length === 0 && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       contentLine,
       popularDifferList,
       popularDifferDetail,
       popularGenre,
       popularYearList,
-      statusBar
+      statusBar,
+      findPrompt
     }
   }
 </script>
 <style lang="scss" scoped type=text/scss>
   .popular {
+    .find-prompt {
+      width: 750px;
+      height: 450px;
+      position: absolute;
+      top: 500px;
+      left: 2043px;
+    }
     .title {
         position: absolute;
         top: 46px;

@@ -3,7 +3,7 @@
     <div class="box-left">
       <contentLine :name="title"/>
       <div class="book-content">
-        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index">
+        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index" @click="setSelect(index)">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
@@ -45,6 +45,9 @@
         default: () => {
           return ''
         }
+      },
+      setSelect: {
+        type: Function
       }
     },
     components: {
@@ -89,11 +92,11 @@
             margin-right: 118px;
             display: flex;
             flex-direction: column;
-            margin-bottom: 7px;
+            margin-bottom: 16px;
             .star {
               display: flex;
               justify-content: center;
-              margin-top: 15px;
+              margin-top: 10px;
             }
             .date {
               font-size: 22px;
@@ -158,12 +161,24 @@
   }
 
   .active {
-    animation: shadowRepeat 1.2s linear 0s infinite alternate;
+    box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, .5);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .active::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    animation: shadowRepeat 1s ease 0s infinite alternate;
   }
 
   @keyframes shadowRepeat {
     0% {
-      box-shadow: 0px 0px 80px 10px rgba(255, 255, 255, 1);
+      box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, 1);
     }
     100% {
       box-shadow: 0px 0px 100px 30px rgba(255, 255, 255, 1);

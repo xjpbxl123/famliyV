@@ -3,7 +3,6 @@
  * @desc vue-router configurations file
  */
 import index from 'components/index/index-router'
-import home from 'components/home/home-router'
 import login from 'components/login/login-router'
 import famous from 'components/famous/famous-router'
 import famousBook from 'components/famous/famous-book/famousBook-router'
@@ -21,7 +20,6 @@ import indexMore from 'components/indexMore/indexMore-router'
 import openImg from 'components/myScore/openImg/openImg-router'
 const routers = [
   index,
-  home,
   login,
   famous,
   famousBook,

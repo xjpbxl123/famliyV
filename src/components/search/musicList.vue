@@ -27,6 +27,10 @@
     watch: {
       listIndex (value, oldValue) {
         // 控制列表位置
+        if (value === 0) {
+          this.rightTop = 0
+          return
+        }
         let height = value * 87 * -1
         if (value - oldValue === -1) {
           // up

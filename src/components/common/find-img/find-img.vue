@@ -1,6 +1,6 @@
 <template>
-  <div class="image">
-      <img :src="url" alt="Find">
+  <div class="image" >
+      <img :src="url" alt="Find" :class="{'borderRadius': borderRadius}" @error="error" >
       <h1 v-show="showTitle">{{text}}</h1>
   </div>
 </template>
@@ -29,6 +29,12 @@
       text: {
         type: String,
         default: () => ''
+      },
+      borderRadius: {
+        type: Boolean
+      },
+      hasBorder: {
+        type: Boolean
       }
     },
     data () {
@@ -51,23 +57,13 @@
     //   )
     // },
     created () {
-      if (this.src === './static/images/more.8015af2.png') {
+      if (this.src.indexOf('./static') !== -1) {
         this.url = this.src
         return
       }
       window.fp.modules.file.cacheUrl(this.src).then(data => {
         if (data.code === 0) {
-          let image = new Image()
-          image.src = data.url
-          image.onload = () => {
-            let checkoutImg = setInterval(() => {
-              if (image.complete) { // 加载完成
-                this.showTitle = false
-                this.url = data.url
-                clearInterval(checkoutImg)
-              }
-            }, Math.random() * 1000)
-          }
+          this.url = data.url
         } else {
           console.log(data.desc)
         }
@@ -80,12 +76,16 @@
     width: 100%;
     height: 100%;
     position: relative;
+    overflow: hidden;
     img {
       width:100%;
       height: 100%;
       position: absolute;
       bottom: 0;
       left: 0;
+      &.borderRadius {
+        border-radius: 50%;
+      }
     }
     h1 {
       font-size: 70px;

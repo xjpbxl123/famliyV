@@ -16,6 +16,11 @@
       <span>更新日期：</span>
       <span>{{scoreList[scoreIndex]&&scoreList[scoreIndex].lastUpdate | format}}</span>
     </div>
+     <div class="eachDetail">
+      <span class="iconfont icon-auto-play"></span>
+      <span>演奏类型：</span>
+      <span>{{playType}}</span>
+    </div>
     <div class="eachDetail">
       <span class="iconfont icon-song-introduction"></span>
       <span>曲目介绍：</span>
@@ -48,11 +53,39 @@
     },
     data () {
       return {
+        playType: ''
       }
     },
     methods: {
     },
+    watch: {
+      scoreIndex: function (val) {
+        let musicData = this.scoreList[this.scoreIndex]
+        if (!musicData || !musicData.files) {
+          return
+        }
+        this.playType = ''
+        musicData.files.forEach(item => {
+          if (this.playType) {
+            this.playType = this.playType + ' | ' + item.styleName
+          } else {
+            this.playType = item.styleName
+          }
+        })
+      }
+    },
     created () {
+      let musicData = this.scoreList[this.scoreIndex]
+      if (!musicData || !musicData.files) {
+        return
+      }
+      musicData.files.forEach(item => {
+        if (this.playType) {
+          this.playType = this.playType + ' | ' + item.styleName
+        } else {
+          this.playType = item.styleName
+        }
+      })
     },
     components: {
       scoreListListEachItem,

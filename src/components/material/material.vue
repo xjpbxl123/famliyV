@@ -2,17 +2,20 @@
   <div>
     <statusBar />
     <find-wrap title="教材系列" :activePage="materialPage" :sumPage="materialList.sumPage" :pagination="pagination">
-      <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card" :key="index"
-                       :index="index" :select="materialSelect" :ablum="item"
-                       :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
+      <find-ablum-card v-for="(item,index) in materialList.body" class="find-ablum-card"
+        :key="index"
+        :setSelect="setSelect"
+        :index="index" :select="materialSelect" :ablum="item"
+        :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
     </find-wrap>
-    <toolbar>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in materialButton"
                  :pianoKey="button.pianoKey"
                  :key="button.icon"
-                 longClick="true"
                  :id="button.id"
                  :icon="button.icon"
+                 :longClick="button.longClick"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',dotColor: button.dotColor}"/>
     </toolbar>
 
@@ -20,6 +23,13 @@
 
 </template>
 <style lang="scss" scoped type=text/scss>
+  .find-prompt {
+    width: 640px;
+    height: 360px;
+    position: absolute;
+    top: 500px;
+    left: 2043px;
+  }
   .find-ablum-card {
     margin-right: 30px;
     float: left;
@@ -34,13 +44,20 @@
   import findWrap from 'components/common/find-wrap/find-wrap'
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import findPrompt from '../common/find-prompt/find-prompt'
+  import {global} from 'find-sdk'
   import {
     KEY75,
     KEY78,
     KEY73,
     KEY80,
     KEY82,
-    BACK_PRESSED
+    LONG_KEY73,
+    LONG_KEY75,
+    LONG_KEY78,
+    LONG_KEY80,
+    BACK_PRESSED,
+    PEDAL_PRESSED
   } from 'vue-find'
 
   export default {
@@ -49,48 +66,60 @@
       return {
         materialPage: 1,
         pagination: true,
+        toolbarHidden: false,
         materialButton: [
           {
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
-            id: 201
+            backgroundColor: '#3000',
+            dotColor: '#fff',
+            id: 201,
+            longClick: true
           },
           {
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
-            id: 202
+            backgroundColor: '#3000',
+            dotColor: '#fff',
+            id: 202,
+            longClick: true
           },
           {
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#6f24d2',
-            dotColor: '#6f24d2',
-            id: 203
+            backgroundColor: '#3000',
+            dotColor: '#fff',
+            id: 203,
+            longClick: true
           },
           {
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#c72bbb',
-            dotColor: '#c72bbb',
-            id: 14
+            backgroundColor: '#3000',
+            dotColor: '#fff',
+            id: 14,
+            longClick: true
           },
           {
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#109892',
-            dotColor: '#109892',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
             id: 204
           }
-        ]
+        ],
+        promptInfo: {
+          text: '网络连接出错，请检查网络',
+          icon: 'icon-sync-info',
+          delay: 1000,
+          width: 750,
+          height: 450
+        }
       }
     },
     find: {
@@ -106,16 +135,46 @@
       [KEY80] () {
         this.buttonActions('down')
       },
+      [LONG_KEY73] () {
+        this.buttonActions('left')
+      },
+      [LONG_KEY75] () {
+        this.buttonActions('right')
+      },
+      [LONG_KEY78] () {
+        this.buttonActions('up')
+      },
+      [LONG_KEY80] () {
+        this.buttonActions('down')
+      },
       [KEY82] () {
         this.buttonActions('ok')
       },
       [BACK_PRESSED] () {
         this.buttonActions('back')
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.buttonActions('left')
+          case 117:
+            // 踏板2号键
+            return this.buttonActions('right')
+          case 118:
+            this.buttonActions('ok')
+            break
+          case 119:
+            this.buttonActions('back')
+        }
       }
     },
     methods: {
       buttonActions (type) {
         let activeIndex = this.materialSelect
+        if (this.materialList.body.length === 0 && type !== 'back') {
+          return
+        }
         let materialLen = this.materialList.body.length - 1
         switch (type) {
           case 'right':
@@ -125,7 +184,11 @@
             activeIndex > 0 && activeIndex--
             break
           case 'down':
-            if (materialLen >= activeIndex + 4) activeIndex += 4
+            if (materialLen >= activeIndex + 4) {
+              activeIndex += 4
+            } else {
+              activeIndex = materialLen
+            }
             break
           case 'up':
             if (activeIndex - 4 >= 0) activeIndex -= 4
@@ -139,6 +202,11 @@
             }, 200)
         }
         this.$store.dispatch('setSelect', {materialSelect: activeIndex}, {root: true})
+      },
+      setSelect (index) {
+        this.$store.dispatch('setSelect', {materialSelect: index}, {root: true}).then(() => {
+          this.buttonActions('ok')
+        })
       }
     },
     watch: {
@@ -149,10 +217,22 @@
     beforeCreate () {
       this.$store.dispatch('material/getAllBookSets')
     },
+    created () {
+      this.materialPage = Math.ceil((this.materialSelect + 1) / 8)
+    },
+    mounted () {
+      // 断网提醒
+      global.getStatusBarItem().then((data) => {
+        if (this.materialList.body.length === 0 && !data.wifi.title) {
+          this.$refs.prompt.showPrompt()
+        }
+      })
+    },
     components: {
       findWrap,
       findAblumCard,
-      statusBar
+      statusBar,
+      findPrompt
     },
     computed: {
       ...mapState({
