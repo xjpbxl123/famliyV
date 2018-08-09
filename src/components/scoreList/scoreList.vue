@@ -164,28 +164,38 @@
           width: 640,
           height: 360
         },
-        dataError: false,
+        dataError: true,
         stopEvent: false
       }
     },
     watch: {
-      // scoreList: function (value, old) {
-      //   console.log(value, 'uuuuuuuu')
-      //   if (value.length > 0) {
-      //     this.dataError = false
-      //   }
-      //   this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
-      //   console.log(value[this.scoreIndex])
-      //   let flag = false
-      //   this.collet && this.collet.forEach((item) => {
-      //     if (item.collection) { flag = true }
-      //   })
-      //   if (flag) {
-      //     this.controlButtons[5].icon = '0xe656'
-      //   } else {
-      //     this.controlButtons[5].icon = '0xe653'
-      //   }
-      // },
+      scoreList: function (value, old) {
+        global.getStatusBarItem().then((data) => {
+          if (this.scoreList.length === 0) {
+            if (!data.wifi.title) {
+              // 断网
+              this.$refs.prompt.showPrompt()
+            }
+          } else {
+            this.dataError = false
+          }
+        })
+        // console.log(value, 'uuuuuuuu')
+        // if (value.length > 0) {
+        //   this.dataError = false
+        // }
+        // this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
+        // console.log(value[this.scoreIndex])
+        // let flag = false
+        // this.collet && this.collet.forEach((item) => {
+        //   if (item.collection) { flag = true }
+        // })
+        // if (flag) {
+        //   this.controlButtons[5].icon = '0xe656'
+        // } else {
+        //   this.controlButtons[5].icon = '0xe653'
+        // }
+      },
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
         let flag = false
@@ -578,15 +588,6 @@
     },
     mounted () {
       let timer = null
-      global.getStatusBarItem().then((data) => {
-        if (this.scoreList.length === 0) {
-          this.dataError = true
-          if (!data.wifi.title) {
-            // 断网
-            this.$refs.prompt.showPrompt()
-          }
-        }
-      })
       timer = setTimeout(() => {
         if (this.scoreList.length > 0) {
           this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []

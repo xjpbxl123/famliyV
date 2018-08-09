@@ -26,7 +26,8 @@
         :rightType="rightType"
         :isPlaying="isPlaying"
         :setRightSelect="setRightSelect"
-        :isPlayingMusicId="isPlayingMusicId"/>
+        :isPlayingMusicId="isPlayingMusicId"
+        :isPlayingType="isPlayingType"/>
     </div>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <findPrompt ref="musicPrompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="false"></findPrompt>
@@ -374,7 +375,9 @@
         autoPlay: false,
         canEnterModule: true,
         skipTime: 0,
-        isSupportMutePedal: false
+        isSupportMutePedal: false,
+        isPlayingIndex: 0,
+        isPlayingType: ''
       }
     },
     mixins: [initData],
@@ -725,7 +728,9 @@
             this.$store.dispatch('clearCache')
           } else {
             // 恢复出厂设置
-            this.$store.dispatch('restoreFactorySettings')
+            this.$store.dispatch('clearCache').then(() => {
+              this.$store.dispatch('restoreFactorySettings')
+            })
           }
         })
       },
@@ -1061,10 +1066,23 @@
               }
               if (this.enterPlay) {
                 // 已经进入过曲谱 如果没有移动光标直接播放即可
-                if (musicObj.musicId === this.isPlayingMusicId) {
+                if (musicObj.musicId === this.isPlayingMusicId && this.playRightType === this.rightType) {
                   this.$refs.player.reset()
                   this.$refs.player.play().then(() => {
                     this.isPlaying = false
+                    // 继续播放下一首
+                    if (rightActiveIndex === list.length - 1) {
+                      // 已经是最后一首了
+                      this.hideOtherButtons = false
+                      return
+                    }
+                    this.autoPlay = true
+                    rightActiveIndex++
+                    rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
+                    if (rightActiveIndex > 0) {
+                      this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+                    }
+                    this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
                   })
                   // 判断是否电钢
                   this.getPianoType()
@@ -1089,7 +1107,11 @@
               rightTypeName = 'myCollect'
             }
             this.$store.dispatch('index/setRightType', rightTypeName).then(() => {
-              this.$store.dispatch('index/setRightSelect', 0)
+              if (this.isPlaying && rightTypeName === this.isPlayingType) {
+                this.$store.dispatch('index/setRightSelect', this.isPlayingIndex)
+              } else {
+                this.$store.dispatch('index/setRightSelect', 0)
+              }
             })
             break
           case 'keyBoardMute':
@@ -1164,10 +1186,6 @@
               let id = data.musicId
               let eachMusic = {}
               let musicVersions = []
-              // eachMusic.bookName = data.bookName || ''
-              // eachMusic.musicOrigin = 'bookList'
-              // eachMusic.musicId = data.musicId
-              // eachMusic.musicName = data.name
               eachMusic.styleName = data.files[0].styleName
               eachMusic.curMusicId = data.files[0].musicId
               eachMusic.styleId = data.files[0].styleId
@@ -1327,14 +1345,12 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
-        // if (this.cancelPlay) {
-        //   return
-        // }
+
         this.$refs.player.play().then(() => {
           this.isPlaying = false
           if (this.playRightType !== this.rightType) {
-            // 列表切换了
-            return
+            // 列表切换回来
+            this.$store.dispatch('index/setRightType', this.playRightType)
           }
           if (rightActiveIndex === list.length - 1) {
             // 已经是最后一首了
@@ -1354,7 +1370,9 @@
         this.playRightType = this.rightType
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
+        this.isPlayingIndex = rightActiveIndex
         this.hideOtherButtons = true
+        this.isPlayingType = this.rightType
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
