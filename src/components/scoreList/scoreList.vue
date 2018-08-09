@@ -584,9 +584,9 @@
       console.log('scoreList--created', window.location.href)
       this.getScoreList()
       this.addBookViewMount()
-      this.adjustPlayer()
     },
     mounted () {
+      this.adjustPlayer()
       let timer = null
       timer = setTimeout(() => {
         if (this.scoreList.length > 0) {
