@@ -8,12 +8,14 @@
         type2:(item.styleName==='初练版'),
         type3:(item.styleName==='器乐弹唱版'),
         type4:(item.styleName==='钢琴弹唱版'),
-        type5:(item.styleName==='器乐合奏版')}">
+        type5:(item.styleName==='器乐合奏版')}"
+        :style="{'left': position[index]+'px'}">
        </div>
    </div>
 
 </template>
 <script type="text/javascript">
+  import { modules } from 'find-sdk'
   export default {
     props: {
       files: {
@@ -26,12 +28,19 @@
     },
     data () {
       return {
-        filterFile: []
+        filterFile: [],
+        position: []
       }
     },
     methods: {
     },
     created () {
+      modules.global.getKeyboardPosition().then((data) => {
+        if (data) {
+          this.position = [data[70].centerX - 6, data[78].centerX - 6, data[85].centerX - 6, data[92].centerX, data[99].centerX - 1]
+          console.log(this.position)
+        }
+      })
     },
     components: {
     }

@@ -186,7 +186,6 @@
         clickInterval: null,
         timer: 0,
         playerHidden: false,
-        playRightType: '',
         enterPlay: false,
         playerSource: {
           mid: {
@@ -371,6 +370,8 @@
         metre: '3',
         toolbarHidden: false,
         clickedMusicId: 0,
+        clickedMusicIndex: 0,
+        clickeType: '',
         hideOtherButtons: false,
         autoPlay: false,
         canEnterModule: true,
@@ -1007,10 +1008,13 @@
               list = this.isLogin ? this.collectList : this.localCollect
             }
             list1 = [].concat(JSON.parse(JSON.stringify(list)))
-            musicObj = list1[rightActiveIndex]
             if (list1.length === 0) {
               return
             }
+            musicObj = list1[rightActiveIndex]
+            this.clickedMusicId = musicObj.musicId
+            this.clickedMusicIndex = rightActiveIndex
+            this.clickeType = this.rightType
             if (!this.timer) {
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
@@ -1066,7 +1070,7 @@
               }
               if (this.enterPlay) {
                 // 已经进入过曲谱 如果没有移动光标直接播放即可
-                if (musicObj.musicId === this.isPlayingMusicId && this.playRightType === this.rightType) {
+                if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
                   this.$refs.player.reset()
                   this.$refs.player.play().then(() => {
                     this.isPlaying = false
@@ -1225,7 +1229,6 @@
         })
       },
       playMidi (musicId, musicList, musicIndex) {
-        this.clickedMusicId = musicId
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
@@ -1348,9 +1351,9 @@
 
         this.$refs.player.play().then(() => {
           this.isPlaying = false
-          if (this.playRightType !== this.rightType) {
+          if (this.isPlayingType !== this.rightType) {
             // 列表切换回来
-            this.$store.dispatch('index/setRightType', this.playRightType)
+            this.$store.dispatch('index/setRightType', this.isPlayingType)
           }
           if (rightActiveIndex === list.length - 1) {
             // 已经是最后一首了
@@ -1367,12 +1370,11 @@
           this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
         this.getPianoType()
-        this.playRightType = this.rightType
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
-        this.isPlayingIndex = rightActiveIndex
+        this.isPlayingIndex = this.clickedMusicIndex
         this.hideOtherButtons = true
-        this.isPlayingType = this.rightType
+        this.isPlayingType = this.clickeType
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {

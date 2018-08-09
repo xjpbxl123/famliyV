@@ -17,7 +17,7 @@
         <div class="outBox">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
             <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
-              <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType}"></div>
+              <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'recentOpen'}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -27,7 +27,7 @@
           </div>
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
             <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
-              <div class="item-logo iconfont icon-song " :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType}"></div>
+              <div class="item-logo iconfont icon-song " :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'myCollect'}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
