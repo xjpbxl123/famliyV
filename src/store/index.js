@@ -302,7 +302,15 @@ export default function createStore () {
       clearCache ({dispatch, state}) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}}).then(() => {
+        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+      },
+      /**
+       * @desc 恢复出厂设置
+       * */
+      restoreFactorySettings ({dispatch, state}) {
+        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
+          modules.user.logOut()
+          // 清用户信息
           // 清缓存数据 清除日历数据
           let month = `${new Date().getMonth() + 1}`
           if (!state.storage.playCalendar[month]) {
@@ -315,15 +323,6 @@ export default function createStore () {
             }
           })
           return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
-        })
-      },
-      /**
-       * @desc 恢复出厂设置
-       * */
-      restoreFactorySettings ({dispatch, state}) {
-        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
-          modules.user.logOut()
-          // 清用户信息
         })
       },
       /**
