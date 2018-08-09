@@ -305,24 +305,12 @@ export default function createStore () {
         return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
       },
       /**
-       * @desc 恢复出厂设置
+       * @desc 恢复出厂设置 清除所有缓存数据
        * */
-      restoreFactorySettings ({dispatch, state}) {
-        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
-          modules.user.logOut()
-          // 清用户信息
-          // 清缓存数据 清除日历数据
-          let month = `${new Date().getMonth() + 1}`
-          if (!state.storage.playCalendar[month]) {
-            return
-          }
-          let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
-          playCalendarData.forEach((data) => {
-            if (data.practiced) {
-              data.practiced = false
-            }
-          })
-          return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
+      restoreFactorySettings ({dispatch}) {
+        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        rootArr.forEach((item, index) => {
+          nativeStorage.clear('findFamily-' + item)
         })
       },
       /**
