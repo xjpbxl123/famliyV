@@ -32,6 +32,8 @@
       modules.notification.regist('SetBackgroundImage', data => {
         if (data.backGroundImageName) {
           this.backgroundUrl = data.backGroundImageName
+        } else {
+          this.backgroundUrl = require('./images/background0.jpg')
         }
       })
       // 毛玻璃效果初始值设置

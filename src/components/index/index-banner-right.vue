@@ -41,6 +41,7 @@
 </template>
 
 <script>
+  import {padStart} from 'lodash'
   export default {
     props: {
       recentOpenList: {
@@ -125,15 +126,8 @@
       getDate () {
         let t = new Date()
         this.timeData =
-          t
-            .getHours()
-            .toString()
-          .padStart(2, '0') +
-          ':' +
-          t
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')
+          padStart(t.getHours().toString(), 2, '0') + ':' +
+          padStart(t.getMinutes().toString())
         this.getTime()
       },
       getDays () {
