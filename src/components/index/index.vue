@@ -708,7 +708,7 @@
       /**
        * @desc 获取钢琴类型
        * */
-      getPianoType () {
+      playSet () {
         modules.device.getPianoType().then((data) => {
           if (data === 0 || data === 1) {
             // 真钢默认开启自动演奏
@@ -718,6 +718,19 @@
             modules.settings.setProperty('isSpeakerOn', true)
           }
         })
+        if (this.isSupportMutePedal) {
+          modules.settings.getProperty('isPedalMuteOn').then(isPedalMuteOn => {
+            if (isPedalMuteOn) {
+              modules.settings.getProperty('isAutoPlayOn').then(isAotoPlayOn => {
+                // 自动演奏 && 踏板静音打开 则关闭
+                if (isAotoPlayOn) {
+                  modules.mutePedal.setPedalMuteOnOff()
+                  this.controlButtons[0].checked = false
+                }
+              })
+            }
+          })
+        }
       },
       /**
        * @desc 监听清空缓存/恢复出厂设置
@@ -1088,8 +1101,8 @@
                     }
                     this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
                   })
-                  // 判断是否电钢
-                  this.getPianoType()
+                  // 播放判断
+                  this.playSet()
                   this.hideOtherButtons = true
                   this.autoPlay = false
                   this.promptInfo.text = '再次点击进入曲谱'
@@ -1155,6 +1168,7 @@
         }
       },
       player (musicObj, tick) {
+        this.playSet()
         this.cancelClick = true
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
@@ -1369,7 +1383,7 @@
           // this.buttonActions('right-play')
           this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
-        this.getPianoType()
+        this.playSet()
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
         this.isPlayingIndex = this.clickedMusicIndex
@@ -1404,14 +1418,12 @@
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
-      this.getPianoType()
-      console.log('index--created', window.location.href)
+      this.playSet()
     },
     beforeDestroy () {
       this.toolbarHidden = true
     },
     destroyed () {
-      console.log('index--destroyed', window.location.href)
       clearInterval(window.interval)
       this.removeRegist()
     },

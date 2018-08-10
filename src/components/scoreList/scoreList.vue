@@ -507,6 +507,7 @@
       },
       // 播放曲谱
       player (musicObj, typeNum) {
+        this.setPlay()
         if (this.stopEvent) {
           return
         }
@@ -542,6 +543,22 @@
         console.log({info: {musicId, musicIds, allMusics}})
         modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
       },
+      setPlay () {
+        modules.settings.getProperty('isSupportMutePedal').then((data) => {
+          if (data) {
+            modules.settings.getProperty('isPedalMuteOn').then(isPedalMuteOn => {
+              if (isPedalMuteOn) {
+                modules.settings.getProperty('isAutoPlayOn').then(isAotoPlayOn => {
+                  // 自动演奏 && 踏板静音打开 则关闭
+                  if (isAotoPlayOn) {
+                    modules.mutePedal.setPedalMuteOnOff()
+                  }
+                })
+              }
+            })
+          }
+        })
+      },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
         let recentObj = {
@@ -575,6 +592,7 @@
           console.log(data)
           // 曲谱关闭
           if (data.case === 'resume') {
+            this.chooseType = false
             this.stopEvent = false
           }
         })

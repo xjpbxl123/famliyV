@@ -18,7 +18,7 @@
         :setSelect="setSelect"/>
     </find-wrap>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex" :show="!toolbarHidden" :setTapSelect="setTapSelect"/>
+    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"  :setTapSelect="setTapSelect"/>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
@@ -27,6 +27,15 @@
             :pianoKey="button.pianoKey"
             :hidden="!button.show || !deleteCover"
             :longClick="button.longClick"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+        <title-item v-for="(button) in tapButtons"
+            :id="button.id"
+            :key="button.id"
+            :icon="button.icon"
+            :pianoKey="button.pianoKey"
+            :hidden="!button.show || !deleteCover"
+            :longClick="button.longClick"
+            titlePosition="in"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
         <icon-item v-for="(button,index) in logoutButtons"
             :hidden="deleteCover"
@@ -74,7 +83,7 @@
     data () {
       return {
         toolbarHidden: false,
-        controlButtons: [
+        tapButtons: [
           {
             pianoKey: 39,
             text: '',
@@ -119,7 +128,9 @@
             activeColor: '#FF7E1B',
             id: 4,
             show: true
-          },
+          }
+        ],
+        controlButtons: [
           {
             pianoKey: 78,
             text: '',
@@ -206,28 +217,18 @@
       },
       [KEY39] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
-        this.controlButtons[this.controlButtons.length - 2].show = true
-        this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY42] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
-        this.controlButtons[this.controlButtons.length - 2].show = true
-        this.controlButtons[this.controlButtons.length - 1].show = true
       },
       [KEY46] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
-        this.controlButtons[this.controlButtons.length - 2].show = true
-        this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY49] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-        this.controlButtons[this.controlButtons.length - 2].show = true
-        this.controlButtons[this.controlButtons.length - 1].show = false
       },
       [KEY54] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
-        this.controlButtons[this.controlButtons.length - 2].show = false
-        this.controlButtons[this.controlButtons.length - 1].show = true
       },
       [KEY75] () {
         if (!this.deleteCover) this.buttonActions('delete')
@@ -280,11 +281,11 @@
     computed: {
       ...mapState({
         myScoreTapIndex: function (state) {
-          if (state.myScore.myScoreTapIndex === 4) {
-            this.controlButtons[this.controlButtons.length - 2].show = false
-          }
+          state.myScore.myScoreTapIndex === 4 ? this.controlButtons[this.controlButtons.length - 2].show = false : this.controlButtons[this.controlButtons.length - 2].show = true
           if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
             this.controlButtons[this.controlButtons.length - 1].show = true
+          } else {
+            this.controlButtons[this.controlButtons.length - 1].show = false
           }
           return state.myScore.myScoreTapIndex
         },
@@ -840,6 +841,7 @@
         })
       },
       player (musicObj) {
+        this.setPlay()
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
@@ -911,6 +913,22 @@
             musicIds.push(musicId)
             console.log({musicId, musicIds, allMusics})
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+          }
+        })
+      },
+      setPlay () {
+        modules.settings.getProperty('isSupportMutePedal').then((data) => {
+          if (data) {
+            modules.settings.getProperty('isPedalMuteOn').then(isPedalMuteOn => {
+              if (isPedalMuteOn) {
+                modules.settings.getProperty('isAutoPlayOn').then(isAotoPlayOn => {
+                  // 自动演奏 && 踏板静音打开 则关闭
+                  if (isAotoPlayOn) {
+                    modules.mutePedal.setPedalMuteOnOff()
+                  }
+                })
+              }
+            })
           }
         })
       },
