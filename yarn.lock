@@ -7446,9 +7446,9 @@ vue-find-hybrid@^1.0.7, vue-find-hybrid@^1.1.3:
     lodash "^4.17.10"
     vue "^2.5.2"
 
-vue-find@^1.2.1:
-  version "1.3.2"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.3.2.tgz#e6d2d8f64b686c274149e1524666f7155a1d31db"
+vue-find@^1.3.3:
+  version "1.3.3"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.3.3.tgz#f1e0515400579cefe01851dd3e00a7a4098f0e74"
   dependencies:
     babel-runtime "^6.26.0"
     lodash "^4.17.10"
