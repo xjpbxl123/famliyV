@@ -680,9 +680,9 @@
         return this.$store.dispatch('getUserInfo')
       },
       /**
-     * @desc 设置练琴数据
-     * @param {object} playCalendar - 练琴数据
-     * */
+       * @desc 设置练琴数据
+       * @param {object} playCalendar - 练琴数据
+       * */
       setCalendarData (playCalendar) {
         this.$store.dispatch('setNativeStorage', {
           playCalendar

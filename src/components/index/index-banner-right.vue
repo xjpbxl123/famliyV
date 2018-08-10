@@ -104,6 +104,7 @@
     },
     data () {
       return {
+        timeId: null,
         timeData: '22:22',
         mounthData: '4月16日',
         lateMinute: -1,
@@ -114,13 +115,13 @@
     },
     methods: {
       getTime () {
-        let timeId = setTimeout(() => {
+        this.timeId = setTimeout(() => {
           this.getDate()
           this.lateMinute--
           if (this.lateMinute === 0) {
             this.getDays()
           }
-          clearTimeout(timeId)
+          clearTimeout(this.timeId)
         }, 60000)
       },
       getDate () {
@@ -173,6 +174,10 @@
       if (this.rightSelectedIndex >= 7) {
         this.rightTop = (this.rightSelectedIndex - 6) * 120 * -1
       }
+    },
+    destroyed () {
+      clearTimeout(this.timeId)
+      this.timeId = null
     }
   }
 </script>
@@ -281,6 +286,7 @@
         position: absolute;
         top: 40px;
         left: 35px;
+        transform: translate3d(0,0,0);
         &.play {
           animation:turn 2s infinite linear;
         }
@@ -313,7 +319,7 @@
       .styleType {
           position: absolute;
           top:50%;
-          transform: translateY(-50%);
+          transform: translate3d(0,-50%,0);
           right: 40px;
           opacity: 0.55;
           font-size: 24px;

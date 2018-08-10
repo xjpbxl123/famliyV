@@ -37,7 +37,7 @@ export default {
       state.hotBooks = hotBooks
     },
     [PIANO_USED_TIME] (state, data) {
-      state.usedTime = data
+      state.usedTime = Object.assign({}, data)
     },
     [RIGHT_TYPE] (state, data) {
       state.rightType = data

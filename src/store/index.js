@@ -142,7 +142,7 @@ export default function createStore () {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
-          state.storage.cache.renderCache[key] = value
+          state.storage.cache.renderCache[key] = JSON.parse(JSON.stringify(value))
         }
         return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
         })
