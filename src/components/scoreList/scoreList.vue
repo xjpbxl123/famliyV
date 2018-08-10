@@ -508,6 +508,7 @@
       // 播放曲谱
       player (musicObj, typeNum) {
         this.setPlay()
+        this.chooseType = false
         if (this.stopEvent) {
           return
         }
@@ -541,7 +542,9 @@
           allMusics.push(eachMusic)
         })
         console.log({info: {musicId, musicIds, allMusics}})
-        modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+        this.$nextTick(() => {
+          modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+        })
       },
       setPlay () {
         modules.settings.getProperty('isSupportMutePedal').then((data) => {
@@ -592,7 +595,6 @@
           console.log(data)
           // 曲谱关闭
           if (data.case === 'resume') {
-            this.chooseType = false
             this.stopEvent = false
           }
         })
