@@ -379,7 +379,7 @@
     mounted () {
       // 断网提醒
       global.getStatusBarItem().then((data) => {
-        if (this.differList.length === 0 && !data.wifi.title) {
+        if (this.popularGenre.length === 0 && !data.wifi.title) {
           this.$refs.prompt.showPrompt()
         }
       })

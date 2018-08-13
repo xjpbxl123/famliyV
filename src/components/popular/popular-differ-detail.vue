@@ -1,5 +1,5 @@
 <template>
-   <div class="differDetail">
+   <div class="differDetail" v-if="differList.length !== 0">
       <div class="starBox">
         <span class="differLever">LV.{{popularIndex+1}}</span>
         <div class="star-full" v-for="(num) in parseInt(popularIndex+1)" :key="num"></div>

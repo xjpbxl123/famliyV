@@ -2950,9 +2950,9 @@ find-parent-dir@^0.3.0:
   dependencies:
     lodash "^4.17.10"
 
-find-toolbar@^1.1.5:
-  version "1.1.5"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.1.5.tgz#0b56cab4ee8590f6c30f11a142fb05653285a84a"
+find-toolbar@^1.1.5, find-toolbar@^1.1.7:
+  version "1.1.7"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.1.7.tgz#16b5f2255de888518708a2d96354fb64e4bba6da"
 
 find-up@^1.0.0:
   version "1.1.2"
@@ -7437,12 +7437,21 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-find-hybrid@^1.0.7, vue-find-hybrid@^1.1.3:
+vue-find-hybrid@^1.0.7:
   version "1.2.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.2.1.tgz#19fea029118738137026794fb26661ca196597a7"
   dependencies:
     deep-diff "^1.0.1"
     find-toolbar "^1.1.5"
+    lodash "^4.17.10"
+    vue "^2.5.2"
+
+vue-find-hybrid@^1.1.3:
+  version "1.2.3"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.2.3.tgz#234a173038532c18635f30ac65261c61b8ff7c8f"
+  dependencies:
+    deep-diff "^1.0.1"
+    find-toolbar "^1.1.7"
     lodash "^4.17.10"
     vue "^2.5.2"
 

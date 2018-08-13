@@ -170,31 +170,19 @@
     },
     watch: {
       scoreList: function (value, old) {
-        global.getStatusBarItem().then((data) => {
-          if (this.scoreList.length === 0) {
-            if (!data.wifi.title) {
-              // 断网
-              this.$refs.prompt.showPrompt()
-            }
-          } else {
-            this.dataError = false
-          }
+        if (value.length > 0) {
+          this.dataError = false
+        }
+        this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
+        let flag = false
+        this.collet && this.collet.forEach((item) => {
+          if (item.collection) { flag = true }
         })
-        // console.log(value, 'uuuuuuuu')
-        // if (value.length > 0) {
-        //   this.dataError = false
-        // }
-        // this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
-        // console.log(value[this.scoreIndex])
-        // let flag = false
-        // this.collet && this.collet.forEach((item) => {
-        //   if (item.collection) { flag = true }
-        // })
-        // if (flag) {
-        //   this.controlButtons[5].icon = '0xe656'
-        // } else {
-        //   this.controlButtons[5].icon = '0xe653'
-        // }
+        if (flag) {
+          this.controlButtons[5].icon = '0xe656'
+        } else {
+          this.controlButtons[5].icon = '0xe653'
+        }
       },
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
@@ -278,7 +266,6 @@
           this.buttonActions('choseType', 5)
         },
         [BACK_PRESSED] () {
-          console.log('closeChooseAType')
           if (this.toolbarHidden) this.toolbarHidden = false
           this.chooseType = false
         },
@@ -305,6 +292,15 @@
           } else {
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
           }
+          console.log(arr[this.scoreIndex], 'arrarr')
+          global.getStatusBarItem().then((data) => {
+            if (!data.wifi.title && arr.length === 0) {
+              // 断网
+              this.$refs.prompt.showPrompt()
+            } else {
+              this.dataError = false
+            }
+          })
           return arr
         },
         isLogin (state) {
@@ -320,7 +316,6 @@
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
       },
       namespace () {
-        console.log(this.chooseType)
         return this.chooseType ? 'chooseType' : ''
       }
     },
@@ -422,6 +417,7 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
+
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
@@ -608,22 +604,6 @@
     },
     mounted () {
       this.adjustPlayer()
-      let timer = null
-      timer = setTimeout(() => {
-        if (this.scoreList.length > 0) {
-          this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
-          let flag = false
-          this.collet && this.collet.forEach((item) => {
-            if (item.collection) { flag = true }
-          })
-          if (flag) {
-            this.controlButtons[5].icon = '0xe656'
-          } else {
-            this.controlButtons[5].icon = '0xe653'
-          }
-          clearTimeout(timer)
-        }
-      }, 2000)
     },
     components: {
       scoreListCenter,

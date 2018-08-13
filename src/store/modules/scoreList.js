@@ -33,6 +33,7 @@ export default {
         if (res.header.code === 0) {
           let payment = ''
           let subParts = {base: '0', accompany: '0', video: '0'}
+          let postList = []
           res.body.musicList.forEach((item) => {
             let musicIdList = []
             item.files.forEach((each) => {
@@ -80,13 +81,12 @@ export default {
               })
               item.collect = collectData
               collectData = []
+              return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
             } else {
-              http.post('', {
+              postList.push(http.post('', {
                 cmd: 'musicScore.checkPracticeMusic',
                 musicList: musicIdList
-              }).then(res => {
-                item.collect = res.body.musicList
-              })
+              }))
             }
             musicIdList = []
             if (item.files.length > 1) {
@@ -120,8 +120,15 @@ export default {
               item.files = filterFile
             }
           })
-          console.log(res.body.musicList, 'res.body.musicList')
-          return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          if (this.state.storage.isLogin) {
+            return Promise.all(postList).then((data) => {
+              res.body.musicList.forEach((item, index) => {
+                item.collect = data[index].body.musicList
+              })
+              console.log(res.body.musicList, 'res.body.musicList')
+              return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+            })
+          }
         }
       }).catch((error) => {
         console.log(error)

@@ -11,7 +11,10 @@
         </li>
       </ul>
       <ul class="date-text" :class="{'noActiva': !isActivation}">
-        <li v-for="(date,index) in calendarData" :key="date.text">
+        <li v-for="(item,index) in placeHolderArr" :key="index">
+          <span></span>
+        </li>
+        <li v-for="(date,index) in calendarData" :key="date.text" >
           <span v-text="date.date" :class="{'practiced': calendarData[index].practiced}"></span>
         </li>
       </ul>
@@ -32,7 +35,8 @@
       return {
         weekText: ['日', '一', '二', '三', '四', '五', '六'],
         month: '',
-        calendarData: []
+        calendarData: [],
+        placeHolderArr: []
       }
     },
     computed: {
@@ -95,6 +99,12 @@
           this.setCalendarData({ [this.month]: dateText })
         } else {
           this.calendarData = this.playCalendar[this.month]
+        }
+        this.placeHolderArr = []
+        let calDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+        let calDayStr = calDay.getDay()
+        for (let i = 0; i < calDayStr; i++) {
+          this.placeHolderArr.push({text: ''})
         }
       }
     },

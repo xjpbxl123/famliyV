@@ -47,9 +47,7 @@ export default function createStore () {
             yearList: [],
             scoreSetList: [],
             scoreList: [],
-            differList: [{
-              differC: ''
-            }],
+            differList: [],
             materialList: {
               body: [], sumPage: 1
             },

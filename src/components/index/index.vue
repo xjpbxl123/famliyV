@@ -646,6 +646,7 @@
         }
       },
       isLogin (val) {
+        this.initializeData()
         if (val) {
           this.userActionButtons[1].text = '注销'
           this.getRecentOpenList()
@@ -1032,6 +1033,7 @@
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
               console.log('双击')
+              this.hideOtherButtons = true
               if (this.cancelClick) {
                 return false
               }
