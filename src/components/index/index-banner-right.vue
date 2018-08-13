@@ -128,7 +128,7 @@
         let t = new Date()
         this.timeData =
           padStart(t.getHours().toString(), 2, '0') + ':' +
-          padStart(t.getMinutes().toString())
+          padStart(t.getMinutes().toString(), 2, '0')
         this.getTime()
       },
       getDays () {

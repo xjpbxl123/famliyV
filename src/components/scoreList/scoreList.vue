@@ -448,7 +448,8 @@
 
             let hasCollected = false
             let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
-            let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+            let flag = 0
+            if (scoreList[scoreIndex].collect) flag = scoreList[scoreIndex].collect[typeNum - 1].collection
             if (flag) {
               this.controlButtons[5].icon = '0xe653'
             } else {
