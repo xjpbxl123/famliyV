@@ -1,19 +1,38 @@
 <template>
   <div class="search">
     <statusBar/>
-    <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/>
+    <!-- <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/> -->
     <musicList :list="musicList" :listIndex="listIndex"/>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
     <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
-              :key="index"
+              :key="button.pianoKey"
               :id="index"
               :icon="button.icon"
               :pianoKey="button.pianoKey"
               :longClick="button.longClick"
-              :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+              :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor,fontSize:30,fontWeight:'bold'}"/>
+        <keys-item id='27' text="0xe618" pianoKey="27" :style="{backgroundColor:'#FF000000', cornorType:-1, cornorRadius:15,fontSize:30}" />
+        <keys-item v-for="item in keyBoards1"
+              :key="item.pianoKey"
+              :id="item.pianoKey"
+              :pianoKey="item.pianoKey"
+              :style="{backgroundColor:item.backgroundColor,strockColor:'#979797',textColor:item.textColor,fontSize:30,fontWeight:'bold'}"
+              :text="upper?item.text.toLocaleUpperCase():item.text" />
+         <keys-item v-for="item in keyBoards2"
+              :key="item.pianoKey"
+              :id="item.pianoKey"
+              :pianoKey="item.pianoKey"
+              :style="{backgroundColor:item.backgroundColor,strockColor:'#979797',fontSize: 38,color:item.color}"
+              :text="item.text" />
+        <keys-item v-for="item in keyBoards3"
+              :key="item.pianoKey + 500"
+              :id="item.pianoKey"
+              :pianoKey="item.pianoKey"
+              :style="{backgroundColor:item.backgroundColor, cornorType:item.cornorType,cornorRadius:item.cornorRadius,textColor:item.textColor,strockColor:'#979797',fontSize:30,fontWeight:'bold'}"
+              :text="changeSymbol?item.symbolText:item.text" />
     </toolbar>
   </div>
 </template>
@@ -35,6 +54,7 @@
         initDataComplete: false,
         listIndex: 0,
         musicList: [],
+        upper: false,
         toolbarHidden: false,
         promptInfo: {
           text: '成功',
@@ -44,342 +64,6 @@
           height: 360
         },
         controlButtons: [
-          {
-            pianoKey: 27,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 28,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 29,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 30,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 31,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 32,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 33,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 34,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 35,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 36,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 37,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 38,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 39,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 40,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 41,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 42,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 43,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 44,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 45,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 46,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 47,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 48,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 49,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 50,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 51,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 52,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 53,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 54,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 55,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 56,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 57,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 58,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 59,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 60,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 61,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 62,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 63,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 64,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 65,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 66,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 67,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 68,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 69,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 70,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 71,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 72,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 73,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 74,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 75,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 76,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 77,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 78,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 79,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 80,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 81,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
-          {
-            pianoKey: 82,
-            text: '',
-            icon: '',
-            dotColor: '#0000'
-          },
           {
             pianoKey: 85,
             text: '',
@@ -411,7 +95,340 @@
             dotColor: '#fff'
           }
         ],
-        searchName: ''
+        keyBoards1: [
+          {
+            pianoKey: 28,
+            text: 'a',
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'b',
+            pianoKey: 29,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'c',
+            pianoKey: 30,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'd',
+            pianoKey: 31,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'e',
+            pianoKey: 32,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'f',
+            pianoKey: 33,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'g',
+            pianoKey: 34,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'h',
+            pianoKey: 35,
+            backgroundColor: '#D6D8E6',
+            textColor: '000'
+          },
+          {
+            text: 'i',
+            pianoKey: 36,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'j',
+            pianoKey: 37,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'k',
+            pianoKey: 38,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'l',
+            pianoKey: 39,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'm',
+            pianoKey: 40,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'n',
+            pianoKey: 41,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'o',
+            pianoKey: 42,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'p',
+            pianoKey: 43,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'q',
+            pianoKey: 44,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'r',
+            pianoKey: 45,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 's',
+            pianoKey: 46,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 't',
+            pianoKey: 47,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'u',
+            pianoKey: 48,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'v',
+            pianoKey: 49,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'w',
+            pianoKey: 50,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'x',
+            pianoKey: 51,
+            backgroundColor: '#252635'
+          },
+          {
+            text: 'y',
+            pianoKey: 52,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: 'z',
+            pianoKey: 53,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '0',
+            pianoKey: 54,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '1',
+            pianoKey: 55,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '2',
+            pianoKey: 56,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '3',
+            pianoKey: 57,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '4',
+            pianoKey: 58,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '5',
+            pianoKey: 59,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '6',
+            pianoKey: 60,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '7',
+            pianoKey: 61,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '8',
+            pianoKey: 62,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '9',
+            pianoKey: 63,
+            backgroundColor: '#252635'
+          },
+          {
+            text: ' ',
+            pianoKey: 64,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: ' ',
+            pianoKey: 65,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          }
+        ],
+        keyBoards2: [
+          {
+            text: '0xe62d',
+            pianoKey: 66,
+            backgroundColor: '#252635',
+            color: '#fff'
+          },
+          {
+            text: '0xe66a',
+            pianoKey: 67,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000',
+            color: '#7000'
+          }
+        ],
+        keyBoards3: [
+          {
+            text: ',',
+            symbolText: '^',
+            pianoKey: 68,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '.',
+            symbolText: '*',
+            pianoKey: 69,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '?',
+            symbolText: '+',
+            pianoKey: 70,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '/',
+            symbolText: '-',
+            pianoKey: 71,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '!',
+            symbolText: '=',
+            pianoKey: 72,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '~',
+            symbolText: '_',
+            pianoKey: 73,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '@',
+            symbolText: '<',
+            pianoKey: 74,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '#',
+            symbolText: '>',
+            pianoKey: 75,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '$',
+            symbolText: '\\',
+            pianoKey: 76,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '%',
+            symbolText: '(',
+            pianoKey: 77,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '{',
+            symbolText: ')',
+            pianoKey: 78,
+            backgroundColor: '#252635'
+          },
+          {
+            text: '}',
+            symbolText: '[',
+            pianoKey: 79,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '|',
+            symbolText: ']',
+            pianoKey: 80,
+            backgroundColor: '#252635'
+          },
+          {
+            text: ':',
+            symbolText: "'",
+            pianoKey: 81,
+            backgroundColor: '#D6D8E6',
+            textColor: '#000'
+          },
+          {
+            text: '&',
+            symbolText: '"',
+            pianoKey: 82,
+            backgroundColor: '#252635',
+            cornorType: 1,
+            cornorRadius: 15
+          }
+        ],
+        searchName: '',
+        changeSymbol: false
       }
     },
     find: {
@@ -422,172 +439,172 @@
         this.toolbarHidden = data.hidden
       },
       [KEY27] () {
-        this.$refs.keyboard.clickKeyboard(0)
+        this.clickKeyboard(0)
       },
       [KEY28] () {
-        this.$refs.keyboard.clickKeyboard(1)
+        this.clickKeyboard(1)
       },
       [KEY29] () {
-        this.$refs.keyboard.clickKeyboard(2)
+        this.clickKeyboard(2)
       },
       [KEY30] () {
-        this.$refs.keyboard.clickKeyboard(3)
+        this.clickKeyboard(3)
       },
       [KEY31] () {
-        this.$refs.keyboard.clickKeyboard(4)
+        this.clickKeyboard(4)
       },
       [KEY32] () {
-        this.$refs.keyboard.clickKeyboard(5)
+        this.clickKeyboard(5)
       },
       [KEY33] () {
-        this.$refs.keyboard.clickKeyboard(6)
+        this.clickKeyboard(6)
       },
       [KEY34] () {
-        this.$refs.keyboard.clickKeyboard(7)
+        this.clickKeyboard(7)
       },
       [KEY35] () {
-        this.$refs.keyboard.clickKeyboard(8)
+        this.clickKeyboard(8)
       },
       [KEY36] () {
-        this.$refs.keyboard.clickKeyboard(9)
+        this.clickKeyboard(9)
       },
       [KEY37] () {
-        this.$refs.keyboard.clickKeyboard(10)
+        this.clickKeyboard(10)
       },
       [KEY38] () {
-        this.$refs.keyboard.clickKeyboard(11)
+        this.clickKeyboard(11)
       },
       [KEY39] () {
-        this.$refs.keyboard.clickKeyboard(12)
+        this.clickKeyboard(12)
       },
       [KEY40] () {
-        this.$refs.keyboard.clickKeyboard(13)
+        this.clickKeyboard(13)
       },
       [KEY41] () {
-        this.$refs.keyboard.clickKeyboard(14)
+        this.clickKeyboard(14)
       },
       [KEY42] () {
-        this.$refs.keyboard.clickKeyboard(15)
+        this.clickKeyboard(15)
       },
       [KEY43] () {
-        this.$refs.keyboard.clickKeyboard(16)
+        this.clickKeyboard(16)
       },
       [KEY44] () {
-        this.$refs.keyboard.clickKeyboard(17)
+        this.clickKeyboard(17)
       },
       [KEY45] () {
-        this.$refs.keyboard.clickKeyboard(18)
+        this.clickKeyboard(18)
       },
       [KEY46] () {
-        this.$refs.keyboard.clickKeyboard(19)
+        this.clickKeyboard(19)
       },
       [KEY47] () {
-        this.$refs.keyboard.clickKeyboard(20)
+        this.clickKeyboard(20)
       },
       [KEY48] () {
-        this.$refs.keyboard.clickKeyboard(21)
+        this.clickKeyboard(21)
       },
       [KEY49] () {
-        this.$refs.keyboard.clickKeyboard(22)
+        this.clickKeyboard(22)
       },
       [KEY50] () {
-        this.$refs.keyboard.clickKeyboard(23)
+        this.clickKeyboard(23)
       },
       [KEY51] () {
-        this.$refs.keyboard.clickKeyboard(24)
+        this.clickKeyboard(24)
       },
       [KEY52] () {
-        this.$refs.keyboard.clickKeyboard(25)
+        this.clickKeyboard(25)
       },
       [KEY53] () {
-        this.$refs.keyboard.clickKeyboard(26)
+        this.clickKeyboard(26)
       },
       [KEY54] () {
-        this.$refs.keyboard.clickKeyboard(27)
+        this.clickKeyboard(27)
       },
       [KEY55] () {
-        this.$refs.keyboard.clickKeyboard(28)
+        this.clickKeyboard(28)
       },
       [KEY56] () {
-        this.$refs.keyboard.clickKeyboard(29)
+        this.clickKeyboard(29)
       },
       [KEY57] () {
-        this.$refs.keyboard.clickKeyboard(30)
+        this.clickKeyboard(30)
       },
       [KEY58] () {
-        this.$refs.keyboard.clickKeyboard(31)
+        this.clickKeyboard(31)
       },
       [KEY59] () {
-        this.$refs.keyboard.clickKeyboard(32)
+        this.clickKeyboard(32)
       },
       [KEY60] () {
-        this.$refs.keyboard.clickKeyboard(33)
+        this.clickKeyboard(33)
       },
       [KEY61] () {
-        this.$refs.keyboard.clickKeyboard(34)
+        this.clickKeyboard(34)
       },
       [KEY62] () {
-        this.$refs.keyboard.clickKeyboard(35)
+        this.clickKeyboard(35)
       },
       [KEY63] () {
-        this.$refs.keyboard.clickKeyboard(36)
+        this.clickKeyboard(36)
       },
       [KEY64] () {
-        this.$refs.keyboard.clickKeyboard(37)
+        this.clickKeyboard(37)
       },
       [KEY65] () {
-        this.$refs.keyboard.clickKeyboard(38)
+        this.clickKeyboard(38)
       },
       [KEY66] () {
-        this.$refs.keyboard.clickKeyboard(39)
+        this.clickKeyboard(39)
       },
       [KEY67] () {
-        this.$refs.keyboard.clickKeyboard(40)
+        this.clickKeyboard(40)
       },
       [KEY68] () {
-        this.$refs.keyboard.clickKeyboard(41)
+        this.clickSymbol(0)
       },
       [KEY69] () {
-        this.$refs.keyboard.clickKeyboard(42)
+        this.clickSymbol(1)
       },
       [KEY70] () {
-        this.$refs.keyboard.clickKeyboard(43)
+        this.clickSymbol(2)
       },
       [KEY71] () {
-        this.$refs.keyboard.clickKeyboard(44)
+        this.clickSymbol(3)
       },
       [KEY72] () {
-        this.$refs.keyboard.clickKeyboard(45)
+        this.clickSymbol(4)
       },
       [KEY73] () {
-        this.$refs.keyboard.clickKeyboard(46)
+        this.clickSymbol(5)
       },
       [KEY74] () {
-        this.$refs.keyboard.clickKeyboard(47)
+        this.clickKeyboard(6)
       },
       [KEY75] () {
-        this.$refs.keyboard.clickKeyboard(48)
+        this.clickSymbol(7)
       },
       [KEY76] () {
-        this.$refs.keyboard.clickKeyboard(49)
+        this.clickSymbol(8)
       },
       [KEY77] () {
-        this.$refs.keyboard.clickKeyboard(50)
+        this.clickSymbol(9)
       },
       [KEY78] () {
-        this.$refs.keyboard.clickKeyboard(51)
+        this.clickSymbol(10)
       },
       [KEY79] () {
-        this.$refs.keyboard.clickKeyboard(52)
+        this.clickSymbol(11)
       },
       [KEY80] () {
-        this.$refs.keyboard.clickKeyboard(53)
+        this.clickSymbol(12)
       },
       [KEY81] () {
-        this.$refs.keyboard.clickKeyboard(54)
+        this.clickSymbol(13)
       },
       [KEY82] () {
-        this.$refs.keyboard.clickKeyboard(55)
+        this.clickSymbol(14)
       },
       [KEY85] () {
         return this.buttonActions('delete')
@@ -647,6 +664,27 @@
       },
       setValue (value) {
         this.searchName = this.searchName + value
+      },
+      /**
+       * @desc 处理钢琴按下按键对应的文本
+       * @param {Number} index - 按下按键对应的文本索引
+       * */
+      clickKeyboard (index) {
+        switch (index) {
+          /// switch lower-case/upper-case
+          case 0:
+            this.upper = !this.upper
+            return ''
+          case 39:
+            return this.setValue(' ')
+          case 40:
+            this.changeSymbol = !this.changeSymbol
+            return ''
+        }
+        this.setValue(this.upper ? this.keyBoards1[index - 1].text.toLocaleUpperCase() : this.keyBoards1[index - 1].text)
+      },
+      clickSymbol (index) {
+        this.setValue(this.changeSymbol ? this.keyBoards3[index].symbolText : this.keyBoards3[index].text)
       },
       buttonActions (type) {
         switch (type) {
