@@ -5,7 +5,7 @@
         <div class="star-full" v-for="(num) in parseInt(popularIndex+1)" :key="num"></div>
         <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div>
       </div>
-      <div class="text">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
+      <div class="text text1">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
       <div class="text">本次难度包括：</div>
       <div class="text">节奏型：{{differList[popularIndex]&&differList[popularIndex].tap}}</div>
       <div class="text">技巧：{{differList[popularIndex]&&differList[popularIndex].skills}}</div>
@@ -41,11 +41,12 @@
 </script>
 <style lang="scss" scoped>
    .differDetail {
-     position: absolute;
-      width: 600px;
-      height: 574px;
+      position: absolute;
       right: 160px;
-      top: 260px;
+      width:690px;
+      height:1080px;
+      background:rgba(0,0,0,1);
+      top:0px;
       padding-left: 70px;
       border-right-width: 0;
       border-top-width:0;
@@ -87,6 +88,9 @@
       font-size: 30px;
       margin-bottom: 45px;
       line-height: 34px;
+      &.text1 {
+        color: #FFB400;
+      }
      }
    }
 </style>
