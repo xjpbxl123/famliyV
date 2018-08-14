@@ -24,7 +24,7 @@
         if (data) {
           this.backgroundUrl = data
         } else {
-          this.backgroundUrl = require('./images/background0.jpg')
+          this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
 
@@ -33,7 +33,7 @@
         if (data.backGroundImageName) {
           this.backgroundUrl = data.backGroundImageName
         } else {
-          this.backgroundUrl = require('./images/background0.jpg')
+          this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
       // 毛玻璃效果初始值设置

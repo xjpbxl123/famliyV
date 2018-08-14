@@ -66,9 +66,6 @@
             this.rightTop = (value - 9) * 78 * -1
           }
         }
-      },
-      scoreList: (val, old) => {
-        console.log(val, 'scoreListscoreListscoreListscoreList')
       }
     },
     data () {

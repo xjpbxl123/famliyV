@@ -81,7 +81,6 @@ export default {
               })
               item.collect = collectData
               collectData = []
-              return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
             } else {
               postList.push(http.post('', {
                 cmd: 'musicScore.checkPracticeMusic',
@@ -128,7 +127,25 @@ export default {
               console.log(res.body.musicList, 'res.body.musicList')
               return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
             })
+          } else {
+            return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
           }
+        }
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    /**
+     * @desc 只获取获取曲谱列表，不用处理数据
+     * */
+    getMusicList ({dispatch}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
+      let cmd = 'musicScore.getMusicsByBook'
+      let netObj = {page, bookId: id, cmd: cmd}
+      return http.post('', {
+        ...netObj
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {musicList: res.body.musicList, id: id}, {root: true})
         }
       }).catch((error) => {
         console.log(error)

@@ -304,8 +304,8 @@
           let {storage} = state
           return storage.isLogin
         },
-        scoreList: function (state) {
-          return state.storage.cache.renderCache.scoreList
+        musicList: function (state) {
+          return state.storage.cache.renderCache.musicList
         }
       }),
       ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent', 'bookInfo'])
@@ -868,8 +868,8 @@
             styleId = 7
             break
         }
-        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
-          let list = this.scoreList[bookId]
+        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then(() => {
+          let list = this.musicList[bookId]
           if (list) {
             // 有缓存
             list.forEach((data) => {

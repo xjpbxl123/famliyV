@@ -173,6 +173,7 @@
   import findPrompt from '../common/find-prompt/find-prompt'
   import { modules, download, global } from 'find-sdk'
   import initData from './initData.js'
+  import {formatDate} from '../../scripts/utils'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -187,6 +188,7 @@
         timer: 0,
         playerHidden: false,
         enterPlay: false,
+        doubleClick: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -545,25 +547,45 @@
       },
       [KEY90] () {
         // 熄屏
+        if (this.doubleClick) {
+          // 双击时不可点
+          return
+        }
         this.buttonActions('closeScreen', true)
       },
       [LONG_KEY92] () {
         this.buttonActions('right-up')
       },
       [KEY92] () {
+        if (this.doubleClick) {
+          // 双击时不可点
+          return
+        }
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
         this.buttonActions('right-down')
       },
       [KEY94] () {
+        if (this.doubleClick) {
+          // 双击时不可点
+          return
+        }
         console.log('down')
         this.buttonActions('right-down')
       },
       [KEY97] () {
+        if (this.doubleClick) {
+          // 双击时不可点
+          return
+        }
         this.buttonActions('right-play')
       },
       [KEY99] () {
+        if (this.doubleClick) {
+          // 双击时不可点
+          return
+        }
         this.buttonActions('changeRightData')
       },
       [PEDAL_PRESSED] (key) {
@@ -629,6 +651,9 @@
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
+        },
+        musicList: function (state) {
+          return state.storage.cache.renderCache.musicList
         }
       }),
       ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
@@ -646,7 +671,6 @@
         }
       },
       isLogin (val) {
-        this.initializeData()
         if (val) {
           this.userActionButtons[1].text = '注销'
           this.getRecentOpenList()
@@ -654,6 +678,9 @@
         } else {
           this.userActionButtons[1].text = '登录'
         }
+      },
+      sessionId (val) {
+        this.initializeData()
       }
     },
     methods: {
@@ -1032,7 +1059,10 @@
             if (!this.timer) {
               this.timer = +new Date()
             } else if (new Date() - this.timer <= 700) {
+              let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
+              console.log(dd)
               console.log('双击')
+              this.doubleClick = true
               this.hideOtherButtons = true
               if (this.cancelClick) {
                 return false
@@ -1198,8 +1228,8 @@
             styleId = 7
             break
         }
-        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
-          let list = this.scoreList[bookId]
+        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then(() => {
+          let list = this.musicList[bookId]
           if (list) {
             // 有缓存
             list.forEach((data) => {
@@ -1400,11 +1430,14 @@
               this.isPlaying = false
               this.$refs.player.pause()
             }
+            let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
+            console.log(dd)
           }
           if (data.case === 'resume') {
             this.cancelClick = false
             this.hideOtherButtons = false
             this.canEnterModule = true
+            this.doubleClick = false
           }
         })
       },

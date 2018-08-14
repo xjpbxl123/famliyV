@@ -47,6 +47,7 @@ export default function createStore () {
             yearList: [],
             scoreSetList: [],
             scoreList: [],
+            getMusicList: [],
             differList: [],
             materialList: {
               body: [], sumPage: 1
@@ -97,6 +98,9 @@ export default function createStore () {
       },
       scoreList: state => {
         return state.storage.cache.renderCache.scoreList
+      },
+      musicList: state => {
+        return state.storage.cache.renderCache.musicList
       },
       materialList: state => {
         return state.storage.cache.renderCache.materialList

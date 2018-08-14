@@ -38,7 +38,6 @@
       modules.global.getKeyboardPosition().then((data) => {
         if (data) {
           this.position = [data[70].centerX - 6, data[78].centerX - 6, data[85].centerX - 6, data[92].centerX, data[99].centerX - 1]
-          console.log(this.position)
         }
       })
     },

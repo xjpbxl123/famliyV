@@ -24,8 +24,8 @@
 </template>
 <style lang="scss" scoped type=text/scss>
   .find-prompt {
-    width: 640px;
-    height: 360px;
+    width: 750px;
+    height: 450px;
     position: absolute;
     top: 500px;
     left: 2043px;
@@ -117,8 +117,8 @@
           text: '网络连接出错，请检查网络',
           icon: 'icon-sync-info',
           delay: 1000,
-          width: 750,
-          height: 450
+          width: 640,
+          height: 360
         }
       }
     },

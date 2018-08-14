@@ -169,21 +169,6 @@
       }
     },
     watch: {
-      scoreList: function (value, old) {
-        if (value.length > 0) {
-          this.dataError = false
-        }
-        this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
-        let flag = false
-        this.collet && this.collet.forEach((item) => {
-          if (item.collection) { flag = true }
-        })
-        if (flag) {
-          this.controlButtons[5].icon = '0xe656'
-        } else {
-          this.controlButtons[5].icon = '0xe653'
-        }
-      },
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
         let flag = false
@@ -226,6 +211,7 @@
         this.buttonActions('ok')
       },
       [KEY85] () {
+        console.log('tapppppp')
         this.buttonActions('collect')
       },
       [BACK_PRESSED] () {
@@ -293,14 +279,28 @@
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
           }
           console.log(arr[this.scoreIndex], 'arrarr')
-          global.getStatusBarItem().then((data) => {
-            if (!data.wifi.title && arr.length === 0) {
-              // 断网
-              this.$refs.prompt.showPrompt()
+          if (arr.length > 0) {
+            this.dataError = false
+            this.collet = arr[this.scoreIndex] ? arr[this.scoreIndex].collect : []
+            let flag = false
+            this.collet && this.collet.forEach((item) => {
+              if (item.collection) { flag = true }
+            })
+            if (flag) {
+              this.controlButtons[5].icon = '0xe656'
             } else {
-              this.dataError = false
+              this.controlButtons[5].icon = '0xe653'
             }
-          })
+          } else {
+            global.getStatusBarItem().then((data) => {
+              if (!data.wifi.title) {
+                // 断网
+                this.$refs.prompt.showPrompt()
+              } else {
+                this.dataError = false
+              }
+            })
+          }
           return arr
         },
         isLogin (state) {
@@ -417,7 +417,7 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
-
+            console.log('tapptap')
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
