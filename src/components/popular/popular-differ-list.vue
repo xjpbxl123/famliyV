@@ -1,14 +1,11 @@
 <template>
   <ul>
     <li v-for="(item,index) in differList" :key="index" @click="setSelect(index)" :class="{active:(index === popularIndex)}">
-      <img :src="(index === popularIndex)?item.sleCoverSmall:item.coverSmall" alt="">
-      <popular-differ-year-eachItem
-        :starNum="item.starNum"/>
+      <img :src="item.coverSmall" alt="">
     </li>
   </ul>
 </template>
 <script type="text/javascript">
-  import popularDifferYearEachItem from './popular-differ-year-eachItem'
   import {} from 'vue-find'
 
   export default {
@@ -33,7 +30,6 @@
     created () {
     },
     components: {
-      popularDifferYearEachItem
     }
   }
 </script>
@@ -46,10 +42,21 @@
       width: 340px;
       height: 485px;
       border-radius: 10px;
+      position: relative;
       margin-right: 115px;
+      border-radius: 16px;
+      background:rgba(0,0,0,1);
+      opacity:0.6;
+      border: 7px solid rgba(255,255,255,0.28);
+      transition: all 0.4s linear;
       &.active {
         width: 400px;
         height: 570px;
+        background:transparent;
+        opacity:1;
+        border:10px solid #00FF90;
+        box-shadow: 0px 0px 200px 0px #00FF90;
+        transform: translateY(30px);
         .starBox {
           .star-empty {
             background: url('./images/icon_star_white.png') no-repeat !important;
