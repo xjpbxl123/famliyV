@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" >
-      <router-view></router-view>
     </div>
+    <router-view></router-view>
     <!-- <transition name="fade"> -->
 
     <!-- </transition> -->

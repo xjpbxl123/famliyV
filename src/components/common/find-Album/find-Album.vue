@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul :class="{'popularStyle':typeN===2}">
     <li :style="imgSize(0)">
       <span class="cover"></span>
       <span class="shadow"></span>
@@ -19,6 +19,12 @@
   ul {
     width: 360px;
     position: relative;
+    &.popularStyle {
+      width: 310px !important;
+      li {
+        width: 155px !important;
+      }
+    }
     li {
       width: 180px;
       bottom: 0;
@@ -72,6 +78,9 @@
             over: 90
           }
         }
+      },
+      typeN: {
+        type: Number
       }
     },
     data () {

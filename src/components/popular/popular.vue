@@ -1,7 +1,11 @@
 <template>
   <div class="popular">
     <statusBar/>
-    <contentLine name="流行经典" class="title"/>
+    <div class="line">
+      <div><span>流</span>行经典</div>
+      <span class="line-icon"></span>
+      <div class="color"></div>
+    </div>
     <div class="year" v-show="(popularTapIndex===0)">
       <popular-year-list :yearList="yearList" :yearIndex="yearIndex" :setSelect="setSelect"></popular-year-list>
     </div>
@@ -39,7 +43,6 @@
 </template>
 <script type="text/javascript">
   import { mapState, mapGetters } from 'vuex'
-  import contentLine from '../index/index-content-line'
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
@@ -354,8 +357,6 @@
     },
     created () {
       this.loadTime = +new Date()
-      console.log('popular--created', window.location.href)
-      console.log(this.popularGenre, 'popularGenre')
       this.getDiffer()
       this.getStyles()
       this.getCenturys()
@@ -385,7 +386,6 @@
       })
     },
     components: {
-      contentLine,
       popularDifferList,
       popularDifferDetail,
       popularGenre,
@@ -404,6 +404,39 @@
       top: 500px;
       left: 2043px;
     }
+    .line {
+      position: absolute;
+      top: 55px;
+      left: 260px;
+      div:nth-child(1) {
+        color: #fff;
+        font-size: 30px;
+        span {
+          font-size: 48px;
+        }
+      }
+      .line-icon {
+        width: 40px;
+        height: 60px;
+        position: absolute;
+        left: -42px;
+        top: -2px;
+        background: url('./images/icon.png') no-repeat;
+        background-size: cover;
+        }
+      .color {
+        width: 800px;
+        height: 1px;
+        margin-left: 0px;
+        margin-bottom: 7px;
+        background-image: -webkit-linear-gradient(
+          left,
+          rgba(255, 255, 255, 1),
+          rgba(255, 255, 255, 0.6) 50%,
+          rgba(255, 255, 255, 0.1)
+        );
+      }
+    }
     .title {
         position: absolute;
         top: 46px;
@@ -411,8 +444,8 @@
       }
     .style {
       position: absolute;
-      top: 195px;
-      left: 245px;
+      top: 0;
+      left: 0;
     }
   }
 </style>

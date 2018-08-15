@@ -1,19 +1,22 @@
 <template>
   <div class="popular-genre">
-    <find-ablum-card v-for="(item,index) in popularGenre" class="find-popular-card" :key="index"
+    <find-ablum-card-popular v-for="(item,index) in popularGenre" class="find-popular-card" :key="index"
                      :index="index" :ablum="item" :class="{maxMargin:(index+1)%2===0}"
-                     :select="select" :setSelect="setSelect" :type="2"></find-ablum-card>
+                     :select="select" :setSelect="setSelect" :type="2"></find-ablum-card-popular>
   </div>
 </template>
 <style lang=scss type=text/scss scoped>
   .popular-genre {
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    padding-left: 360px;
+    padding-top: 237px;
     .find-popular-card {
-      margin-right: 30px;
+      margin-right: 160px;
       float: left;
-      margin-bottom: 30px;
+      margin-bottom: 78px;
       &.maxMargin {
-        margin-right: 90px;
+        margin-right: 160px;
       }
     }
   }
@@ -21,7 +24,7 @@
 </style>
 
 <script>
-  import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
+  import findAblumCardPopular from 'components/common/find-ablum-card-popular/find-ablum-card-popular'
 
   export default {
     name: 'popular',
@@ -36,7 +39,7 @@
     beforeCreate () {
     },
     components: {
-      findAblumCard
+      findAblumCardPopular
     }
   }
 </script>

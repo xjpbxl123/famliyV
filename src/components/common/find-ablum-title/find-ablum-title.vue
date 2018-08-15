@@ -1,6 +1,6 @@
 <template>
   <div class="find-ablum-title">
-    <p class="name" v-text="name" :class="{active: isActive}"></p>
+    <p class="name" v-text="name" :class="{active: isActive,'popularStyle':typeN ===2}" ></p>
     <span class="num"><span></span><span></span></span>
   </div>
 </template>
@@ -16,6 +16,11 @@
       &.active {
         color: #fff;
         border-bottom: 1px solid #fff;
+      }
+      &.popularStyle {
+        color: #fff;
+        font-size: 40px;
+        border-bottom: none;
       }
     }
     .num {
@@ -35,7 +40,8 @@
     name: 'find-ablum-title',
     props: {
       name: String,
-      isActive: Boolean
+      isActive: Boolean,
+      typeN: Number
     },
     data () {
       return {}

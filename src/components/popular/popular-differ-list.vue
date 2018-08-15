@@ -49,22 +49,24 @@
       opacity:0.6;
       border: 7px solid rgba(255,255,255,0.28);
       transition: all 0.4s linear;
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: -86px;
+        left: 50%;
+        transform: translateX(-50%);
+        width:354px;
+        height:68px;
+        background:linear-gradient(180deg,rgba(255,255,255,0.3) 10%,rgba(255,255,255,0));
+        opacity:0.6;
+        border-radius:10px;
+      }
       &.active {
         transform: scale(1.2);
         background:transparent;
         opacity:1;
-        border:10px solid #00FF90;
+        border:7px solid #00FF90;
         box-shadow: 0px 0px 200px 0px #00FF90;
-        .starBox {
-          .star-empty {
-            background: url('./images/icon_star_white.png') no-repeat !important;
-            background-size: cover;
-          }
-          .differLever {
-            color: #fff;
-          }
-
-        }
       }
       img {
         width: 100%;
