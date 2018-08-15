@@ -1,9 +1,10 @@
 <template>
    <div class="differDetail" v-if="differList.length !== 0">
       <div class="starBox">
-        <span class="differLever">LV.{{popularIndex+1}}</span>
+        <img :src="differList[popularIndex].starImg" alt="" class="starImg">
+        <!-- <span class="differLever">LV.{{popularIndex+1}}</span>
         <div class="star-full" v-for="(num) in parseInt(popularIndex+1)" :key="num"></div>
-        <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div>
+        <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div> -->
       </div>
       <div class="text text1">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
       <div class="text">本次难度包括：</div>
@@ -65,24 +66,15 @@
     .starBox {
       padding-bottom: 45px;
       margin-top: 165px;
+      .starImg {
+        width: 401px;
+        height: 97px;
+      }
       div {
         width:31px;
         height: 31px;
         margin-right:20px;
         display: inline-block;
-      }
-      .differLever {
-        font-size: 36px;
-        margin-right: 12px;
-        transform: translateY(-4px);
-      }
-      .star-full {
-        background: url('./images/icon_star_white.png') no-repeat;
-        background-size: cover;
-      }
-      .star-empty {
-          background: url('./images/icon_star_blue.png') no-repeat;
-          background-size: cover;
       }
     }
     .text {
