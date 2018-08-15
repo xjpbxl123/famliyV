@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" :class="{'frosted': isFrosted}">
+    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" >
       <router-view></router-view>
     </div>
     <!-- <transition name="fade"> -->
@@ -36,14 +36,6 @@
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
-      // 毛玻璃效果初始值设置
-      modules.settings.getProperty('isFrostedGlassOn').then((data) => {
-        this.isFrosted = data
-      })
-      // 监听毛玻璃效果
-      modules.notification.regist('BackgroundFrostedGlass', data => {
-        this.isFrosted = data.isFrosted
-      })
     }
   }
 </script>
@@ -60,21 +52,6 @@
       background-attachment: fixed;
       overflow: hidden;
       &::-webkit-scrollbar {display:none;}
-      &.frosted::before {
-        content: "";
-        width:100%;
-        height:100%;
-        position: absolute;
-        left:0;
-        top:0;
-        background: inherit;
-        filter: blur(20px);
-        z-index: -1;
-        backface-visibility: hidden;
-        perspective: 1000;
-        transform: translate3d(0,0,0);
-        transform: translateZ(0);
-      }
     }
   }
 
