@@ -16,7 +16,7 @@ export default {
      * */
     getRecentOpenList () {
       if (this.isLogin) {
-        this.$store.dispatch({type: 'index/getRecentOpenList'})
+        // this.$store.dispatch({type: 'index/getRecentOpenList'})
       } else {
         this.$store.dispatch('index/localRecent', this.localRecent || [])
       }
@@ -26,7 +26,7 @@ export default {
      * */
     getCollectList () {
       if (this.isLogin) {
-        this.$store.dispatch({type: 'index/getCollectList'})
+        // this.$store.dispatch({type: 'index/getCollectList'})
       } else {
         this.$store.dispatch('index/localCollect', this.localCollect || [])
       }

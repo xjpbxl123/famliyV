@@ -95,7 +95,6 @@
     },
     data () {
       return {
-        imgSrc: require('../popular/images/pic_02.png')
       }
     },
     filters: {

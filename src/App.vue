@@ -14,8 +14,7 @@
     name: 'app',
     data () {
       return {
-        backgroundUrl: '',
-        isFrosted: false
+        backgroundUrl: ''
       }
     },
     created () {
@@ -41,7 +40,6 @@
 </script>
 <style lang="scss">
   #app {
-    background-color: #fff;
     .backImg {
       width: 3840px;
       height: 1080px;
@@ -51,7 +49,6 @@
       z-index: -2;
       background-attachment: fixed;
       overflow: hidden;
-      &::-webkit-scrollbar {display:none;}
     }
   }
 

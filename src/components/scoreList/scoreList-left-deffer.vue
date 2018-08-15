@@ -16,7 +16,6 @@
   export default {
     data () {
       return {
-        imgSrc: require('../popular/images/pic_02.png')
       }
     },
     props: {
