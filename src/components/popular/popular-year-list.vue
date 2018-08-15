@@ -52,8 +52,7 @@
       opacity:0.6;
       border: 7px solid rgba(255,255,255,0.28);
       &.active {
-        width: 400px;
-        height: 570px;
+        transform: scale(1.2);
         background:transparent;
         opacity:1;
         border:10px solid #00FF90;

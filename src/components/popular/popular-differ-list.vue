@@ -50,13 +50,11 @@
       border: 7px solid rgba(255,255,255,0.28);
       transition: all 0.4s linear;
       &.active {
-        width: 400px;
-        height: 570px;
+        transform: scale(1.2);
         background:transparent;
         opacity:1;
         border:10px solid #00FF90;
         box-shadow: 0px 0px 200px 0px #00FF90;
-        transform: translateY(30px);
         .starBox {
           .star-empty {
             background: url('./images/icon_star_white.png') no-repeat !important;

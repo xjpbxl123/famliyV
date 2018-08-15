@@ -14,8 +14,6 @@
     name: 'find-status-bar',
     data () {
       return {
-        hasDestroyed: false,
-        time: null,
         statusData: {
           usb: {},
           midi: {},
@@ -87,16 +85,9 @@
       }
     },
     created () {
-      /// 避免快速切换带来的内存溢出
-      this.time = setTimeout(() => {
-        if (this.hasDestroyed) {
-          return
-        }
-        global.getStatusBarItem()
-          .then((data) => {
-            this.status(data)
-          })
-      }, 500)
+      global.getStatusBarItem().then((data) => {
+        this.status(data)
+      })
       notification.regist('statusBarChange', data => {
         console.log('change')
         let changeData = {}
@@ -105,8 +96,6 @@
       })
     },
     beforeDestroy () {
-      clearTimeout(this.time)
-      this.hasDestroyed = true
       notification.remove('statusBarChange')
     }
   }

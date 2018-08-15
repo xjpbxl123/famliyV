@@ -53,14 +53,14 @@ export default {
           if (res.body.length === 5) {
             data = [{
               coverSmall: require('../../components/popular/images/img_lv1.png'),
-              desc: '欢迎来到一星关卡，尝试着征服它们吧！本次难度包含',
+              desc: '欢迎来到一星关卡，尝试着征服它们吧！',
               tap: '全音符／二分音符／四分音符／八分音符',
               skills: '单手演奏（含双手）／抬指（独立性）／少许手位移动／识谱 ',
               starNum: 1,
               id: res.body[0].id
             }, {
               coverSmall: require('../../components/popular/images/img_lv2.png'),
-              desc: '迈入二星的道路，钢琴之旅正式开始， 祝你成功！本次难度包含',
+              desc: '迈入二星的道路，钢琴之旅正式开始， 祝你成功！',
               tap: '附点／前八后十六／十六分音符／大小切分',
               skills: '双手交替演奏／音程／跨度／手位／指法／转指／识谱',
               starNum: 2,

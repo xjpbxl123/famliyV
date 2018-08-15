@@ -7,8 +7,10 @@
       </div>
       <div class="text text1">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
       <div class="text">本次难度包括：</div>
-      <div class="text">节奏型：{{differList[popularIndex]&&differList[popularIndex].tap}}</div>
-      <div class="text">技巧：{{differList[popularIndex]&&differList[popularIndex].skills}}</div>
+      <div class="text">节奏型：</div>
+      <div class="text">{{differList[popularIndex]&&differList[popularIndex].tap}}</div>
+      <div class="text">技巧：</div>
+      <div class="text">{{differList[popularIndex]&&differList[popularIndex].skills}}</div>
   </div>
 </template>
 <script type="text/javascript">
@@ -42,12 +44,12 @@
 <style lang="scss" scoped>
    .differDetail {
       position: absolute;
-      right: 160px;
+      right: 0;
       width:690px;
       height:1080px;
-      background:rgba(0,0,0,1);
+      background:rgba(0,0,0,0.1);
       top:0px;
-      padding-left: 70px;
+      padding-left: 56px;
       border-right-width: 0;
       border-top-width:0;
       border-bottom-width: 0;
@@ -56,13 +58,13 @@
       color: #fff;
       border-image: -webkit-linear-gradient(
       top,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 1),
-      rgba(255, 255, 255, 0)
+      rgba(0,255,144,0) 20%,
+     rgba(0,255,144,1) 60%,
+      rgba(0,255,144, 0) 80%
     ) 30 30;
     .starBox {
       padding-bottom: 45px;
-      margin-top: 52px;
+      margin-top: 165px;
       div {
         width:31px;
         height: 31px;
@@ -84,7 +86,7 @@
       }
     }
     .text {
-      width: 100%;
+      width: 520px;
       font-size: 30px;
       margin-bottom: 45px;
       line-height: 34px;
