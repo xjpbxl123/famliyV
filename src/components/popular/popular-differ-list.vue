@@ -23,7 +23,8 @@
       }
     },
     data () {
-      return {}
+      return {
+      }
     },
     computed: {},
     methods: {},
@@ -36,14 +37,14 @@
 <style lang="scss" scoped>
   ul {
     position: absolute;
-    top: 260px;
-    left: 430px;
+    top: 273px;
+    left: 440px;
     li {
-      width: 340px;
-      height: 485px;
+      width: 354px;
+      height: 497px;
       border-radius: 10px;
       position: relative;
-      margin-right: 115px;
+      margin-right: 166px;
       border-radius: 16px;
       background:rgba(0,0,0,1);
       opacity:0.6;

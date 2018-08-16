@@ -7,8 +7,8 @@ export default {
      * @desc  初始化首页曲谱
      * */
     initializeData () {
-      this.$store.dispatch({type: 'index/getHotBooks'}).then(() => {
-        this.$store.dispatch({type: 'index/getRecentBooks'})
+      return this.$store.dispatch({type: 'index/getHotBooks'}).then(() => {
+        return this.$store.dispatch({type: 'index/getRecentBooks'})
       })
     },
     /**
@@ -68,7 +68,10 @@ export default {
     }
   },
   created () {
-    this.initializeData()
+    if (this.isLogin) {
+      // 未登录时createSession之后再调
+      this.initializeData()
+    }
     this.getRecentOpenList()
     this.getCollectList()
     this.getUserStatus()

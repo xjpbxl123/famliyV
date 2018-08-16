@@ -2,8 +2,8 @@
   <div class="scoreSetList">
     <statusBar/>
     <findTitle :title="setName"></findTitle>
-    <listBox :scoreSetList="scoreSetList" :scoreListIndex="scoreListIndex" :setSelect="setSelect"></listBox>
-    <pageNation  :totalPage="totalPage" :scoreListIndex="scoreListIndex"></pageNation>
+    <listBox :scoreSetList="scoreSetListItem" :scoreListIndex="scoreListIndex" :setSelect="setSelect"></listBox>
+    <pageNation  :totalPage="totalPage" :scoreListPageIndex="scoreListPageIndex"></pageNation>
     <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
@@ -89,7 +89,8 @@
           width: 640,
           height: 360
         },
-        toolbarHidden: false
+        toolbarHidden: false,
+        scoreSetListItem: []
       }
     },
     find: {
@@ -123,6 +124,7 @@
       [BACK_PRESSED] () {
         this.$router.back()
         this.$store.dispatch('scoreSetList/setScoreListIndex', 0)
+        this.$store.dispatch('scoreSetList/setScoreListPageIndex', 0)
       },
       [PEDAL_PRESSED] (key) {
         switch (key.id) {
@@ -144,12 +146,23 @@
     computed: {
       ...mapState({
         scoreListIndex: state => state.scoreSetList.scoreListIndex,
+        scoreListPageIndex: state => state.scoreSetList.scoreListPageIndex,
         totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
-          return state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
+          let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
+          this.scoreSetListItem = scoreSetList.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
+          return scoreSetList
         }
       }),
       ...mapGetters([])
+    },
+    watch: {
+      scoreSetList (val) {
+        this.scoreSetListItem = val.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
+      },
+      scoreListPageIndex (val) {
+        this.scoreSetListItem = this.scoreSetList.slice(val * 20, val * 20 + 20)
+      }
     },
     methods: {
       getScoreSetList (page) {
@@ -166,33 +179,33 @@
       },
       buttonActions (type) {
         let scoreListIndex = this.scoreListIndex
-        let scoreSetList = this.scoreSetList
-        if (scoreSetList.length === 0) {
+        let scoreSetListItem = this.scoreSetListItem
+        if (scoreSetListItem.length === 0) {
           return
         }
         switch (type) {
           case 'up':
             console.log('up')
             scoreListIndex -= 10
-            this.pre(scoreListIndex)
+            this.pre(scoreListIndex, 'up')
             break
           case 'down':
             console.log('down')
             scoreListIndex += 10
-            this.next(scoreListIndex)
+            this.next(scoreListIndex, 'down')
             break
           case 'left':
             console.log('left')
             scoreListIndex--
-            this.pre(scoreListIndex)
+            this.pre(scoreListIndex, 'left')
             break
           case 'right':
             console.log('right')
             scoreListIndex++
-            this.next(scoreListIndex)
+            this.next(scoreListIndex, 'right')
             break
           case 'ok':
-            let data = scoreSetList[scoreListIndex]
+            let data = scoreSetListItem[scoreListIndex]
             console.log(data)
             this.$router.push({
               path: '/scoreList',
@@ -203,15 +216,31 @@
             break
         }
       },
-      next (scoreListIndex) {
-        let len = this.scoreSetList.length
-        console.log(Math.min(scoreListIndex, len - 1))
-        this.$store.dispatch('scoreSetList/setScoreListIndex', Math.min(scoreListIndex, len - 1))
-      },
-      pre (scoreListIndex) {
-        if (scoreListIndex >= 0) {
-          this.$store.dispatch('scoreSetList/setScoreListIndex', scoreListIndex)
+      next (scoreListIndex, type) {
+        let index = scoreListIndex
+        if (scoreListIndex > 19 && this.scoreListPageIndex + 1 !== this.totalPage) {
+          console.log('nextPage')
+          if (type === 'down') {
+            if (this.scoreListPageIndex + 2 === this.totalPage) {
+              index = Math.min(index, (this.scoreSetList.length) % 20 - 1)
+            } else {
+              index = scoreListIndex - 20
+            }
+          } else {
+            index = 0
+          }
+          this.$store.dispatch('scoreSetList/setScoreListPageIndex', this.scoreListPageIndex + 1)
         }
+        this.$store.dispatch('scoreSetList/setScoreListIndex', Math.min(index, this.scoreSetListItem.length - 1))
+      },
+      pre (scoreListIndex, type) {
+        let index = scoreListIndex
+        if (scoreListIndex < 0 && this.scoreListPageIndex !== 0) {
+          console.log('prePage')
+          type === 'up' ? index = 10 + this.scoreListIndex : index = 19
+          this.$store.dispatch('scoreSetList/setScoreListPageIndex', this.scoreListPageIndex - 1)
+        }
+        this.$store.dispatch('scoreSetList/setScoreListIndex', Math.max(index, 0))
       }
     },
     created () {

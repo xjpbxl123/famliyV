@@ -10,21 +10,15 @@
     props: {
       beforeImage: {
         type: String,
-        default: () => {
-          return require('../../../images/default.jpg')
-        }
+        default: require('../../../images/default.jpg')
       },
       src: {
         type: String,
-        default: () => {
-          return require('../../../images/default.jpg')
-        }
+        default: require('../../../images/default.jpg')
       },
       errorImage: {
         type: String,
-        default: () => {
-          return require('../../../images/default.jpg')
-        }
+        default: require('../../../images/default.jpg')
       },
       text: {
         type: String,
@@ -43,31 +37,35 @@
         showTitle: true
       }
     },
+    watch: {
+      src (val) {
+        this.convertLocalImages(val)
+      }
+    },
     methods: {
       /**
        * 失败
        */
       error () {
         this.url = this.errorImage || this.beforeImage
+      },
+      convertLocalImages (src) {
+        if (src.indexOf('./static') !== -1) {
+          this.url = this.src
+          return
+        }
+        window.fp.modules.file.cacheUrl(src).then(data => {
+          if (data.code === 0) {
+            this.url = data.url
+          } else {
+            this.url = this.errorImage
+            console.log(data.desc)
+          }
+        })
       }
     },
-    // render () {
-    //   return (
-    //     <img src={this.url} alt="Find" onError={this.error}></img>
-    //   )
-    // },
     created () {
-      if (this.src.indexOf('./static') !== -1) {
-        this.url = this.src
-        return
-      }
-      window.fp.modules.file.cacheUrl(this.src).then(data => {
-        if (data.code === 0) {
-          this.url = data.url
-        } else {
-          console.log(data.desc)
-        }
-      })
+      this.convertLocalImages(this.src)
     }
   }
 </script>

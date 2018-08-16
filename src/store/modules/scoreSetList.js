@@ -4,11 +4,15 @@ export default {
   namespaced: true,
   state: {
     scoreListIndex: 0,
-    totalPage: 1
+    totalPage: 1,
+    scoreListPageIndex: 0
   },
   mutations: {
     'scoreListIndex' (state, index) {
       state.scoreListIndex = index
+    },
+    'scoreListPageIndex' (state, index) {
+      state.scoreListPageIndex = index
     },
     'totalPage' (state, totalPage) {
       state.totalPage = totalPage
@@ -20,6 +24,9 @@ export default {
     },
     setTotalPage ({commit}, num) {
       commit('totalPage', num)
+    },
+    setScoreListPageIndex ({commit}, num) {
+      commit('scoreListPageIndex', num)
     },
     getScoreSetList ({dispatch, commit, state} = {}, data) {
       let setId = data.setId

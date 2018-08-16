@@ -408,6 +408,9 @@
         this.buttonActions('help')
       },
       [KEY32] () {
+        if (!this.logoutCover) {
+          return
+        }
         this.buttonActions('login')
       },
       [KEY34] () {

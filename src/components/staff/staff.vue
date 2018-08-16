@@ -1,15 +1,17 @@
 <template>
   <div>
-    <find-staff :musicId="musicId" v-on:loaded="svgLoaded" />
+    <demo :src="src" />
   </div>
 </template>
 <script>
   import findStaff from '../common/find-staff/find-staff'
+  import demo from './demo'
   export default {
     name: 'staff',
     data () {
       return {
-        musicId: null
+        musicId: null,
+        src: ''
       }
     },
     methods: {
@@ -19,9 +21,13 @@
     },
     created () {
       this.musicId = 2416
+      setTimeout(() => {
+        this.src = 'Moersing'
+      }, 1000)
     },
     components: {
-      findStaff
+      findStaff,
+      demo
     }
   }
 </script>

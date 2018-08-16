@@ -40,13 +40,13 @@
   ul {
     color:#fff;
     position: absolute;
-    top: 260px;
-    left: 948px;
+    top: 279px;
+    left: 954px;
     li {
-      width: 340px;
-      height: 485px;
+      width: 354px;
+      height: 497px;
       position: relative;
-      margin-right: 115px;
+      margin-right: 173px;
       border-radius: 16px;
       background:rgba(0,0,0,1);
       opacity:0.6;

@@ -5,7 +5,7 @@
        {{book.name}}
      </span>
    </div>
-    <findImg :src="book.coverSmall" class="cover"></findImg>
+    <findImg :src="imgUrl" class="cover"></findImg>
     <div class="attribute">
       <ul>
         <li>
@@ -103,7 +103,14 @@
         return formatDate(t, 'yyyy-MM-dd')
       }
     },
-    computed: {},
+    computed: {
+      imgUrl: function () {
+        if (this.book.coverSmall) {
+          let timestamp = `t=${Date.now()}`
+          return this.book.coverSmall + `&${timestamp}`
+        }
+      }
+    },
     methods: {},
     created () {},
     components: {
