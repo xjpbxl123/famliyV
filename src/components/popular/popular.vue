@@ -29,6 +29,7 @@
             :text="button.text"
             :pianoKey="button.pianoKey"
             :style="button.style"
+            :positionPixels="button.positionPixels"
             :icon="button.icon"/>
      <icon-item v-for="(button) in controlButtons" :hidden="!button.show"
             :id="button.id"
@@ -56,7 +57,7 @@
     KEY78,
     KEY80,
     KEY82,
-    KEY46,
+    KEY51,
     KEY49,
     KEY54,
     LONG_KEY73,
@@ -122,9 +123,9 @@
           }
         ],
         bigBUtton: [
-          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
+          {id: 200, pianoKey: 49, text: '年代', icon: '0xe6b4', positionPixels: -30, style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 201, pianoKey: 51, text: '难度', icon: '0xe6a2', positionPixels: 30, style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', positionPixels: 40, style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
         ],
         promptInfo: {
           text: '网络连接出错，请检查网络',
@@ -138,10 +139,10 @@
       }
     },
     find: {
-      [KEY46] () {
+      [KEY49] () {
         this.$store.dispatch('popular/setPopularTapSelected', 0)
       },
-      [KEY49] () {
+      [KEY51] () {
         this.$store.dispatch('popular/setPopularTapSelected', 1)
       },
       [KEY54] () {

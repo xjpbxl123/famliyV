@@ -103,9 +103,9 @@
           key="201"
           id="201"
           icon="0xe625"
-          pianoKey="90"
+          pianoKey="102"
           :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#2000',textColor: '#fff',dotColor: '#fff'}"/>
+          :style="{backgroundColor:'#2fff',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
             :hidden="logoutCover"
@@ -160,7 +160,6 @@
     LONG_KEY92,
     KEY92,
     LONG_KEY94,
-    LONG_KEY97,
     KEY94,
     KEY99,
     INTERCEPT_DOWN,
@@ -189,7 +188,7 @@
         timer: 0,
         playerHidden: false,
         enterPlay: false,
-        longPressedClick: false,
+        openMusicScore: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -318,7 +317,7 @@
         ],
         playButtons: [
           {
-            pianoKey: 99,
+            pianoKey: 90,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
@@ -342,11 +341,18 @@
           },
           {
             pianoKey: 97,
-            longClick: true,
+            longClick: false,
             text: '',
             icon: '0xe657',
             backgroundColor: '#2fff',
             id: 18
+          },
+          {
+            pianoKey: 99,
+            text: '',
+            icon: '0xe648',
+            backgroundColor: '#2fff',
+            id: 190
           }
         ],
         logoutButtons: [
@@ -501,8 +507,17 @@
         this.buttonActions('metroTip')
       },
       [KEY102] () {
-        // 关机
-        this.buttonActions('shutdown')
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
+          return
+        }
+        if (this.hideOtherButtons) {
+          // 熄屏
+          this.buttonActions('closeScreen', true)
+        } else {
+          // 关机
+          this.buttonActions('shutdown')
+        }
       },
       [KEY73] () {
         this.buttonActions('left')
@@ -548,54 +563,54 @@
         this.buttonActions('tone')
       },
       [KEY90] () {
-        // 熄屏
-        if (this.longPressedClick) {
-          // 长按了不可点
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
           return
         }
-        this.buttonActions('closeScreen', true)
+        this.buttonActions('changeRightData')
       },
       [LONG_KEY92] () {
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        if (this.longPressedClick) {
-          // 长按了不可点
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-down')
       },
       [KEY94] () {
-        if (this.longPressedClick) {
-          // 长按了不可点
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
           return
         }
         console.log('down')
         this.buttonActions('right-down')
       },
       [KEY97] () {
-        if (this.longPressedClick) {
-          // 长按了不可点
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-play')
       },
-      [LONG_KEY97] () {
-        if (this.longPressedClick) {
-          // 长按了不可点
-          return
-        }
-        this.buttonActions('right-longPressedClick')
-      },
       [KEY99] () {
-        if (this.longPressedClick) {
-          // 长按了不可点
+        if (this.openMusicScore) {
+          // 进入曲谱过程中不可点
           return
         }
-        this.buttonActions('changeRightData')
+        this.buttonActions('openMusicScore')
       },
       [PEDAL_PRESSED] (key) {
         if (this.isPlaying) {
@@ -1048,30 +1063,15 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            console.log(this.getRightData(), 'lalla')
+            console.log('单击')
             let musicObj = this.getRightData().musicObj
             let list = this.getRightData().list
             if (list.length === 0) {
               return
             }
-            console.log('单击')
-            if (this.isPlaying) {
-              // 获取进度进去播放
-              this.longPressedClick = true
-              console.log(this.isPlaying, 'playing')
-              this.$refs.player.pause()
-              this.isPlaying = false
-              if (musicObj.musicId === this.isPlayingMusicId) {
-                window.fp.uis.player.getProgress().then(data => {
-                  this.$refs.player.reset()
-                  if (data.curTick) {
-                    this.player(musicObj, data.curTick)
-                  }
-                  this.enterPlay = true
-                  this.addRecentOpen(musicObj)
-                })
-                return
-              }
+            if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId) {
+              // 播放中 不操作
+              return
             }
             if (this.enterPlay) {
               // 已经进入过曲谱 如果没有移动光标直接播放即可
@@ -1097,8 +1097,6 @@
                 this.playSet()
                 this.hideOtherButtons = true
                 this.autoPlay = false
-                this.promptInfo.text = '再次点击进入曲谱'
-                this.$refs.musicPrompt.showPrompt()
                 this.enterPlay = false
                 this.isPlaying = true
                 return
@@ -1107,10 +1105,10 @@
             this.autoPlay = false
             this.playMidi(musicObj.musicId, list, rightActiveIndex)
             break
-          case 'right-longPressedClick':
-            // 长按进入播放曲谱界面
+          case 'openMusicScore':
+            // 进入播放曲谱界面
             this.$store.dispatch('addPractice')
-            console.log('longPressedClick')
+            console.log('openMusicScore')
             let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
             console.log(dd)
             let musicObj1 = this.getRightData().musicObj
@@ -1118,11 +1116,11 @@
             if (list1.length === 0) {
               return
             }
-            if (this.longPressedClick) {
+            if (this.openMusicScore) {
               console.log('return')
               return
             }
-            this.longPressedClick = true
+            this.openMusicScore = true
             this.hideOtherButtons = true
             if (this.isPlaying) {
               // 如果在播放 先暂停
@@ -1294,18 +1292,22 @@
             // 曲谱数据没有缓存并且没有网络的时候提示
             global.getStatusBarItem().then((data) => {
               if (!data.wifi.title) {
+                // 无网状态下提示
                 this.promptInfo.text = '网络连接出错，请检查网络'
                 this.$refs.musicPrompt.showPrompt()
+                this.hideOtherButtons = false
                 // 当前是自动播放则继续播放下一首
-                if (this.autoPlay) {
-                  this.autoPlay = true
-                  if (musicIndex + 1 <= musicList.length - 1) {
-                    this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                    this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-                  }
+                if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
+                  this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                  this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
                 } else {
                   this.hideOtherButtons = false
                 }
+              } else {
+                // 有网状态下提示
+                this.promptInfo.text = '找不到该曲谱'
+                this.$refs.musicPrompt.showPrompt()
+                this.hideOtherButtons = false
               }
             })
             return
@@ -1317,6 +1319,7 @@
                 if (!value.mMid.url) {
                   this.promptInfo.text = 'mid加载失败'
                   this.$refs.musicPrompt.showPrompt()
+                  this.hideOtherButtons = false
                   return
                 }
                 Mid = value.mMid
@@ -1348,6 +1351,7 @@
                   // 当前曲谱文件没有缓存并且没有网络则提示
                   this.promptInfo.text = '网络连接出错，请检查网络'
                   this.$refs.musicPrompt.showPrompt()
+                  this.hideOtherButtons = false
                   // 如果是自动播放即继续播放下一首
                   if (this.autoPlay) {
                     if (musicIndex + 1 <= musicList.length - 1) {
@@ -1393,8 +1397,6 @@
         if (!data.result) {
           return
         }
-        this.promptInfo.text = '再次点击进入曲谱'
-        this.$refs.musicPrompt.showPrompt()
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
@@ -1422,7 +1424,6 @@
           if (rightActiveIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
-          // this.buttonActions('right-play')
           this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
         this.playSet()
@@ -1445,7 +1446,7 @@
           if (data.case === 'resume') {
             this.hideOtherButtons = false
             this.canEnterModule = true
-            this.longPressedClick = false
+            this.openMusicScore = false
           }
         })
       },
