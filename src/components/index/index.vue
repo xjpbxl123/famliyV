@@ -1069,7 +1069,7 @@
             if (list.length === 0) {
               return
             }
-            if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId) {
+            if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
               // 播放中 不操作
               this.promptInfo.text = '正在播放当前曲谱'
               this.$refs.musicPrompt.showPrompt()
