@@ -1071,6 +1071,8 @@
             }
             if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId) {
               // 播放中 不操作
+              this.promptInfo.text = '正在播放当前曲谱'
+              this.$refs.musicPrompt.showPrompt()
               return
             }
             if (this.enterPlay) {
