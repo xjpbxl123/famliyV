@@ -1,6 +1,6 @@
 <template>
   <div>
-    <demo :src="src" />
+    <find-staff :musicId="musicId" v-on:loaded="svgLoaded" />
   </div>
 </template>
 <script>
@@ -9,8 +9,7 @@
     name: 'staff',
     data () {
       return {
-        musicId: null,
-        src: ''
+        musicId: null
       }
     },
     methods: {
@@ -20,9 +19,6 @@
     },
     created () {
       this.musicId = 2416
-      setTimeout(() => {
-        this.src = 'Moersing'
-      }, 1000)
     },
     components: {
       findStaff
