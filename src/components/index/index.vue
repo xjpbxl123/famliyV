@@ -1057,6 +1057,7 @@
             console.log('单击')
             if (this.isPlaying) {
               // 获取进度进去播放
+              this.longPressedClick = true
               console.log(this.isPlaying, 'playing')
               this.$refs.player.pause()
               this.isPlaying = false
