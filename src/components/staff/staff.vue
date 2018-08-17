@@ -5,7 +5,6 @@
 </template>
 <script>
   import findStaff from '../common/find-staff/find-staff'
-  import demo from './demo'
   export default {
     name: 'staff',
     data () {
@@ -26,8 +25,7 @@
       }, 1000)
     },
     components: {
-      findStaff,
-      demo
+      findStaff
     }
   }
 </script>

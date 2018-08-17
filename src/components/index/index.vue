@@ -160,6 +160,7 @@
     LONG_KEY92,
     KEY92,
     LONG_KEY94,
+    LONG_KEY97,
     KEY94,
     KEY99,
     INTERCEPT_DOWN,
@@ -188,7 +189,7 @@
         timer: 0,
         playerHidden: false,
         enterPlay: false,
-        doubleClick: false,
+        longPressedClick: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -198,7 +199,6 @@
         isPlayingMusicId: 0,
         interval: null,
         logoutCover: true,
-        cancelClick: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -342,7 +342,7 @@
           },
           {
             pianoKey: 97,
-            longClick: false,
+            longClick: true,
             text: '',
             icon: '0xe657',
             backgroundColor: '#2fff',
@@ -372,7 +372,6 @@
         metre: '3',
         toolbarHidden: false,
         clickedMusicId: 0,
-        clickedMusicIndex: 0,
         clickeType: '',
         hideOtherButtons: false,
         autoPlay: false,
@@ -550,8 +549,8 @@
       },
       [KEY90] () {
         // 熄屏
-        if (this.doubleClick) {
-          // 双击时不可点
+        if (this.longPressedClick) {
+          // 长按了不可点
           return
         }
         this.buttonActions('closeScreen', true)
@@ -560,8 +559,8 @@
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        if (this.doubleClick) {
-          // 双击时不可点
+        if (this.longPressedClick) {
+          // 长按了不可点
           return
         }
         this.buttonActions('right-up')
@@ -570,23 +569,30 @@
         this.buttonActions('right-down')
       },
       [KEY94] () {
-        if (this.doubleClick) {
-          // 双击时不可点
+        if (this.longPressedClick) {
+          // 长按了不可点
           return
         }
         console.log('down')
         this.buttonActions('right-down')
       },
       [KEY97] () {
-        if (this.doubleClick) {
-          // 双击时不可点
+        if (this.longPressedClick) {
+          // 长按了不可点
           return
         }
         this.buttonActions('right-play')
       },
+      [LONG_KEY97] () {
+        if (this.longPressedClick) {
+          // 长按了不可点
+          return
+        }
+        this.buttonActions('right-longPressedClick')
+      },
       [KEY99] () {
-        if (this.doubleClick) {
-          // 双击时不可点
+        if (this.longPressedClick) {
+          // 长按了不可点
           return
         }
         this.buttonActions('changeRightData')
@@ -1042,115 +1048,100 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            this.$store.dispatch('addPractice')
-            let list = []
-            let list1 = []
-            let musicObj = {}
-            if (this.rightType === 'recentOpen') {
-              list = this.isLogin ? this.recentOpenList : this.localRecent
-            } else if (this.rightType === 'myCollect') {
-              list = this.isLogin ? this.collectList : this.localCollect
+            console.log(this.getRightData(), 'lalla')
+            let musicObj = this.getRightData().musicObj
+            let list = this.getRightData().list
+            if (list.length === 0) {
+              return
             }
-            list1 = [].concat(JSON.parse(JSON.stringify(list)))
+            console.log('单击')
+            if (this.isPlaying) {
+              // 获取进度进去播放
+              console.log(this.isPlaying, 'playing')
+              this.$refs.player.pause()
+              this.isPlaying = false
+              if (musicObj.musicId === this.isPlayingMusicId) {
+                window.fp.uis.player.getProgress().then(data => {
+                  this.$refs.player.reset()
+                  if (data.curTick) {
+                    this.player(musicObj, data.curTick)
+                  }
+                  this.enterPlay = true
+                  this.addRecentOpen(musicObj)
+                })
+                return
+              }
+            }
+            if (this.enterPlay) {
+              // 已经进入过曲谱 如果没有移动光标直接播放即可
+              if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
+                this.$refs.player.reset()
+                this.$refs.player.play().then(() => {
+                  this.isPlaying = false
+                  // 继续播放下一首
+                  if (rightActiveIndex === list.length - 1) {
+                    // 已经是最后一首了
+                    this.hideOtherButtons = false
+                    return
+                  }
+                  this.autoPlay = true
+                  rightActiveIndex++
+                  rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
+                  if (rightActiveIndex > 0) {
+                    this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+                  }
+                  this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
+                })
+                // 播放判断
+                this.playSet()
+                this.hideOtherButtons = true
+                this.autoPlay = false
+                this.promptInfo.text = '再次点击进入曲谱'
+                this.$refs.musicPrompt.showPrompt()
+                this.enterPlay = false
+                this.isPlaying = true
+                return
+              }
+            }
+            this.autoPlay = false
+            this.playMidi(musicObj.musicId, list, rightActiveIndex)
+            break
+          case 'right-longPressedClick':
+            // 长按进入播放曲谱界面
+            this.$store.dispatch('addPractice')
+            console.log('longPressedClick')
+            let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
+            console.log(dd)
+            let musicObj1 = this.getRightData().musicObj
+            let list1 = this.getRightData().list
             if (list1.length === 0) {
               return
             }
-            musicObj = list1[rightActiveIndex]
-            this.clickedMusicId = musicObj.musicId
-            this.clickedMusicIndex = rightActiveIndex
-            this.clickeType = this.rightType
-            if (!this.timer) {
-              this.timer = +new Date()
-            } else if (new Date() - this.timer <= 700) {
-              let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
-              console.log(dd)
-              console.log('双击')
-              this.doubleClick = true
-              this.hideOtherButtons = true
-              if (this.cancelClick) {
-                return false
-              }
-              clearInterval(this.clickInterval)
-              this.clickInterval = null
-              this.timer = 0
-              if (this.isPlaying) {
-                // 如果在播放 先暂停
-                this.$refs.player.pause()
-                this.isPlaying = false
-                if (musicObj.musicId === this.isPlayingMusicId) {
-                  window.fp.uis.player.getProgress().then(data => {
-                    if (data.curTick) {
-                      this.player(musicObj, data.curTick)
-                    }
-                    this.$refs.player.reset()
-                    this.enterPlay = true
-                    this.addRecentOpen(musicObj)
-                  })
-                } else {
-                  this.player(musicObj, 0)
-                }
-              } else {
-                this.player(musicObj, 0)
-              }
+            if (this.longPressedClick) {
+              console.log('return')
               return
             }
-            this.clickInterval = setTimeout(() => {
-              console.log('单击')
-              if (this.cancelClick) {
-                return false
-              }
-              if (this.isPlaying) {
-                // 获取进度进去播放
-                console.log(this.isPlaying, 'playing')
-                this.$refs.player.pause()
-                this.isPlaying = false
-                if (musicObj.musicId === this.isPlayingMusicId) {
-                  window.fp.uis.player.getProgress().then(data => {
-                    this.$refs.player.reset()
-                    if (data.curTick) {
-                      this.player(musicObj, data.curTick)
-                    }
-                    this.enterPlay = true
-                    this.addRecentOpen(musicObj)
-                  })
-                  return
-                }
-              }
-              if (this.enterPlay) {
-                // 已经进入过曲谱 如果没有移动光标直接播放即可
-                if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
+            this.longPressedClick = true
+            this.hideOtherButtons = true
+            if (this.isPlaying) {
+              // 如果在播放 先暂停
+              this.$refs.player.pause()
+              this.isPlaying = false
+              if (musicObj1.musicId === this.isPlayingMusicId) {
+                window.fp.uis.player.getProgress().then(data => {
+                  if (data.curTick) {
+                    this.player(musicObj1, data.curTick)
+                  }
                   this.$refs.player.reset()
-                  this.$refs.player.play().then(() => {
-                    this.isPlaying = false
-                    // 继续播放下一首
-                    if (rightActiveIndex === list.length - 1) {
-                      // 已经是最后一首了
-                      this.hideOtherButtons = false
-                      return
-                    }
-                    this.autoPlay = true
-                    rightActiveIndex++
-                    rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
-                    if (rightActiveIndex > 0) {
-                      this.$store.dispatch('index/setRightSelect', rightActiveIndex)
-                    }
-                    this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
-                  })
-                  // 播放判断
-                  this.playSet()
-                  this.hideOtherButtons = true
-                  this.autoPlay = false
-                  this.promptInfo.text = '再次点击进入曲谱'
-                  this.$refs.musicPrompt.showPrompt()
-                  this.enterPlay = false
-                  this.isPlaying = true
-                  return
-                }
+                  this.enterPlay = true
+                  this.addRecentOpen(musicObj1)
+                })
+              } else {
+                this.player(musicObj1, 0)
               }
-              this.timer = 0
-              this.autoPlay = false
-              this.playMidi(musicObj.musicId, list1, rightActiveIndex)
-            }, 700)
+            } else {
+              this.player(musicObj1, 0)
+            }
             break
           case 'changeRightData':
             // 切换右侧数据
@@ -1204,7 +1195,6 @@
       },
       player (musicObj, tick) {
         this.playSet()
-        this.cancelClick = true
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
@@ -1276,6 +1266,22 @@
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
           }
         })
+      },
+      getRightData () {
+        let rightActiveIndex = this.rightSelectedIndex
+        let list = []
+        let list1 = []
+        let musicObj = {}
+        if (this.rightType === 'recentOpen') {
+          list = this.isLogin ? this.recentOpenList : this.localRecent
+        } else if (this.rightType === 'myCollect') {
+          list = this.isLogin ? this.collectList : this.localCollect
+        }
+        list1 = [].concat(JSON.parse(JSON.stringify(list)))
+        musicObj = list1[rightActiveIndex]
+        this.clickedMusicId = musicObj.musicId
+        this.clickeType = this.rightType
+        return {musicObj: musicObj, list: list1}
       },
       playMidi (musicId, musicList, musicIndex) {
         let midiData = {url: '', md5: '', fsize: 0}
@@ -1421,7 +1427,6 @@
         this.playSet()
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
-        this.isPlayingIndex = this.clickedMusicIndex
         this.hideOtherButtons = true
         this.isPlayingType = this.clickeType
       },
@@ -1437,10 +1442,9 @@
             console.log(dd)
           }
           if (data.case === 'resume') {
-            this.cancelClick = false
             this.hideOtherButtons = false
             this.canEnterModule = true
-            this.doubleClick = false
+            this.longPressedClick = false
           }
         })
       },
