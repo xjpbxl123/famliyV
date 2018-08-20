@@ -7,7 +7,7 @@
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
-          <div class="date">{{ data.time | format}}</div>
+          <div class="date" >{{ data.time | format }}</div>
         </div>
         <div class="margin-none" v-if="recentBooks.bookList.length>1" @click="setCenterSelect(7)">
           <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}"/>
@@ -23,7 +23,7 @@
           <div class="slip-line"></div>
           <div class="date">
             <span class="viewIcon iconfont icon-popularity"></span>
-            <span>{{ data.hotNum }}</span>
+            <span v-text="data.hotNum"></span>
           </div>
         </div>
         <div class="margin-none" v-if="hotBooks.bookList.length>1" @click="setCenterSelect(13)">

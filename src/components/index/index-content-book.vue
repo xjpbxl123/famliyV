@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <span>{{bookData.name}}</span>
+    <span v-text="bookData.name"></span>
     <findImg :src="bookData.coverSmall" ></findImg>
   </div>
 </template>

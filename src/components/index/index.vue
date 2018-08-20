@@ -954,16 +954,9 @@
           case 'speedRecover':
             // 恢复节拍器数值到120
             let time = Math.abs(this.speed - 120) / 10
-            if (this.speed < 120) {
-              for (let i = 0; i < time; i++) {
-                modules.metronome.changeTempoSpeed(true).then(() => {
-                })
-              }
-            } else if (this.speed > 120) {
-              for (let i = 0; i < time; i++) {
-                modules.metronome.changeTempoSpeed(false).then(() => {
-                })
-              }
+            for (let i = 0; i < time; i++) {
+              modules.metronome.changeTempoSpeed(this.speed < 120).then(() => {
+              })
             }
             this.getMetronomeStatus()
             break
@@ -1023,20 +1016,17 @@
             if (activeIndex === 7) {
               return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
             }
+            if (hotBooks.bookList.length === 0) {
+              return
+            }
             if (activeIndex === 13) {
               return this.$router.push({path: '/indexMore', query: {title: '热门曲谱'}})
             }
             if (activeIndex >= 0 && activeIndex < 7) {
               // 最近更新
-              if (recentBooks.bookList.length === 0) {
-                return
-              }
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex < 13) {
-              if (hotBooks.bookList.length === 0) {
-                return
-              }
               // 热门曲谱
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }

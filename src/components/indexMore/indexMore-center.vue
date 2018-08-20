@@ -10,7 +10,7 @@
           <div class="date" v-if="title==='最近更新'">{{ data.time | format}}</div>
           <div class="date" v-if="title==='热门曲谱'">
             <span class="viewIcon iconfont icon-popularity"></span>
-            <span>{{ data.hotNum }}</span>
+            <span v-text="data.hotNum"></span>
           </div>
         </div>
       </div>
