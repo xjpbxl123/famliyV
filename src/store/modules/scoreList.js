@@ -60,34 +60,6 @@ export default {
             }
             item.payment = payment
             item.subParts = subParts
-            item.files.forEach((value, index) => {
-              musicIdList.push(value.musicId)
-            })
-            if (!this.state.storage.isLogin) {
-              let collectData = []
-              musicIdList.forEach((value) => {
-                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
-                  collectData.push({musicId: value, collection: 0})
-                } else {
-                  let flag = 0
-                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
-                    if (value === value1.musicId) {
-                      // 有收藏记录
-                      flag = 1
-                    }
-                  })
-                  collectData.push({musicId: value, collection: flag})
-                }
-              })
-              item.collect = collectData
-              collectData = []
-            } else {
-              postList.push(http.post('', {
-                cmd: 'musicScore.checkPracticeMusic',
-                musicList: musicIdList
-              }))
-            }
-            musicIdList = []
             if (item.files.length > 1) {
               // 版本重新排序
               let filterFile = []
@@ -118,6 +90,34 @@ export default {
               })
               item.files = filterFile
             }
+            item.files.forEach((value, index) => {
+              musicIdList.push(value.musicId)
+            })
+            if (!this.state.storage.isLogin) {
+              let collectData = []
+              musicIdList.forEach((value) => {
+                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
+                  collectData.push({musicId: value, collection: 0})
+                } else {
+                  let flag = 0
+                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
+                    if (value === value1.musicId) {
+                      // 有收藏记录
+                      flag = 1
+                    }
+                  })
+                  collectData.push({musicId: value, collection: flag})
+                }
+              })
+              item.collect = collectData
+              collectData = []
+            } else {
+              postList.push(http.post('', {
+                cmd: 'musicScore.checkPracticeMusic',
+                musicList: musicIdList
+              }))
+            }
+            musicIdList = []
           })
           if (this.state.storage.isLogin) {
             return Promise.all(postList).then((data) => {
