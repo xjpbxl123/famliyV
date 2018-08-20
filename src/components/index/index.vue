@@ -847,16 +847,20 @@
           this.isPlaying = false
           this.isPlayingMusicId = 0
           this.hideOtherButtons = false
+          return
         }
         if (this.metronome) {
           // 节拍器开着 关闭节拍器
           this.buttonActions('closeMetro')
+          return
         }
         if (!this.logoutCover) {
           this.$refs.prompt.hidePrompt()
           this.logoutCover = true
           this.toolbarHidden = false
+          return
         }
+        modules.global.toggleFullScreen()
       },
       /**
        * @desc 按钮组件按钮事件
