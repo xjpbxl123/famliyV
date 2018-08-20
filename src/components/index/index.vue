@@ -619,6 +619,12 @@
         }
         switch (key.id) {
           case 114:
+            if (+new Date() - this.skipTime <= 5000) {
+              // 5秒之内不做处理
+              console.log('return')
+              return
+            }
+            this.skipTime = +new Date()
             if (this.isSupportMutePedal) {
               this.buttonActions('keyBoardMute')
             }
@@ -1071,6 +1077,7 @@
             }
             if (this.enterPlay) {
               // 已经进入过曲谱 如果没有移动光标直接播放即可
+
               if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
                 this.$refs.player.reset()
                 this.$refs.player.play().then(() => {
@@ -1087,6 +1094,7 @@
                   if (rightActiveIndex > 0) {
                     this.$store.dispatch('index/setRightSelect', rightActiveIndex)
                   }
+                  this.clickedMusicId = list[rightActiveIndex].musicId
                   this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
                 })
                 // 播放判断
@@ -1116,6 +1124,7 @@
               console.log('return')
               return
             }
+            this.addRecentOpen(musicObj1)
             this.openMusicScore = true
             this.hideOtherButtons = true
             if (this.isPlaying) {
@@ -1129,7 +1138,6 @@
                   }
                   this.$refs.player.reset()
                   this.enterPlay = true
-                  this.addRecentOpen(musicObj1)
                 })
               } else {
                 this.player(musicObj1, 0)
@@ -1295,6 +1303,8 @@
                 // 当前是自动播放则继续播放下一首
                 if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
                   this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                  console.log(musicList[musicIndex + 1], 'ooooo')
+                  this.clickedMusicId = musicList[musicIndex + 1].musicId
                   this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
                 } else {
                   this.hideOtherButtons = false
@@ -1352,6 +1362,7 @@
                   if (this.autoPlay) {
                     if (musicIndex + 1 <= musicList.length - 1) {
                       this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+                      this.clickedMusicId = musicList[musicIndex + 1].musicId
                       this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
                     }
                   } else {
@@ -1420,6 +1431,7 @@
           if (rightActiveIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
+          this.clickedMusicId = list[rightActiveIndex].musicId
           this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
         })
         this.playSet()
