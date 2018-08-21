@@ -758,6 +758,14 @@
         })
       },
       /**
+       * @desc 监听静音踏板的设置
+       * */
+      checkPedalMute () {
+        modules.notification.regist('checkPedalMute', data => {
+          this.controlButtons[0].checked = data
+        })
+      },
+      /**
        * @desc 获取钢琴类型
        * */
       playSet () {
@@ -1493,6 +1501,7 @@
         // 移除通知
         modules.notification.remove('ClearCache')
         modules.notification.remove('pageLifecycle')
+        modules.notification.remove('checkPedalMute')
       }
     },
     created () {
@@ -1501,6 +1510,7 @@
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
+      this.checkPedalMute()
       this.playSet()
     },
     beforeDestroy () {
