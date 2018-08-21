@@ -156,15 +156,19 @@ export default function createStore () {
       initialNativeStorage ({commit, dispatch}) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
-          let data = localStorage.getItem('tableName') || {}
+          /// 所有缓存数据的key和默认值
+          let dataKeys = {'playCalendar': {}, 'isLogin': false, 'userInfo': {}, 'sessionId': null}
+          let data = {tableName}
+          let cacheData
+          for (let [key, value] of Object.entries(dataKeys)) {
+            cacheData = JSON.parse(localStorage.getItem(tableName + key))
+            data[key] = cacheData ? cacheData.value : value
+          }
           commit(SET_STORAGE, {
-            playCalendar: data.playCalendar || {},
-            isLogin: !!data.isLogin,
-            userInfo: data.userInfo || {},
-            sessionId: data.sessionId || null,
-            isSynced: true
+            ...data,
+            ...{isSynced: true}
           })
-          return dispatch('initCacheStorage', [...data, ...[tableName]])
+          return dispatch('initCacheStorage', data)
         })
       },
       /**
@@ -198,8 +202,8 @@ export default function createStore () {
        */
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
-          let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          let param = localStorage.getItem(data[4] + JSON.stringify(userId))
+          let userId = data.userInfo.value && data.userInfo.value.userId ? data.userInfo.value.userId : -1
+          let param = JSON.parse(localStorage.getItem(data.tableName + JSON.stringify(userId)))
           let cache = {}
           cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
           commit(SET_STORAGE, {
@@ -292,21 +296,15 @@ export default function createStore () {
       /**
        * @desc 清除缓存
        * */
-      clearCache () {
-        //        let root = state.environments.HTTP_ROOT
-        //        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        //        return nativeStorage.set('findFamily-' + root + JSON.stringify(userId), {value: {}})
-        localStorage.clear()
-        return Promise.resolve({})
+      clearCache ({state}) {
+        let root = state.environments.HTTP_ROOT
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        return localStorage.removeItem('findFamily-' + root + JSON.stringify(userId))
       },
       /**
        * @desc 恢复出厂设置 清除所有缓存数据
        * */
-      restoreFactorySettings ({dispatch}) {
-        //        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
-        //        rootArr.forEach((item, index) => {
-        //          nativeStorage.clear('findFamily-' + item)
-        //        })
+      restoreFactorySettings () {
         localStorage.clear()
       },
       /**
