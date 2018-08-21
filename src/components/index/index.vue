@@ -1108,7 +1108,6 @@
           case 'openMusicScore':
             // 进入播放曲谱界面
             this.$store.dispatch('addPractice')
-            console.log('openMusicScore')
             let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
             console.log(dd)
             let musicObj1 = this.getRightData().musicObj
@@ -1129,8 +1128,10 @@
               this.isPlaying = false
               if (musicObj1.musicId === this.isPlayingMusicId) {
                 window.fp.uis.player.getProgress().then(data => {
-                  if (data.curTick) {
+                  if (data.curTick !== undefined) {
                     this.player(musicObj1, data.curTick)
+                  } else {
+                    this.player(musicObj1, 0)
                   }
                   this.$refs.player.reset()
                   this.enterPlay = true
@@ -1193,6 +1194,7 @@
         }
       },
       player (musicObj, tick) {
+        console.log('player')
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
@@ -1246,16 +1248,18 @@
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
+            console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
-              console.log({musicId, musicIds, allMusics, tick})
               if (data) {
                 // 打开曲谱成功
+                console.log('打开曲谱成功')
                 if (this.isPlaying) {
                   this.isPlaying = false
                   this.$refs.player.pause()
                 }
               } else {
                 // 打开失败
+                console.log('打开失败')
                 this.hideOtherButtons = false
                 this.canEnterModule = true
                 this.openMusicScore = false
@@ -1274,8 +1278,8 @@
             musicInfo.musicVersions = [[musicId, styleName]]
             allMusics.push(musicInfo)
             musicIds.push(musicId)
+            console.log({musicId, musicIds, allMusics, tick})
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
-              console.log({musicId, musicIds, allMusics, tick})
               if (data) {
                 // 打开曲谱成功
                 if (this.isPlaying) {
@@ -1446,9 +1450,6 @@
             // 列表切换回来
             this.$store.dispatch('index/setRightType', this.isPlayingType)
           }
-          // list.forEach((value, index) => {
-          //   if (value.musicId)
-          // })
           if (this.clickedIndex === list.length - 1) {
             // 已经是最后一首了
             this.hideOtherButtons = false
