@@ -186,7 +186,6 @@ export default function createStore () {
         let root = state.environments.HTTP_ROOT
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            console.log(`findFamily-${root}${key}`)
             localStorage.setItem(`findFamily-${root}${key}`, JSON.stringify({value}))
             commit(SET_STORAGE, data)
           }

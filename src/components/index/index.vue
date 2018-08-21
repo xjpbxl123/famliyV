@@ -198,6 +198,7 @@
         isPlayingMusicId: 0,
         interval: null,
         logoutCover: true,
+        isOpeningScore: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -1079,9 +1080,8 @@
             }
             if (this.enterPlay) {
               // 已经进入过曲谱 如果没有移动光标直接播放即可
-
               if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
-                console.log(this.playerSource, 'this.playerSource')
+                console.log(this.playerSource, '播过直接调play()')
                 this.$refs.player.reset()
                 this.$refs.player.play().then(() => {
                   this.isPlaying = false
@@ -1261,6 +1261,7 @@
               if (data) {
                 // 打开曲谱成功
                 console.log('打开曲谱成功')
+                this.isOpeningScore = true
                 if (this.isPlaying) {
                   this.isPlaying = false
                   this.$refs.player.pause()
@@ -1268,6 +1269,7 @@
               } else {
                 // 打开失败
                 console.log('打开失败')
+                this.isOpeningScore = false
                 this.hideOtherButtons = false
                 this.canEnterModule = true
                 this.openMusicScore = false
@@ -1290,12 +1292,14 @@
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               if (data) {
                 // 打开曲谱成功
+                this.isOpeningScore = true
                 if (this.isPlaying) {
                   this.isPlaying = false
                   this.$refs.player.pause()
                 }
               } else {
                 // 打开失败
+                this.isOpeningScore = false
                 this.hideOtherButtons = false
                 this.canEnterModule = true
                 this.openMusicScore = false
@@ -1437,8 +1441,11 @@
       },
       playerInitComplete (data) {
         // 播放器加载成功
+        if (this.isOpeningScore) {
+          return
+        }
         console.log(data, 'playerInitComplete')
-        console.log(this.playerSource, 'this.playerSource')
+        console.log(this.playerSource, '没播过调play()')
         if (!data.result) {
           return
         }
@@ -1483,6 +1490,7 @@
         modules.notification.regist('pageLifecycle', data => {
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
+            this.isOpeningScore = true
             if (this.isPlaying) {
               this.isPlaying = false
               this.$refs.player.pause()
@@ -1491,6 +1499,7 @@
             console.log(dd)
           }
           if (data.case === 'resume') {
+            this.isOpeningScore = false
             this.hideOtherButtons = false
             this.canEnterModule = true
             this.openMusicScore = false
