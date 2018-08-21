@@ -42,7 +42,6 @@
 
 <script>
   import {padStart} from 'lodash'
-  import { setInterval } from 'timers'
   export default {
     props: {
       recentOpenList: {
@@ -175,11 +174,6 @@
       if (this.rightSelectedIndex >= 7) {
         this.rightTop = (this.rightSelectedIndex - 6) * 120 * -1
       }
-      setInterval(() => {
-        console.log(this.isPlayingMusicId)
-        console.log(this.isPlaying)
-        console.log(this.isPlayingType)
-      }, 2000)
     },
     destroyed () {
       clearTimeout(this.timeId)

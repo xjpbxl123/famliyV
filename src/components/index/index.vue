@@ -1079,6 +1079,7 @@
               // 已经进入过曲谱 如果没有移动光标直接播放即可
 
               if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
+                console.log(this.playerSource, 'this.playerSource')
                 this.$refs.player.reset()
                 this.$refs.player.play().then(() => {
                   this.isPlaying = false
@@ -1095,6 +1096,7 @@
                     this.$store.dispatch('index/setRightSelect', rightActiveIndex)
                   }
                   this.clickedMusicId = list[rightActiveIndex].musicId
+                  this.clickedIndex = rightActiveIndex
                   this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
                 })
                 // 播放判断
@@ -1250,8 +1252,21 @@
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
-            console.log({musicId, musicIds, allMusics, tick})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+              console.log({musicId, musicIds, allMusics, tick})
+              if (data) {
+                // 打开曲谱成功
+                if (this.isPlaying) {
+                  this.isPlaying = false
+                  this.$refs.player.pause()
+                }
+              } else {
+                // 打开失败
+                this.hideOtherButtons = false
+                this.canEnterModule = true
+                this.openMusicScore = false
+              }
+            })
           } else {
             // 无缓存
             let musicInfo = {}
@@ -1265,8 +1280,21 @@
             musicInfo.musicVersions = [[musicId, styleName]]
             allMusics.push(musicInfo)
             musicIds.push(musicId)
-            console.log({musicId, musicIds, allMusics, tick})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+              console.log({musicId, musicIds, allMusics, tick})
+              if (data) {
+                // 打开曲谱成功
+                if (this.isPlaying) {
+                  this.isPlaying = false
+                  this.$refs.player.pause()
+                }
+              } else {
+                // 打开失败
+                this.hideOtherButtons = false
+                this.canEnterModule = true
+                this.openMusicScore = false
+              }
+            })
           }
         })
       },
@@ -1284,6 +1312,7 @@
         musicObj = list1[rightActiveIndex]
         this.clickedMusicId = musicObj.musicId
         this.clickeType = this.rightType
+        this.clickedIndex = rightActiveIndex
         return {musicObj: musicObj, list: list1}
       },
       playMidi (musicId, musicList, musicIndex) {
@@ -1303,8 +1332,8 @@
                 // 当前是自动播放则继续播放下一首
                 if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
                   this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                  console.log(musicList[musicIndex + 1], 'ooooo')
                   this.clickedMusicId = musicList[musicIndex + 1].musicId
+                  this.clickedIndex = musicIndex + 1
                   this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
                 } else {
                   this.hideOtherButtons = false
@@ -1363,6 +1392,7 @@
                     if (musicIndex + 1 <= musicList.length - 1) {
                       this.$store.dispatch('index/setRightSelect', musicIndex + 1)
                       this.clickedMusicId = musicList[musicIndex + 1].musicId
+                      this.clickedIndex = musicIndex + 1
                       this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
                     }
                   } else {
@@ -1393,6 +1423,7 @@
                     }
                   }
                 }
+                console.log(this.playerSource, 'this.playerSource')
               })
             }
           })
@@ -1401,6 +1432,7 @@
       playerInitComplete (data) {
         // 播放器加载成功
         console.log(data, 'playerInitComplete')
+        console.log(this.playerSource, 'this.playerSource')
         if (!data.result) {
           return
         }
@@ -1420,23 +1452,27 @@
             // 列表切换回来
             this.$store.dispatch('index/setRightType', this.isPlayingType)
           }
-          if (rightActiveIndex === list.length - 1) {
+          // list.forEach((value, index) => {
+          //   if (value.musicId)
+          // })
+          if (this.clickedIndex === list.length - 1) {
             // 已经是最后一首了
             this.hideOtherButtons = false
             return
           }
           this.autoPlay = true
-          rightActiveIndex++
-          rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
-          if (rightActiveIndex > 0) {
+          this.clickedIndex = this.clickedIndex + 1
+          rightActiveIndex = Math.min(this.clickedIndex, list.length - 1)
+          if (this.clickedIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
           this.clickedMusicId = list[rightActiveIndex].musicId
-          this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
+          this.playMidi(list[this.clickedIndex].musicId, list, this.clickedIndex)
         })
         this.playSet()
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
+        this.isPlayingIndex = this.clickedIndex
         this.hideOtherButtons = true
         this.isPlayingType = this.clickeType
       },
