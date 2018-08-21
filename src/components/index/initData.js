@@ -51,10 +51,9 @@ export default {
     },
     /**
      * @desc 获取用户数据
-     * @param {object} playCalendar - 练琴数据
      * */
     getUserInfo () {
-      this.$store.dispatch('getUserInfo')
+      return this.$store.dispatch('getUserInfo')
     },
     /**
      * @desc 用户数据模式

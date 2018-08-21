@@ -9,7 +9,7 @@
         :sessionId="sessionId"
         :usedTime="usedTime"
         :setCalendarData="setCalendarData"
-        :dispatch="dispatchUserInfo"
+        :getUserInfo="getUserInfo"
         :isActivation="isActivation"
         :isCalendar="isCalendar"
       />
@@ -730,12 +730,6 @@
           this.speed = data.tempoSpeed
           this.metre = data.metre
         })
-      },
-      /**
-       * @desc dispatch 用户状态
-       * */
-      dispatchUserInfo () {
-        return this.$store.dispatch('getUserInfo')
       },
       /**
        * @desc 设置练琴数据

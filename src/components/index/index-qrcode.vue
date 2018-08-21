@@ -9,6 +9,11 @@
   import {global} from 'find-sdk'
   export default {
     name: 'index-qr-code',
+    data () {
+      return {
+        canvas: null
+      }
+    },
     props: {
       sessionId: String
     },
@@ -23,14 +28,16 @@
           if (env.HTTP_ROOT.indexOf('ktunes') !== -1) {
             url = 'https://spapi.ktunes.cn'
           }
+          /// 获取Ip地址
           global.getLocalIpAddress().then((value) => {
             let ip = !value ? '' : value
+            /// 获取状态栏
             global.getStatusBarItem().then((data) => {
               let localName = data.localname ? data.localname.title : ''
               // 异步获取qrcode模块，生成二维码
               return import(/* webpackChunkName:"qrCode" */ 'qrcode').then(qrCode => {
                 qrCode.toCanvas(
-                  document.querySelector('canvas'),
+                  this.canvas,
                   url + `/wxLoginPiano?pkgname=gogo.gogomusic&type=share&qrType=find&deviceName=${localName}$&sessionId=${
                     this.sessionId
                   }&ct=LoginFindPiano&ip=${ip}&port=5672`,
@@ -41,6 +48,12 @@
           })
         })
       }
+    },
+    mounted () {
+      this.canvas = document.querySelector('canvas')
+    },
+    beforeDestroy () {
+      this.canvas = null
     }
   }
 </script>

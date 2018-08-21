@@ -2014,10 +2014,6 @@ dedent@^0.7.0:
   version "0.7.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
 
-deep-diff@^0.3.8:
-  version "0.3.8"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
-
 deep-diff@^1.0.1:
   version "1.0.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.1.tgz#ac437a691e88baf4205b83ae1aa095a13c6c10ac"
@@ -2858,10 +2854,6 @@ fd-slicer@~1.0.1:
   dependencies:
     pend "~1.2.0"
 
-fetch-intercept@^2.2.3:
-  version "2.2.3"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/fetch-intercept/-/fetch-intercept-2.2.3.tgz#8cfc03237347be1fecd571006cd8490983a7fed5"
-
 figures@^1.7.0:
   version "1.7.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/figures/-/figures-1.7.0.tgz#cbe1e3affcf1cd44b80cadfed28dc793a9701d2e"
@@ -3541,10 +3533,6 @@ http-signature@~1.2.0:
     assert-plus "^1.0.0"
     jsprim "^1.2.2"
     sshpk "^1.7.0"
-
-http@0.0.0:
-  version "0.0.0"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/http/-/http-0.0.0.tgz#86e6326d29c5d039de9fac584a45689f929f4f72"
 
 https-browserify@^1.0.0:
   version "1.0.0"
@@ -4315,10 +4303,6 @@ lodash.camelcase@^4.3.0:
 lodash.clonedeep@^4.3.2:
   version "4.5.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
-
-lodash.get@^4.4.2:
-  version "4.4.2"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -5207,13 +5191,6 @@ path-type@^2.0.0:
   dependencies:
     pify "^2.0.0"
 
-path@^0.12.7:
-  version "0.12.7"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/path/-/path-0.12.7.tgz#d4dc2a506c4ce2197eb481ebfcd5b36c0140b10f"
-  dependencies:
-    process "^0.11.1"
-    util "^0.10.3"
-
 pbkdf2@^3.0.3:
   version "3.0.16"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/pbkdf2/-/pbkdf2-3.0.16.tgz#7404208ec6b01b62d85bf83853a8064f8d9c2a5c"
@@ -5852,7 +5829,7 @@ process-nextick-args@~2.0.0:
   version "2.0.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/process-nextick-args/-/process-nextick-args-2.0.0.tgz#a37d732f4271b4ab1ad070d35508e8290788ffaa"
 
-process@^0.11.1, process@^0.11.10:
+process@^0.11.10:
   version "0.11.10"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
 
@@ -5927,9 +5904,9 @@ q@^1.1.2:
   version "1.5.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
 
-qrcode@^1.2.0:
-  version "1.2.0"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/qrcode/-/qrcode-1.2.0.tgz#330d24313fbf8d429a806091af9525250239e44a"
+qrcode@^1.2.2:
+  version "1.2.2"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/qrcode/-/qrcode-1.2.2.tgz#f3c97f5a4c32cf5c2ec75b63c1b66a38df122693"
   dependencies:
     can-promise "^0.0.1"
     dijkstrajs "^1.0.1"
@@ -7528,19 +7505,6 @@ vue@^2.5.16, vue@^2.5.2:
   version "2.5.17"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 
-vuetron@^1.1.3:
-  version "1.1.3"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vuetron/-/vuetron-1.1.3.tgz#c19564af49c3a3321ba63fb2a2436069b09358ec"
-  dependencies:
-    deep-diff "^0.3.8"
-    express "^4.16.2"
-    fetch-intercept "^2.2.3"
-    http "0.0.0"
-    lodash.get "^4.4.2"
-    path "^0.12.7"
-    socket.io "^2.0.4"
-    whatwg-fetch "^2.0.3"
-
 vuex@^3.0.1:
   version "3.0.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vuex/-/vuex-3.0.1.tgz#e761352ebe0af537d4bb755a9b9dc4be3df7efd2"
@@ -7651,10 +7615,6 @@ websocket-driver@>=0.5.1:
 websocket-extensions@>=0.1.1:
   version "0.1.3"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-
-whatwg-fetch@^2.0.3:
-  version "2.0.4"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
 
 whet.extend@~0.9.9:
   version "0.9.9"

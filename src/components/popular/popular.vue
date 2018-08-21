@@ -233,10 +233,10 @@
         return this.$store.dispatch('popular/getStyles')
       },
       goBack () {
-        this.$store.dispatch('popular/setPopularTapSelected', 2)
-        this.$store.dispatch('popular/setYearSelected', 0)
-        this.$store.dispatch('popular/setPopularSelected', 0)
-        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
+        //        this.$store.dispatch('popular/setPopularTapSelected', 2)
+        //        this.$store.dispatch('popular/setYearSelected', 0)
+        //        this.$store.dispatch('popular/setPopularSelected', 0)
+        //        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
         this.$router.back()
       },
       // 鼠标操作

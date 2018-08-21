@@ -124,7 +124,6 @@ export default {
               res.body.musicList.forEach((item, index) => {
                 item.collect = data[index].body.musicList
               })
-              console.log(res.body.musicList, 'res.body.musicList')
               return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
             })
           } else {

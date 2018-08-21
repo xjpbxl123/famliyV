@@ -16,7 +16,6 @@ import App from './App.vue'
 
 const isDev = process.env.NODE_ENV === 'development'
 const devEnvVars = process.env['development']
-
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
 Vue.use(Vuex)

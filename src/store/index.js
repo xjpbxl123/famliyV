@@ -14,7 +14,7 @@ import material from './modules/material'
 import staff from './modules/staff'
 import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
-import {nativeStorage, modules} from 'find-sdk'
+import {modules} from 'find-sdk'
 import {getCurEnvs} from '../scripts/utils'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const INIT_ENV = 'INIT_ENV' // 初始化环境变量
@@ -146,8 +146,7 @@ export default function createStore () {
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
-        })
+        return localStorage.setItem(`findFamily-${root}${userId}`, JSON.stringify({value: state.storage.cache.renderCache}))
       }
     },
     actions: {
@@ -157,22 +156,15 @@ export default function createStore () {
       initialNativeStorage ({commit, dispatch}) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
-          return Promise.all([
-            nativeStorage.get(tableName, 'playCalendar'),
-            nativeStorage.get(tableName, 'isLogin'),
-            nativeStorage.get(tableName, 'userInfo'),
-            nativeStorage.get(tableName, 'sessionId')
-          ])
-            .then(data => {
-              commit(SET_STORAGE, {
-                playCalendar: data[0] && data[0].value ? data[0].value : {},
-                isLogin: data[1] && data[1].value ? data[1].value : false,
-                userInfo: data[2] && data[2].value ? data[2].value : {},
-                sessionId: data[3] && data[3].value ? data[3].value : null,
-                isSynced: true
-              })
-              return dispatch('initCacheStorage', [...data, ...[tableName]])
-            })
+          let data = localStorage.getItem('tableName') || {}
+          commit(SET_STORAGE, {
+            playCalendar: data.playCalendar || {},
+            isLogin: !!data.isLogin,
+            userInfo: data.userInfo || {},
+            sessionId: data.sessionId || null,
+            isSynced: true
+          })
+          return dispatch('initCacheStorage', [...data, ...[tableName]])
         })
       },
       /**
@@ -190,11 +182,10 @@ export default function createStore () {
         let root = state.environments.HTTP_ROOT
         return new Promise(resolve => {
           for (let [key, value] of Object.entries(data)) {
-            nativeStorage.set('findFamily-' + root, key, {value}).then(() => {
-              commit(SET_STORAGE, data)
-              resolve(data)
-            })
+            localStorage.setItem(`findFamily-${root}${key}`, JSON.stringify({value}))
+            commit(SET_STORAGE, data)
           }
+          resolve(data)
         })
       },
       /**
@@ -207,14 +198,13 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
-            let cache = {}
-            cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
-            commit(SET_STORAGE, {
-              cache
-            })
-            resolve(cache)
+          let param = localStorage.getItem(data[4] + JSON.stringify(userId))
+          let cache = {}
+          cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+          commit(SET_STORAGE, {
+            cache
           })
+          resolve(cache)
         })
       },
       /**
@@ -301,29 +291,31 @@ export default function createStore () {
       /**
        * @desc 清除缓存
        * */
-      clearCache ({dispatch, state}) {
-        let root = state.environments.HTTP_ROOT
-        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+      clearCache () {
+        //        let root = state.environments.HTTP_ROOT
+        //        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        //        return nativeStorage.set('findFamily-' + root + JSON.stringify(userId), {value: {}})
+        localStorage.clear()
+        return Promise.resolve({})
       },
       /**
        * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch}) {
-        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
-        rootArr.forEach((item, index) => {
-          nativeStorage.clear('findFamily-' + item)
-        })
+        //        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        //        rootArr.forEach((item, index) => {
+        //          nativeStorage.clear('findFamily-' + item)
+        //        })
+        localStorage.clear()
       },
       /**
        * @desc 用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
         let root = state.environments.HTTP_ROOT
-        nativeStorage.get('findFamily-' + root, '-1').then(param => {
-          let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
-          commit(LOGIN_OUT_CACHE, data)
-        })
+        let param = localStorage.getItem('findFamily-' + root + '-1')
+        let data = param && param.value ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+        commit(LOGIN_OUT_CACHE, data)
       },
       setSelect ({commit, state}, data) {
         commit(SET_SELECT, data)
