@@ -29,7 +29,7 @@
         :isPlayingMusicId="isPlayingMusicId"
         :isPlayingType="isPlayingType"/>
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true" :loading="loading"></findPrompt>
     <findPrompt ref="musicPrompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="false"></findPrompt>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -386,7 +386,8 @@
         skipTime: 0,
         isSupportMutePedal: false,
         isPlayingIndex: 0,
-        isPlayingType: ''
+        isPlayingType: '',
+        loading: false
       }
     },
     mixins: [initData],
@@ -508,7 +509,7 @@
         this.buttonActions('metroTip')
       },
       [KEY102] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
@@ -564,35 +565,35 @@
         this.buttonActions('tone')
       },
       [KEY90] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('changeRightData')
       },
       [LONG_KEY92] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
       [KEY92] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-down')
       },
       [KEY94] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
@@ -600,21 +601,21 @@
         this.buttonActions('right-down')
       },
       [KEY97] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-play')
       },
       [KEY99] () {
-        if (this.openMusicScore) {
+        if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('openMusicScore')
       },
       [PEDAL_PRESSED] (key) {
-        if (this.isPlaying) {
+        if (this.isPlaying || this.loading) {
           // 播放的时候禁用踏板
           return
         }
@@ -646,6 +647,9 @@
         }
       },
       [BACK_PRESSED] () {
+        if (this.loading) {
+          return
+        }
         this.goBack()
       },
       banner: {
@@ -896,6 +900,8 @@
               // 弹出提示框
               if (this.logoutCover) {
                 this.promptInfo.text = '确认注销吗？'
+                this.promptInfo.icon = 'icon-sync-info'
+                this.loading = false
                 this.$refs.prompt.showPrompt()
                 this.logoutCover = !this.logoutCover
               } else {
@@ -1073,41 +1079,36 @@
               return
             }
             if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
-              // 播放中 不操作
-              this.promptInfo.text = '正在播放当前曲谱'
-              this.$refs.musicPrompt.showPrompt()
+              // 播放中 不操作 仅弹框
+              this.loading = false
+              this.isPLayingPrompt()
               return
             }
             if (this.enterPlay) {
-              // 已经进入过曲谱 如果没有移动光标直接播放即可
+              // 已经进入过曲谱 如果没有移动光标要先reset()
               if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
                 console.log(this.playerSource, '播过直接调play()')
                 this.$refs.player.reset()
-                this.$refs.player.play().then(() => {
-                  this.isPlaying = false
-                  // 继续播放下一首
-                  if (rightActiveIndex === list.length - 1) {
-                    // 已经是最后一首了
-                    this.hideOtherButtons = false
-                    return
-                  }
-                  this.autoPlay = true
-                  rightActiveIndex++
-                  rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
-                  if (rightActiveIndex > 0) {
-                    this.$store.dispatch('index/setRightSelect', rightActiveIndex)
-                  }
-                  this.clickedMusicId = list[rightActiveIndex].musicId
-                  this.clickedIndex = rightActiveIndex
-                  this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
-                })
-                // 播放判断
-                this.playSet()
+                // this.$refs.player.play().then(() => {
+                //   this.isPlaying = false
+                //   // 继续播放下一首
+                //   if (rightActiveIndex === list.length - 1) {
+                //     // 已经是最后一首了
+                //     this.hideOtherButtons = false
+                //     return
+                //   }
+                //   this.autoPlay = true
+                //   rightActiveIndex++
+                //   rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
+                //   if (rightActiveIndex > 0) {
+                //     this.$store.dispatch('index/setRightSelect', rightActiveIndex)
+                //   }
+                //   this.clickedMusicId = list[rightActiveIndex].musicId
+                //   this.clickedIndex = rightActiveIndex
+                //   this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
+                // })
                 this.hideOtherButtons = true
-                this.autoPlay = false
                 this.enterPlay = false
-                this.isPlaying = true
-                return
               }
             }
             this.autoPlay = false
@@ -1202,6 +1203,7 @@
         }
       },
       player (musicObj, tick) {
+        this.loadingPrompt()
         console.log('player')
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
@@ -1258,6 +1260,8 @@
             })
             console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+              this.loading = false
+              this.$refs.prompt.hidePrompt()
               if (data) {
                 // 打开曲谱成功
                 console.log('打开曲谱成功')
@@ -1326,6 +1330,8 @@
         return {musicObj: musicObj, list: list1}
       },
       playMidi (musicId, musicList, musicIndex) {
+        // 弹loading框
+        this.loadingPrompt()
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
@@ -1336,8 +1342,9 @@
             global.getStatusBarItem().then((data) => {
               if (!data.wifi.title) {
                 // 无网状态下提示
-                this.promptInfo.text = '网络连接出错，请检查网络'
-                this.$refs.musicPrompt.showPrompt()
+                this.loading = false
+                this.$refs.prompt.hidePrompt()
+                this.noWifiPrompt()
                 this.hideOtherButtons = false
                 // 当前是自动播放则继续播放下一首
                 if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
@@ -1350,6 +1357,9 @@
                 }
               } else {
                 // 有网状态下提示
+                this.loading = false
+                this.$refs.prompt.hidePrompt()
+                this.promptInfo.icon = 'icon-asyc-info'
                 this.promptInfo.text = '找不到该曲谱'
                 this.$refs.musicPrompt.showPrompt()
                 this.hideOtherButtons = false
@@ -1362,7 +1372,10 @@
               let Mid = value.bMid
               if (!value.bMid.url) {
                 if (!value.mMid.url) {
+                  this.loading = false
+                  this.$refs.prompt.hidePrompt()
                   this.promptInfo.text = 'mid加载失败'
+                  this.promptInfo.icon = 'icon-asyc-info'
                   this.$refs.musicPrompt.showPrompt()
                   this.hideOtherButtons = false
                   return
@@ -1394,8 +1407,9 @@
               global.getStatusBarItem().then((status) => {
                 if (!status.wifi.title) {
                   // 当前曲谱文件没有缓存并且没有网络则提示
-                  this.promptInfo.text = '网络连接出错，请检查网络'
-                  this.$refs.musicPrompt.showPrompt()
+                  this.loading = false
+                  this.$refs.prompt.hidePrompt()
+                  this.noWifiPrompt()
                   this.hideOtherButtons = false
                   // 如果是自动播放即继续播放下一首
                   if (this.autoPlay) {
@@ -1441,6 +1455,8 @@
       },
       playerInitComplete (data) {
         // 播放器加载成功
+        this.loading = false
+        this.$refs.prompt.hidePrompt()
         if (this.isOpeningScore) {
           return
         }
@@ -1485,6 +1501,22 @@
         this.isPlayingIndex = this.clickedIndex
         this.hideOtherButtons = true
         this.isPlayingType = this.clickeType
+      },
+      isPLayingPrompt () {
+        this.promptInfo.text = '正在播放当前曲谱'
+        this.promptInfo.icon = 'icon-sync-info'
+        this.$refs.musicPrompt.showPrompt()
+      },
+      loadingPrompt () {
+        this.loading = true
+        this.promptInfo.text = '正在加载曲谱'
+        this.promptInfo.icon = 'icon-loading'
+        this.$refs.prompt.showPrompt()
+      },
+      noWifiPrompt () {
+        this.promptInfo.text = '网络连接出错，请检查网络'
+        this.promptInfo.icon = 'icon-asyc-info'
+        this.$refs.musicPrompt.showPrompt()
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
@@ -1533,8 +1565,7 @@
       // 断网提醒
       global.getStatusBarItem().then((data) => {
         if ((this.hotBooks.bookList.length === 0 || this.recentBooks.bookList.length === 0) && !data.wifi.title) {
-          this.promptInfo.text = '网络连接出错，请检查网络'
-          this.$refs.prompt.showPrompt()
+          this.noWifiPrompt()
         }
       })
     },

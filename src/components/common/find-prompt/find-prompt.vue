@@ -1,8 +1,8 @@
 <template>
  <div class="find-prompt" v-show="show" :style="{width:width+'px',height: height + 'px'}">
      <div class="prompt">
-         <div class="prompt-icon">
-             <i :class="['iconfont',icon]"></i>
+         <div class="prompt-icon" :class="{'loading': loading}">
+             <i :class="['iconfont',icon]" ></i>
          </div>
          <div class="prompt-text">
              {{text}}
@@ -34,6 +34,10 @@
         default: () => 450
       },
       allExit: {
+        type: Boolean,
+        default: () => false
+      },
+      loading: {
         type: Boolean,
         default: () => false
       }
@@ -80,6 +84,13 @@
       height: 120px;
       margin: 0 auto;
       margin-top: 70px;
+      &.loading {
+        animation:loading 2s infinite linear;
+      }
+      @keyframes loading {
+        from {transform:rotate(0deg)}
+        to {transform:rotate(360deg)}
+      }
       .iconfont {
         font-size: 120px;
         color: #fff;
