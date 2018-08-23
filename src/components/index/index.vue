@@ -1180,9 +1180,9 @@
       },
       player (musicObj, tick) {
         this.loading = true
+        console.log('loading开始')
         this.instance.close && this.instance.close()
         this.instance = toast({text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
-        console.log('player')
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
@@ -1239,6 +1239,7 @@
             console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               this.loading = false
+              console.log('loading结束')
               this.instance.close && this.instance.close()
               if (data) {
                 // 打开曲谱成功
@@ -1273,6 +1274,7 @@
             console.log({musicId, musicIds, allMusics, tick})
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               this.loading = false
+              console.log('loading结束')
               this.instance.close && this.instance.close()
               if (data) {
                 // 打开曲谱成功
@@ -1312,6 +1314,7 @@
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
         this.loading = true
+        console.log('loading开始')
         this.instance.close && this.instance.close()
         this.instance = toast({text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
         let midiData = {url: '', md5: '', fsize: 0}
@@ -1447,6 +1450,7 @@
           return
         }
         this.loading = false
+        console.log('loading结束，开始播放曲谱')
         this.instance.close && this.instance.close()
         if (this.isOpeningScore) {
           return
