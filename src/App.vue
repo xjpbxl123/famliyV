@@ -10,11 +10,14 @@
 </template>
 <script type="text/javascript">
   import { modules } from 'find-sdk'
+  import eventsHub from './scripts/eventsHub'
+  import toast from './components/common/toast/toast.js'
   export default {
     name: 'app',
     data () {
       return {
-        backgroundUrl: ''
+        backgroundUrl: '',
+        loadingInstance: null
       }
     },
     created () {
@@ -33,6 +36,19 @@
           this.backgroundUrl = data.backGroundImageName
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
+        }
+      })
+
+      // 提示框
+      eventsHub.$on('toast', (params) => {
+        let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
+        params = Object.assign({}, defaultParams, params)
+        eventsHub.$emit('closeToast')
+        this.loadingInstance = toast(params)
+      })
+      eventsHub.$on('closeToast', () => {
+        if (this.loadingInstance) {
+          this.loadingInstance.close()
         }
       })
     }

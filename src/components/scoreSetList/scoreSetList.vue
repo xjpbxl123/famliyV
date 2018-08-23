@@ -22,9 +22,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
-  import {global} from 'find-sdk'
-  import loadinMixins from '../common/loading-mixins.js'
-  import toast from '../common/toast/toast.js'
+  import eventsHub from 'scripts/eventsHub'
   import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80, PEDAL_PRESSED } from 'vue-find'
 
   export default {
@@ -84,10 +82,10 @@
         ],
         toolbarHidden: false,
         scoreSetListItem: [],
-        instance: ''
+        instance: '',
+        hasLoaded: false
       }
     },
-    mixins: [loadinMixins],
     find: {
       [KEY73] () {
         this.buttonActions('left')
@@ -145,9 +143,7 @@
         totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
           let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId]
-          if (scoreSetList) {
-            this.instance.close && this.instance.close()
-          }
+          this.hasLoaded = scoreSetList
           scoreSetList = scoreSetList || []
           this.scoreSetListItem = scoreSetList.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
           return scoreSetList
@@ -168,6 +164,19 @@
         this.$store.dispatch({
           type: 'scoreSetList/getScoreSetList',
           setId: this.$route.query.setId
+        }).then((data) => {
+          if (this.hasLoaded || data.scoreSetList[this.$route.query.setId]) {
+            // 有缓存 或有数据
+            eventsHub.$emit('closeToast')
+          } else {
+            if (data.message === 'Network Error') {
+              // 网络连接失败
+              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+            } else if (data.message === 'timeout of 10000ms exceeded') {
+              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+              // 网络连接超时
+            }
+          }
         })
       },
       // 鼠标点击操作
@@ -245,15 +254,7 @@
     created () {
       console.log('scoreSetList--created', window.location.href)
       this.getScoreSetList()
-    },
-    mounted () {
-      global.getStatusBarItem().then((data) => {
-        if (this.scoreSetList.length === 0 && !data.wifi.title) {
-          // 断网
-          this.instance.close && this.instance.close()
-          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-        }
-      })
+      eventsHub.$emit('toast')
     },
     components: {
       findImg,

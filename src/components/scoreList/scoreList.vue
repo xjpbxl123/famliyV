@@ -42,9 +42,8 @@
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import {global, modules} from 'find-sdk'
-  import loadinMixins from '../common/loading-mixins.js'
-  import toast from '../common/toast/toast.js'
+  import {modules} from 'find-sdk'
+  import eventsHub from 'scripts/eventsHub'
   import {
     KEY73,
     KEY75,
@@ -160,10 +159,10 @@
         toolbarHidden: false,
         dataError: true,
         stopEvent: false,
-        loading: false
+        loading: false,
+        hasLoaded: false
       }
     },
-    mixins: [loadinMixins],
     watch: {
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
@@ -274,8 +273,9 @@
           } else {
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId]
           }
+          this.hasLoaded = arr
           if (arr) {
-            this.instance.close && this.instance.close()
+            eventsHub.$emit('closeToast')
             arr = arr || []
             if (arr.length > 0) {
               this.dataError = false
@@ -290,15 +290,6 @@
                 this.controlButtons[5].icon = '0xe653'
               }
             }
-          } else {
-            global.getStatusBarItem().then((data) => {
-              if (!data.wifi.title) {
-                // 断网
-                console.log('nowifi')
-                this.instance.close && this.instance.close()
-                this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-              }
-            })
           }
           return arr || []
         },
@@ -332,19 +323,32 @@
           id = JSON.parse(query.book).bookId
           typeName = 'musicScore'
         }
-        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then(() => {
-          let musicId = parseInt(this.query.musicId)
-          if (musicId) {
-            // 光标定到指定曲目
-            this.scoreList.forEach((item, index) => {
-              if (item.files) {
-                item.files.forEach((item1) => {
-                  if (item1.musicId === musicId) {
-                    return this.$store.dispatch('scoreList/setScoreListIndex', index)
-                  }
-                })
-              }
-            })
+        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then((data) => {
+          console.log(data.message, 'vvvvvvv')
+          if (this.hasLoaded) {
+            // 有缓存
+            eventsHub.$emit('closeToast')
+            let musicId = parseInt(this.query.musicId)
+            if (musicId) {
+              // 光标定到指定曲目
+              this.scoreList.forEach((item, index) => {
+                if (item.files) {
+                  item.files.forEach((item1) => {
+                    if (item1.musicId === musicId) {
+                      return this.$store.dispatch('scoreList/setScoreListIndex', index)
+                    }
+                  })
+                }
+              })
+            }
+          } else {
+            if (data.message === 'Network Error') {
+              // 网络连接失败
+              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+            } else if (data.message === 'timeout of 10000ms exceeded') {
+              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+              // 网络连接超时
+            }
           }
         })
       },
@@ -596,6 +600,10 @@
     created () {
       this.getScoreList()
       this.addBookViewMount()
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     mounted () {
       this.adjustPlayer()
