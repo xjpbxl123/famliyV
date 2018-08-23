@@ -271,7 +271,9 @@ export default function createStore () {
               userType: body.userType,
               mark: body.mark,
               userId: parseInt(body.userId),
-              userName: body.userName
+              userName: body.userName,
+              nickName: body.nickName,
+              imageUrl: body.imageUrl
             }
             return modules.user.setUserInfo(userInfoObj).then((data) => {
               if (data) {

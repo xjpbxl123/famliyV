@@ -176,7 +176,6 @@
     opacity:1;
     will-change: opacity;
   }
-
   @keyframes shadowRepeat {
     0% {
       opacity: 0;

@@ -759,7 +759,9 @@
        * */
       checkPedalMute () {
         modules.notification.regist('checkPedalMute', () => {
+          console.log('checkPedalMute')
           modules.settings.getProperty('isPedalMuteOn').then((data) => {
+            console.log(data)
             this.controlButtons[0].checked = data
           })
         })
@@ -889,8 +891,6 @@
               // 未登录进入登录页
               return this.go('/login')
             } else {
-              // 临时写的用来注销账号
-              // this.$store.dispatch('logoutCache', {root: true})
               // 弹出提示框
               if (this.logoutCover) {
                 this.instance.close && this.instance.close()
