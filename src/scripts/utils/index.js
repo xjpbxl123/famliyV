@@ -69,4 +69,5 @@ const getCurEnvs = function () {
     })
   })
 }
+
 export { os, formatDate, getCurEnvs }

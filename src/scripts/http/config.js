@@ -29,8 +29,8 @@ export const getDefaultParams = (() => {
       if (!defaultParams.sess) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
-          let data = localStorage.getItem(tableName)
-          return Object.assign(defaultParams, {sess: data ? data.sessionId : ''}, {orn})
+          let data = JSON.parse(localStorage.getItem(tableName + 'sessionId'))
+          return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
         })
       }
       return Object.assign(defaultParams, {orn})

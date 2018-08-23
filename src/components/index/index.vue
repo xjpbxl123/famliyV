@@ -29,8 +29,6 @@
         :isPlayingMusicId="isPlayingMusicId"
         :isPlayingType="isPlayingType"/>
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true" :loading="loading"></findPrompt>
-    <findPrompt ref="musicPrompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="false"></findPrompt>
     <find-cover :activeNamespace="namespace">
       <banner-help
         v-if="showHelpBanner"
@@ -170,10 +168,10 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import { modules, download, global } from 'find-sdk'
   import initData from './initData.js'
   import {formatDate} from '../../scripts/utils'
+  import toast from '../common/toast/toast.js'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -219,13 +217,6 @@
             id: 3
           }
         ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 3000,
-          width: 640,
-          height: 360
-        },
         bigBUtton: [
           {id: 7, pianoKey: 39, text: '流行经典', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
           {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
@@ -387,7 +378,8 @@
         isSupportMutePedal: false,
         isPlayingIndex: 0,
         isPlayingType: '',
-        loading: false
+        loading: false,
+        instance: ''
       }
     },
     mixins: [initData],
@@ -535,7 +527,7 @@
       },
       [KEY78] () {
         if (!this.logoutCover) {
-          this.$refs.prompt.hidePrompt()
+          this.instance.close() && this.instance.close()
           this.logoutCover = !this.logoutCover
         } else {
           this.buttonActions('up')
@@ -766,8 +758,10 @@
        * @desc 监听静音踏板的设置
        * */
       checkPedalMute () {
-        modules.notification.regist('checkPedalMute', data => {
-          this.controlButtons[0].checked = data
+        modules.notification.regist('checkPedalMute', () => {
+          modules.settings.getProperty('isPedalMuteOn').then((data) => {
+            this.controlButtons[0].checked = data
+          })
         })
       },
       /**
@@ -868,7 +862,7 @@
           return
         }
         if (!this.logoutCover) {
-          this.$refs.prompt.hidePrompt()
+          this.instance.close && this.instance.close()
           this.logoutCover = true
           this.toolbarHidden = false
           return
@@ -899,16 +893,14 @@
               // this.$store.dispatch('logoutCache', {root: true})
               // 弹出提示框
               if (this.logoutCover) {
-                this.promptInfo.text = '确认注销吗？'
-                this.promptInfo.icon = 'icon-sync-info'
-                this.loading = false
-                this.$refs.prompt.showPrompt()
+                this.instance.close && this.instance.close()
+                this.instance = toast({text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
                 this.logoutCover = !this.logoutCover
               } else {
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
-                  this.$refs.prompt.hidePrompt()
                   this.logoutCover = !this.logoutCover
+                  this.instance.close && this.instance.close()
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
@@ -930,6 +922,7 @@
           case 'game':
             return modules.game.openKingdom().then((data) => {
               if (!data) {
+                this.canEnterModule = true
                 // 做登录验证
                 if (this.isLogin) {
                   return this.$store.dispatch('getUserInfo')
@@ -1081,32 +1074,15 @@
             if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
               // 播放中 不操作 仅弹框
               this.loading = false
-              this.isPLayingPrompt()
+              this.instance.close && this.instance.close()
+              this.instance = toast({text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
               return
             }
             if (this.enterPlay) {
               // 已经进入过曲谱 如果没有移动光标要先reset()
               if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
-                console.log(this.playerSource, '播过直接调play()')
+                console.log(this.playerSource, '播过reset后调play()')
                 this.$refs.player.reset()
-                // this.$refs.player.play().then(() => {
-                //   this.isPlaying = false
-                //   // 继续播放下一首
-                //   if (rightActiveIndex === list.length - 1) {
-                //     // 已经是最后一首了
-                //     this.hideOtherButtons = false
-                //     return
-                //   }
-                //   this.autoPlay = true
-                //   rightActiveIndex++
-                //   rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
-                //   if (rightActiveIndex > 0) {
-                //     this.$store.dispatch('index/setRightSelect', rightActiveIndex)
-                //   }
-                //   this.clickedMusicId = list[rightActiveIndex].musicId
-                //   this.clickedIndex = rightActiveIndex
-                //   this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
-                // })
                 this.hideOtherButtons = true
                 this.enterPlay = false
               }
@@ -1203,7 +1179,9 @@
         }
       },
       player (musicObj, tick) {
-        this.loadingPrompt()
+        this.loading = true
+        this.instance.close && this.instance.close()
+        this.instance = toast({text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
         console.log('player')
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
@@ -1261,7 +1239,7 @@
             console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               this.loading = false
-              this.$refs.prompt.hidePrompt()
+              this.instance.close && this.instance.close()
               if (data) {
                 // 打开曲谱成功
                 console.log('打开曲谱成功')
@@ -1294,6 +1272,8 @@
             musicIds.push(musicId)
             console.log({musicId, musicIds, allMusics, tick})
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+              this.loading = false
+              this.instance.close && this.instance.close()
               if (data) {
                 // 打开曲谱成功
                 this.isOpeningScore = true
@@ -1331,7 +1311,9 @@
       },
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
-        this.loadingPrompt()
+        this.loading = true
+        this.instance.close && this.instance.close()
+        this.instance = toast({text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
@@ -1343,8 +1325,9 @@
               if (!data.wifi.title) {
                 // 无网状态下提示
                 this.loading = false
-                this.$refs.prompt.hidePrompt()
-                this.noWifiPrompt()
+                this.instance.close && this.instance.close()
+                this.initPlayer()
+                this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 this.hideOtherButtons = false
                 // 当前是自动播放则继续播放下一首
                 if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
@@ -1358,10 +1341,9 @@
               } else {
                 // 有网状态下提示
                 this.loading = false
-                this.$refs.prompt.hidePrompt()
-                this.promptInfo.icon = 'icon-asyc-info'
-                this.promptInfo.text = '找不到该曲谱'
-                this.$refs.musicPrompt.showPrompt()
+                this.initPlayer()
+                this.instance.close && this.instance.close()
+                this.instance = toast({text: '找不到该曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 this.hideOtherButtons = false
               }
             })
@@ -1373,10 +1355,9 @@
               if (!value.bMid.url) {
                 if (!value.mMid.url) {
                   this.loading = false
-                  this.$refs.prompt.hidePrompt()
-                  this.promptInfo.text = 'mid加载失败'
-                  this.promptInfo.icon = 'icon-asyc-info'
-                  this.$refs.musicPrompt.showPrompt()
+                  this.initPlayer()
+                  this.instance.close && this.instance.close()
+                  this.instance = toast({text: 'mid加载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
                   return
                 }
@@ -1408,8 +1389,9 @@
                 if (!status.wifi.title) {
                   // 当前曲谱文件没有缓存并且没有网络则提示
                   this.loading = false
-                  this.$refs.prompt.hidePrompt()
-                  this.noWifiPrompt()
+                  this.instance.close && this.instance.close()
+                  this.initPlayer()
+                  this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
                   // 如果是自动播放即继续播放下一首
                   if (this.autoPlay) {
@@ -1453,10 +1435,19 @@
           })
         })
       },
+      initPlayer () {
+        if (this.isPlaying) {
+          this.$ref.player().pause()
+          this.$ref.player().reset()
+        }
+      },
       playerInitComplete (data) {
         // 播放器加载成功
+        if (data.reason === 'midi url is null.') {
+          return
+        }
         this.loading = false
-        this.$refs.prompt.hidePrompt()
+        this.instance.close && this.instance.close()
         if (this.isOpeningScore) {
           return
         }
@@ -1502,26 +1493,12 @@
         this.hideOtherButtons = true
         this.isPlayingType = this.clickeType
       },
-      isPLayingPrompt () {
-        this.promptInfo.text = '正在播放当前曲谱'
-        this.promptInfo.icon = 'icon-sync-info'
-        this.$refs.musicPrompt.showPrompt()
-      },
-      loadingPrompt () {
-        this.loading = true
-        this.promptInfo.text = '正在加载曲谱'
-        this.promptInfo.icon = 'icon-loading'
-        this.$refs.prompt.showPrompt()
-      },
-      noWifiPrompt () {
-        this.promptInfo.text = '网络连接出错，请检查网络'
-        this.promptInfo.icon = 'icon-asyc-info'
-        this.$refs.musicPrompt.showPrompt()
-      },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
+            this.loading = false
+            this.instance.close && this.instance.close()
             this.isOpeningScore = true
             if (this.isPlaying) {
               this.isPlaying = false
@@ -1560,6 +1537,7 @@
     destroyed () {
       clearInterval(window.interval)
       this.removeRegist()
+      this.instance.close && this.instance.close()
     },
     mounted () {
       // 断网提醒
@@ -1575,19 +1553,11 @@
       contentCenter,
       bannerRight,
       bannerHelp,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
 <style lang="scss" scoped>
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   .banner-wrapper {
     height: 100%;
 

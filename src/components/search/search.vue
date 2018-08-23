@@ -43,7 +43,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import musicList from './musicList'
   import {search, global} from 'find-sdk'
-  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, LONG_KEY90, LONG_KEY92, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, PEDAL_PRESSED
+  import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, LONG_KEY90, LONG_KEY92, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, BACK_PRESSED, PEDAL_PRESSED
   } from 'vue-find'
   import { mapGetters } from 'vuex'
   export default {
@@ -624,6 +624,12 @@
       [KEY94] () {
         return this.buttonActions('ok')
       },
+      [BACK_PRESSED] () {
+        if (+new Date() - this.loadTime < 500) {
+          return
+        }
+        this.$router.back()
+      },
       [PEDAL_PRESSED] (key) {
         switch (key.id) {
           case 116:
@@ -636,6 +642,9 @@
             this.buttonActions('ok')
             break
           case 119:
+            if (+new Date() - this.loadTime < 500) {
+              return
+            }
             this.$router.back()
         }
       }
@@ -745,6 +754,7 @@
     },
     created () {
       this.initData()
+      this.loadTime = +new Date()
     },
     components: {
       findKeyboard,

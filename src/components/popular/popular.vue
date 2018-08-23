@@ -21,7 +21,6 @@
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect" :setSelect="setSelect"></popular-genre>
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
@@ -49,7 +48,8 @@
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
+  import loadinMixins from '../common/loading-mixins.js'
+  import toast from '../common/toast/toast.js'
   import {global} from 'find-sdk'
   import {
     KEY73,
@@ -127,17 +127,12 @@
           {id: 201, pianoKey: 51, text: '难度', icon: '0xe6a2', positionPixels: 30, style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
           {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', positionPixels: 40, style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
         ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
         toolbarHidden: false,
-        loadTime: 0
+        loadTime: 0,
+        instance: ''
       }
     },
+    mixins: [loadinMixins],
     find: {
       [KEY49] () {
         this.$store.dispatch('popular/setPopularTapSelected', 0)
@@ -217,6 +212,11 @@
         }
         this.bigBUtton[value].style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
         this.bigBUtton[old].style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
+      },
+      popularGenre (val, old) {
+        if (val.length >= 0) {
+          this.instance.close && this.instance.close()
+        }
       }
     },
     methods: {
@@ -233,10 +233,10 @@
         return this.$store.dispatch('popular/getStyles')
       },
       goBack () {
-        //        this.$store.dispatch('popular/setPopularTapSelected', 2)
-        //        this.$store.dispatch('popular/setYearSelected', 0)
-        //        this.$store.dispatch('popular/setPopularSelected', 0)
-        //        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
+        this.$store.dispatch('popular/setPopularTapSelected', 2)
+        this.$store.dispatch('popular/setYearSelected', 0)
+        this.$store.dispatch('popular/setPopularSelected', 0)
+        this.$store.dispatch('setSelect', {popularGenreSelect: 0}, {root: true})
         this.$router.back()
       },
       // 鼠标操作
@@ -382,7 +382,8 @@
       // 断网提醒
       global.getStatusBarItem().then((data) => {
         if (this.popularGenre.length === 0 && !data.wifi.title) {
-          this.$refs.prompt.showPrompt()
+          this.instance.close && this.instance.close()
+          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
         }
       })
     },
@@ -391,20 +392,12 @@
       popularDifferDetail,
       popularGenre,
       popularYearList,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
 <style lang="scss" scoped type=text/scss>
   .popular {
-    .find-prompt {
-      width: 750px;
-      height: 450px;
-      position: absolute;
-      top: 500px;
-      left: 2043px;
-    }
     .line {
       position: absolute;
       top: 55px;

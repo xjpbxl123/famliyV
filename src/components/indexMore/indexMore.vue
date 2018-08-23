@@ -9,7 +9,6 @@
         :setSelect="setSelect"
         />
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in controlButtons"
                  :key="button.id"
@@ -25,8 +24,9 @@
   import { mapState, mapGetters } from 'vuex'
   import contentCenter from './indexMore-center'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import {global} from 'find-sdk'
+  import loadinMixins from '../common/loading-mixins.js'
+  import toast from '../common/toast/toast.js'
   import {
     KEY73,
     KEY75,
@@ -88,16 +88,11 @@
         ],
         title: this.$route.query.title,
         toolbarHidden: false,
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
-        indexx: 0
+        indexx: 0,
+        instance: ''
       }
     },
+    mixins: [loadinMixins],
     find: {
       [KEY73] () {
         this.buttonActions('left')
@@ -148,12 +143,14 @@
       ...mapGetters(['hotBooksAll', 'recentBooksAll'])
     },
     watch: {
-      isLogin (val) {
-        if (val) {
-          this.userActionButtons[1].text = '注销'
-          this.getRecentOpenList()
-        } else {
-          this.userActionButtons[1].text = '登陆'
+      hotBooksAll (val, old) {
+        if (this.title === '热门曲谱' && val.bookList.length >= 0) {
+          this.instance.close && this.instance.close()
+        }
+      },
+      recentBooksAll (val, old) {
+        if (this.title === '最近更新' && val.bookList.length >= 0) {
+          this.instance.close && this.instance.close()
         }
       }
     },
@@ -221,7 +218,6 @@
     },
     mounted () {
       this.indexx = this.moreIndex
-
       console.log(this.title)
       console.log(this.hotBooksAll)
       // 断网提醒
@@ -229,27 +225,20 @@
         let books = []
         this.title === '最近更新' ? books = this.recentBooksAll : books = this.hotBooksAll
         if (books.length === 0 && !data.wifi.title) {
-          this.$refs.prompt.showPrompt()
+          this.instance.close && this.instance.close()
+          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
         }
       })
     },
     components: {
       statusBar,
-      contentCenter,
-      findPrompt
+      contentCenter
     }
   }
 </script>
 <style lang="scss" scoped>
   .banner-wrapper {
     height: 100%;
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   .banner-content {
     display: flex;
     height: 100%;

@@ -7,8 +7,7 @@
         <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
       </div>
       <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex" :setSelect="setSelect"/>
-      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-if="!dataError"/>
-      <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-show="!dataError"/>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect" :clickPlay="clickPlay"/>
         <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" :clickPlay="clickPlay"/>
@@ -43,8 +42,9 @@
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import {global, modules} from 'find-sdk'
+  import loadinMixins from '../common/loading-mixins.js'
+  import toast from '../common/toast/toast.js'
   import {
     KEY73,
     KEY75,
@@ -70,6 +70,7 @@
         chooseType: false,
         bannerType: '',
         query: this.$route.query,
+        instance: '',
         controlButtons: [
           {
             pianoKey: 73,
@@ -157,17 +158,12 @@
           }
         ],
         toolbarHidden: false,
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
         dataError: true,
-        stopEvent: false
+        stopEvent: false,
+        loading: false
       }
     },
+    mixins: [loadinMixins],
     watch: {
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
@@ -270,38 +266,41 @@
         },
         scoreList: function (state) {
           let query = this.query
-          let arr = []
+          let arr = ''
           if (query.differ) {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id]
           } else if (query.year) {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id]
           } else {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId]
           }
-          console.log(arr[this.scoreIndex], 'arrarr')
-          if (arr.length > 0) {
-            this.dataError = false
-            this.collet = arr[this.scoreIndex] ? arr[this.scoreIndex].collect : []
-            let flag = false
-            this.collet && this.collet.forEach((item) => {
-              if (item.collection) { flag = true }
-            })
-            if (flag) {
-              this.controlButtons[5].icon = '0xe656'
-            } else {
-              this.controlButtons[5].icon = '0xe653'
+          if (arr) {
+            this.instance.close && this.instance.close()
+            arr = arr || []
+            if (arr.length > 0) {
+              this.dataError = false
+              this.collet = arr[this.scoreIndex] ? arr[this.scoreIndex].collect : []
+              let flag = false
+              this.collet && this.collet.forEach((item) => {
+                if (item.collection) { flag = true }
+              })
+              if (flag) {
+                this.controlButtons[5].icon = '0xe656'
+              } else {
+                this.controlButtons[5].icon = '0xe653'
+              }
             }
           } else {
             global.getStatusBarItem().then((data) => {
               if (!data.wifi.title) {
                 // 断网
-                this.$refs.prompt.showPrompt()
-              } else {
-                this.dataError = false
+                console.log('nowifi')
+                this.instance.close && this.instance.close()
+                this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
               }
             })
           }
-          return arr
+          return arr || []
         },
         isLogin (state) {
           let {storage} = state
@@ -407,7 +406,6 @@
               return
             }
             console.log('直接去播放曲谱')
-            // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
             this.player(scoreList[scoreIndex], 1)
             this.addRecentOpen(scoreList[scoreIndex], 1)
             this.$store.dispatch('addPractice')
@@ -492,14 +490,12 @@
             } else {
               console.log('去播放曲谱')
               this.addRecentOpen(scoreList[scoreIndex], typeNum)
-              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               this.player(scoreList[scoreIndex], typeNum)
               this.$store.dispatch('addPractice')
             }
             break
           default:
             console.log('108')
-            // this.goBack()
         }
       },
       // 播放曲谱
@@ -598,7 +594,6 @@
       }
     },
     created () {
-      console.log('scoreList--created', window.location.href)
       this.getScoreList()
       this.addBookViewMount()
     },
@@ -613,8 +608,7 @@
       scoreListLeftYear,
       scoreListLeftStyle,
       scoreListChooseButtons,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
@@ -622,13 +616,6 @@
   .scoreList {
       width: 100%;
       height: 100%;
-      .find-prompt {
-        width: 750px;
-        height: 450px;
-        position: absolute;
-        top: 500px;
-        left: 2043px;
-      }
     .left {
       position: absolute;
       width: 850px;

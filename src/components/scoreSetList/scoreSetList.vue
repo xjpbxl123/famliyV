@@ -4,7 +4,6 @@
     <findTitle :title="setName"></findTitle>
     <listBox :scoreSetList="scoreSetListItem" :scoreListIndex="scoreListIndex" :setSelect="setSelect"></listBox>
     <pageNation  :totalPage="totalPage" :scoreListPageIndex="scoreListPageIndex"></pageNation>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
      <icon-item v-for="(button) in controlButtons" v-if="button.show"
             :id="button.id"
@@ -23,8 +22,9 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import {global} from 'find-sdk'
+  import loadinMixins from '../common/loading-mixins.js'
+  import toast from '../common/toast/toast.js'
   import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80, PEDAL_PRESSED } from 'vue-find'
 
   export default {
@@ -82,17 +82,12 @@
             show: true
           }
         ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
         toolbarHidden: false,
-        scoreSetListItem: []
+        scoreSetListItem: [],
+        instance: ''
       }
     },
+    mixins: [loadinMixins],
     find: {
       [KEY73] () {
         this.buttonActions('left')
@@ -149,7 +144,11 @@
         scoreListPageIndex: state => state.scoreSetList.scoreListPageIndex,
         totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
-          let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId] || []
+          let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId]
+          if (scoreSetList) {
+            this.instance.close && this.instance.close()
+          }
+          scoreSetList = scoreSetList || []
           this.scoreSetListItem = scoreSetList.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
           return scoreSetList
         }
@@ -251,7 +250,8 @@
       global.getStatusBarItem().then((data) => {
         if (this.scoreSetList.length === 0 && !data.wifi.title) {
           // 断网
-          this.$refs.prompt.showPrompt()
+          this.instance.close && this.instance.close()
+          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
         }
       })
     },
@@ -260,21 +260,13 @@
       findTitle,
       pageNation,
       listBox,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
 <style lang="scss" scoped>
 .scoreSetList {
   color: #fff;
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   ul.listBox {
     position: absolute;
     top: 180px;
