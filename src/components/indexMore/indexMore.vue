@@ -24,9 +24,7 @@
   import { mapState, mapGetters } from 'vuex'
   import contentCenter from './indexMore-center'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import {global} from 'find-sdk'
-  import loadinMixins from '../common/loading-mixins.js'
-  import toast from '../common/toast/toast.js'
+  import eventsHub from 'scripts/eventsHub'
   import {
     KEY73,
     KEY75,
@@ -88,11 +86,9 @@
         ],
         title: this.$route.query.title,
         toolbarHidden: false,
-        indexx: 0,
-        instance: ''
+        indexx: 0
       }
     },
-    mixins: [loadinMixins],
     find: {
       [KEY73] () {
         this.buttonActions('left')
@@ -116,7 +112,7 @@
         this.buttonActions('ok')
       },
       [BACK_PRESSED] () {
-        this.buttonActions('back')
+        this.goBack()
       },
       [PEDAL_PRESSED] (key) {
         switch (key.id) {
@@ -130,7 +126,7 @@
             this.buttonActions('ok')
             break
           case 119:
-            this.buttonActions('back')
+            this.goBack()
         }
       }
     },
@@ -138,21 +134,29 @@
       ...mapState({
         moreIndex (state) {
           return state.index.moreIndex
+        },
+        hotBooksAll: function (state) {
+          if (this.title === '热门曲谱') {
+            let hotBooksAll = state.storage.cache.renderCache.hottestAll
+            if (hotBooksAll) {
+              eventsHub.$emit('closeToast')
+            }
+            this.hasLoaded = hotBooksAll
+            return hotBooksAll
+          }
+        },
+        recentBooksAll: function (state) {
+          if (this.title === '最近更新') {
+            let recentBooksAll = state.storage.cache.renderCache.recentUpdateAll
+            if (recentBooksAll) {
+              eventsHub.$emit('closeToast')
+            }
+            this.hasLoaded = recentBooksAll
+            return recentBooksAll
+          }
         }
       }),
-      ...mapGetters(['hotBooksAll', 'recentBooksAll'])
-    },
-    watch: {
-      hotBooksAll (val, old) {
-        if (this.title === '热门曲谱' && val.bookList.length >= 0) {
-          this.instance.close && this.instance.close()
-        }
-      },
-      recentBooksAll (val, old) {
-        if (this.title === '最近更新' && val.bookList.length >= 0) {
-          this.instance.close && this.instance.close()
-        }
-      }
+      ...mapGetters([])
     },
     methods: {
       /**
@@ -170,7 +174,7 @@
       buttonActions (type) {
         let indexx = this.indexx
         let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
-        if (books.bookList.length <= 0 && type !== 'back') {
+        if (books.bookList.length <= 0) {
           return
         }
         switch (type) {
@@ -199,14 +203,14 @@
             return this.$store.dispatch('index/setMoreIndex', this.indexx).then(() => {
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
             })
-          case 'back':
-            this.$store.dispatch('index/setMoreIndex', 0)
-            this.$router.back()
-            break
           default:
             console.log('108')
         }
         console.log(indexx)
+      },
+      goBack () {
+        this.$store.dispatch('index/setMoreIndex', 0)
+        this.$router.back()
       }
     },
     created () {
@@ -217,18 +221,10 @@
       }
     },
     mounted () {
-      this.indexx = this.moreIndex
-      console.log(this.title)
-      console.log(this.hotBooksAll)
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        let books = []
-        this.title === '最近更新' ? books = this.recentBooksAll : books = this.hotBooksAll
-        if (books.length === 0 && !data.wifi.title) {
-          this.instance.close && this.instance.close()
-          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
       statusBar,

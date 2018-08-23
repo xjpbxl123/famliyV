@@ -82,7 +82,6 @@
         ],
         toolbarHidden: false,
         scoreSetListItem: [],
-        instance: '',
         hasLoaded: false
       }
     },
@@ -143,6 +142,9 @@
         totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
           let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId]
+          if (scoreSetList) {
+            eventsHub.$emit('closeToast')
+          }
           this.hasLoaded = scoreSetList
           scoreSetList = scoreSetList || []
           this.scoreSetListItem = scoreSetList.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
@@ -252,8 +254,12 @@
       }
     },
     created () {
-      console.log('scoreSetList--created', window.location.href)
       this.getScoreSetList()
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
+    },
+    mounted () {
       eventsHub.$emit('toast')
     },
     components: {

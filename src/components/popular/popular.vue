@@ -48,9 +48,7 @@
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import loadinMixins from '../common/loading-mixins.js'
-  import toast from '../common/toast/toast.js'
-  import {global} from 'find-sdk'
+  import eventsHub from 'scripts/eventsHub'
   import {
     KEY73,
     KEY75,
@@ -129,10 +127,9 @@
         ],
         toolbarHidden: false,
         loadTime: 0,
-        instance: ''
+        hasLoaded: false
       }
     },
-    mixins: [loadinMixins],
     find: {
       [KEY49] () {
         this.$store.dispatch('popular/setPopularTapSelected', 0)
@@ -197,9 +194,17 @@
         popularIndex: state => state.popular.popularIndex,
         popularTapIndex: state => state.popular.popularTapIndex,
         yearIndex: state => state.popular.yearIndex,
-        popularGenreSelect: state => state.popularGenreSelect
+        popularGenreSelect: state => state.popularGenreSelect,
+        popularGenre: function (state) {
+          let popularGenre = state.storage.cache.renderCache.popularGenre
+          if (popularGenre) {
+            eventsHub.$emit('closeToast')
+          }
+          this.hasLoaded = popularGenre
+          return popularGenre
+        }
       }),
-      ...mapGetters(['differList', 'popularGenre', 'yearList'])
+      ...mapGetters(['differList', 'yearList'])
     },
     watch: {
       popularTapIndex (value, old) {
@@ -212,11 +217,6 @@
         }
         this.bigBUtton[value].style = {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}
         this.bigBUtton[old].style = {backgroundColor: '#2582c4', dotColor: '#2582c4'}
-      },
-      popularGenre (val, old) {
-        if (val.length >= 0) {
-          this.instance.close && this.instance.close()
-        }
       }
     },
     methods: {
@@ -230,7 +230,20 @@
         this.$store.dispatch({type: 'popular/getCenturys'})
       },
       getStyles () {
-        return this.$store.dispatch('popular/getStyles')
+        return this.$store.dispatch('popular/getStyles').then((data) => {
+          if (this.hasLoaded || data.popularGenre) {
+            // 有缓存
+            eventsHub.$emit('closeToast')
+          } else {
+            if (data.message === 'Network Error') {
+              // 网络连接失败
+              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+            } else if (data.message === 'timeout of 10000ms exceeded') {
+              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+              // 网络连接超时
+            }
+          }
+        })
       },
       goBack () {
         this.$store.dispatch('popular/setPopularTapSelected', 2)
@@ -379,13 +392,10 @@
       })
     },
     mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if (this.popularGenre.length === 0 && !data.wifi.title) {
-          this.instance.close && this.instance.close()
-          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
       popularDifferList,

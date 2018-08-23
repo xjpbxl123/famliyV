@@ -171,7 +171,7 @@
   import { modules, download, global } from 'find-sdk'
   import initData from './initData.js'
   import {formatDate} from '../../scripts/utils'
-  import toast from '../common/toast/toast.js'
+  import eventsHub from 'scripts/eventsHub'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -342,7 +342,7 @@
           {
             pianoKey: 99,
             text: '',
-            icon: '0xe648',
+            icon: '0xe73d',
             backgroundColor: '#2fff',
             id: 190
           }
@@ -527,7 +527,7 @@
       },
       [KEY78] () {
         if (!this.logoutCover) {
-          this.instance.close() && this.instance.close()
+          eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
         } else {
           this.buttonActions('up')
@@ -864,7 +864,7 @@
           return
         }
         if (!this.logoutCover) {
-          this.instance.close && this.instance.close()
+          eventsHub.$emit('closeToast')
           this.logoutCover = true
           this.toolbarHidden = false
           return
@@ -893,14 +893,13 @@
             } else {
               // 弹出提示框
               if (this.logoutCover) {
-                this.instance.close && this.instance.close()
-                this.instance = toast({text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                eventsHub.$emit('toast', {text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
                 this.logoutCover = !this.logoutCover
               } else {
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
                   this.logoutCover = !this.logoutCover
-                  this.instance.close && this.instance.close()
+                  eventsHub.$emit('close')
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
@@ -1074,8 +1073,7 @@
             if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
               // 播放中 不操作 仅弹框
               this.loading = false
-              this.instance.close && this.instance.close()
-              this.instance = toast({text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+              eventsHub.$emit('toast', {text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
               return
             }
             if (this.enterPlay) {
@@ -1181,8 +1179,7 @@
       player (musicObj, tick) {
         this.loading = true
         console.log('loading开始')
-        this.instance.close && this.instance.close()
-        this.instance = toast({text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
+        eventsHub.$emit('toast', {text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
@@ -1240,7 +1237,7 @@
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               this.loading = false
               console.log('loading结束')
-              this.instance.close && this.instance.close()
+              eventsHub.$emit('closeToast')
               if (data) {
                 // 打开曲谱成功
                 console.log('打开曲谱成功')
@@ -1275,7 +1272,7 @@
             modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
               this.loading = false
               console.log('loading结束')
-              this.instance.close && this.instance.close()
+              eventsHub.$emit('closeToast')
               if (data) {
                 // 打开曲谱成功
                 this.isOpeningScore = true
@@ -1315,8 +1312,7 @@
         // 弹loading框
         this.loading = true
         console.log('loading开始')
-        this.instance.close && this.instance.close()
-        this.instance = toast({text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
+        eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
@@ -1328,9 +1324,8 @@
               if (!data.wifi.title) {
                 // 无网状态下提示
                 this.loading = false
-                this.instance.close && this.instance.close()
                 this.initPlayer()
-                this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 this.hideOtherButtons = false
                 // 当前是自动播放则继续播放下一首
                 if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
@@ -1345,8 +1340,7 @@
                 // 有网状态下提示
                 this.loading = false
                 this.initPlayer()
-                this.instance.close && this.instance.close()
-                this.instance = toast({text: '找不到该曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                eventsHub.$emit('toast', {text: '找不到该曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 this.hideOtherButtons = false
               }
             })
@@ -1359,8 +1353,7 @@
                 if (!value.mMid.url) {
                   this.loading = false
                   this.initPlayer()
-                  this.instance.close && this.instance.close()
-                  this.instance = toast({text: 'mid加载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {text: 'mid加载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
                   return
                 }
@@ -1392,9 +1385,8 @@
                 if (!status.wifi.title) {
                   // 当前曲谱文件没有缓存并且没有网络则提示
                   this.loading = false
-                  this.instance.close && this.instance.close()
                   this.initPlayer()
-                  this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
                   // 如果是自动播放即继续播放下一首
                   if (this.autoPlay) {
@@ -1451,7 +1443,7 @@
         }
         this.loading = false
         console.log('loading结束，开始播放曲谱')
-        this.instance.close && this.instance.close()
+        eventsHub.$emit('closeToast')
         if (this.isOpeningScore) {
           return
         }
@@ -1502,7 +1494,7 @@
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
             this.loading = false
-            this.instance.close && this.instance.close()
+            eventsHub.$emit('closeToast')
             this.isOpeningScore = true
             if (this.isPlaying) {
               this.isPlaying = false
@@ -1541,7 +1533,7 @@
     destroyed () {
       clearInterval(window.interval)
       this.removeRegist()
-      this.instance.close && this.instance.close()
+      eventsHub.$emit('closeToast')
     },
     mounted () {
       // 断网提醒

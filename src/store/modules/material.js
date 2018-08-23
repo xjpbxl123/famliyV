@@ -15,6 +15,8 @@ export default {
           let materialList = {body, sumPage}
           dispatch('setCacheToStorage', {materialList}, {root: true})
         }
+      }).catch((error) => {
+        return error
       })
     }
   }

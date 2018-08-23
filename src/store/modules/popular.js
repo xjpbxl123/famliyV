@@ -108,6 +108,8 @@ export default {
           }
           return dispatch('setCacheToStorage', {popularGenre: body}, {root: true})
         }
+      }).catch((error) => {
+        return error
       })
     },
     getCenturys ({dispatch, commit}) {

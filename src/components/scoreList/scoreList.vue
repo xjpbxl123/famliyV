@@ -69,7 +69,6 @@
         chooseType: false,
         bannerType: '',
         query: this.$route.query,
-        instance: '',
         controlButtons: [
           {
             pianoKey: 73,
@@ -325,7 +324,7 @@
         }
         this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then((data) => {
           console.log(data.message, 'vvvvvvv')
-          if (this.hasLoaded) {
+          if (this.hasLoaded || data.scoreList[JSON.parse(query.differ).id]) {
             // 有缓存
             eventsHub.$emit('closeToast')
             let musicId = parseInt(this.query.musicId)
@@ -600,12 +599,12 @@
     created () {
       this.getScoreList()
       this.addBookViewMount()
-      eventsHub.$emit('toast')
     },
     beforeDestroy () {
       eventsHub.$emit('closeToast')
     },
     mounted () {
+      eventsHub.$emit('toast')
       this.adjustPlayer()
     },
     components: {

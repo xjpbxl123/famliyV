@@ -36,9 +36,7 @@
   import findWrap from 'components/common/find-wrap/find-wrap'
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import {global} from 'find-sdk'
-  import loadinMixins from '../common/loading-mixins.js'
-  import toast from '../common/toast/toast.js'
+  import eventsHub from 'scripts/eventsHub'
   import {
     KEY75,
     KEY78,
@@ -58,7 +56,6 @@
       return {
         materialPage: 1,
         pagination: true,
-        instance: '',
         toolbarHidden: false,
         materialButton: [
           {
@@ -108,7 +105,6 @@
         ]
       }
     },
-    mixins: [loadinMixins],
     find: {
       [KEY73] () {
         this.buttonActions('left')
@@ -199,27 +195,30 @@
     watch: {
       materialSelect (val, oldVal) {
         this.materialPage = Math.ceil((val + 1) / 8)
-      },
-      materialList (val, old) {
-        if (val.body.length >= 0) {
-          this.instance.close && this.instance.close()
-        }
       }
     },
-    beforeCreate () {
-      this.$store.dispatch('material/getAllBookSets')
-    },
     created () {
+      this.$store.dispatch('material/getAllBookSets').then((data) => {
+        if (this.hasLoaded || data.materialList) {
+          // 有缓存
+          eventsHub.$emit('closeToast')
+        } else {
+          if (data.message === 'Network Error') {
+            // 网络连接失败
+            eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+          } else if (data.message === 'timeout of 10000ms exceeded') {
+            eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+            // 网络连接超时
+          }
+        }
+      })
       this.materialPage = Math.ceil((this.materialSelect + 1) / 8)
     },
     mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if (this.materialList.body.length === 0 && !data.wifi.title) {
-          this.instance.close && this.instance.close()
-          this.instance = toast({text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
       findWrap,
@@ -230,9 +229,17 @@
       ...mapState({
         materialSelect: (state) => {
           return state.materialSelect
+        },
+        materialList: function (state) {
+          let materialList = state.storage.cache.renderCache.materialList
+          if (materialList) {
+            eventsHub.$emit('closeToast')
+          }
+          this.hasLoaded = materialList
+          return materialList
         }
       }),
-      ...mapGetters(['materialList'])
+      ...mapGetters([])
     }
   }
 </script>
