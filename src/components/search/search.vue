@@ -737,6 +737,9 @@
       this.initData()
       this.loadTime = +new Date()
     },
+    mounted () {
+      eventsHub.$emit('toast')
+    },
     components: {
       findKeyboard,
       musicList,

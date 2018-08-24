@@ -38,6 +38,8 @@ http.interceptors.response.use(function (response) {
             return store.dispatch('logout', {root: true}).then(() => {
               return store.dispatch('setSession')
             })
+          } else {
+            return response.data
           }
         })
       } else {

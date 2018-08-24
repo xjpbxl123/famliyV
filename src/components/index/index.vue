@@ -1313,9 +1313,11 @@
         }
         list1 = [].concat(JSON.parse(JSON.stringify(list)))
         musicObj = list1[rightActiveIndex]
-        this.clickedMusicId = musicObj.musicId
-        this.clickeType = this.rightType
-        this.clickedIndex = rightActiveIndex
+        if (musicObj) {
+          this.clickedMusicId = musicObj.musicId
+          this.clickeType = this.rightType
+          this.clickedIndex = rightActiveIndex
+        }
         return {musicObj: musicObj, list: list1}
       },
       playMidi (musicId, musicList, musicIndex) {
