@@ -285,7 +285,11 @@
             }
             break
           case 'up':
-            if (activeIndex - 4 >= 0) activeIndex -= 4
+            if (activeIndex - 4 >= 0) {
+              activeIndex -= 4
+            } else {
+              activeIndex = 0
+            }
             break
           case 'ok':
             let data = this.popularGenre

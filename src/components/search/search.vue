@@ -1,9 +1,7 @@
 <template>
   <div class="search">
     <statusBar/>
-    <!-- <find-keyboard ref="keyboard" :setValue="setValue" v-if="!toolbarHidden"/> -->
     <musicList :list="musicList" :listIndex="listIndex"/>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height"></findPrompt>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
     <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -39,13 +37,14 @@
 
 <script>
   import findKeyboard from '../common/find-keyboard/find-keyboard'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import musicList from './musicList'
-  import {search, global} from 'find-sdk'
+  import {search} from 'find-sdk'
   import { KEY27, KEY28, KEY29, KEY30, KEY31, KEY32, KEY33, KEY34, LONG_KEY90, LONG_KEY92, KEY35, KEY36, KEY37, KEY38, KEY39, KEY40, KEY41, KEY42, KEY43, KEY44, KEY45, KEY46, KEY47, KEY48, KEY49, KEY50, KEY51, KEY52, KEY53, KEY54, KEY55, KEY56, KEY57, KEY58, KEY59, KEY60, KEY61, KEY62, KEY63, KEY64, KEY65, KEY66, KEY67, KEY68, KEY69, KEY70, KEY71, KEY72, KEY73, KEY74, KEY75, KEY76, KEY77, KEY78, KEY79, KEY80, KEY81, KEY82, KEY85, KEY90, KEY92, KEY94, TOOLBAR_PRESSED, BACK_PRESSED, PEDAL_PRESSED
   } from 'vue-find'
   import { mapGetters } from 'vuex'
+  import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   export default {
     name: 'search',
     data () {
@@ -56,13 +55,6 @@
         musicList: [],
         upper: false,
         toolbarHidden: false,
-        promptInfo: {
-          text: '成功',
-          icon: 'icon-grade-right',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
         controlButtons: [
           {
             pianoKey: 85,
@@ -659,16 +651,10 @@
           self.initDataComplete = true
           if (data.code === 0) {
             // 成功
-            self.promptInfo.text = '成功'
-            self.promptInfo.icon = 'icon-grade-right'
-            self.$refs.prompt.showPrompt()
+            eventsHub.$emit('toast', {text: '成功', icon: 'icon-grade-right', iconLoading: false, allExit: false})
           } else {
-            console.log(data.desc)
-            self.promptInfo.text = data.desc || '拉取数据出错'
-            self.promptInfo.icon = 'icon-wrong'
-            self.$refs.prompt.showPrompt()
+            eventsHub.$emit('toast', {text: data.desc, icon: 'icon-wrong', iconLoading: false, allExit: false})
           }
-          console.log(data, 'loadSearchData')
         })
       },
       setValue (value) {
@@ -713,7 +699,6 @@
             this.listIndex = Math.min(this.listIndex + 1, this.musicList.length - 1)
             break
           case 'ok':
-            let self = this
             if (this.musicList.length === 0) {
               return
             }
@@ -722,21 +707,17 @@
             let bookId = musicData.bookId
             if (musicData.bookId) {
               // 去曲谱列表
-              this.$store.dispatch('myScore/getBookInfo', bookId).then(() => {
+              this.$store.dispatch('myScore/getBookInfo', bookId).then((data) => {
                 let bookData = this.bookInfo[bookId]
-                global.getStatusBarItem().then((data) => {
-                  if (!bookData && !data.wifi.title) {
-                    self.promptInfo.text = '网络连接失败，请检查网络'
-                    self.promptInfo.icon = 'icon-sync-info'
-                    self.$refs.prompt.showPrompt()
-                    return
-                  }
-                  if (musicData.musicId) {
-                    this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData), musicId: musicData.musicId}})
-                  } else {
-                    this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData)}})
-                  }
-                })
+                if (!bookData) {
+                  errorHandling(data)
+                  return
+                }
+                if (musicData.musicId) {
+                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData), musicId: musicData.musicId}})
+                } else {
+                  this.$router.push({path: '/scoreList', query: {book: JSON.stringify(bookData)}})
+                }
               })
             }
             break
@@ -758,7 +739,6 @@
     },
     components: {
       findKeyboard,
-      findPrompt,
       musicList,
       statusBar
     }
@@ -766,13 +746,6 @@
 </script>
 
 <style scoped>
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
 
   .searchInput {
     width: 1500px;

@@ -175,7 +175,11 @@
             }
             break
           case 'up':
-            if (activeIndex - 4 >= 0) activeIndex -= 4
+            if (activeIndex - 4 >= 0) {
+              activeIndex -= 4
+            } else {
+              activeIndex = 0
+            }
             break
           case 'ok':
             return this.$router.push({path: '/scoreSetList', query: {setId: this.materialList.body[activeIndex].id, setName: this.materialList.body[activeIndex].name}})

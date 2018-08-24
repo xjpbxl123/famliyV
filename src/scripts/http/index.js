@@ -25,23 +25,26 @@ http.interceptors.response.use(function (response) {
     if (response.data.header) {
       let code = response.data.header.code
       if (code !== 0 && code !== 5) {
+        // 数据错误 返回
         return Promise.reject(response.data.header)
-      }
-      return getCurEnvs().then(env => {
-        let tableName = 'findFamily-' + env.HTTP_ROOT
-        let isLogin = JSON.parse(localStorage.getItem(tableName + 'isLogin'))
-        if (code === 5 && isLogin.value) {
-          // 执行注销操作
-          let store = vue.prototype.$store
-          return store.dispatch('logout', {root: true}).then(() => {
-            return store.dispatch('setSession')
-          })
-        }
+      } else if (code === 5) {
+        // session失效
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          let isLogin = JSON.parse(localStorage.getItem(tableName + 'isLogin'))
+          if (code === 5 && isLogin.value) {
+            // 执行注销操作
+            let store = vue.prototype.$store
+            return store.dispatch('logout', {root: true}).then(() => {
+              return store.dispatch('setSession')
+            })
+          }
+        })
+      } else {
         return response.data
-      })
+      }
     }
   }
-  return response.data
 }, function (error) {
   /// For more errors handler of response go here,such as tip or console.
   return Promise.reject(error)
