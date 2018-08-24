@@ -768,12 +768,13 @@
        * @desc 监听静音踏板的设置
        * */
       checkPedalMute () {
-        modules.notification.regist('checkPedalMute', () => {
-          console.log('checkPedalMute')
-          modules.settings.getProperty('isPedalMuteOn').then((data) => {
-            console.log(data)
-            this.controlButtons[0].checked = data
-          })
+        modules.notification.regist('CheckPedalMute', () => {
+          console.log('CheckPedalMute')
+          if (this.isSupportMutePedal) {
+            modules.settings.getProperty('isPedalMuteOn').then((data) => {
+              this.controlButtons[0].checked = data
+            })
+          }
         })
       },
       /**
