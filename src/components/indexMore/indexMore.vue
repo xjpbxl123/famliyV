@@ -25,6 +25,7 @@
   import contentCenter from './indexMore-center'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import {
     KEY73,
     KEY75,
@@ -138,20 +139,20 @@
         hotBooksAll: function (state) {
           if (this.title === '热门曲谱') {
             let hotBooksAll = state.storage.cache.renderCache.hottestAll
-            if (hotBooksAll) {
+            if (hotBooksAll.bookList.length > 0) {
               eventsHub.$emit('closeToast')
             }
-            this.hasLoaded = hotBooksAll
+            this.hasLoaded = !!hotBooksAll.bookList.length
             return hotBooksAll
           }
         },
         recentBooksAll: function (state) {
           if (this.title === '最近更新') {
             let recentBooksAll = state.storage.cache.renderCache.recentUpdateAll
-            if (recentBooksAll) {
+            if (recentBooksAll.bookList.length > 0) {
               eventsHub.$emit('closeToast')
             }
-            this.hasLoaded = recentBooksAll
+            this.hasLoaded = !!recentBooksAll.bookList.length
             return recentBooksAll
           }
         }
@@ -215,9 +216,21 @@
     },
     created () {
       if (this.title === '最近更新') {
-        this.$store.dispatch({type: 'index/getRecentBooks'})
+        return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
+          if (this.hasLoaded || (data && data.hottestAll)) {
+            eventsHub.$emit('closeToast')
+          } else {
+            errorHandling(data)
+          }
+        })
       } else {
-        this.$store.dispatch({type: 'index/getHotBooks'})
+        return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
+          if (this.hasLoaded || (data && data.recentUpdateAll)) {
+            eventsHub.$emit('closeToast')
+          } else {
+            errorHandling(data)
+          }
+        })
       }
     },
     mounted () {

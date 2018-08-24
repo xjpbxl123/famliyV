@@ -147,7 +147,7 @@ export default {
           return dispatch('setCacheToStorage', {musicList: res.body.musicList, id: id}, {root: true})
         }
       }).catch((error) => {
-        console.log(error)
+        return error
       })
     },
     /**

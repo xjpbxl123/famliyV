@@ -37,8 +37,8 @@
 .find-prompt {
     position: absolute;
     z-index: 100;
-    width: 750px;
-    height: 450px;
+    width: 640px;
+    height: 360px;
     position: absolute;
     top: 500px;
     left: 2043px;
@@ -53,7 +53,7 @@
       width: 120px;
       height: 120px;
       margin: 0 auto;
-      margin-top: 120px;
+      margin-top: 70px;
       &.loading {
         animation:loading 2s infinite linear;
       }

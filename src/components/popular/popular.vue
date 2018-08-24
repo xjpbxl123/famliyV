@@ -49,6 +49,7 @@
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import {
     KEY73,
     KEY75,
@@ -197,10 +198,10 @@
         popularGenreSelect: state => state.popularGenreSelect,
         popularGenre: function (state) {
           let popularGenre = state.storage.cache.renderCache.popularGenre
-          if (popularGenre) {
+          if (popularGenre.lengthz > 0) {
             eventsHub.$emit('closeToast')
           }
-          this.hasLoaded = popularGenre
+          this.hasLoaded = !!popularGenre.length
           return popularGenre
         }
       }),
@@ -231,17 +232,12 @@
       },
       getStyles () {
         return this.$store.dispatch('popular/getStyles').then((data) => {
+          console.log(this.hasLoaded)
           if (this.hasLoaded || data.popularGenre) {
             // 有缓存
             eventsHub.$emit('closeToast')
           } else {
-            if (data.message === 'Network Error') {
-              // 网络连接失败
-              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-            } else if (data.message === 'timeout of 10000ms exceeded') {
-              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-              // 网络连接超时
-            }
+            errorHandling(data)
           }
         })
       },
@@ -370,6 +366,7 @@
 
     },
     created () {
+      eventsHub.$emit('toast')
       this.loadTime = +new Date()
       this.getDiffer()
       this.getStyles()

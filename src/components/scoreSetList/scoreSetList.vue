@@ -23,6 +23,7 @@
   import listBox from './scoreSetList-listbox'
   import { mapState, mapGetters } from 'vuex'
   import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, LONG_KEY73, LONG_KEY75, LONG_KEY78, LONG_KEY80, PEDAL_PRESSED } from 'vue-find'
 
   export default {
@@ -167,17 +168,11 @@
           type: 'scoreSetList/getScoreSetList',
           setId: this.$route.query.setId
         }).then((data) => {
-          if (this.hasLoaded || data.scoreSetList[this.$route.query.setId]) {
+          if (this.hasLoaded || (data && data.scoreSetList)) {
             // 有缓存 或有数据
             eventsHub.$emit('closeToast')
           } else {
-            if (data.message === 'Network Error') {
-              // 网络连接失败
-              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-            } else if (data.message === 'timeout of 10000ms exceeded') {
-              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-              // 网络连接超时
-            }
+            errorHandling(data)
           }
         })
       },

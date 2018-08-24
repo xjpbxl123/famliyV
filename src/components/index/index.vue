@@ -170,7 +170,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import { modules, download, global } from 'find-sdk'
   import initData from './initData.js'
-  import {formatDate} from '../../scripts/utils'
+  import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
@@ -681,9 +681,19 @@
         },
         musicList: function (state) {
           return state.storage.cache.renderCache.musicList
+        },
+        hotBooks: function (state) {
+          let hotBooks = state.storage.cache.renderCache.hottest
+          this.hasLoaded = !!hotBooks.bookList.length
+          return hotBooks
+        },
+        recentBooks: function (state) {
+          let recentBooks = state.storage.cache.renderCache.recentUpdate
+          this.hasLoaded = !!recentBooks.bookList.length
+          return recentBooks
         }
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
+      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
     },
     watch: {
       /**
@@ -1320,30 +1330,20 @@
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
             // 曲谱数据没有缓存并且没有网络的时候提示
-            global.getStatusBarItem().then((data) => {
-              if (!data.wifi.title) {
-                // 无网状态下提示
-                this.loading = false
-                this.initPlayer()
-                eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-                this.hideOtherButtons = false
-                // 当前是自动播放则继续播放下一首
-                if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
-                  this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                  this.clickedMusicId = musicList[musicIndex + 1].musicId
-                  this.clickedIndex = musicIndex + 1
-                  this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-                } else {
-                  this.hideOtherButtons = false
-                }
-              } else {
-                // 有网状态下提示
-                this.loading = false
-                this.initPlayer()
-                eventsHub.$emit('toast', {text: '找不到该曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-                this.hideOtherButtons = false
-              }
-            })
+            errorHandling(data, true)
+            this.loading = false
+            this.initPlayer()
+            eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            this.hideOtherButtons = false
+            // 当前是自动播放则继续播放下一首
+            if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
+              this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+              this.clickedMusicId = musicList[musicIndex + 1].musicId
+              this.clickedIndex = musicIndex + 1
+              this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+            } else {
+              this.hideOtherButtons = false
+            }
             return
           }
           musicInfo.files.forEach((value) => {
@@ -1534,14 +1534,6 @@
       clearInterval(window.interval)
       this.removeRegist()
       eventsHub.$emit('closeToast')
-    },
-    mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if ((this.hotBooks.bookList.length === 0 || this.recentBooks.bookList.length === 0) && !data.wifi.title) {
-          this.noWifiPrompt()
-        }
-      })
     },
     components: {
       BannerLeft,

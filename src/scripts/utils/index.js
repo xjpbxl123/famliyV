@@ -3,6 +3,7 @@
  */
 import {isString} from 'lodash'
 import {global} from 'find-sdk'
+import eventsHub from '../eventsHub'
 const os = (function () {
   return (function () {
     let
@@ -70,4 +71,24 @@ const getCurEnvs = function () {
   })
 }
 
-export { os, formatDate, getCurEnvs }
+/**
+ * @desc 接口错误处理
+ * */
+const errorHandling = function (data, notAllExit) {
+  let code = ''
+  if (data.message === 'Network Error') {
+    code = '-1'
+  } else {
+    code = data.code
+  }
+  switch (code) {
+    case '-1':
+      // 网络错误
+      eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: !notAllExit})
+      break
+    case 'ECONNABORTED':
+      // 网络超时
+      eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: !notAllExit})
+  }
+}
+export { os, formatDate, getCurEnvs, errorHandling }

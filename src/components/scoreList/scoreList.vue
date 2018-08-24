@@ -43,6 +43,7 @@
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import {modules} from 'find-sdk'
+  import {errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
   import {
     KEY73,
@@ -323,8 +324,7 @@
           typeName = 'musicScore'
         }
         this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then((data) => {
-          console.log(data.message, 'vvvvvvv')
-          if (this.hasLoaded || data.scoreList[JSON.parse(query.differ).id]) {
+          if (this.hasLoaded || data.scoreList) {
             // 有缓存
             eventsHub.$emit('closeToast')
             let musicId = parseInt(this.query.musicId)
@@ -341,13 +341,7 @@
               })
             }
           } else {
-            if (data.message === 'Network Error') {
-              // 网络连接失败
-              eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-            } else if (data.message === 'timeout of 10000ms exceeded') {
-              eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-              // 网络连接超时
-            }
+            errorHandling(data)
           }
         })
       },
