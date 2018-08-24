@@ -115,13 +115,13 @@
     },
     methods: {
       getTime () {
-        this.timeId = setTimeout(() => {
+        this.timeId = setInterval(() => {
           this.getDate()
           this.lateMinute--
           if (this.lateMinute === 0) {
             this.getDays()
           }
-          clearTimeout(this.timeId)
+          clearInterval(this.timeId)
         }, 60000)
       },
       getDate () {
@@ -176,7 +176,7 @@
       }
     },
     destroyed () {
-      clearTimeout(this.timeId)
+      clearInterval(this.timeId)
       this.timeId = null
     }
   }

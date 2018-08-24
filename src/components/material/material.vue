@@ -227,10 +227,10 @@
         },
         materialList: function (state) {
           let materialList = state.storage.cache.renderCache.materialList
-          if (materialList.length > 0) {
+          if (materialList.body.length > 0) {
             eventsHub.$emit('closeToast')
           }
-          this.hasLoaded = !!materialList.length
+          this.hasLoaded = !!materialList.body.length
           return materialList
         }
       }),

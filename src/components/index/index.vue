@@ -71,7 +71,7 @@
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
           <icon-item id="403" pianoKey="69" text="" icon="0xe605"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
-          <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre"
+          <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre+'拍'"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
         </group>
         <icon-item v-for="(button,index) in controlButtons"
@@ -1330,7 +1330,7 @@
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
             // 曲谱数据没有缓存并且没有网络的时候提示
-            errorHandling(data, true)
+            errorHandling(data)
             this.loading = false
             this.initPlayer()
             eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})

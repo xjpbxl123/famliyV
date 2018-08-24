@@ -198,7 +198,7 @@
         popularGenreSelect: state => state.popularGenreSelect,
         popularGenre: function (state) {
           let popularGenre = state.storage.cache.renderCache.popularGenre
-          if (popularGenre.lengthz > 0) {
+          if (popularGenre.length > 0) {
             eventsHub.$emit('closeToast')
           }
           this.hasLoaded = !!popularGenre.length

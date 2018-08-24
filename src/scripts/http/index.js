@@ -23,16 +23,21 @@ http.interceptors.request.use(async function (config) {
 http.interceptors.response.use(function (response) {
   if (response.data) {
     if (response.data.header) {
-      getCurEnvs().then(env => {
+      let code = response.data.header.code
+      if (code !== 0 && code !== 5) {
+        return Promise.reject(response.data.header)
+      }
+      return getCurEnvs().then(env => {
         let tableName = 'findFamily-' + env.HTTP_ROOT
         let isLogin = JSON.parse(localStorage.getItem(tableName + 'isLogin'))
-        if (response.data.header.code === 5 && isLogin.value) {
+        if (code === 5 && isLogin.value) {
           // 执行注销操作
           let store = vue.prototype.$store
-          store.dispatch('logout', {root: true}).then(() => {
-            store.dispatch('setSession')
+          return store.dispatch('logout', {root: true}).then(() => {
+            return store.dispatch('setSession')
           })
         }
+        return response.data
       })
     }
   }

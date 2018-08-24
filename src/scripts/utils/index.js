@@ -74,21 +74,24 @@ const getCurEnvs = function () {
 /**
  * @desc 接口错误处理
  * */
-const errorHandling = function (data, notAllExit) {
+const errorHandling = function (data) {
   let code = ''
   if (data.message === 'Network Error') {
-    code = '-1'
+    code = '-100'
   } else {
     code = data.code
   }
   switch (code) {
-    case '-1':
+    case '-100':
       // 网络错误
-      eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: !notAllExit})
+      eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
       break
     case 'ECONNABORTED':
       // 网络超时
-      eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: !notAllExit})
+      eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+      break
+    default:
+      eventsHub.$emit('toast', {text: data.desc || data.message || '', icon: 'icon-sync-info', iconLoading: false, allExit: false})
   }
 }
 export { os, formatDate, getCurEnvs, errorHandling }
