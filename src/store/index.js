@@ -47,7 +47,7 @@ export default function createStore () {
             yearList: [],
             scoreSetList: [],
             scoreList: [],
-            getMusicList: [],
+            musicList: [],
             differList: [],
             materialList: {
               body: [], sumPage: 1

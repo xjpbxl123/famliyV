@@ -679,9 +679,6 @@
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
         },
-        musicList: function (state) {
-          return state.storage.cache.renderCache.musicList
-        },
         hotBooks: function (state) {
           let hotBooks = state.storage.cache.renderCache.hottest
           this.hasLoaded = !!hotBooks.bookList.length
@@ -693,7 +690,7 @@
           return recentBooks
         }
       }),
-      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
+      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList'])
     },
     watch: {
       /**
@@ -1198,10 +1195,6 @@
         let musicIds = []
         let allMusics = []
         let styleId = null
-        let styleName = ''
-        if (musicObj.styleName !== '') {
-          styleName = musicObj.styleName[0]
-        }
         switch (musicObj.styleName[0]) {
           case '钢琴独奏版':
             styleId = 1
@@ -1219,7 +1212,7 @@
             styleId = 7
             break
         }
-        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then(() => {
+        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then((data) => {
           let list = this.musicList[bookId]
           if (list) {
             // 有缓存
@@ -1261,6 +1254,7 @@
               } else {
                 // 打开失败
                 console.log('打开失败')
+                eventsHub.$emit('toast', {text: '打开曲谱失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 this.isOpeningScore = false
                 this.hideOtherButtons = false
                 this.canEnterModule = true
@@ -1268,38 +1262,12 @@
               }
             })
           } else {
-            // 无缓存
-            let musicInfo = {}
-            musicInfo.bookName = musicObj.bookName || ''
-            musicInfo.musicOrigin = 'bookList'
-            musicInfo.musicId = musicId
-            musicInfo.musicName = musicObj.name || musicObj.musicName
-            musicInfo.curMusicId = musicId
-            musicInfo.styleName = styleName
-            musicInfo.styleId = styleId
-            musicInfo.musicVersions = [[musicId, styleName]]
-            allMusics.push(musicInfo)
-            musicIds.push(musicId)
-            console.log({musicId, musicIds, allMusics, tick})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
-              this.loading = false
-              console.log('loading结束')
-              eventsHub.$emit('closeToast')
-              if (data) {
-                // 打开曲谱成功
-                this.isOpeningScore = true
-                if (this.isPlaying) {
-                  this.isPlaying = false
-                  this.$refs.player.pause()
-                }
-              } else {
-                // 打开失败
-                this.isOpeningScore = false
-                this.hideOtherButtons = false
-                this.canEnterModule = true
-                this.openMusicScore = false
-              }
-            })
+            this.isOpeningScore = false
+            this.hideOtherButtons = false
+            this.loading = false
+            this.canEnterModule = true
+            this.openMusicScore = false
+            errorHandling(data)
           }
         })
       },
@@ -1322,9 +1290,19 @@
         }
         return {musicObj: musicObj, list: list1}
       },
+      playLoop (musicList, musicIndex) {
+        if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
+          this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+          this.clickedMusicId = musicList[musicIndex + 1].musicId
+          this.clickedIndex = musicIndex + 1
+          this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+        } else {
+          this.isPlaying = false
+          this.hideOtherButtons = false
+        }
+      },
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
-
         this.loading = true
         console.log('loading开始')
         eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
@@ -1341,25 +1319,22 @@
             eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.hideOtherButtons = false
             // 当前是自动播放则继续播放下一首
-            if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
-              this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-              this.clickedMusicId = musicList[musicIndex + 1].musicId
-              this.clickedIndex = musicIndex + 1
-              this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-            } else {
-              this.hideOtherButtons = false
-            }
+            this.playLoop()
             return
           }
+          let hasR = false
           musicInfo.files.forEach((value) => {
             if (value.musicId === musicId) {
+              hasR = true
               let Mid = value.bMid
               if (!value.bMid.url) {
                 if (!value.mMid.url) {
                   this.loading = false
                   this.initPlayer()
-                  eventsHub.$emit('toast', {text: 'mid加载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
+                  // 当前是自动播放则继续播放下一首
+                  this.playLoop()
                   return
                 }
                 Mid = value.mMid
@@ -1372,6 +1347,16 @@
               midiData.md5 = Mid.md5
             }
           })
+          if (!hasR) {
+            // 找不到曲谱
+            this.loading = false
+            this.initPlayer()
+            eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            this.hideOtherButtons = false
+            // 当前是自动播放则继续播放下一首
+            this.playLoop()
+            return
+          }
           let mp3ExitObj = {
             url: mp3Data.url,
             md5: mp3Data.md5,
@@ -1389,7 +1374,17 @@
               // 本地没有 去下载
               let downloadObj = {...exixtObj, fsize: midiData.fsize}
               download.downloadFile(downloadObj).then((data) => {
-                this.playerSource.mid.midiUrl = data.path
+                console.log(data, 'downloadData')
+                if (data.path) {
+                  this.playerSource.mid.midiUrl = data.path
+                } else {
+                  this.loading = false
+                  this.initPlayer()
+                  this.hideOtherButtons = false
+                  eventsHub.$emit('toast', {text: '曲谱信息下载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  // 当前是自动播放则继续播放下一首
+                  this.playLoop()
+                }
               })
             } else {
               // 判断有无mp3
@@ -1416,8 +1411,8 @@
       },
       initPlayer () {
         if (this.isPlaying) {
-          this.$ref.player().pause()
-          this.$ref.player().reset()
+          this.$refs.player.pause()
+          this.$refs.player.reset()
         }
       },
       playerInitComplete (data) {
@@ -1445,7 +1440,6 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
-
         this.$refs.player.play().then(() => {
           this.isPlaying = false
           if (this.isPlayingType !== this.rightType) {
