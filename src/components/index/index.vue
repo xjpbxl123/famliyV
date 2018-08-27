@@ -168,7 +168,7 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import { modules, download, global } from 'find-sdk'
+  import { modules, download } from 'find-sdk'
   import initData from './initData.js'
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
@@ -910,7 +910,7 @@
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
                   this.logoutCover = !this.logoutCover
-                  eventsHub.$emit('close')
+                  eventsHub.$emit('closeToast')
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
@@ -1075,6 +1075,7 @@
             break
           case 'right-play':
             // 右侧列表play事件
+
             console.log('单击')
             let musicObj = this.getRightData().musicObj
             let list = this.getRightData().list
@@ -1323,6 +1324,7 @@
       },
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
+
         this.loading = true
         console.log('loading开始')
         eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
@@ -1384,31 +1386,10 @@
           // 判断文件是否存在
           modules.download.fileIsExists(exixtObj).then((res) => {
             if (!res.path) {
-              global.getStatusBarItem().then((status) => {
-                if (!status.wifi.title) {
-                  // 当前曲谱文件没有缓存并且没有网络则提示
-                  this.loading = false
-                  this.initPlayer()
-                  eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-                  this.hideOtherButtons = false
-                  // 如果是自动播放即继续播放下一首
-                  if (this.autoPlay) {
-                    if (musicIndex + 1 <= musicList.length - 1) {
-                      this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                      this.clickedMusicId = musicList[musicIndex + 1].musicId
-                      this.clickedIndex = musicIndex + 1
-                      this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-                    }
-                  } else {
-                    this.hideOtherButtons = false
-                  }
-                } else {
-                  // 去下载
-                  let downloadObj = {...exixtObj, fsize: midiData.fsize}
-                  download.downloadFile(downloadObj).then((data) => {
-                    this.playerSource.mid.midiUrl = data.path
-                  })
-                }
+              // 本地没有 去下载
+              let downloadObj = {...exixtObj, fsize: midiData.fsize}
+              download.downloadFile(downloadObj).then((data) => {
+                this.playerSource.mid.midiUrl = data.path
               })
             } else {
               // 判断有无mp3
