@@ -68,14 +68,14 @@
         &::before {
           content: '';
           position: absolute;
-          bottom: -116px;
-          left: -5px;
-          width: 460px;
-          height: 100px;
+          bottom: -118px;
+          left: 0;
+          width: 450px;
+          height: 102px;
         }
         .icon {
           position: absolute;
-          width: 240px;
+          width: 266px;
           height: 188px;
           bottom: 0px;
           right: 0;
@@ -94,7 +94,7 @@
             bottom: 29px;
             width:100%;
             font-size:55px;
-            text-indent: 57px;
+            text-indent: 51px;
             font-family:MicrosoftYaHei;
             font-weight:400;
             font-weight: 600;
