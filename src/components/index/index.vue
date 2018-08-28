@@ -836,6 +836,10 @@
        * @desc 右侧列表鼠标选中
        * */
       setRightSelect (index) {
+        if (this.loading) {
+          // loading过程中不可点
+          return
+        }
         this.$store.dispatch('index/setRightSelect', index).then(() => {
           this.buttonActions('right-play')
         })
@@ -1319,14 +1323,14 @@
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
-          console.log('拿到列表信息--2')
+          console.log('列表请求返回--2')
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
             // 曲谱数据没有缓存并且没有网络的时候提示
+            console.log('曲谱数据没有缓存并且没有网络的时候提示')
             errorHandling(data)
             this.loading = false
             this.initPlayer()
-            eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.hideOtherButtons = false
             // 当前是自动播放则继续播放下一首
             this.playLoop(musicList, musicIndex)
@@ -1359,6 +1363,7 @@
           })
           if (!hasR) {
             // 找不到曲谱
+            console.log('找不到曲谱')
             this.loading = false
             this.initPlayer()
             eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
@@ -1377,15 +1382,17 @@
             md5: midiData.md5,
             localPath: '$filesCache/' + musicId
           }
-
+          console.log('判断文件是否存在')
           // 判断文件是否存在
           modules.download.fileIsExists(exixtObj).then((res) => {
             if (!res.path) {
               // 本地没有 去下载
+              console.log('本地没有 去下载')
               let downloadObj = {...exixtObj, fsize: midiData.fsize}
               download.downloadFile(downloadObj).then((data) => {
-                console.log(data, '下载成功--3')
+                console.log(data, '下载完成--3')
                 if (data.path) {
+                  console.log(data, '给播放器赋值--3')
                   this.playerSource.mid.midiUrl = data.path
                 } else {
                   this.loading = false
@@ -1398,6 +1405,7 @@
               })
             } else {
               // 判断有无mp3
+              console.log('本地有 去判断有没有mp3', mp3ExitObj)
               modules.download.fileIsExists(mp3ExitObj).then((data) => {
                 console.log(data, '判断有无mp3--4')
                 if (data.path) {
@@ -1407,14 +1415,15 @@
                       accompanyUrl: data.path
                     }
                   }
+                  console.log('有mp3, 给播放器赋值', this.playerSource)
                 } else {
                   this.playerSource = {
                     mid: {
                       midiUrl: res.path
                     }
                   }
+                  console.log('没有mp3, 给播放器赋值', this.playerSource)
                 }
-                console.log(this.playerSource, 'this.playerSource')
               })
             }
           })
@@ -1459,6 +1468,10 @@
         }
         this.playSet()
         this.$refs.player.play().then(() => {
+          if (this.loading) {
+            // 如果正在loading 不自动切
+            return
+          }
           this.isPlaying = false
           if (this.isPlayingType !== this.rightType) {
             // 列表切换回来
