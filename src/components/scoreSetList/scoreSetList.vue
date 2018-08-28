@@ -163,7 +163,7 @@
       }
     },
     methods: {
-      getScoreSetList (page) {
+      getScoreSetList () {
         this.$store.dispatch({
           type: 'scoreSetList/getScoreSetList',
           setId: this.$route.query.setId
@@ -227,7 +227,7 @@
           console.log('nextPage')
           if (type === 'down') {
             if (this.scoreListPageIndex + 2 === this.totalPage) {
-              index = Math.min(index, (this.scoreSetList.length) % 20 - 1)
+              index = Math.min(index - 20, (this.scoreSetList.length) % 20 - 1)
             } else {
               index = scoreListIndex - 20
             }
@@ -237,6 +237,9 @@
           this.$store.dispatch('scoreSetList/setScoreListPageIndex', this.scoreListPageIndex + 1)
         }
         this.$store.dispatch('scoreSetList/setScoreListIndex', Math.min(index, this.scoreSetListItem.length - 1))
+      },
+      down () {
+
       },
       pre (scoreListIndex, type) {
         let index = scoreListIndex

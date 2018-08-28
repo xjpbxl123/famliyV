@@ -1079,7 +1079,6 @@
             break
           case 'right-play':
             // 右侧列表play事件
-
             console.log('单击')
             let musicObj = this.getRightData().musicObj
             let list = this.getRightData().list
@@ -1194,7 +1193,7 @@
       },
       player (musicObj, tick) {
         this.loading = true
-        console.log('loading开始')
+        console.log('loading开始--1')
         eventsHub.$emit('toast', {text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
         this.playSet()
         let musicId = parseInt(musicObj.musicId)
@@ -1220,9 +1219,11 @@
             break
         }
         this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then((data) => {
+          console.log('曲谱列表请求回来--2')
           let list = this.musicList[bookId]
           if (list) {
             // 有缓存
+            console.log('有数据')
             list.forEach((data) => {
               let id = data.musicId
               let eachMusic = {}
@@ -1269,6 +1270,7 @@
               }
             })
           } else {
+            console.log('没有列表数据数据 判断网络情况')
             this.isOpeningScore = false
             this.hideOtherButtons = false
             this.loading = false
@@ -1311,12 +1313,13 @@
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
         this.loading = true
-        console.log('loading开始')
+        console.log('loading开始--1')
         eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
+          console.log('拿到列表信息--2')
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
             // 曲谱数据没有缓存并且没有网络的时候提示
@@ -1326,7 +1329,7 @@
             eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.hideOtherButtons = false
             // 当前是自动播放则继续播放下一首
-            this.playLoop()
+            this.playLoop(musicList, musicIndex)
             return
           }
           let hasR = false
@@ -1341,7 +1344,7 @@
                   eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.hideOtherButtons = false
                   // 当前是自动播放则继续播放下一首
-                  this.playLoop()
+                  this.playLoop(musicList, musicIndex)
                   return
                 }
                 Mid = value.mMid
@@ -1361,7 +1364,7 @@
             eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.hideOtherButtons = false
             // 当前是自动播放则继续播放下一首
-            this.playLoop()
+            this.playLoop(musicList, musicIndex)
             return
           }
           let mp3ExitObj = {
@@ -1381,7 +1384,7 @@
               // 本地没有 去下载
               let downloadObj = {...exixtObj, fsize: midiData.fsize}
               download.downloadFile(downloadObj).then((data) => {
-                console.log(data, 'downloadData')
+                console.log(data, '下载成功--3')
                 if (data.path) {
                   this.playerSource.mid.midiUrl = data.path
                 } else {
@@ -1390,12 +1393,13 @@
                   this.hideOtherButtons = false
                   eventsHub.$emit('toast', {text: '曲谱信息下载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   // 当前是自动播放则继续播放下一首
-                  this.playLoop()
+                  this.playLoop(musicList, musicIndex)
                 }
               })
             } else {
               // 判断有无mp3
               modules.download.fileIsExists(mp3ExitObj).then((data) => {
+                console.log(data, '判断有无mp3--4')
                 if (data.path) {
                   this.playerSource = {
                     mp3: {
@@ -1424,8 +1428,14 @@
       },
       playerInitComplete (data) {
         // 播放器加载成功
-        if (data.reason === 'midi url is null.') {
-          return
+        console.log(data, '播放器加载成功')
+        if (!data.result) {
+          if (this.loading) {
+            eventsHub.$emit('toast', {text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            this.loading = false
+            this.hideOtherButtons = false
+            return
+          }
         }
         this.loading = false
         console.log('loading结束，开始播放曲谱')
@@ -1447,6 +1457,7 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
+        this.playSet()
         this.$refs.player.play().then(() => {
           this.isPlaying = false
           if (this.isPlayingType !== this.rightType) {
@@ -1467,7 +1478,6 @@
           this.clickedMusicId = list[rightActiveIndex].musicId
           this.playMidi(list[this.clickedIndex].musicId, list, this.clickedIndex)
         })
-        this.playSet()
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
         this.isPlayingIndex = this.clickedIndex

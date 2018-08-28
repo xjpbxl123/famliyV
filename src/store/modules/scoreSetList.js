@@ -39,7 +39,9 @@ export default {
         }
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true})
+          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true}).then(() => {
+            return dispatch('setTotalPage', Math.ceil(res.body.sum / 20))
+          })
         }
       }).catch((error) => {
         return error
