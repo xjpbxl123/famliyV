@@ -705,6 +705,13 @@
         }
       },
       isLogin (val) {
+        if (this.isPlaying) {
+          this.$refs.player.pause()
+          this.$refs.player.reset()
+          this.isPlaying = false
+          this.hideOtherButtons = false
+        }
+        this.$store.dispatch('index/setRightSelect', 0)
         if (val) {
           this.userActionButtons[1].text = '注销'
           this.getRecentOpenList()
