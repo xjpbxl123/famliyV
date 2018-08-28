@@ -141,11 +141,8 @@
     KEY68,
     KEY69,
     KEY70,
-    KEY102,
-    KEY73,
-    LONG_KEY73,
     KEY75,
-    LONG_KEY75,
+    KEY102,
     KEY78,
     LONG_KEY78,
     KEY80,
@@ -172,8 +169,6 @@
   import initData from './initData.js'
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
-  const lefts = [11, 4, 8]
-  const rights = [7, 10, 3]
   export default {
     data () {
       return {
@@ -247,7 +242,7 @@
             id: 100
           },
           {
-            pianoKey: 73,
+            pianoKey: 78,
             text: '',
             icon: '0xe660',
             backgroundColor: '#3000',
@@ -256,30 +251,12 @@
             longClick: true
           },
           {
-            pianoKey: 75,
+            pianoKey: 80,
             text: '',
             icon: '0xe65b',
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 12,
-            longClick: true
-          },
-          {
-            pianoKey: 78,
-            text: '',
-            icon: '0xe63b',
-            backgroundColor: '#3000',
-            dotColor: '#fff',
-            id: 13,
-            longClick: true
-          },
-          {
-            pianoKey: 80,
-            text: '',
-            icon: '0xe650',
-            backgroundColor: '#3000',
-            dotColor: '#fff',
-            id: 14,
             longClick: true
           },
           {
@@ -513,34 +490,25 @@
           this.buttonActions('shutdown')
         }
       },
-      [KEY73] () {
-        this.buttonActions('left')
-      },
-      [LONG_KEY73] () {
-        this.buttonActions('left')
-      },
       [KEY75] () {
-        !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
-      },
-      [LONG_KEY75] () {
-        this.buttonActions('right')
+        if (!this.logoutCover) this.buttonActions('login')
       },
       [KEY78] () {
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
         } else {
-          this.buttonActions('up')
+          this.buttonActions('left')
         }
       },
       [LONG_KEY78] () {
-        this.buttonActions('up')
+        this.buttonActions('left')
       },
       [KEY80] () {
-        this.buttonActions('down')
+        this.buttonActions('right')
       },
       [LONG_KEY80] () {
-        this.buttonActions('down')
+        this.buttonActions('right')
       },
       [KEY82] () {
         this.buttonActions('ok')
@@ -987,46 +955,10 @@
             })
             break
           case 'left':
-            if (activeIndex <= 0) {
-              return
-            }
-            let leftIndex = lefts.indexOf(activeIndex)
-            if (leftIndex !== -1) {
-              activeIndex = rights[leftIndex]
-            } else {
-              activeIndex--
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
+            this.$store.dispatch('index/setSelected', Math.max(activeIndex - 1, 0))
             break
           case 'right':
-            if (activeIndex === 13) {
-              return
-            }
-            let rightIndex = rights.indexOf(activeIndex)
-            if (rightIndex !== -1) {
-              activeIndex = lefts[rightIndex]
-            } else {
-              activeIndex++
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
-            break
-          case 'up':
-            /// 处理热门曲谱的index
-            if (activeIndex > 10) {
-              activeIndex -= 3
-            } else if (activeIndex >= 4 && activeIndex < 8) {
-              activeIndex -= 4
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
-            break
-          case 'down':
-            /// 处理热门曲谱的index
-            if (activeIndex > 7 && activeIndex <= 10) {
-              activeIndex += 3
-            } else if (activeIndex < 4) {
-              activeIndex += 4
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
+            this.$store.dispatch('index/setSelected', Math.min(activeIndex + 1, 3))
             break
           case 'tone':
             return modules.nativeRouter.openTimbreView()
