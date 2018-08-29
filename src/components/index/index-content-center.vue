@@ -1,6 +1,5 @@
 <template>
   <div class="box">
-    <div class="rr"></div>
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
@@ -81,7 +80,7 @@
   .box {
     display: flex;
     .pages {
-      margin-left: 261px;
+      margin-left: 309px;
       margin-top: 149px;
       li {
         width: 450px;
@@ -167,7 +166,7 @@
         &:nth-child(1) {
           background: url('./images/famous_bg.png') no-repeat;
           background-size: cover;
-          margin-right: 109px;
+          margin-right: 140px;
           .icon {
             background: url('./images/famous_icon.png') no-repeat;
             background-size: cover;
@@ -200,7 +199,7 @@
           }
         }
         &:nth-child(2) {
-          margin-right: 172px;
+          margin-right: 207px;
           background: url('./images/popular_bg.png') no-repeat;
           background-size: cover;
           .img {
@@ -237,7 +236,7 @@
         &:nth-child(3) {
           background: url('./images/kindom_bg.png') no-repeat;
           background-size: cover;
-          margin-right: 109px;
+          margin-right: 140px;
           .img {
             position: absolute;
             background: url('./images/kindom_img.png') no-repeat;
