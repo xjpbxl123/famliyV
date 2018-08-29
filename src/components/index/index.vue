@@ -599,16 +599,6 @@
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
-        },
-        hotBooks: function (state) {
-          let hotBooks = state.storage.cache.renderCache.hottest
-          this.hasLoaded = !!hotBooks.bookList.length
-          return hotBooks
-        },
-        recentBooks: function (state) {
-          let recentBooks = state.storage.cache.renderCache.recentUpdate
-          this.hasLoaded = !!recentBooks.bookList.length
-          return recentBooks
         }
       }),
       ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList'])
@@ -640,9 +630,6 @@
         } else {
           this.userActionButtons[1].text = '登录'
         }
-      },
-      sessionId (val) {
-        this.initializeData()
       }
     },
     methods: {

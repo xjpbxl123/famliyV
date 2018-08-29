@@ -39,10 +39,6 @@ export default function createStore () {
           renderCache: {
             famousAuthor: {},
             allArtists: {authors: []},
-            hottest: {bookList: []},
-            hottestAll: {bookList: []},
-            recentUpdate: {bookList: []},
-            recentUpdateAll: {bookList: []},
             recentOpenList: [],
             popularGenre: [],
             collectList: [],

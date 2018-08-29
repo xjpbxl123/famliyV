@@ -1,5 +1,5 @@
 <template>
-  <li class="famous-book-item" :class="select==index && 'active'">
+  <li class="famous-book-item" :class="select==index && 'active'" @click="setFamousBookSelect(index)">
     <slot></slot>
   </li>
 </template>
@@ -44,6 +44,9 @@
       },
       item: {
         type: Object
+      },
+      setFamousBookSelect: {
+        type: Function
       }
     },
     data () {

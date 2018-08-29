@@ -32,7 +32,11 @@ export default {
         ...defaultData,
         cmd: 'artist.getAllArtistsToFamily'
       }).then(({body}) => {
-        body && dispatch('setCacheToStorage', {allArtists: body}, {root: true})
+        if (body) {
+          return dispatch('setCacheToStorage', {allArtists: body}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     getCourseSetByArtistToFamily ({dispatch}, data) {
@@ -41,7 +45,11 @@ export default {
         ...data,
         cmd: 'artist.getCourseSetByArtistToFamily'
       }).then(({body}) => {
-        body && dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
+        if (body) {
+          dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     getCoursesBySet ({dispatch}, {courseSetID}) {
@@ -61,6 +69,8 @@ export default {
         } else {
           return data
         }
+      }).catch((error) => {
+        return error
       })
     },
     /**

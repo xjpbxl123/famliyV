@@ -2,7 +2,7 @@
   <div class="famous-book-wrap">
     <ul class="famous-book-swiper" :style="{ transform: `translateX(${left}px)` }">
       <famous-book-item v-for="(item,index) in famousBookList" :item='item' :index='index' :select="select"
-                        :key="index">
+                        :key="index" :setFamousBookSelect="setFamousBookSelect">
         <div class="famous-book-bar">
           {{item.desc}}
         </div>
@@ -71,6 +71,9 @@
       },
       select: {
         type: Number
+      },
+      setFamousBookSelect: {
+        type: Function
       }
     },
     data () {

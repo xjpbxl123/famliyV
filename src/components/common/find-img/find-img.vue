@@ -52,12 +52,15 @@
       convertLocalImages (src) {
         if (src.indexOf('./static') !== -1) {
           this.url = this.src
+          this.showTitle = false
           return
         }
         window.fp.modules.file.cacheUrl(src).then(data => {
           if (data.code === 0) {
             this.url = data.url
+            this.showTitle = false
           } else {
+            this.showTitle = true
             this.url = this.errorImage
             console.log(data.desc)
           }
@@ -69,7 +72,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .image {
     width: 100%;
     height: 100%;

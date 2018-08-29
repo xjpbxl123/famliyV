@@ -1,5 +1,5 @@
 <template>
-  <li class="famous-item" :class="index == select && 'active'"
+  <li class="famous-item" :class="index == select && 'active'" @click="setFamousSetSelect(index)"
       :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}">
     <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage" :text="famous.name"/>
   </li>
@@ -13,7 +13,8 @@
     props: {
       select: {type: Number, default: 0},
       index: {type: Number, default: 0},
-      famous: {type: Object}
+      famous: {type: Object},
+      setFamousSetSelect: {type: Function}
     },
     data () {
       return {
@@ -70,7 +71,7 @@
       z-index: 10;
     }
     &.active {
-      margin-right: 15px;
+      margin-right: 10px;
       &:after {
         border: 6px solid #00A2E7;
         img {
@@ -79,10 +80,17 @@
         }
       }
     }
-    .image {
-      width: 100%;
-      position: absolute;
-      bottom: 0;
-    }
   }
+</style>
+<style lang="scss" type=text/scss>
+.famous-item {
+  .image {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+      img {
+        height: auto !important;
+      }
+    }
+}
 </style>

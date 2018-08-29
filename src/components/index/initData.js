@@ -1,21 +1,8 @@
 /**
  * Created by Tommy on 2018/5/23 .
  * */
-import {errorHandling} from '../../scripts/utils'
 export default {
   methods: {
-    /**
-     * @desc  初始化首页曲谱
-     * */
-    initializeData () {
-      return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
-        if (!this.hasLoaded && !data.hottest) {
-          // 没有缓存并且没有数据
-          errorHandling(data)
-        }
-        return this.$store.dispatch({type: 'index/getRecentBooks'})
-      })
-    },
     /**
      * @desc 右侧最近打开数据
      * */
@@ -72,7 +59,6 @@ export default {
     }
   },
   created () {
-    this.initializeData()
     this.getRecentOpenList()
     this.getCollectList()
     this.getUserStatus()

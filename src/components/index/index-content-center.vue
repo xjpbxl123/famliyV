@@ -6,29 +6,10 @@
         <div class="img"></div>
         <div class="icon"></div>
         <div class="bottom" v-if="selectedIndex !== index"></div>
-        <!-- <div class="wave" v-else>
+        <div class="wave" v-else>
           <span class="wave1"></span>
           <span class="wave2"></span>
-        </div> -->
-        <!-- <svg class="wave" version="1.1" xmlns="http://www.w3.org/2000/svg">
-          <g id="wave">
-              <path id="wave-1" fill="rgba(105,105,255,0.6)" d="M 0 100 C 133.633 85.12 51.54 116.327 200 100 A 95 95 0 0 1 0 100 Z">
-              <animate dur="2s" repeatCount="indefinite" attributeName="d" attributeType="XML" values="M0 100 C90 28, 92 179, 200 100 A95 95 0 0 1 0 100 Z;
-                                          M0 100 C145 100, 41 100, 200 100 A95 95 0 0 1 0 100 Z;
-                                          M0 100 C90 28, 92 179, 200 100 A95 95 0 0 1 0 100 Z"></animate>
-              </path>
-          </g>
-        </svg> -->
-        <svg class="wave" v-else>
-          <g class="wave1" stroke-linecap="butt" :fill=opa1 >
-              <path d="M 0 70 Q 75 39, 150 70 T 300 70 T 450 70 T 600 70 T 750 70 V 400 H 0 V 0"></path>
-              <animateTransform attributeName="transform" attributeType="XML" type="translate" from="0" to="-300" dur="1.5s" repeatCount="indefinite"></animateTransform>
-          </g>
-          <g :fill=opa2 class="wave2">
-              <path d="M 0 70 Q 87.5 47, 175 70 T 350 70 T 525 70 T 700 70 T 875 70 T 1050 70 V 500 H 0 V 0"></path>
-              <animateTransform attributeName="transform" attributeType="XML" type="translate" from="0" to="-350" dur="3s" repeatCount="indefinite"></animateTransform>
-          </g>
-        </svg>
+        </div>
         <span v-text="item.text" class="moduleName"></span>
       </li>
     </ul>
@@ -150,28 +131,25 @@
           bottom: 0;
           left: 0;
           width:100%;
-          height:317px;
-          opacity:0.9;
+          height:268px;
           border-radius: 10px;
           z-index: 120;
           .wave1 {
             position: absolute;
             bottom: 0;
             left: 0;
-            height: 300px;
+            height: 268px;
             width: 100%;
-            background: url('./images/wave1.png') no-repeat;
-            background-size: cover;
+            animation: wave1 5s linear infinite;
           }
           .wave2 {
             position: absolute;
             bottom: 0;
             left: 0;
-            height: 310px;
+            height: 258px;
             width: 100%;
-            background: url('./images/wave1.png') no-repeat;
-            background-size: cover;
-            animation: wave2 2s ease-in-out both infinite;
+            background-position: 0 bottom;
+            animation: wave2 2s linear infinite;
           }
         }
         .moduleName {
@@ -203,8 +181,18 @@
             left: -110px;
             top: 0;
           }
+          .wave {
+            .wave1 {
+              background: url('./images/purple1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/purple2.png');
+              background-size: 100% 100%;
+            }
+          }
           .bottom {
-            background:linear-gradient(0deg,rgba(105,105,255,1) 0%,rgba(190,168,255,1) 100%);
+            background:linear-gradient(0deg,rgb(18, 18, 66) 0%,rgba(190,168,255,1) 100%);
           }
           &::before {
             background: url('./images/famous_bottom.png') no-repeat;
@@ -223,6 +211,16 @@
             height: 525px;
             right: -20px;
             top: 67px;
+          }
+          .wave {
+            .wave1 {
+              background: url('./images/green1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/green2.png');
+              background-size: 100% 100%;
+            }
           }
           .icon {
             background: url('./images/popular_icon.png') no-repeat;
@@ -250,6 +248,16 @@
             top: -20px;
             z-index: 100;
           }
+          .wave {
+            .wave1 {
+              background: url('./images/yellow1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/yellow2.png');
+              background-size: 100% 100%;
+            }
+          }
           .icon {
             background: url('./images/kindom_icon.png') no-repeat;
             background-size: cover;
@@ -276,6 +284,16 @@
             top: 15px;
             z-index: 100;
           }
+          .wave {
+            .wave1 {
+              background: url('./images/blue1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/blue2.png');
+              background-size: 100% 100%;
+            }
+          }
           .icon {
             background: url('./images/material_icon.png') no-repeat;
             background-size: cover;
@@ -293,10 +311,12 @@
   }
   @keyframes wave1{
     0% {background-position: 0 bottom;}
-    100% {background-position: 10px bottom;}
+    50% {background-position: 225px bottom;}
+    100% {background-position: 450px bottom;}
   }
   @keyframes wave2{
     0% {background-position: 0 bottom;}
-    100% {background-position: 10px bottom;}
+    50% {background-position: 225px bottom;}
+    100% {background-position: 450px bottom;}
   }
 </style>
