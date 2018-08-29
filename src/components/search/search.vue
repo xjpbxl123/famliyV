@@ -3,7 +3,7 @@
     <statusBar/>
     <musicList :list="musicList" :listIndex="listIndex"/>
     <span class="searchIcon iconfont icon-search" v-show="initDataComplete"></span>
-    <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autoFocus="true">
+    <input type="text" class="searchInput" placeholder="曲谱或作者首字母搜索"  v-show="initDataComplete" v-model="searchName" autofocus="autofocus">
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
               :key="button.pianoKey"

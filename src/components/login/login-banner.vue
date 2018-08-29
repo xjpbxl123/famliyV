@@ -4,7 +4,7 @@
       <h1 class="logo"></h1>
       <div class="account" :class="{active:accountActive}">
         <i class="iconfont icon-username"></i>
-        <input type="text" placeholder="用户名" title="账号" v-model="account" @focus="setFocus('account')">
+        <input type="text" placeholder="用户名" title="账号" v-model="account" @focus="setFocus('account')"  autofocus="autofocus">
       </div>
       <div class="password" :class="{active:passwordActive}">
         <i class="iconfont icon-password"></i>
