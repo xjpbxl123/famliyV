@@ -2,12 +2,34 @@
   <div class="box">
     <div class="rr"></div>
     <ul class="pages">
-      <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}">
+      <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
         <div class="icon"></div>
-        <div class="bottom">
-          <span v-text="item.text"></span>
-        </div>
+        <div class="bottom" v-if="selectedIndex !== index"></div>
+        <!-- <div class="wave" v-else>
+          <span class="wave1"></span>
+          <span class="wave2"></span>
+        </div> -->
+        <!-- <svg class="wave" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <g id="wave">
+              <path id="wave-1" fill="rgba(105,105,255,0.6)" d="M 0 100 C 133.633 85.12 51.54 116.327 200 100 A 95 95 0 0 1 0 100 Z">
+              <animate dur="2s" repeatCount="indefinite" attributeName="d" attributeType="XML" values="M0 100 C90 28, 92 179, 200 100 A95 95 0 0 1 0 100 Z;
+                                          M0 100 C145 100, 41 100, 200 100 A95 95 0 0 1 0 100 Z;
+                                          M0 100 C90 28, 92 179, 200 100 A95 95 0 0 1 0 100 Z"></animate>
+              </path>
+          </g>
+        </svg> -->
+        <svg class="wave" v-else>
+          <g class="wave1" stroke-linecap="butt" :fill=opa1 >
+              <path d="M 0 70 Q 75 39, 150 70 T 300 70 T 450 70 T 600 70 T 750 70 V 400 H 0 V 0"></path>
+              <animateTransform attributeName="transform" attributeType="XML" type="translate" from="0" to="-300" dur="1.5s" repeatCount="indefinite"></animateTransform>
+          </g>
+          <g :fill=opa2 class="wave2">
+              <path d="M 0 70 Q 87.5 47, 175 70 T 350 70 T 525 70 T 700 70 T 875 70 T 1050 70 V 500 H 0 V 0"></path>
+              <animateTransform attributeName="transform" attributeType="XML" type="translate" from="0" to="-350" dur="3s" repeatCount="indefinite"></animateTransform>
+          </g>
+        </svg>
+        <span v-text="item.text" class="moduleName"></span>
       </li>
     </ul>
   </div>
@@ -19,6 +41,9 @@
       selectedIndex: {
         default: 0,
         type: Number
+      },
+      setCenterSelect: {
+        type: Function
       }
     },
     components: {
@@ -33,10 +58,40 @@
           text: '音乐王国'
         }, {
           text: '教材练习'
-        }]
+        }],
+        opa1: 'rgba(105,105,255,0.7)',
+        opa2: 'rgba(105, 105, 255, 0.8)'
+      }
+    },
+    watch: {
+      selectedIndex: function (val) {
+        this.opa(val)
+      }
+    },
+    methods: {
+      opa (selectIndex) {
+        switch (selectIndex) {
+          case 0:
+            this.opa1 = 'rgba(105, 105, 255, 0.7)'
+            this.opa2 = 'rgba(105, 105, 255, 0.8)'
+            break
+          case 1:
+            this.opa1 = 'rgba(0,171,126,0.7)'
+            this.opa2 = 'rgba(0,171,126,0.8)'
+            break
+          case 2:
+            this.opa1 = 'rgba(252,174,35, 0.7)'
+            this.opa2 = 'rgba(252,174,35, 0.8)'
+            break
+          case 3:
+            this.opa1 = 'rgba(51,130,219, 0.7)'
+            this.opa2 = 'rgba(51,130,219, 0.8)'
+            break
+        }
       }
     },
     created () {
+      this.opa(this.selectedIndex)
     }
   }
 </script>
@@ -89,24 +144,64 @@
           height:200px;
           opacity:0.9;
           border-radius: 10px;
-          span {
+        }
+        .wave {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width:100%;
+          height:317px;
+          opacity:0.9;
+          border-radius: 10px;
+          z-index: 120;
+          .wave1 {
             position: absolute;
-            bottom: 29px;
-            width:100%;
-            font-size:55px;
-            text-indent: 51px;
-            font-family:MicrosoftYaHei;
-            font-weight:400;
-            font-weight: 600;
-            color:rgba(255,254,254,1);
+            bottom: 0;
+            left: 0;
+            height: 300px;
+            width: 100%;
+            background: url('./images/wave1.png') no-repeat;
+            background-size: cover;
+          }
+          .wave2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 310px;
+            width: 100%;
+            background: url('./images/wave1.png') no-repeat;
+            background-size: cover;
+            animation: wave2 2s ease-in-out both infinite;
           }
         }
+        .moduleName {
+          position: absolute;
+          bottom: 29px;
+          width:100%;
+          font-size:55px;
+          text-indent: 51px;
+          font-family:MicrosoftYaHei;
+          font-weight:400;
+          font-weight: 600;
+          z-index: 200;
+          color:rgba(255,254,254,1);
+      }
         &:nth-child(1) {
-          background: pink;
+          background: url('./images/famous_bg.png') no-repeat;
+          background-size: cover;
           margin-right: 109px;
           .icon {
             background: url('./images/famous_icon.png') no-repeat;
             background-size: cover;
+          }
+          .img {
+            position: absolute;
+            background: url('./images/famous_img.png') no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            left: -110px;
+            top: 0;
           }
           .bottom {
             background:linear-gradient(0deg,rgba(105,105,255,1) 0%,rgba(190,168,255,1) 100%);
@@ -149,8 +244,8 @@
             position: absolute;
             background: url('./images/kindom_img.png') no-repeat;
             background-size: cover;
-            width: 520px;
-            height: 560px;
+            width: 534px;
+            height: 580px;
             left: -30px;
             top: -20px;
             z-index: 100;
@@ -195,5 +290,13 @@
         }
       }
     }
+  }
+  @keyframes wave1{
+    0% {background-position: 0 bottom;}
+    100% {background-position: 10px bottom;}
+  }
+  @keyframes wave2{
+    0% {background-position: 0 bottom;}
+    100% {background-position: 10px bottom;}
   }
 </style>

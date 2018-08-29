@@ -14,9 +14,6 @@
         :isCalendar="isCalendar"
       />
       <content-center
-        :endIndex.sync="endIndex"
-        :recentBooks="recentBooks"
-        :hotBooks="hotBooks"
         :setCenterSelect="setCenterSelect"
         :selectedIndex="selectedIndex"/>
       <bannerRight
@@ -132,10 +129,6 @@
     KEY39,
     KEY42,
     KEY46,
-    KEY49,
-    KEY51,
-    KEY54,
-    KEY58,
     KEY66,
     KEY67,
     KEY68,
@@ -213,13 +206,9 @@
           }
         ],
         bigBUtton: [
-          {id: 7, pianoKey: 39, text: '流行经典', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
-          {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
-          {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionPixels: -30, style: {backgroundColor: '#C499FF,#A15CFF', dotColor: '#A15CFF'}},
-          {id: 5, pianoKey: 51, text: '弹奏录制', icon: '0xe615', positionPixels: 30, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
-          {id: 10, pianoKey: 54, text: '乐理&技巧', icon: '0xe69f', positionPixels: 40, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionPixels: 0, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#FC8F1B'}}
+          {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
+          {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
+          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}}
         ],
         controlButtons: [
           {
@@ -403,7 +392,7 @@
           return
         }
         this.canEnterModule = false
-        this.buttonActions('popular')
+        this.buttonActions('myScore')
       },
       [KEY42] () {
         if (!this.canEnterModule) {
@@ -411,7 +400,7 @@
           return
         }
         this.canEnterModule = false
-        this.buttonActions('famous')
+        this.buttonActions('playRecord')
       },
       [KEY46] () {
         if (!this.canEnterModule) {
@@ -419,43 +408,7 @@
           return
         }
         this.canEnterModule = false
-        this.buttonActions('material')
-      },
-      [KEY49] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('myScore')
-      },
-      [KEY51] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('playRecord')
-      },
-      [KEY54] () {
-        //  乐理与技巧
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
         this.buttonActions('skill')
-      },
-      [KEY58] () {
-        // 音乐王国
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        if (this.isLogin) {
-          this.canEnterModule = false
-        }
-        this.buttonActions('game')
       },
       [KEY66] () {
         // 打开节拍器
@@ -853,8 +806,6 @@
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
-        let hotBooks = this.hotBooks
-        let recentBooks = this.recentBooks
         // 如果是帮助页
         switch (type) {
           case 'help' :
@@ -963,25 +914,27 @@
           case 'tone':
             return modules.nativeRouter.openTimbreView()
           case 'ok':
-            if (recentBooks.bookList.length === 0) {
+            if (!this.canEnterModule) {
+              console.log('return')
               return
             }
-            if (activeIndex === 7) {
-              return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
-            }
-            if (hotBooks.bookList.length === 0) {
-              return
-            }
-            if (activeIndex === 13) {
-              return this.$router.push({path: '/indexMore', query: {title: '热门曲谱'}})
-            }
-            if (activeIndex >= 0 && activeIndex < 7) {
-              // 最近更新
-              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
-            }
-            if (activeIndex >= 8 && activeIndex < 13) {
-              // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
+            switch (activeIndex) {
+              case 0:
+                return this.go('/famous')
+              case 1:
+                return this.go('/popular')
+              case 2:
+                return modules.game.openKingdom().then((data) => {
+                  if (!data) {
+                    this.canEnterModule = true
+                    // 做登录验证
+                    if (this.isLogin) {
+                      return this.$store.dispatch('getUserInfo')
+                    }
+                  }
+                })
+              case 3:
+                return this.go('/material')
             }
             break
           case 'right-up':
