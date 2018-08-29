@@ -90,7 +90,7 @@
         transition: all 0.4s linear;
         border-radius: 10px;
         &.active {
-          transform: scale(1.2);
+          transform: scale(1.15);
           .bottom {
             width: 100% !important;
             border-radius: 0 !important;
