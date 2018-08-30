@@ -4,7 +4,6 @@ export default {
   namespaced: true,
   state: {
     scoreListIndex: 0,
-    totalPage: 1,
     scoreListPageIndex: 0
   },
   mutations: {
@@ -13,17 +12,11 @@ export default {
     },
     'scoreListPageIndex' (state, index) {
       state.scoreListPageIndex = index
-    },
-    'totalPage' (state, totalPage) {
-      state.totalPage = totalPage
     }
   },
   actions: {
     setScoreListIndex ({commit}, num) {
       commit('scoreListIndex', num)
-    },
-    setTotalPage ({commit}, num) {
-      commit('totalPage', num)
     },
     setScoreListPageIndex ({commit}, num) {
       commit('scoreListPageIndex', num)
@@ -39,9 +32,7 @@ export default {
         }
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true}).then(() => {
-            return dispatch('setTotalPage', Math.ceil(res.body.sum / 20))
-          })
+          return dispatch('setCacheToStorage', {scoreSetList: res.body.bookList, id: setId}, {root: true})
         }
       }).catch((error) => {
         return error

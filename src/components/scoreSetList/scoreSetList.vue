@@ -83,7 +83,8 @@
         ],
         toolbarHidden: false,
         scoreSetListItem: [],
-        hasLoaded: false
+        hasLoaded: false,
+        totalPage: 0
       }
     },
     find: {
@@ -140,7 +141,6 @@
       ...mapState({
         scoreListIndex: state => state.scoreSetList.scoreListIndex,
         scoreListPageIndex: state => state.scoreSetList.scoreListPageIndex,
-        totalPage: state => state.scoreSetList.totalPage,
         scoreSetList: function (state) {
           let scoreSetList = state.storage.cache.renderCache.scoreSetList[this.$route.query.setId]
           if (scoreSetList) {
@@ -148,6 +148,7 @@
           }
           this.hasLoaded = scoreSetList
           scoreSetList = scoreSetList || []
+          this.totalPage = Math.ceil(scoreSetList.length / 20)
           this.scoreSetListItem = scoreSetList.slice(this.scoreListPageIndex * 20, this.scoreListPageIndex * 20 + 20)
           return scoreSetList
         }
