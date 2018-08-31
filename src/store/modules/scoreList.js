@@ -154,6 +154,9 @@ export default {
      * @desc 操作
      * */
     setCollect ({dispatch, state}, {scoreList, bookId, musicId, flag}) {
+      if (scoreList) {
+        dispatch('setCacheToStorage', {scoreList: scoreList, id: bookId}, {root: true})
+      }
       if (!musicId) {
         return
       }
@@ -175,9 +178,6 @@ export default {
         }).then(res => {
           console.log('移除收藏')
         })
-      }
-      if (scoreList) {
-        return dispatch('setCacheToStorage', {scoreList: scoreList, id: bookId}, {root: true})
       }
     },
     addBookViewMount ({dispatch}, { bookId }) {
