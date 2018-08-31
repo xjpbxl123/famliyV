@@ -1,7 +1,7 @@
 /**
  * Created by Moersing on 2018/4/3 .
  * */
-import { device } from 'find-sdk'
+import { device, nativeStorage } from 'find-sdk'
 import {getCurEnvs} from '../utils'
 /**
  *@desc Get default params
@@ -29,8 +29,9 @@ export const getDefaultParams = (() => {
       if (!defaultParams.sess) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
-          let data = JSON.parse(localStorage.getItem(tableName + 'sessionId'))
-          return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
+          return nativeStorage.get(tableName, 'sessionId').then((data) => {
+            return Object.assign(defaultParams, {sess: data ? data.value : ''}, {orn})
+          })
         })
       }
       return Object.assign(defaultParams, {orn})

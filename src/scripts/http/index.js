@@ -6,6 +6,7 @@ import axios from 'axios'
 import { config, getDefaultParams } from './config'
 import {isPlainObject} from 'lodash'
 import {getCurEnvs} from '../utils'
+import {nativeStorage} from 'find-sdk'
 let http = axios.create(config)
 http.interceptors.request.use(async function (config) {
   const curEnv = await getCurEnvs()
@@ -31,16 +32,17 @@ http.interceptors.response.use(function (response) {
         // session失效
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
-          let isLogin = JSON.parse(localStorage.getItem(tableName + 'isLogin'))
-          if (code === 5 && isLogin.value) {
-            // 执行注销操作
-            let store = vue.prototype.$store
-            return store.dispatch('logout', {root: true}).then(() => {
-              return store.dispatch('setSession')
-            })
-          } else {
-            return response.data
-          }
+          return nativeStorage.get(tableName, 'isLogin').then((isLogin) => {
+            if (code === 5 && isLogin.value) {
+              // 执行注销操作
+              let store = vue.prototype.$store
+              return store.dispatch('logout', {root: true}).then(() => {
+                return store.dispatch('setSession')
+              })
+            } else {
+              return response.data
+            }
+          })
         })
       } else {
         return response.data
