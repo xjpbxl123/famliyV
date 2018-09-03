@@ -59,18 +59,25 @@ const formatDate = function (date, format) {
 /**
  * @desc 获取当前环境变量,跟着APP环境走
  * */
-const getCurEnvs = function () {
-  console.log('timessss')
+const getCurEnvs = (function () {
   const envs = {0: 'production', 1: 'development', 2: 'buildTest'}
-  return new Promise(resolve => {
-    /// 0:生产
-    /// 1:开发
-    /// 2:测试
-    global.severType().then(envNum => {
-      resolve(process.env[envs[envNum - 0]])
+  let currentEnv = null
+  let returnEnv = (env) => { return process.env[env] }
+  return function () {
+    return new Promise(resolve => {
+      /// 0:生产
+      /// 1:开发
+      /// 2:测试
+      if (currentEnv) {
+        return resolve(returnEnv(currentEnv))
+      }
+      global.severType().then(envNum => {
+        currentEnv = envs[envNum - 0]
+        return resolve(returnEnv(currentEnv))
+      })
     })
-  })
-}
+  }
+}())
 
 /**
  * @desc 接口错误处理
