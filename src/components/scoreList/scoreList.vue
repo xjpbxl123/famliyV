@@ -497,7 +497,6 @@
       },
       // 播放曲谱
       player (musicObj, typeNum) {
-        this.setPlay()
         this.chooseType = false
         if (this.stopEvent) {
           return
@@ -534,22 +533,6 @@
         console.log({info: {musicId, musicIds, allMusics}})
         this.$nextTick(() => {
           modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
-        })
-      },
-      setPlay () {
-        modules.settings.getProperty('isSupportMutePedal').then((data) => {
-          if (data) {
-            modules.settings.getProperty('isPedalMuteOn').then(isPedalMuteOn => {
-              if (isPedalMuteOn) {
-                modules.settings.getProperty('isAutoPlayOn').then(isAotoPlayOn => {
-                  // 自动演奏 && 踏板静音打开 则关闭
-                  if (isAotoPlayOn) {
-                    modules.mutePedal.setPedalMuteOnOff()
-                  }
-                })
-              }
-            })
-          }
         })
       },
       // 加入最近打开

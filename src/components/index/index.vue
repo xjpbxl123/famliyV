@@ -794,19 +794,6 @@
             modules.settings.setProperty('isSpeakerOn', true)
           }
         })
-        if (this.isSupportMutePedal) {
-          modules.settings.getProperty('isPedalMuteOn').then(isPedalMuteOn => {
-            if (isPedalMuteOn) {
-              modules.settings.getProperty('isAutoPlayOn').then(isAotoPlayOn => {
-                // 自动演奏 && 踏板静音打开 则关闭
-                if (isAotoPlayOn) {
-                  modules.mutePedal.setPedalMuteOnOff()
-                  this.controlButtons[0].checked = false
-                }
-              })
-            }
-          })
-        }
       },
       /**
        * @desc 监听清空缓存/恢复出厂设置
@@ -1203,7 +1190,6 @@
         this.loading = true
         console.log('loading开始--1')
         eventsHub.$emit('toast', {text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
-        this.playSet()
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
