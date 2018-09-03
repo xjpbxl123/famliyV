@@ -291,9 +291,6 @@ export default function createStore () {
                 return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
               }
             })
-          } else {
-            // 通知原生当前未登录
-            modules.user.logOut()
           }
           return {userInfo: body, isLogin: false}
         })
@@ -302,6 +299,8 @@ export default function createStore () {
        * @desc 用户注销
        * */
       logout ({dispatch, state}) {
+        // 通知原生当前未登录
+        modules.user.logOut()
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
       },
       /**

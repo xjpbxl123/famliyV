@@ -60,6 +60,7 @@ const formatDate = function (date, format) {
  * @desc 获取当前环境变量,跟着APP环境走
  * */
 const getCurEnvs = function () {
+  console.log('timessss')
   const envs = {0: 'production', 1: 'development', 2: 'buildTest'}
   return new Promise(resolve => {
     /// 0:生产

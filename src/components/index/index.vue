@@ -943,7 +943,11 @@
                 this.canEnterModule = true
                 // 做登录验证
                 if (this.isLogin) {
-                  return this.$store.dispatch('getUserInfo')
+                  return this.$store.dispatch('getUserInfo').then(data => {
+                    if (!data.userInfo.userId) {
+                      modules.user.logOut()
+                    }
+                  })
                 }
               }
             })
