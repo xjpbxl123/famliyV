@@ -434,8 +434,10 @@
                 console.log(data)
                 // 去打开文件
                 if (data.typeName === 'picture') {
+                  // 图片
                   this.$router.push({path: '/openImg', query: {url: data.http}})
                 } else if (data.typeName === 'pdf') {
+                  // pdf
                   modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
                     if (!res.path) {
                       return
@@ -479,8 +481,13 @@
                     modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
                   })
                 } else if (data.typeName === 'midi') {
+                  // midi
                   this.playMidi(this.localSourcePath + '/' + data.name)
                   break
+                } else if (data.typeName === 'mp3') {
+                  this.$router.push({path: '/openAudio', query: {url: data.http}})
+                } else if (data.typeName === 'mp4') {
+                  this.$router.push({path: '/openVideo', query: {url: data.http}})
                 }
               }
             }
