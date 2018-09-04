@@ -37,7 +37,7 @@ export default {
       state.hotBooks = hotBooks
     },
     [PIANO_USED_TIME] (state, data) {
-      state.usedTime = data
+      state.usedTime = Object.assign({}, data)
     },
     [RIGHT_TYPE] (state, data) {
       state.rightType = data
@@ -69,7 +69,7 @@ export default {
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      http.post('', {
+      return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
@@ -81,13 +81,15 @@ export default {
             return dispatch('setCacheToStorage', {recentUpdate: re}, {root: true})
           })
         }
+      }).catch((error) => {
+        return error
       })
     },
     /**
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch, commit, state}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
-      http.post('', {
+      return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
@@ -99,6 +101,8 @@ export default {
             return dispatch('setCacheToStorage', {hottest: ho}, {root: true})
           })
         }
+      }).catch((error) => {
+        return error
       })
     },
     /**
@@ -240,7 +244,7 @@ export default {
           }
         }
       }).catch((error) => {
-        console.log(error)
+        return error
       })
     }
   }

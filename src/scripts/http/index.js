@@ -6,7 +6,7 @@ import axios from 'axios'
 import { config, getDefaultParams } from './config'
 import {isPlainObject} from 'lodash'
 import {getCurEnvs} from '../utils'
-import { nativeStorage } from 'find-sdk'
+import {nativeStorage} from 'find-sdk'
 let http = axios.create(config)
 http.interceptors.request.use(async function (config) {
   const curEnv = await getCurEnvs()
@@ -24,21 +24,31 @@ http.interceptors.request.use(async function (config) {
 http.interceptors.response.use(function (response) {
   if (response.data) {
     if (response.data.header) {
-      getCurEnvs().then(env => {
-        let tableName = 'findFamily-' + env.HTTP_ROOT
-        nativeStorage.get(tableName, 'isLogin').then((data) => {
-          if (response.data.header.code === 5 && data.value) {
-            // 执行注销操作
-            let store = vue.prototype.$store
-            store.dispatch('logout', {root: true}).then(() => {
-              store.dispatch('setSession')
-            })
-          }
+      let code = response.data.header.code
+      if (code !== 0 && code !== 5) {
+        // 数据错误 返回
+        return Promise.reject(response.data.header)
+      } else if (code === 5) {
+        // session失效
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          return nativeStorage.get(tableName, 'isLogin').then((isLogin) => {
+            if (code === 5 && isLogin.value) {
+              // 执行注销操作
+              let store = vue.prototype.$store
+              return store.dispatch('logout', {root: true}).then(() => {
+                return store.dispatch('setSession')
+              })
+            } else {
+              return response.data
+            }
+          })
         })
-      })
+      } else {
+        return response.data
+      }
     }
   }
-  return response.data
 }, function (error) {
   /// For more errors handler of response go here,such as tip or console.
   return Promise.reject(error)

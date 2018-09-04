@@ -1,13 +1,13 @@
 <template>
  <ul class="pagenation">
-    <li v-for="(item,index) in totalPage" :key="index" :class="{ active:index == Math.floor(scoreListIndex / 20)}"></li>
+    <li v-for="(item,index) in totalPage" :key="index" :class="{ active:index == scoreListPageIndex}"></li>
  </ul>
 </template>
 <script type="text/javascript">
   export default {
     name: 'scoreSetList-pagenation',
     props: {
-      scoreListIndex: {
+      scoreListPageIndex: {
         type: Number,
         default: () => {
           return 0

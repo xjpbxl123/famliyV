@@ -132,6 +132,7 @@
             global.reboot()
             break
           case 'sleep':
+            this.go('back')
             global.sleep()
             break
           case 'restartApp':

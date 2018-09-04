@@ -9,7 +9,6 @@
         :setSelect="setSelect"
         />
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in controlButtons"
                  :key="button.id"
@@ -25,8 +24,8 @@
   import { mapState, mapGetters } from 'vuex'
   import contentCenter from './indexMore-center'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
-  import {global} from 'find-sdk'
+  import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import {
     KEY73,
     KEY75,
@@ -88,13 +87,6 @@
         ],
         title: this.$route.query.title,
         toolbarHidden: false,
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
         indexx: 0
       }
     },
@@ -121,7 +113,7 @@
         this.buttonActions('ok')
       },
       [BACK_PRESSED] () {
-        this.buttonActions('back')
+        this.goBack()
       },
       [PEDAL_PRESSED] (key) {
         switch (key.id) {
@@ -135,7 +127,7 @@
             this.buttonActions('ok')
             break
           case 119:
-            this.buttonActions('back')
+            this.goBack()
         }
       }
     },
@@ -143,19 +135,29 @@
       ...mapState({
         moreIndex (state) {
           return state.index.moreIndex
+        },
+        hotBooksAll: function (state) {
+          if (this.title === '热门曲谱') {
+            let hotBooksAll = state.storage.cache.renderCache.hottestAll
+            if (hotBooksAll.bookList.length > 0) {
+              eventsHub.$emit('closeToast')
+            }
+            this.hasLoaded = !!hotBooksAll.bookList.length
+            return hotBooksAll
+          }
+        },
+        recentBooksAll: function (state) {
+          if (this.title === '最近更新') {
+            let recentBooksAll = state.storage.cache.renderCache.recentUpdateAll
+            if (recentBooksAll.bookList.length > 0) {
+              eventsHub.$emit('closeToast')
+            }
+            this.hasLoaded = !!recentBooksAll.bookList.length
+            return recentBooksAll
+          }
         }
       }),
-      ...mapGetters(['hotBooksAll', 'recentBooksAll'])
-    },
-    watch: {
-      isLogin (val) {
-        if (val) {
-          this.userActionButtons[1].text = '注销'
-          this.getRecentOpenList()
-        } else {
-          this.userActionButtons[1].text = '登陆'
-        }
-      }
+      ...mapGetters([])
     },
     methods: {
       /**
@@ -173,7 +175,7 @@
       buttonActions (type) {
         let indexx = this.indexx
         let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
-        if (books.bookList.length <= 0 && type !== 'back') {
+        if (books.bookList.length <= 0) {
           return
         }
         switch (type) {
@@ -202,54 +204,50 @@
             return this.$store.dispatch('index/setMoreIndex', this.indexx).then(() => {
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
             })
-          case 'back':
-            this.$store.dispatch('index/setMoreIndex', 0)
-            this.$router.back()
-            break
           default:
             console.log('108')
         }
         console.log(indexx)
+      },
+      goBack () {
+        this.$store.dispatch('index/setMoreIndex', 0)
+        this.$router.back()
       }
     },
     created () {
       if (this.title === '最近更新') {
-        this.$store.dispatch({type: 'index/getRecentBooks'})
+        return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
+          if (this.hasLoaded || (data && data.hottestAll)) {
+            eventsHub.$emit('closeToast')
+          } else {
+            errorHandling(data)
+          }
+        })
       } else {
-        this.$store.dispatch({type: 'index/getHotBooks'})
+        return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
+          if (this.hasLoaded || (data && data.recentUpdateAll)) {
+            eventsHub.$emit('closeToast')
+          } else {
+            errorHandling(data)
+          }
+        })
       }
     },
     mounted () {
-      this.indexx = this.moreIndex
-
-      console.log(this.title)
-      console.log(this.hotBooksAll)
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        let books = []
-        this.title === '最近更新' ? books = this.recentBooksAll : books = this.hotBooksAll
-        if (books.length === 0 && !data.wifi.title) {
-          this.$refs.prompt.showPrompt()
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
       statusBar,
-      contentCenter,
-      findPrompt
+      contentCenter
     }
   }
 </script>
 <style lang="scss" scoped>
   .banner-wrapper {
     height: 100%;
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   .banner-content {
     display: flex;
     height: 100%;

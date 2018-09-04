@@ -14,7 +14,7 @@ import material from './modules/material'
 import staff from './modules/staff'
 import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
-import {nativeStorage, modules} from 'find-sdk'
+import {modules, nativeStorage} from 'find-sdk'
 import {getCurEnvs} from '../scripts/utils'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const INIT_ENV = 'INIT_ENV' // 初始化环境变量
@@ -47,9 +47,8 @@ export default function createStore () {
             yearList: [],
             scoreSetList: [],
             scoreList: [],
-            differList: [{
-              differC: ''
-            }],
+            musicList: [],
+            differList: [],
             materialList: {
               body: [], sumPage: 1
             },
@@ -99,6 +98,9 @@ export default function createStore () {
       },
       scoreList: state => {
         return state.storage.cache.renderCache.scoreList
+      },
+      musicList: state => {
+        return state.storage.cache.renderCache.musicList
       },
       materialList: state => {
         return state.storage.cache.renderCache.materialList
@@ -152,9 +154,10 @@ export default function createStore () {
       /**
        * @desc 初始化NativeStorage数据
        * */
-      initialNativeStorage ({commit, dispatch, state}) {
+      initialNativeStorage ({commit, dispatch}) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
+          /// 所有缓存数据的key和默认值
           return Promise.all([
             nativeStorage.get(tableName, 'playCalendar'),
             nativeStorage.get(tableName, 'isLogin'),
@@ -192,6 +195,7 @@ export default function createStore () {
               commit(SET_STORAGE, data)
               resolve(data)
             })
+            commit(SET_STORAGE, data)
           }
         })
       },
@@ -207,7 +211,9 @@ export default function createStore () {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
           nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
             let cache = {}
-            cache['renderCache'] = param && param.value && Object.keys(param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(param.value) : param.value) : state.storage.cache.renderCache
+            cache['renderCache'] = param && param.value && Object.keys(
+            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
+            param.value) : param.value) : state.storage.cache.renderCache
             commit(SET_STORAGE, {
               cache
             })
@@ -275,7 +281,9 @@ export default function createStore () {
               userType: body.userType,
               mark: body.mark,
               userId: parseInt(body.userId),
-              userName: body.userName
+              userName: body.userName,
+              nickName: body.nickName,
+              imageUrl: body.imageUrl
             }
             return modules.user.setUserInfo(userInfoObj).then((data) => {
               if (data) {
@@ -283,9 +291,6 @@ export default function createStore () {
                 return dispatch('setNativeStorage', {userInfo: body, isLogin: true})
               }
             })
-          } else {
-            // 通知原生当前未登录
-            modules.user.logOut()
           }
           return {userInfo: body, isLogin: false}
         })
@@ -294,18 +299,20 @@ export default function createStore () {
        * @desc 用户注销
        * */
       logout ({dispatch, state}) {
+        // 通知原生当前未登录
+        modules.user.logOut()
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
       },
       /**
        * @desc 清除缓存
        * */
-      clearCache ({dispatch, state}) {
+      clearCache ({state}) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
       },
       /**
-       * @desc 恢复出厂设置
+       * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch, state}) {
         return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {

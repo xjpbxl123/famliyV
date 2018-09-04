@@ -1,6 +1,6 @@
 <template>
     <div class="bottom" >
-        <button class="eachButton" v-for="(item,index) in tapButtons" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)">
+        <button class="eachButton" v-for="(item,index) in tapButtons" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)" >
             <span class="line" v-show="myScoreTapIndex === index"></span>
         </button>
     </div>
@@ -44,8 +44,6 @@
       }
     },
     methods: {},
-    created () {
-    },
     components: {}
   }
 </script>

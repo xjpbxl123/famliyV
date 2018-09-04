@@ -48,7 +48,11 @@
     filters: {
       format (value) {
         let t = new Date(parseInt(value))
-        return formatDate(t, 'yyyy-MM-dd')
+        let formateStr = formatDate(t, 'yyyy-MM-dd')
+        if (formateStr.indexOf('N') !== -1) {
+          return ''
+        }
+        return formateStr
       }
     },
     data () {

@@ -1,7 +1,11 @@
 <template>
   <div class="popular">
     <statusBar/>
-    <contentLine name="流行经典" class="title"/>
+    <div class="line">
+      <div><span>流</span>行经典</div>
+      <span class="line-icon"></span>
+      <div class="color"></div>
+    </div>
     <div class="year" v-show="(popularTapIndex===0)">
       <popular-year-list :yearList="yearList" :yearIndex="yearIndex" :setSelect="setSelect"></popular-year-list>
     </div>
@@ -17,7 +21,6 @@
     <div class="style" v-show="(popularTapIndex===2)">
       <popular-genre :popularGenre="popularGenre" :select="popularGenreSelect" :setSelect="setSelect"></popular-genre>
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <text-icon-item v-for="(button) in bigBUtton"
             :key="button.id"
@@ -25,6 +28,7 @@
             :text="button.text"
             :pianoKey="button.pianoKey"
             :style="button.style"
+            :positionPixels="button.positionPixels"
             :icon="button.icon"/>
      <icon-item v-for="(button) in controlButtons" :hidden="!button.show"
             :id="button.id"
@@ -39,21 +43,20 @@
 </template>
 <script type="text/javascript">
   import { mapState, mapGetters } from 'vuex'
-  import contentLine from '../index/index-content-line'
   import popularDifferList from './popular-differ-list'
   import popularDifferDetail from './popular-differ-detail'
   import popularGenre from './popular-genre/popular-genre'
   import popularYearList from './popular-year-list'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
-  import {global} from 'find-sdk'
+  import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import {
     KEY73,
     KEY75,
     KEY78,
     KEY80,
     KEY82,
-    KEY46,
+    KEY51,
     KEY49,
     KEY54,
     LONG_KEY73,
@@ -119,25 +122,20 @@
           }
         ],
         bigBUtton: [
-          {id: 200, pianoKey: 46, text: '年代', icon: '0xe6b4', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 201, pianoKey: 49, text: '难度', icon: '0xe6a2', style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
-          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
+          {id: 200, pianoKey: 49, text: '年代', icon: '0xe6b4', positionPixels: -30, style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 201, pianoKey: 51, text: '难度', icon: '0xe6a2', positionPixels: 30, style: {backgroundColor: '#2582c4', dotColor: '#2582c4'}},
+          {id: 202, pianoKey: 54, text: '曲风', icon: '0xe6a8', positionPixels: 40, style: {backgroundColor: '#d86d0a', dotColor: '#d86d0a'}}
         ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
-        toolbarHidden: false
+        toolbarHidden: false,
+        loadTime: 0,
+        hasLoaded: false
       }
     },
     find: {
-      [KEY46] () {
+      [KEY49] () {
         this.$store.dispatch('popular/setPopularTapSelected', 0)
       },
-      [KEY49] () {
+      [KEY51] () {
         this.$store.dispatch('popular/setPopularTapSelected', 1)
       },
       [KEY54] () {
@@ -186,6 +184,9 @@
         }
       },
       [BACK_PRESSED] () {
+        if (+new Date() - this.loadTime < 500) {
+          return
+        }
         this.goBack()
       }
     },
@@ -194,9 +195,17 @@
         popularIndex: state => state.popular.popularIndex,
         popularTapIndex: state => state.popular.popularTapIndex,
         yearIndex: state => state.popular.yearIndex,
-        popularGenreSelect: state => state.popularGenreSelect
+        popularGenreSelect: state => state.popularGenreSelect,
+        popularGenre: function (state) {
+          let popularGenre = state.storage.cache.renderCache.popularGenre
+          if (popularGenre.length > 0) {
+            eventsHub.$emit('closeToast')
+          }
+          this.hasLoaded = !!popularGenre.length
+          return popularGenre
+        }
       }),
-      ...mapGetters(['differList', 'popularGenre', 'yearList'])
+      ...mapGetters(['differList', 'yearList'])
     },
     watch: {
       popularTapIndex (value, old) {
@@ -222,7 +231,15 @@
         this.$store.dispatch({type: 'popular/getCenturys'})
       },
       getStyles () {
-        return this.$store.dispatch('popular/getStyles')
+        return this.$store.dispatch('popular/getStyles').then((data) => {
+          console.log(this.hasLoaded)
+          if (this.hasLoaded || data.popularGenre) {
+            // 有缓存
+            eventsHub.$emit('closeToast')
+          } else {
+            errorHandling(data)
+          }
+        })
       },
       goBack () {
         this.$store.dispatch('popular/setPopularTapSelected', 2)
@@ -268,7 +285,11 @@
             }
             break
           case 'up':
-            if (activeIndex - 4 >= 0) activeIndex -= 4
+            if (activeIndex - 4 >= 0) {
+              activeIndex -= 4
+            } else {
+              activeIndex = 0
+            }
             break
           case 'ok':
             let data = this.popularGenre
@@ -349,7 +370,8 @@
 
     },
     created () {
-      console.log(this.popularGenre, 'popularGenre')
+      eventsHub.$emit('toast')
+      this.loadTime = +new Date()
       this.getDiffer()
       this.getStyles()
       this.getCenturys()
@@ -371,32 +393,54 @@
       })
     },
     mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if (this.differList.length === 0 && !data.wifi.title) {
-          this.$refs.prompt.showPrompt()
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
-      contentLine,
       popularDifferList,
       popularDifferDetail,
       popularGenre,
       popularYearList,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
 <style lang="scss" scoped type=text/scss>
   .popular {
-    .find-prompt {
-      width: 750px;
-      height: 450px;
+    .line {
       position: absolute;
-      top: 500px;
-      left: 2043px;
+      top: 55px;
+      left: 260px;
+      div:nth-child(1) {
+        color: #fff;
+        font-size: 30px;
+        span {
+          font-size: 48px;
+        }
+      }
+      .line-icon {
+        width: 40px;
+        height: 60px;
+        position: absolute;
+        left: -42px;
+        top: -2px;
+        background: url('./images/icon.png') no-repeat;
+        background-size: cover;
+        }
+      .color {
+        width: 800px;
+        height: 1px;
+        margin-left: 0px;
+        margin-bottom: 7px;
+        background-image: -webkit-linear-gradient(
+          left,
+          rgba(255, 255, 255, 1),
+          rgba(255, 255, 255, 0.6) 50%,
+          rgba(255, 255, 255, 0.1)
+        );
+      }
     }
     .title {
         position: absolute;
@@ -405,8 +449,8 @@
       }
     .style {
       position: absolute;
-      top: 195px;
-      left: 245px;
+      top: 0;
+      left: 0;
     }
   }
 </style>

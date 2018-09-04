@@ -1,8 +1,8 @@
 <template>
  <div class="find-prompt" v-show="show" :style="{width:width+'px',height: height + 'px'}">
      <div class="prompt">
-         <div class="prompt-icon">
-             <i :class="['iconfont',icon]"></i>
+         <div class="prompt-icon" :class="{'loading': iconLoading}">
+             <i :class="['iconfont',icon]" ></i>
          </div>
          <div class="prompt-text">
              {{text}}
@@ -36,31 +36,49 @@
       allExit: {
         type: Boolean,
         default: () => false
+      },
+      iconLoading: {
+        type: Boolean,
+        default: () => false
+      },
+      showPrompt: {
+        type: Boolean,
+        default: () => false
       }
     },
     data () {
       return {
+        timer1: null,
         show: false
       }
     },
-    computed: {},
-    methods: {
-      showPrompt () {
-        this.show = true
-        setTimeout(() => {
-          if (!this.allExit) {
+    watch: {
+      showPrompt: function (val) {
+        console.log(val, 'val')
+        this.show = val
+        if (!this.allExit) {
+          this.timer1 = setTimeout(() => {
             this.show = false
-          }
-        }, this.delay)
+          }, this.delay)
+        }
+      }
+    },
+    methods: {
+      prompt () {
+        this.show = true
+        console.log(this.allExit, 'this.allExit')
+        if (!this.allExit) {
+          this.timer1 = setTimeout(() => {
+            this.show = false
+          }, this.delay)
+        }
       },
-      hidePrompt () {
+      hide () {
         this.show = false
       }
     },
-    created () {
-    },
-    components: {},
-    watch: {
+    destroyed () {
+      clearTimeout(this.timer1)
     }
   }
 </script>
@@ -80,6 +98,13 @@
       height: 120px;
       margin: 0 auto;
       margin-top: 70px;
+      &.loading {
+        animation:loading 2s infinite linear;
+      }
+      @keyframes loading {
+        from {transform:rotate(0deg)}
+        to {transform:rotate(360deg)}
+      }
       .iconfont {
         font-size: 120px;
         color: #fff;

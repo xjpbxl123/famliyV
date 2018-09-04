@@ -33,6 +33,7 @@ export default {
         if (res.header.code === 0) {
           let payment = ''
           let subParts = {base: '0', accompany: '0', video: '0'}
+          let postList = []
           res.body.musicList.forEach((item) => {
             let musicIdList = []
             item.files.forEach((each) => {
@@ -59,36 +60,6 @@ export default {
             }
             item.payment = payment
             item.subParts = subParts
-            item.files.forEach((value, index) => {
-              musicIdList.push(value.musicId)
-            })
-            if (!this.state.storage.isLogin) {
-              let collectData = []
-              musicIdList.forEach((value) => {
-                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
-                  collectData.push({musicId: value, collection: 0})
-                } else {
-                  let flag = 0
-                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
-                    if (value === value1.musicId) {
-                      // 有收藏记录
-                      flag = 1
-                    }
-                  })
-                  collectData.push({musicId: value, collection: flag})
-                }
-              })
-              item.collect = collectData
-              collectData = []
-            } else {
-              http.post('', {
-                cmd: 'musicScore.checkPracticeMusic',
-                musicList: musicIdList
-              }).then(res => {
-                item.collect = res.body.musicList
-              })
-            }
-            musicIdList = []
             if (item.files.length > 1) {
               // 版本重新排序
               let filterFile = []
@@ -119,12 +90,64 @@ export default {
               })
               item.files = filterFile
             }
+            item.files.forEach((value, index) => {
+              musicIdList.push(value.musicId)
+            })
+            if (!this.state.storage.isLogin) {
+              let collectData = []
+              musicIdList.forEach((value) => {
+                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
+                  collectData.push({musicId: value, collection: 0})
+                } else {
+                  let flag = 0
+                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
+                    if (value === value1.musicId) {
+                      // 有收藏记录
+                      flag = 1
+                    }
+                  })
+                  collectData.push({musicId: value, collection: flag})
+                }
+              })
+              item.collect = collectData
+              collectData = []
+            } else {
+              postList.push(http.post('', {
+                cmd: 'musicScore.checkPracticeMusic',
+                musicList: musicIdList
+              }))
+            }
+            musicIdList = []
           })
-          console.log(res.body.musicList, 'res.body.musicList')
-          return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          if (this.state.storage.isLogin) {
+            return Promise.all(postList).then((data) => {
+              res.body.musicList.forEach((item, index) => {
+                item.collect = data[index].body.musicList
+              })
+              return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+            })
+          } else {
+            return dispatch('setCacheToStorage', {scoreList: res.body.musicList, id: id}, {root: true})
+          }
         }
       }).catch((error) => {
-        console.log(error)
+        return error
+      })
+    },
+    /**
+     * @desc 只获取获取曲谱列表，不用处理数据
+     * */
+    getMusicList ({dispatch}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
+      let cmd = 'musicScore.getMusicsByBook'
+      let netObj = {page, bookId: id, cmd: cmd}
+      return http.post('', {
+        ...netObj
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {musicList: res.body.musicList, id: id}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     /**

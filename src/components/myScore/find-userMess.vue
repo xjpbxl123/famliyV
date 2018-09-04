@@ -1,7 +1,7 @@
 <template>
     <div class="userMess">
         <span class="leftTitle">曲名/专辑</span>
-        <span class="rightTitle">{{rightTitle}}</span>
+        <span class="rightTitle" v-text="rightTitle"></span>
         <span class="titleIcon iconfont icon-waiting"></span>
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
@@ -9,7 +9,7 @@
                     <span class="typeIcon iconfont icon-song" ></span>
                     <div class="name">
                         <span class="musicName">{{item.name || item.musicName}}</span>
-                        <span class="bookName">{{item.bookName}}</span>
+                        <span class="bookName" v-text="item.bookName"></span>
                     </div>
                     <div class="styleName">
                         {{item.styleName[0] || ''}}

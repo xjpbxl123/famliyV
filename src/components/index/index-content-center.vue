@@ -7,7 +7,7 @@
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
           <findStar :starNum="data.starNum"/>
           <div class="slip-line"></div>
-          <div class="date">{{ data.time | format}}</div>
+          <div class="date" >{{ data.time | format }}</div>
         </div>
         <div class="margin-none" v-if="recentBooks.bookList.length>1" @click="setCenterSelect(7)">
           <contentBook :bookData="moreData" :class="{active:(recentMoreindex===selectedIndex)}"/>
@@ -23,7 +23,7 @@
           <div class="slip-line"></div>
           <div class="date">
             <span class="viewIcon iconfont icon-popularity"></span>
-            <span>{{ data.hotNum }}</span>
+            <span v-text="data.hotNum"></span>
           </div>
         </div>
         <div class="margin-none" v-if="hotBooks.bookList.length>1" @click="setCenterSelect(13)">
@@ -182,27 +182,27 @@
   }
 
   .active {
+    transform: translate3d(0,0,0);
     box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, .5);
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
-  .active::after {
+  .active::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0;
-    top: 0;
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform: translate3d(0,0,0);
     animation: shadowRepeat 1s ease 0s infinite alternate;
+    box-shadow: 0 0 100px 12px rgba(255, 255, 255, 1);
+    opacity:1;
+    will-change: opacity;
   }
-
   @keyframes shadowRepeat {
     0% {
-      box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, 1);
+      opacity: 0;
     }
     100% {
-      box-shadow: 0px 0px 100px 30px rgba(255, 255, 255, 1);
+      opacity: 1;
     }
   }
 </style>

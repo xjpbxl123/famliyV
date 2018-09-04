@@ -295,6 +295,8 @@
         }
         this.setValue(keys[index].text)
       }
+    },
+    created () {
     }
   }
 </script>

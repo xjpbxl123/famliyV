@@ -9,7 +9,7 @@
         <span class="scan">扫描二维码登录</span>
       </div>
       <div v-else>
-        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true"></findImg>
+        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" demo="xxx"></findImg>
         <span class="nick-name" v-text="userInfo.nickName"></span>
       </div>
       <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
@@ -54,13 +54,14 @@
       isLogin: Boolean,
       userInfo: Object,
       usedTime: Object,
-      dispatch: Function,
+      getUserInfo: Function,
       isActivation: Boolean,
       isCalendar: Boolean
     },
     data () {
       return {
-        adminUrl: require('./images/admin.png')
+        adminUrl: require('./images/admin.png'),
+        interval: null
       }
     },
     watch: {
@@ -74,9 +75,9 @@
       generateQrCode () {
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
-            clearInterval(window.interval)
-            window.interval = window.setInterval(() => {
-              this.dispatch('getUserInfo').then(res => {
+            clearInterval(this.interval)
+            this.interval = window.setInterval(() => {
+              this.getUserInfo().then(res => {
                 if (res.userInfo.userId) {
                   clearInterval(window.interval)
                 }
@@ -88,6 +89,9 @@
     },
     mounted () {
       this.generateQrCode()
+    },
+    beforeDestroy () {
+      clearInterval(this.interval)
     },
     components: {
       qrCode,

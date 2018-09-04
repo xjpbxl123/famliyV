@@ -5,7 +5,7 @@
             <ul :style="{'marginTop':rightTop+'px'}">
                 <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}" @click="setSelect(index)">
                     <span class="typeIcon iconfont" :class="'icon-'+item.typeName"></span>
-                    <span class="name">{{item.name}}</span>
+                    <span class="name" v-text="item.name"></span>
                 </li>
             </ul>
         </div>

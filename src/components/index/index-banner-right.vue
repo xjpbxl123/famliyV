@@ -17,7 +17,7 @@
         <div class="outBox">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
             <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
-              <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying,'icon-playing':isPlayingMusicId===data.musicId && isPlaying}"></div>
+              <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'recentOpen'}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -27,7 +27,7 @@
           </div>
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-else>
             <div class="item-list" v-for="(data,index) in collectList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
-              <div class="item-logo iconfont icon-song " :class="{'play': isPlayingMusicId===data.musicId && isPlaying,'icon-playing':isPlayingMusicId===data.musicId && isPlaying}"></div>
+              <div class="item-logo iconfont icon-song " :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'myCollect'}"></div>
               <div class="musicInfo">
                 <div class="musicName">{{data.musicName || data.name}}</div>
                 <div class="bookName">{{data.bookName}}</div>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+  import {padStart} from 'lodash'
   export default {
     props: {
       recentOpenList: {
@@ -63,6 +64,9 @@
       },
       setRightSelect: {
         type: Function
+      },
+      isPlayingType: {
+        type: String
       }
     },
     watch: {
@@ -100,6 +104,7 @@
     },
     data () {
       return {
+        timeId: null,
         timeData: '22:22',
         mounthData: '4月16日',
         lateMinute: -1,
@@ -110,27 +115,20 @@
     },
     methods: {
       getTime () {
-        let timeId = setTimeout(() => {
+        this.timeId = setInterval(() => {
           this.getDate()
           this.lateMinute--
           if (this.lateMinute === 0) {
             this.getDays()
           }
-          clearTimeout(timeId)
+          clearInterval(this.timeId)
         }, 60000)
       },
       getDate () {
         let t = new Date()
         this.timeData =
-          t
-            .getHours()
-            .toString()
-          .padStart(2, '0') +
-          ':' +
-          t
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')
+          padStart(t.getHours().toString(), 2, '0') + ':' +
+          padStart(t.getMinutes().toString(), 2, '0')
         this.getTime()
       },
       getDays () {
@@ -176,6 +174,10 @@
       if (this.rightSelectedIndex >= 7) {
         this.rightTop = (this.rightSelectedIndex - 6) * 120 * -1
       }
+    },
+    destroyed () {
+      clearInterval(this.timeId)
+      this.timeId = null
     }
   }
 </script>
@@ -284,6 +286,7 @@
         position: absolute;
         top: 40px;
         left: 35px;
+        transform: translate3d(0,0,0);
         &.play {
           animation:turn 2s infinite linear;
         }
@@ -316,7 +319,7 @@
       .styleType {
           position: absolute;
           top:50%;
-          transform: translateY(-50%);
+          transform: translate3d(0,-50%,0);
           right: 40px;
           opacity: 0.55;
           font-size: 24px;
