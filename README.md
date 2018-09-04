@@ -21,7 +21,7 @@ yarn run build
 yarn run build:full  -- build 生产环境和weex
 
 # 单独打包weex
-yarn run weex -- 打包到dist/weex
+yarn run build:weex -- 打包到dist/weex
 # 检测&自动格式化代码
 yarn run lint
 ```
