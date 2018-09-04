@@ -1,12 +1,12 @@
 <template>
-  <div class='vidioPlay'>
-    <h1 v-if="palyHidden">{{`正在下载中:${progress}%`}}</h1>
+  <div class="vidioPlay">
+    <h1 v-if="palyHidden" >{{`正在下载中:${progress}%`}}</h1>
     <fh-player ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
       <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
     </fh-player>
-    <fh-div :style="labelStyle" :hidden="isPlay && !palyHidden">
+    <fh-div :style="labelStyle" :hidden="isPlay || palyHidden">
       <fh-label :style="videoNameStyle">
       </fh-label>
       <fh-label :style="currentTime">
@@ -70,8 +70,10 @@
         palyHidden: true,
         toolbarHidden: false,
         playerSource: {
-          videoUrl: '',
-          midiUrl: ''
+          mp4: {
+            videoUrl: '',
+            midiUrl: ''
+          }
         },
         buttons: [
           {
@@ -152,7 +154,7 @@
         videoButton: [
           {
             pianoKey: 78,
-            icon: '0e683',
+            icon: '0xe683',
             id: 201
           },
           {
@@ -325,8 +327,10 @@
           this.progress = parseInt(process.allProgress * 100)
         }).then((data) => {
           this.playerSource = {
-            videoUrl: data[0].path,
-            midiUrl: data[1].path
+            mp4: {
+              videoUrl: data[0].path,
+              midiUrl: data[1].path
+            }
           }
           this.sendMessageAgain()
         })
@@ -363,8 +367,10 @@
           if (isDownload) {
             this.isPlay && this.playOrpause()
             this.playerSource = {
-              videoUrl: data[0].path,
-              midiUrl: data[1].path
+              mp4: {
+                videoUrl: data[0].path,
+                midiUrl: data[1].path
+              }
             }
             this.videoNameStyle.text = courseItem.courseName
           } else {
@@ -381,6 +387,7 @@
         })
       },
       playOrpause () {
+        console.log(this.playerSource)
         if (this.isPlay) {
           this.$refs.player.pause()
         } else {
