@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" :class="{'frosted': isFrosted}">
-      <router-view></router-view>
+    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" >
     </div>
+    <router-view></router-view>
     <!-- <transition name="fade"> -->
 
     <!-- </transition> -->
@@ -10,12 +10,14 @@
 </template>
 <script type="text/javascript">
   import { modules } from 'find-sdk'
+  import eventsHub from './scripts/eventsHub'
+  import toast from './components/common/toast/toast.js'
   export default {
     name: 'app',
     data () {
       return {
         backgroundUrl: '',
-        isFrosted: false
+        loadingInstance: null
       }
     },
     created () {
@@ -24,7 +26,7 @@
         if (data) {
           this.backgroundUrl = data
         } else {
-          this.backgroundUrl = require('./images/background0.jpg')
+          this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
 
@@ -32,22 +34,28 @@
       modules.notification.regist('SetBackgroundImage', data => {
         if (data.backGroundImageName) {
           this.backgroundUrl = data.backGroundImageName
+        } else {
+          this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
-      // 毛玻璃效果初始值设置
-      modules.settings.getProperty('isFrostedGlassOn').then((data) => {
-        this.isFrosted = data
+
+      // 提示框
+      eventsHub.$on('toast', (params) => {
+        let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
+        params = Object.assign({}, defaultParams, params)
+        eventsHub.$emit('closeToast')
+        this.loadingInstance = toast(params)
       })
-      // 监听毛玻璃效果
-      modules.notification.regist('BackgroundFrostedGlass', data => {
-        this.isFrosted = data.isFrosted
+      eventsHub.$on('closeToast', () => {
+        if (this.loadingInstance) {
+          this.loadingInstance.close()
+        }
       })
     }
   }
 </script>
 <style lang="scss">
   #app {
-    background-color: #fff;
     .backImg {
       width: 3840px;
       height: 1080px;
@@ -57,22 +65,6 @@
       z-index: -2;
       background-attachment: fixed;
       overflow: hidden;
-      &::-webkit-scrollbar {display:none;}
-      &.frosted::before {
-        content: "";
-        width:100%;
-        height:100%;
-        position: absolute;
-        left:0;
-        top:0;
-        background: inherit;
-        filter: blur(20px);
-        z-index: -1;
-        backface-visibility: hidden;
-        perspective: 1000;
-        transform: translate3d(0,0,0);
-        transform: translateZ(0);
-      }
     }
   }
 

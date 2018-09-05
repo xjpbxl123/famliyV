@@ -47,5 +47,5 @@ export const getDefaultParams = (() => {
   }
 })()
 export const config = {
-  timeout: 10000 // request timeout
+  timeout: 10000// request timeout
 }

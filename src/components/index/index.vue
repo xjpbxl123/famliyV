@@ -9,7 +9,7 @@
         :sessionId="sessionId"
         :usedTime="usedTime"
         :setCalendarData="setCalendarData"
-        :dispatch="dispatchUserInfo"
+        :getUserInfo="getUserInfo"
         :isActivation="isActivation"
         :isCalendar="isCalendar"
       />
@@ -26,10 +26,9 @@
         :rightType="rightType"
         :isPlaying="isPlaying"
         :setRightSelect="setRightSelect"
-        :isPlayingMusicId="isPlayingMusicId"/>
+        :isPlayingMusicId="isPlayingMusicId"
+        :isPlayingType="isPlayingType"/>
     </div>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <findPrompt ref="musicPrompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="false"></findPrompt>
     <find-cover :activeNamespace="namespace">
       <banner-help
         v-if="showHelpBanner"
@@ -72,20 +71,20 @@
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
           <icon-item id="403" pianoKey="69" text="" icon="0xe605"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
-          <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre"
+          <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre+'拍'"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
         </group>
         <icon-item v-for="(button,index) in controlButtons"
-        :longClick="button.longClick"
-        :key="index"
-        :id="button.id"
-        :icon="button.icon"
-        :pianoKey="button.pianoKey"
-        :selected="button.selected"
-        :hidden="button.hidden || hideOtherButtons || !logoutCover"
-        :checkable="button.checkable"
-        :checked="button.checked"
-        :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
+          :longClick="button.longClick"
+          :key="index"
+          :id="button.id"
+          :icon="button.icon"
+          :pianoKey="button.pianoKey"
+          :selected="button.selected"
+          :hidden="button.hidden || hideOtherButtons || !logoutCover"
+          :checkable="button.checkable"
+          :checked="button.checked"
+          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
 
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
@@ -102,9 +101,9 @@
           key="201"
           id="201"
           icon="0xe625"
-          pianoKey="90"
+          pianoKey="102"
           :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#2000',textColor: '#fff',dotColor: '#fff'}"/>
+          :style="{backgroundColor:'#2fff',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
             :hidden="logoutCover"
@@ -169,9 +168,10 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
-  import { modules, download, global } from 'find-sdk'
+  import { modules, download } from 'find-sdk'
   import initData from './initData.js'
+  import {formatDate, errorHandling} from '../../scripts/utils'
+  import eventsHub from 'scripts/eventsHub'
   const lefts = [11, 4, 8]
   const rights = [7, 10, 3]
   export default {
@@ -185,8 +185,8 @@
         clickInterval: null,
         timer: 0,
         playerHidden: false,
-        playRightType: '',
         enterPlay: false,
+        openMusicScore: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -196,7 +196,7 @@
         isPlayingMusicId: 0,
         interval: null,
         logoutCover: true,
-        cancelClick: false,
+        isOpeningScore: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -217,13 +217,6 @@
             id: 3
           }
         ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 3000,
-          width: 640,
-          height: 360
-        },
         bigBUtton: [
           {id: 7, pianoKey: 39, text: '流行经典', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
           {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
@@ -316,7 +309,7 @@
         ],
         playButtons: [
           {
-            pianoKey: 99,
+            pianoKey: 90,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
@@ -345,6 +338,13 @@
             icon: '0xe657',
             backgroundColor: '#2fff',
             id: 18
+          },
+          {
+            pianoKey: 99,
+            text: '',
+            icon: '0xe73d',
+            backgroundColor: '#2fff',
+            id: 190
           }
         ],
         logoutButtons: [
@@ -370,11 +370,16 @@
         metre: '3',
         toolbarHidden: false,
         clickedMusicId: 0,
+        clickeType: '',
         hideOtherButtons: false,
         autoPlay: false,
         canEnterModule: true,
         skipTime: 0,
-        isSupportMutePedal: false
+        isSupportMutePedal: false,
+        isPlayingIndex: 0,
+        isPlayingType: '',
+        loading: false,
+        instance: ''
       }
     },
     mixins: [initData],
@@ -402,6 +407,9 @@
         this.buttonActions('help')
       },
       [KEY32] () {
+        if (!this.logoutCover) {
+          return
+        }
         this.buttonActions('login')
       },
       [KEY34] () {
@@ -493,8 +501,17 @@
         this.buttonActions('metroTip')
       },
       [KEY102] () {
-        // 关机
-        this.buttonActions('shutdown')
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
+        if (this.hideOtherButtons) {
+          // 熄屏
+          this.buttonActions('closeScreen', true)
+        } else {
+          // 关机
+          this.buttonActions('shutdown')
+        }
       },
       [KEY73] () {
         this.buttonActions('left')
@@ -510,7 +527,7 @@
       },
       [KEY78] () {
         if (!this.logoutCover) {
-          this.$refs.prompt.hidePrompt()
+          eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
         } else {
           this.buttonActions('up')
@@ -540,35 +557,68 @@
         this.buttonActions('tone')
       },
       [KEY90] () {
-        // 熄屏
-        this.buttonActions('closeScreen', true)
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
+        this.buttonActions('changeRightData')
       },
       [LONG_KEY92] () {
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-up')
       },
       [KEY92] () {
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-up')
       },
       [LONG_KEY94] () {
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-down')
       },
       [KEY94] () {
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
         console.log('down')
         this.buttonActions('right-down')
       },
       [KEY97] () {
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
         this.buttonActions('right-play')
       },
       [KEY99] () {
-        this.buttonActions('changeRightData')
+        if (this.openMusicScore || this.loading) {
+          // 进入曲谱过程中不可点
+          return
+        }
+        this.buttonActions('openMusicScore')
       },
       [PEDAL_PRESSED] (key) {
-        if (this.isPlaying) {
+        if (this.isPlaying || this.loading) {
           // 播放的时候禁用踏板
           return
         }
         switch (key.id) {
           case 114:
+            if (+new Date() - this.skipTime <= 5000) {
+              // 5秒之内不做处理
+              console.log('return')
+              return
+            }
+            this.skipTime = +new Date()
             if (this.isSupportMutePedal) {
               this.buttonActions('keyBoardMute')
             }
@@ -589,6 +639,9 @@
         }
       },
       [BACK_PRESSED] () {
+        if (this.loading) {
+          return
+        }
         this.goBack()
       },
       banner: {
@@ -625,9 +678,19 @@
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
+        },
+        hotBooks: function (state) {
+          let hotBooks = state.storage.cache.renderCache.hottest
+          this.hasLoaded = !!hotBooks.bookList.length
+          return hotBooks
+        },
+        recentBooks: function (state) {
+          let recentBooks = state.storage.cache.renderCache.recentUpdate
+          this.hasLoaded = !!recentBooks.bookList.length
+          return recentBooks
         }
       }),
-      ...mapGetters(['hotBooks', 'recentBooks', 'recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo'])
+      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList'])
     },
     watch: {
       /**
@@ -642,6 +705,13 @@
         }
       },
       isLogin (val) {
+        if (this.isPlaying) {
+          this.$refs.player.pause()
+          this.$refs.player.reset()
+          this.isPlaying = false
+          this.hideOtherButtons = false
+        }
+        this.$store.dispatch('index/setRightSelect', 0)
         if (val) {
           this.userActionButtons[1].text = '注销'
           this.getRecentOpenList()
@@ -649,6 +719,9 @@
         } else {
           this.userActionButtons[1].text = '登录'
         }
+      },
+      sessionId (val) {
+        this.initializeData()
       }
     },
     methods: {
@@ -670,15 +743,9 @@
         })
       },
       /**
-       * @desc dispatch 用户状态
+       * @desc 设置练琴数据
+       * @param {object} playCalendar - 练琴数据
        * */
-      dispatchUserInfo () {
-        return this.$store.dispatch('getUserInfo')
-      },
-      /**
-     * @desc 设置练琴数据
-     * @param {object} playCalendar - 练琴数据
-     * */
       setCalendarData (playCalendar) {
         this.$store.dispatch('setNativeStorage', {
           playCalendar
@@ -696,6 +763,20 @@
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
+              modules.settings.setProperty('isSpeakerOn', data)
+            })
+          }
+        })
+      },
+      /**
+       * @desc 监听静音踏板的设置
+       * */
+      checkPedalMute () {
+        modules.notification.regist('CheckPedalMute', () => {
+          console.log('CheckPedalMute')
+          if (this.isSupportMutePedal) {
+            modules.settings.getProperty('isPedalMuteOn').then((data) => {
+              this.controlButtons[0].checked = data
             })
           }
         })
@@ -703,13 +784,13 @@
       /**
        * @desc 获取钢琴类型
        * */
-      getPianoType () {
+      playSet () {
         modules.device.getPianoType().then((data) => {
           if (data === 0 || data === 1) {
             // 真钢默认开启自动演奏
             modules.settings.setProperty('isAutoPlayOn', true)
           } else if (data === 2 || data === 3) {
-            // 真钢默认开启电子音源
+            // 电钢默认开启电子音源
             modules.settings.setProperty('isSpeakerOn', true)
           }
         })
@@ -724,7 +805,9 @@
             this.$store.dispatch('clearCache')
           } else {
             // 恢复出厂设置
-            this.$store.dispatch('restoreFactorySettings')
+            this.$store.dispatch('clearCache').then(() => {
+              this.$store.dispatch('restoreFactorySettings')
+            })
           }
         })
       },
@@ -740,6 +823,10 @@
        * @desc 右侧列表鼠标选中
        * */
       setRightSelect (index) {
+        if (this.loading) {
+          // loading过程中不可点
+          return
+        }
         this.$store.dispatch('index/setRightSelect', index).then(() => {
           this.buttonActions('right-play')
         })
@@ -775,16 +862,20 @@
           this.isPlaying = false
           this.isPlayingMusicId = 0
           this.hideOtherButtons = false
+          return
         }
         if (this.metronome) {
           // 节拍器开着 关闭节拍器
           this.buttonActions('closeMetro')
+          return
         }
         if (!this.logoutCover) {
-          this.$refs.prompt.hidePrompt()
+          eventsHub.$emit('closeToast')
           this.logoutCover = true
           this.toolbarHidden = false
+          return
         }
+        modules.global.toggleFullScreen()
       },
       /**
        * @desc 按钮组件按钮事件
@@ -806,18 +897,15 @@
               // 未登录进入登录页
               return this.go('/login')
             } else {
-              // 临时写的用来注销账号
-              // this.$store.dispatch('logoutCache', {root: true})
               // 弹出提示框
               if (this.logoutCover) {
-                this.promptInfo.text = '确认注销吗？'
-                this.$refs.prompt.showPrompt()
+                eventsHub.$emit('toast', {text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
                 this.logoutCover = !this.logoutCover
               } else {
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
-                  this.$refs.prompt.hidePrompt()
                   this.logoutCover = !this.logoutCover
+                  eventsHub.$emit('closeToast')
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
@@ -839,9 +927,14 @@
           case 'game':
             return modules.game.openKingdom().then((data) => {
               if (!data) {
+                this.canEnterModule = true
                 // 做登录验证
                 if (this.isLogin) {
-                  return this.$store.dispatch('getUserInfo')
+                  return this.$store.dispatch('getUserInfo').then(data => {
+                    if (!data.userInfo.userId) {
+                      modules.user.logOut()
+                    }
+                  })
                 }
               }
             })
@@ -882,16 +975,9 @@
           case 'speedRecover':
             // 恢复节拍器数值到120
             let time = Math.abs(this.speed - 120) / 10
-            if (this.speed < 120) {
-              for (let i = 0; i < time; i++) {
-                modules.metronome.changeTempoSpeed(true).then(() => {
-                })
-              }
-            } else if (this.speed > 120) {
-              for (let i = 0; i < time; i++) {
-                modules.metronome.changeTempoSpeed(false).then(() => {
-                })
-              }
+            for (let i = 0; i < time; i++) {
+              modules.metronome.changeTempoSpeed(this.speed < 120).then(() => {
+              })
             }
             this.getMetronomeStatus()
             break
@@ -951,20 +1037,17 @@
             if (activeIndex === 7) {
               return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
             }
+            if (hotBooks.bookList.length === 0) {
+              return
+            }
             if (activeIndex === 13) {
               return this.$router.push({path: '/indexMore', query: {title: '热门曲谱'}})
             }
             if (activeIndex >= 0 && activeIndex < 7) {
               // 最近更新
-              if (recentBooks.bookList.length === 0) {
-                return
-              }
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
             }
             if (activeIndex >= 8 && activeIndex < 13) {
-              if (hotBooks.bookList.length === 0) {
-                return
-              }
               // 热门曲谱
               return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
             }
@@ -991,93 +1074,67 @@
             break
           case 'right-play':
             // 右侧列表play事件
-            this.$store.dispatch('addPractice')
-            let list = []
-            let list1 = []
-            let musicObj = {}
-            if (this.rightType === 'recentOpen') {
-              list = this.isLogin ? this.recentOpenList : this.localRecent
-            } else if (this.rightType === 'myCollect') {
-              list = this.isLogin ? this.collectList : this.localCollect
+            console.log('单击')
+            let musicObj = this.getRightData().musicObj
+            let list = this.getRightData().list
+            if (list.length === 0) {
+              return
             }
-            list1 = [].concat(JSON.parse(JSON.stringify(list)))
-            musicObj = list1[rightActiveIndex]
+            if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
+              // 播放中 不操作 仅弹框
+              this.loading = false
+              eventsHub.$emit('toast', {text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+              return
+            }
+            if (this.enterPlay) {
+              // 已经进入过曲谱 如果没有移动光标要先reset()
+              if (musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
+                console.log(this.playerSource, '播过reset后调play()')
+                this.$refs.player.reset()
+                this.hideOtherButtons = true
+                this.enterPlay = false
+              }
+            }
+            this.autoPlay = false
+            this.playMidi(musicObj.musicId, list, rightActiveIndex)
+            break
+          case 'openMusicScore':
+            // 进入播放曲谱界面
+            this.$store.dispatch('addPractice')
+            let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
+            console.log(dd)
+            let musicObj1 = this.getRightData().musicObj
+            let list1 = this.getRightData().list
             if (list1.length === 0) {
               return
             }
-            if (!this.timer) {
-              this.timer = +new Date()
-            } else if (new Date() - this.timer <= 700) {
-              console.log('双击')
-              if (this.cancelClick) {
-                return false
-              }
-              clearInterval(this.clickInterval)
-              this.clickInterval = null
-              this.timer = 0
-              if (this.isPlaying) {
-                // 如果在播放 先暂停
-                this.$refs.player.pause()
-                this.isPlaying = false
-                if (musicObj.musicId === this.isPlayingMusicId) {
-                  window.fp.uis.player.getProgress().then(data => {
-                    if (data.curTick) {
-                      this.player(musicObj, data.curTick)
-                    }
-                    this.$refs.player.reset()
-                    this.enterPlay = true
-                    this.addRecentOpen(musicObj)
-                  })
-                } else {
-                  this.player(musicObj, 0)
-                }
-              } else {
-                this.player(musicObj, 0)
-              }
+            if (this.openMusicScore) {
+              console.log('return')
               return
             }
-            this.clickInterval = setTimeout(() => {
-              console.log('单击')
-              if (this.cancelClick) {
-                return false
-              }
-              if (this.isPlaying) {
-                // 获取进度进去播放
-                console.log(this.isPlaying, 'playing')
-                this.$refs.player.pause()
-                this.isPlaying = false
-                if (musicObj.musicId === this.isPlayingMusicId) {
-                  window.fp.uis.player.getProgress().then(data => {
-                    this.$refs.player.reset()
-                    if (data.curTick) {
-                      this.player(musicObj, data.curTick)
-                    }
-                    this.enterPlay = true
-                    this.addRecentOpen(musicObj)
-                  })
-                  return
-                }
-              }
-              if (this.enterPlay) {
-                // 已经进入过曲谱 如果没有移动光标直接播放即可
-                if (musicObj.musicId === this.isPlayingMusicId) {
+            this.addRecentOpen(musicObj1)
+            this.openMusicScore = true
+            this.hideOtherButtons = true
+            if (this.isPlaying) {
+              // 如果在播放 先暂停
+              this.$refs.player.pause()
+              this.isPlaying = false
+              if (musicObj1.musicId === this.isPlayingMusicId) {
+                window.fp.uis.player.getProgress().then(data => {
+                  if (data.curTick !== undefined) {
+                    this.player(musicObj1, data.curTick)
+                  } else {
+                    this.player(musicObj1, 0)
+                  }
                   this.$refs.player.reset()
-                  this.$refs.player.play().then(() => {
-                    this.isPlaying = false
-                  })
-                  this.hideOtherButtons = true
-                  this.autoPlay = false
-                  this.promptInfo.text = '再次点击进入曲谱'
-                  this.$refs.musicPrompt.showPrompt()
-                  this.enterPlay = false
-                  this.isPlaying = true
-                  return
-                }
+                  this.enterPlay = true
+                })
+              } else {
+                this.player(musicObj1, 0)
               }
-              this.timer = 0
-              this.autoPlay = false
-              this.playMidi(musicObj.musicId, list1, rightActiveIndex)
-            }, 700)
+            } else {
+              this.player(musicObj1, 0)
+            }
             break
           case 'changeRightData':
             // 切换右侧数据
@@ -1086,14 +1143,18 @@
               rightTypeName = 'myCollect'
             }
             this.$store.dispatch('index/setRightType', rightTypeName).then(() => {
-              this.$store.dispatch('index/setRightSelect', 0)
+              if (this.isPlaying && rightTypeName === this.isPlayingType) {
+                this.$store.dispatch('index/setRightSelect', this.isPlayingIndex)
+              } else {
+                this.$store.dispatch('index/setRightSelect', 0)
+              }
             })
             break
           case 'keyBoardMute':
-            this.controlButtons[0].checked = !this.controlButtons[0].checked
             modules.mutePedal.setPedalMuteOnOff()
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
+              modules.settings.setProperty('isSpeakerOn', data)
             })
             break
           case 'closeScreen':
@@ -1126,16 +1187,14 @@
         }
       },
       player (musicObj, tick) {
-        this.cancelClick = true
+        this.loading = true
+        console.log('loading开始--1')
+        eventsHub.$emit('toast', {text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
         let allMusics = []
         let styleId = null
-        let styleName = ''
-        if (musicObj.styleName !== '') {
-          styleName = musicObj.styleName[0]
-        }
         switch (musicObj.styleName[0]) {
           case '钢琴独奏版':
             styleId = 1
@@ -1153,18 +1212,16 @@
             styleId = 7
             break
         }
-        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: 'musicScore', id: bookId}).then(() => {
-          let list = this.scoreList[bookId]
+        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then((data) => {
+          console.log('曲谱列表请求回来--2')
+          let list = this.musicList[bookId]
           if (list) {
             // 有缓存
+            console.log('有数据')
             list.forEach((data) => {
               let id = data.musicId
               let eachMusic = {}
               let musicVersions = []
-              // eachMusic.bookName = data.bookName || ''
-              // eachMusic.musicOrigin = 'bookList'
-              // eachMusic.musicId = data.musicId
-              // eachMusic.musicName = data.name
               eachMusic.styleName = data.files[0].styleName
               eachMusic.curMusicId = data.files[0].musicId
               eachMusic.styleId = data.files[0].styleId
@@ -1183,60 +1240,105 @@
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
-            console.log({musicId, musicIds, allMusics, tick})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
+            console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
+            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+              this.loading = false
+              console.log('loading结束')
+              eventsHub.$emit('closeToast')
+              if (data) {
+                // 打开曲谱成功
+                console.log('打开曲谱成功')
+                this.isOpeningScore = true
+                if (this.isPlaying) {
+                  this.isPlaying = false
+                  this.$refs.player.pause()
+                }
+              } else {
+                // 打开失败
+                console.log('打开失败')
+                eventsHub.$emit('toast', {text: '打开曲谱失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                this.isOpeningScore = false
+                this.hideOtherButtons = false
+                this.canEnterModule = true
+                this.openMusicScore = false
+              }
+            })
           } else {
-            // 无缓存
-            let musicInfo = {}
-            musicInfo.bookName = musicObj.bookName || ''
-            musicInfo.musicOrigin = 'bookList'
-            musicInfo.musicId = musicId
-            musicInfo.musicName = musicObj.name || musicObj.musicName
-            musicInfo.curMusicId = musicId
-            musicInfo.styleName = styleName
-            musicInfo.styleId = styleId
-            musicInfo.musicVersions = [[musicId, styleName]]
-            allMusics.push(musicInfo)
-            musicIds.push(musicId)
-            console.log({musicId, musicIds, allMusics, tick})
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick})
+            console.log('没有列表数据数据 判断网络情况')
+            this.isOpeningScore = false
+            this.hideOtherButtons = false
+            this.loading = false
+            this.canEnterModule = true
+            this.openMusicScore = false
+            errorHandling(data)
           }
         })
       },
+      getRightData () {
+        let rightActiveIndex = this.rightSelectedIndex
+        let list = []
+        let list1 = []
+        let musicObj = {}
+        if (this.rightType === 'recentOpen') {
+          list = this.isLogin ? this.recentOpenList : this.localRecent
+        } else if (this.rightType === 'myCollect') {
+          list = this.isLogin ? this.collectList : this.localCollect
+        }
+        list1 = [].concat(JSON.parse(JSON.stringify(list)))
+        musicObj = list1[rightActiveIndex]
+        if (musicObj) {
+          this.clickedMusicId = musicObj.musicId
+          this.clickeType = this.rightType
+          this.clickedIndex = rightActiveIndex
+        }
+        return {musicObj: musicObj, list: list1}
+      },
+      playLoop (musicList, musicIndex) {
+        if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
+          this.$store.dispatch('index/setRightSelect', musicIndex + 1)
+          this.clickedMusicId = musicList[musicIndex + 1].musicId
+          this.clickedIndex = musicIndex + 1
+          this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
+        } else {
+          this.isPlaying = false
+          this.hideOtherButtons = false
+        }
+      },
       playMidi (musicId, musicList, musicIndex) {
-        this.clickedMusicId = musicId
+        // 弹loading框
+        this.loading = true
+        console.log('loading开始--1')
+        eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
+          console.log('列表请求返回--2')
           let musicInfo = this.musicInfo[musicId]
           if (!musicInfo || !musicInfo.files) {
             // 曲谱数据没有缓存并且没有网络的时候提示
-            global.getStatusBarItem().then((data) => {
-              if (!data.wifi.title) {
-                this.promptInfo.text = '网络连接出错，请检查网络'
-                this.$refs.musicPrompt.showPrompt()
-                // 当前是自动播放则继续播放下一首
-                if (this.autoPlay) {
-                  this.autoPlay = true
-                  if (musicIndex + 1 <= musicList.length - 1) {
-                    this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                    this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-                  }
-                } else {
-                  this.hideOtherButtons = false
-                }
-              }
-            })
+            console.log('曲谱数据没有缓存并且没有网络的时候提示')
+            errorHandling(data)
+            this.loading = false
+            this.initPlayer()
+            this.hideOtherButtons = false
+            // 当前是自动播放则继续播放下一首
+            this.playLoop(musicList, musicIndex)
             return
           }
+          let hasR = false
           musicInfo.files.forEach((value) => {
             if (value.musicId === musicId) {
+              hasR = true
               let Mid = value.bMid
               if (!value.bMid.url) {
                 if (!value.mMid.url) {
-                  this.promptInfo.text = 'mid加载失败'
-                  this.$refs.musicPrompt.showPrompt()
+                  this.loading = false
+                  this.initPlayer()
+                  eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  this.hideOtherButtons = false
+                  // 当前是自动播放则继续播放下一首
+                  this.playLoop(musicList, musicIndex)
                   return
                 }
                 Mid = value.mMid
@@ -1249,6 +1351,17 @@
               midiData.md5 = Mid.md5
             }
           })
+          if (!hasR) {
+            // 找不到曲谱
+            console.log('找不到曲谱')
+            this.loading = false
+            this.initPlayer()
+            eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            this.hideOtherButtons = false
+            // 当前是自动播放则继续播放下一首
+            this.playLoop(musicList, musicIndex)
+            return
+          }
           let mp3ExitObj = {
             url: mp3Data.url,
             md5: mp3Data.md5,
@@ -1259,35 +1372,32 @@
             md5: midiData.md5,
             localPath: '$filesCache/' + musicId
           }
-
+          console.log('判断文件是否存在')
           // 判断文件是否存在
           modules.download.fileIsExists(exixtObj).then((res) => {
             if (!res.path) {
-              global.getStatusBarItem().then((status) => {
-                if (!status.wifi.title) {
-                  // 当前曲谱文件没有缓存并且没有网络则提示
-                  this.promptInfo.text = '网络连接出错，请检查网络'
-                  this.$refs.musicPrompt.showPrompt()
-                  // 如果是自动播放即继续播放下一首
-                  if (this.autoPlay) {
-                    if (musicIndex + 1 <= musicList.length - 1) {
-                      this.$store.dispatch('index/setRightSelect', musicIndex + 1)
-                      this.playMidi(musicList[musicIndex + 1].musicId, musicList, musicIndex + 1)
-                    }
-                  } else {
-                    this.hideOtherButtons = false
-                  }
+              // 本地没有 去下载
+              console.log('本地没有 去下载')
+              let downloadObj = {...exixtObj, fsize: midiData.fsize}
+              download.downloadFile(downloadObj).then((data) => {
+                console.log(data, '下载完成--3')
+                if (data.path) {
+                  console.log(data, '给播放器赋值--3')
+                  this.playerSource.mid.midiUrl = data.path
                 } else {
-                  // 去下载
-                  let downloadObj = {...exixtObj, fsize: midiData.fsize}
-                  download.downloadFile(downloadObj).then((data) => {
-                    this.playerSource.mid.midiUrl = data.path
-                  })
+                  this.loading = false
+                  this.initPlayer()
+                  this.hideOtherButtons = false
+                  eventsHub.$emit('toast', {text: '曲谱信息下载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  // 当前是自动播放则继续播放下一首
+                  this.playLoop(musicList, musicIndex)
                 }
               })
             } else {
               // 判断有无mp3
+              console.log('本地有 去判断有没有mp3', mp3ExitObj)
               modules.download.fileIsExists(mp3ExitObj).then((data) => {
+                console.log(data, '判断有无mp3--4')
                 if (data.path) {
                   this.playerSource = {
                     mp3: {
@@ -1295,26 +1405,48 @@
                       accompanyUrl: data.path
                     }
                   }
+                  console.log('有mp3, 给播放器赋值', this.playerSource)
                 } else {
                   this.playerSource = {
                     mid: {
                       midiUrl: res.path
                     }
                   }
+                  console.log('没有mp3, 给播放器赋值', this.playerSource)
                 }
               })
             }
           })
         })
       },
+      initPlayer () {
+        if (this.isPlaying) {
+          this.$refs.player.pause()
+          this.$refs.player.reset()
+        }
+      },
       playerInitComplete (data) {
         // 播放器加载成功
+        console.log(data, '播放器加载成功')
+        if (!data.result) {
+          if (this.loading) {
+            eventsHub.$emit('toast', {text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            this.loading = false
+            this.hideOtherButtons = false
+            return
+          }
+        }
+        this.loading = false
+        console.log('loading结束，开始播放曲谱')
+        eventsHub.$emit('closeToast')
+        if (this.isOpeningScore) {
+          return
+        }
         console.log(data, 'playerInitComplete')
+        console.log(this.playerSource, '没播过调play()')
         if (!data.result) {
           return
         }
-        this.promptInfo.text = '再次点击进入曲谱'
-        this.$refs.musicPrompt.showPrompt()
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
@@ -1324,47 +1456,56 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
-        // if (this.cancelPlay) {
-        //   return
-        // }
+        this.playSet()
         this.$refs.player.play().then(() => {
-          this.isPlaying = false
-          if (this.playRightType !== this.rightType) {
-            // 列表切换了
+          if (this.loading) {
+            // 如果正在loading 不自动切
             return
           }
-          if (rightActiveIndex === list.length - 1) {
+          this.isPlaying = false
+          if (this.isPlayingType !== this.rightType) {
+            // 列表切换回来
+            this.$store.dispatch('index/setRightType', this.isPlayingType)
+          }
+          if (this.clickedIndex === list.length - 1) {
             // 已经是最后一首了
             this.hideOtherButtons = false
             return
           }
           this.autoPlay = true
-          rightActiveIndex++
-          rightActiveIndex = Math.min(rightActiveIndex, list.length - 1)
-          if (rightActiveIndex > 0) {
+          this.clickedIndex = this.clickedIndex + 1
+          rightActiveIndex = Math.min(this.clickedIndex, list.length - 1)
+          if (this.clickedIndex > 0) {
             this.$store.dispatch('index/setRightSelect', rightActiveIndex)
           }
-          // this.buttonActions('right-play')
-          this.playMidi(list[rightActiveIndex].musicId, list, rightActiveIndex)
+          this.clickedMusicId = list[rightActiveIndex].musicId
+          this.playMidi(list[this.clickedIndex].musicId, list, this.clickedIndex)
         })
-        this.playRightType = this.rightType
         this.isPlaying = true
         this.isPlayingMusicId = this.clickedMusicId
+        this.isPlayingIndex = this.clickedIndex
         this.hideOtherButtons = true
+        this.isPlayingType = this.clickeType
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
+            this.loading = false
+            eventsHub.$emit('closeToast')
+            this.isOpeningScore = true
             if (this.isPlaying) {
               this.isPlaying = false
               this.$refs.player.pause()
             }
+            let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
+            console.log(dd)
           }
           if (data.case === 'resume') {
-            this.cancelClick = false
+            this.isOpeningScore = false
             this.hideOtherButtons = false
             this.canEnterModule = true
+            this.openMusicScore = false
           }
         })
       },
@@ -1372,6 +1513,7 @@
         // 移除通知
         modules.notification.remove('ClearCache')
         modules.notification.remove('pageLifecycle')
+        modules.notification.remove('checkPedalMute')
       }
     },
     created () {
@@ -1380,7 +1522,8 @@
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
-      this.getPianoType()
+      this.checkPedalMute()
+      this.playSet()
     },
     beforeDestroy () {
       this.toolbarHidden = true
@@ -1388,15 +1531,7 @@
     destroyed () {
       clearInterval(window.interval)
       this.removeRegist()
-    },
-    mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if ((this.hotBooks.bookList.length === 0 || this.recentBooks.bookList.length === 0) && !data.wifi.title) {
-          this.promptInfo.text = '网络连接出错，请检查网络'
-          this.$refs.prompt.showPrompt()
-        }
-      })
+      eventsHub.$emit('closeToast')
     },
     components: {
       BannerLeft,
@@ -1404,19 +1539,11 @@
       contentCenter,
       bannerRight,
       bannerHelp,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
 <style lang="scss" scoped>
-  .find-prompt {
-    width: 750px;
-    height: 450px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   .banner-wrapper {
     height: 100%;
 

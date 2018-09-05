@@ -7,8 +7,7 @@
         <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
       </div>
       <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex" :setSelect="setSelect"/>
-      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-if="!dataError"/>
-      <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
+      <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-show="!dataError"/>
       <find-cover :activeNamespace="namespace">
         <scoreList-choose-type  v-if="chooseType" :files="files" :bannerType="bannerType" :collect="collect" :clickPlay="clickPlay"/>
         <scoreList-choose-buttons  v-if="chooseType && !toolbarHidden" :files="files" :clickPlay="clickPlay"/>
@@ -43,8 +42,9 @@
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
-  import {global, modules} from 'find-sdk'
+  import {modules} from 'find-sdk'
+  import {errorHandling} from '../../scripts/utils'
+  import eventsHub from 'scripts/eventsHub'
   import {
     KEY73,
     KEY75,
@@ -157,35 +157,13 @@
           }
         ],
         toolbarHidden: false,
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        },
-        dataError: false,
-        stopEvent: false
+        dataError: true,
+        stopEvent: false,
+        loading: false,
+        hasLoaded: false
       }
     },
     watch: {
-      // scoreList: function (value, old) {
-      //   console.log(value, 'uuuuuuuu')
-      //   if (value.length > 0) {
-      //     this.dataError = false
-      //   }
-      //   this.collet = value[this.scoreIndex] ? value[this.scoreIndex].collect : []
-      //   console.log(value[this.scoreIndex])
-      //   let flag = false
-      //   this.collet && this.collet.forEach((item) => {
-      //     if (item.collection) { flag = true }
-      //   })
-      //   if (flag) {
-      //     this.controlButtons[5].icon = '0xe656'
-      //   } else {
-      //     this.controlButtons[5].icon = '0xe653'
-      //   }
-      // },
       scoreIndex: function (value) {
         this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
         let flag = false
@@ -228,6 +206,7 @@
         this.buttonActions('ok')
       },
       [KEY85] () {
+        console.log('tapppppp')
         this.buttonActions('collect')
       },
       [BACK_PRESSED] () {
@@ -286,15 +265,33 @@
         },
         scoreList: function (state) {
           let query = this.query
-          let arr = []
+          let arr = ''
           if (query.differ) {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id]
           } else if (query.year) {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id]
           } else {
-            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId] || []
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId]
           }
-          return arr
+          this.hasLoaded = arr
+          if (arr) {
+            eventsHub.$emit('closeToast')
+            arr = arr || []
+            if (arr.length > 0) {
+              this.dataError = false
+              this.collet = arr[this.scoreIndex] ? arr[this.scoreIndex].collect : []
+              let flag = false
+              this.collet && this.collet.forEach((item) => {
+                if (item.collection) { flag = true }
+              })
+              if (flag) {
+                this.controlButtons[5].icon = '0xe656'
+              } else {
+                this.controlButtons[5].icon = '0xe653'
+              }
+            }
+          }
+          return arr || []
         },
         isLogin (state) {
           let {storage} = state
@@ -309,7 +306,6 @@
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
       },
       namespace () {
-        console.log(this.chooseType)
         return this.chooseType ? 'chooseType' : ''
       }
     },
@@ -327,19 +323,25 @@
           id = JSON.parse(query.book).bookId
           typeName = 'musicScore'
         }
-        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then(() => {
-          let musicId = parseInt(this.query.musicId)
-          if (musicId) {
-            // 光标定到指定曲目
-            this.scoreList.forEach((item, index) => {
-              if (item.files) {
-                item.files.forEach((item1) => {
-                  if (item1.musicId === musicId) {
-                    return this.$store.dispatch('scoreList/setScoreListIndex', index)
-                  }
-                })
-              }
-            })
+        this.$store.dispatch({type: 'scoreList/getScoreList', typeName: typeName, id: id}).then((data) => {
+          if (this.hasLoaded || data.scoreList) {
+            // 有缓存
+            eventsHub.$emit('closeToast')
+            let musicId = parseInt(this.query.musicId)
+            if (musicId) {
+              // 光标定到指定曲目
+              this.scoreList.forEach((item, index) => {
+                if (item.files) {
+                  item.files.forEach((item1) => {
+                    if (item1.musicId === musicId) {
+                      return this.$store.dispatch('scoreList/setScoreListIndex', index)
+                    }
+                  })
+                }
+              })
+            }
+          } else {
+            errorHandling(data)
           }
         })
       },
@@ -401,7 +403,6 @@
               return
             }
             console.log('直接去播放曲谱')
-            // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: scoreList[scoreIndex].musicId})
             this.player(scoreList[scoreIndex], 1)
             this.addRecentOpen(scoreList[scoreIndex], 1)
             this.$store.dispatch('addPractice')
@@ -411,6 +412,7 @@
             this.$store.dispatch('scoreList/setScoreListIndex', 0)
             break
           case 'collect':
+            console.log('tapptap')
             if (scoreList[scoreIndex].files.length > 1) {
               // 多版本收藏
               this.chooseType = true
@@ -437,7 +439,8 @@
 
             let hasCollected = false
             let musicId = scoreList[scoreIndex].files[typeNum - 1].musicId
-            let flag = scoreList[scoreIndex].collect[typeNum - 1].collection
+            let flag = 0
+            if (scoreList[scoreIndex].collect) flag = scoreList[scoreIndex].collect[typeNum - 1].collection
             if (flag) {
               this.controlButtons[5].icon = '0xe653'
             } else {
@@ -484,18 +487,17 @@
             } else {
               console.log('去播放曲谱')
               this.addRecentOpen(scoreList[scoreIndex], typeNum)
-              // modules.nativeRouter.openMidiPlayer({isLocal: false, musicId: musicId})
               this.player(scoreList[scoreIndex], typeNum)
               this.$store.dispatch('addPractice')
             }
             break
           default:
             console.log('108')
-            // this.goBack()
         }
       },
       // 播放曲谱
       player (musicObj, typeNum) {
+        this.chooseType = false
         if (this.stopEvent) {
           return
         }
@@ -529,7 +531,9 @@
           allMusics.push(eachMusic)
         })
         console.log({info: {musicId, musicIds, allMusics}})
-        modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+        this.$nextTick(() => {
+          modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics})
+        })
       },
       // 加入最近打开
       addRecentOpen (musicObj, typeNum) {
@@ -572,34 +576,13 @@
     created () {
       this.getScoreList()
       this.addBookViewMount()
-      this.adjustPlayer()
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     mounted () {
-      let timer = null
-      global.getStatusBarItem().then((data) => {
-        if (this.scoreList.length === 0) {
-          this.dataError = true
-          if (!data.wifi.title) {
-            // 断网
-            this.$refs.prompt.showPrompt()
-          }
-        }
-      })
-      timer = setTimeout(() => {
-        if (this.scoreList.length > 0) {
-          this.collet = this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].collect : []
-          let flag = false
-          this.collet && this.collet.forEach((item) => {
-            if (item.collection) { flag = true }
-          })
-          if (flag) {
-            this.controlButtons[5].icon = '0xe656'
-          } else {
-            this.controlButtons[5].icon = '0xe653'
-          }
-          clearTimeout(timer)
-        }
-      }, 2000)
+      eventsHub.$emit('toast')
+      this.adjustPlayer()
     },
     components: {
       scoreListCenter,
@@ -609,8 +592,7 @@
       scoreListLeftYear,
       scoreListLeftStyle,
       scoreListChooseButtons,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
@@ -618,13 +600,6 @@
   .scoreList {
       width: 100%;
       height: 100%;
-      .find-prompt {
-        width: 750px;
-        height: 450px;
-        position: absolute;
-        top: 500px;
-        left: 2043px;
-      }
     .left {
       position: absolute;
       width: 850px;

@@ -8,7 +8,6 @@
         :index="index" :select="materialSelect" :ablum="item"
         :class="{maxMargin:(index+1)%2===0}"></find-ablum-card>
     </find-wrap>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text"  :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
       <icon-item v-for="button in materialButton"
                  :pianoKey="button.pianoKey"
@@ -23,13 +22,6 @@
 
 </template>
 <style lang="scss" scoped type=text/scss>
-  .find-prompt {
-    width: 640px;
-    height: 360px;
-    position: absolute;
-    top: 500px;
-    left: 2043px;
-  }
   .find-ablum-card {
     margin-right: 30px;
     float: left;
@@ -44,8 +36,8 @@
   import findWrap from 'components/common/find-wrap/find-wrap'
   import findAblumCard from 'components/common/find-ablum-card/find-ablum-card'
   import statusBar from '../common/find-status-bar/find-status-bar'
-  import findPrompt from '../common/find-prompt/find-prompt'
-  import {global} from 'find-sdk'
+  import eventsHub from 'scripts/eventsHub'
+  import {errorHandling} from '../../scripts/utils'
   import {
     KEY75,
     KEY78,
@@ -59,7 +51,6 @@
     BACK_PRESSED,
     PEDAL_PRESSED
   } from 'vue-find'
-
   export default {
     name: 'material',
     data () {
@@ -112,14 +103,7 @@
             dotColor: '#fff',
             id: 204
           }
-        ],
-        promptInfo: {
-          text: '网络连接出错，请检查网络',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 750,
-          height: 450
-        }
+        ]
       }
     },
     find: {
@@ -191,7 +175,11 @@
             }
             break
           case 'up':
-            if (activeIndex - 4 >= 0) activeIndex -= 4
+            if (activeIndex - 4 >= 0) {
+              activeIndex -= 4
+            } else {
+              activeIndex = 0
+            }
             break
           case 'ok':
             return this.$router.push({path: '/scoreSetList', query: {setId: this.materialList.body[activeIndex].id, setName: this.materialList.body[activeIndex].name}})
@@ -214,33 +202,43 @@
         this.materialPage = Math.ceil((val + 1) / 8)
       }
     },
-    beforeCreate () {
-      this.$store.dispatch('material/getAllBookSets')
-    },
     created () {
+      this.$store.dispatch('material/getAllBookSets').then((data) => {
+        if (this.hasLoaded || (data && data.materialList)) {
+          // 有缓存
+          eventsHub.$emit('closeToast')
+        } else {
+          errorHandling(data)
+        }
+      })
       this.materialPage = Math.ceil((this.materialSelect + 1) / 8)
     },
     mounted () {
-      // 断网提醒
-      global.getStatusBarItem().then((data) => {
-        if (this.materialList.body.length === 0 && !data.wifi.title) {
-          this.$refs.prompt.showPrompt()
-        }
-      })
+      eventsHub.$emit('toast')
+    },
+    beforeDestroy () {
+      eventsHub.$emit('closeToast')
     },
     components: {
       findWrap,
       findAblumCard,
-      statusBar,
-      findPrompt
+      statusBar
     },
     computed: {
       ...mapState({
         materialSelect: (state) => {
           return state.materialSelect
+        },
+        materialList: function (state) {
+          let materialList = state.storage.cache.renderCache.materialList
+          if (materialList.body.length > 0) {
+            eventsHub.$emit('closeToast')
+          }
+          this.hasLoaded = !!materialList.body.length
+          return materialList
         }
       }),
-      ...mapGetters(['materialList'])
+      ...mapGetters([])
     }
   }
 </script>

@@ -10,7 +10,7 @@
           <div class="date" v-if="title==='最近更新'">{{ data.time | format}}</div>
           <div class="date" v-if="title==='热门曲谱'">
             <span class="viewIcon iconfont icon-popularity"></span>
-            <span>{{ data.hotNum }}</span>
+            <span v-text="data.hotNum"></span>
           </div>
         </div>
       </div>
@@ -168,20 +168,22 @@
   .active::after {
     content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
     left: 0;
     top: 0;
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    width: 100%;
+    height: 100%;
+    transform: translate3d(0,0,0);
     animation: shadowRepeat 1s ease 0s infinite alternate;
+    box-shadow: 0 0 100px 12px rgba(255, 255, 255, 1);
+    opacity:1;
+    will-change: opacity;
   }
-
   @keyframes shadowRepeat {
     0% {
-      box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, 1);
+      opacity: 0;
     }
     100% {
-      box-shadow: 0px 0px 100px 30px rgba(255, 255, 255, 1);
+      opacity: 1;
     }
   }
 </style>

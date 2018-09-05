@@ -1,8 +1,7 @@
 <template>
     <ul>
         <li v-for="(item,index) of yearList" :key="item.name" :class="{active:yearIndex===index}" @click="setSelect(index)" >
-          <img :src="yearIndex===index?item.sleCoverSmall:item.coverSmall" alt="">
-          <p>{{item.name}}</p>
+          <img :src="item.coverSmall" alt="">
         </li>
     </ul>
 </template>
@@ -41,25 +40,40 @@
   ul {
     color:#fff;
     position: absolute;
-    top: 260px;
-    left: 948px;
+    top: 279px;
+    left: 954px;
     li {
-      width: 404px;
-      height: 574px;
-      background-color: green;
+      width: 354px;
+      height: 497px;
       position: relative;
-      margin-right: 115px;
+      margin-right: 173px;
+      border-radius: 16px;
+      background:rgba(0,0,0,1);
+      opacity:0.6;
+      border: 7px solid rgba(255,255,255,0.28);
+      transition: all 0.4s linear;
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: -86px;
+        left: 50%;
+        transform: translateX(-50%);
+        width:354px;
+        height:68px;
+        background:linear-gradient(180deg,rgba(255,255,255,0.3) 10%,rgba(255,255,255,0));
+        opacity:0.6;
+        border-radius:10px;
+      }
+      &.active {
+        transform: scale(1.2);
+        background:transparent;
+        opacity:1;
+        border:7px solid #00FF90;
+        box-shadow: 0px 0px 200px 0px #00FF90;
+      }
       img {
         width: 100%;
         height: 100%;
-      }
-      p {
-        position: absolute;
-        font-size: 40px;
-        bottom: 20px;
-        color: #fff;
-        width: 100%;
-        text-align: center;
       }
     }
   }

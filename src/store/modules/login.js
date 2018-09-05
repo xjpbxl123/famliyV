@@ -17,6 +17,8 @@ export default {
           return dispatch('setSession', data.body.sess, {root: true})
         }
         return data
+      }).catch((error) => {
+        return error
       })
     }
   }

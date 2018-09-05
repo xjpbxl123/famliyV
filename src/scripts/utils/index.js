@@ -3,6 +3,7 @@
  */
 import {isString} from 'lodash'
 import {global} from 'find-sdk'
+import eventsHub from '../eventsHub'
 const os = (function () {
   return (function () {
     let
@@ -58,15 +59,47 @@ const formatDate = function (date, format) {
 /**
  * @desc 获取当前环境变量,跟着APP环境走
  * */
-const getCurEnvs = function () {
+const getCurEnvs = (function () {
   const envs = {0: 'production', 1: 'development', 2: 'buildTest'}
-  return new Promise(resolve => {
-    /// 0:生产
-    /// 1:开发
-    /// 2:测试
-    global.severType().then(envNum => {
-      resolve(process.env[envs[envNum - 0]])
+  let currentEnv = null
+  let returnEnv = (env) => { return process.env[env] }
+  return function () {
+    return new Promise(resolve => {
+      /// 0:生产
+      /// 1:开发
+      /// 2:测试
+      if (currentEnv) {
+        return resolve(returnEnv(currentEnv))
+      }
+      global.severType().then(envNum => {
+        currentEnv = envs[envNum - 0]
+        return resolve(returnEnv(currentEnv))
+      })
     })
-  })
+  }
+}())
+
+/**
+ * @desc 接口错误处理
+ * */
+const errorHandling = function (data) {
+  let code = ''
+  if (data.message === 'Network Error') {
+    code = '-100'
+  } else {
+    code = data.code
+  }
+  switch (code) {
+    case '-100':
+      // 网络错误
+      eventsHub.$emit('toast', {text: '网络连接出错，请检查网络', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+      break
+    case 'ECONNABORTED':
+      // 网络超时
+      eventsHub.$emit('toast', {text: '网络超时', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+      break
+    default:
+      eventsHub.$emit('toast', {text: data.desc || data.message || '', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+  }
 }
-export { os, formatDate, getCurEnvs }
+export { os, formatDate, getCurEnvs, errorHandling }

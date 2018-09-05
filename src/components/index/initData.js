@@ -1,14 +1,19 @@
 /**
  * Created by Tommy on 2018/5/23 .
  * */
+import {errorHandling} from '../../scripts/utils'
 export default {
   methods: {
     /**
      * @desc  初始化首页曲谱
      * */
     initializeData () {
-      this.$store.dispatch({type: 'index/getHotBooks'}).then(() => {
-        this.$store.dispatch({type: 'index/getRecentBooks'})
+      return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
+        if (!this.hasLoaded && !data.hottest) {
+          // 没有缓存并且没有数据
+          errorHandling(data)
+        }
+        return this.$store.dispatch({type: 'index/getRecentBooks'})
       })
     },
     /**
@@ -51,10 +56,9 @@ export default {
     },
     /**
      * @desc 获取用户数据
-     * @param {object} playCalendar - 练琴数据
      * */
     getUserInfo () {
-      this.$store.dispatch('getUserInfo')
+      return this.$store.dispatch('getUserInfo')
     },
     /**
      * @desc 用户数据模式

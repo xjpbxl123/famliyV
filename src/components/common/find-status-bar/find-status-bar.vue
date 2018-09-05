@@ -89,12 +89,13 @@
         this.status(data)
       })
       notification.regist('statusBarChange', data => {
+        console.log('change')
         let changeData = {}
         changeData[data.id] = data
         this.status(changeData)
       })
     },
-    destroyed () {
+    beforeDestroy () {
       notification.remove('statusBarChange')
     }
   }

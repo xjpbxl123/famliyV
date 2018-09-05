@@ -4,5 +4,5 @@
 export default {
   path: '/scoreList',
   name: 'scoreList',
-  component: () => import(/* webpackChunkName:"popular" */ './scoreList')
+  component: () => import(/* webpackChunkName:"scoreList" */ './scoreList')
 }
