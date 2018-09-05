@@ -102,4 +102,14 @@ const errorHandling = function (data) {
       eventsHub.$emit('toast', {text: data.desc || data.message || '', icon: 'icon-sync-info', iconLoading: false, allExit: false})
   }
 }
-export { os, formatDate, getCurEnvs, errorHandling }
+
+// 验证手机号码
+const checkMobile = function (str) {
+  let re = /^1\d{10}$/
+  if (re.test(str)) {
+    return true
+  } else {
+    return false
+  }
+}
+export { os, formatDate, getCurEnvs, errorHandling, checkMobile }

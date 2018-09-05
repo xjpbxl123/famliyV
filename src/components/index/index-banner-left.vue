@@ -10,7 +10,7 @@
       </div>
       <div v-else>
         <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" demo="xxx"></findImg>
-        <span class="nick-name" v-text="userInfo.nickName"></span>
+        <span class="nick-name" v-text="nickName"></span>
       </div>
       <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
       <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
@@ -45,6 +45,7 @@
   import qrCode from './index-qrcode'
   import calendar from './index-calendar'
   import findImg from '../common/find-img/find-img'
+  import {checkMobile} from '../../scripts/utils'
   export default {
     name: 'index-banner-left',
     props: {
@@ -61,13 +62,24 @@
     data () {
       return {
         adminUrl: require('./images/admin.png'),
-        interval: null
+        interval: null,
+        nickName: ''
       }
     },
     watch: {
       sessionId () {
         if (!this.isLogin) {
           this.generateQrCode()
+        }
+      },
+      userInfo (value) {
+        if (checkMobile(value.nickName)) {
+          // 如果用户名是手机号码 隐藏中间四位
+          let first = value.nickName.slice(0, 3)
+          let last = value.nickName.slice(7, 11)
+          this.nickName = first + '****' + last
+        } else {
+          this.nickName = value.nickName || ''
         }
       }
     },

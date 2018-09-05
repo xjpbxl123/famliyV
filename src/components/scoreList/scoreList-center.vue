@@ -65,6 +65,9 @@
           if (value > 9) {
             this.rightTop = (value - 9) * 78 * -1
           }
+          if (value === 0) {
+            this.rightTop = 0
+          }
         }
       }
     },
