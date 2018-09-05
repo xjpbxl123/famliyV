@@ -486,7 +486,7 @@
                   break
                 } else if (data.typeName === 'mp3') {
                   this.$router.push({path: '/openAudio', query: {url: data.http}})
-                } else if (data.typeName === 'mp4') {
+                } else if (data.typeName === 'video') {
                   this.$router.push({path: '/openVideo', query: {url: data.http}})
                 }
               }

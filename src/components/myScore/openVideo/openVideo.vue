@@ -1,21 +1,21 @@
 <template>
-  <div class="openAudio">
+  <div class="openVideo">
     <statusBar/>
-    <audio :src="audioUrl" class="audio" ref="audio" preload></audio>
-    <div class="audioBox">
-        <div class="audioMenu">
-            <span class="audioName" v-text="name"></span>
-            <div class="time"><span class="currentTime" v-text="currentTime"></span> / <span classs="totalTime" v-text="totalTime"></span></div>
-            <div class="audioMess">
-              <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
-              <div class="mess">歌曲名：<span class="songName" v-text="songName"></span></div>
-              <div class="mess">艺人：<span class="singer" v-text="singer"></span></div>
-              <div class="mess">专辑：<span class="album" v-text="album"></span></div>
-            </div>
-        </div>
-        <div class="songSpan">
-          <span class="iconfont icon-song songIcon"></span>
-        </div>
+    <video :src="audioUrl" class="audio" ref="audio" preload :class="{'fullScreen': fullScreen}"></video>
+    <div class="videoBox">
+      <div class="videoName" v-text="videoName"></div>
+      <div class="time">
+        <span class="currentTime" v-text="currentTime"> </span> /
+        <span class="totalTime" v-text="totalTime"> </span>
+      </div>
+    </div>
+    <div class="pauseLogo" :class="{'fullScreen': fullScreen}"></div>
+    <div class="halfScreen" v-if="!fullScreen">
+      <div class="halfMess">
+        <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
+        <div class="mess">分辨率：<span class="screenR" >1200*600</span></div>
+        <div class="mess">持续时间：<span class="duration" v-text="totalTime"></span></div>
+      </div>
     </div>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button) in controlButtons"
@@ -23,7 +23,6 @@
             :key="button.id"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
-            :longClick="button.longClick"
             :style="{backgroundColor:'#3000',dotColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
             :key="index"
@@ -37,18 +36,15 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
+  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, KEY66 } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
   export default {
     data () {
       return {
         audioUrl: '',
         toolbarHidden: false,
-        name: '汤姆家的猫',
-        fileName: '汤姆家的猫',
-        songName: '汤姆家的猫',
-        singer: '毛阿敏',
-        album: '汤姆家的猫',
+        videoName: '汤姆家的猫',
+        fileName: '汤姆家的猫.mp4',
         controlButtons: [
           {
             pianoKey: 73,
@@ -70,18 +66,27 @@
             icon: '0xe681',
             id: 203
         }],
-        textButtons: [ {
+        textButtons: [{
           pianoKey: 82,
           icon: '0xe60d',
           id: 204,
           text: '调音台'
+        }, {
+          pianoKey: 66,
+          icon: '0xe625',
+          id: 205,
+          text: '全屏'
         }],
         currentTime: '00:00',
         totalTime: '00:00',
-        isPlaying: false
+        isPlaying: false,
+        fullScreen: true
       }
     },
     find: {
+      [KEY66] () {
+        this.buttonActions('changeScreen')
+      },
       [KEY73] () {
         this.buttonActions('fastBackward')
       },
@@ -107,6 +112,13 @@
       }
     },
     methods: {
+      buttonActions (type) {
+        switch (type) {
+          case 'changeScreen':
+            this.fullScreen = !this.fullScreen
+            break
+        }
+      },
       addEventListeners: function () {
         const self = this
         self.$refs.audio.addEventListener('timeupdate', self._currentTime)
@@ -144,70 +156,68 @@
   }
 </script>
 <style lang="scss" scoped>
-    .openAudio {
+    .openVideo {
         width: 100%;
         height: 100%;
         position: relative;
-        .audioBox {
-            width: 1200px;
-            height: 600px;
+        video {
+          width: 50%;
+          height: 100%;
+          &.fullScreen {
+            width: 100%;
+          }
+        }
+        .videoBox {
+          position: absolute;
+          top: 50px;
+          left: 40px;
+          .videoName {
+            font-size:48px;
+            font-family:PingFangSC-Semibold;
+            font-weight:600;
+            color:rgba(255,255,255,1);
+          }
+          .time {
+            margin-top: 17px;
+            font-size:20px;
+            font-family:PingFangSC-Regular;
+            font-weight:400;
+            color:rgba(255,255,255,1);
+          }
+        }
+        .pauseLogo {
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          top: 440px;
+          left: 860px;
+          background: url('../images/pauseLogo.png') no-repeat;
+          background-size: cover;
+          &.fullScreen {
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+        .halfScreen {
+          width: 50%;
+          height: 100%;
+          position: absolute;
+          left: 50%;
+          top: 0;
+          background: url('../images/halfScreen_bg.png') no-repeat;
+          background-size: cover;
+          .halfMess {
             position: absolute;
-            top: 241px;
-            left: 605px;
-            background:rgba(0,0,0,0.2);
-            border-radius:10px;
-            padding: 0 100px;
-            color:#fff;
-            .audioName {
-              font-size:48px;
-              font-family:PingFangSC-Semibold;
-              font-weight:600;
-              display: block;
-              margin-top: 49px;
-              width: 460px;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              overflow: hidden;
-            }
-            .time {
-              font-size:20px;
-              font-family:PingFangSC-Regular;
-              font-weight:400;
-              margin-top: 17px;
-              font-family:PingFangSC-Regular;
-              font-weight:400;
-            }
-            .audioMess {
-              margin-top: 51px;
+            top: 476px;
+            left: 115px;
+            color: #fff;
+            .mess {
               font-size:28px;
-              .mess {
-                margin-top: 22px;
-                width: 460px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-              }
+              font-family:PingFangSC-Regular;
+              font-weight:400;
+              margin-top: 22px;
             }
-            .songSpan {
-              position: absolute;
-              top: 49px;
-              right: 100px;
-              width: 500px;
-              height: 500px;
-              background:rgba(245,245,245,1);
-              box-shadow:0px 10px 20px 0px rgba(0,0,0,0.5);
-              border-radius:16px;
-              border:1px solid rgba(155,155,155,1);
-              .songIcon {
-                font-size: 200px;
-                color: #9B9B9B;
-                opacity: 0.5;
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%,-50%);
-              }
-            }
+          }
         }
     }
 </style>

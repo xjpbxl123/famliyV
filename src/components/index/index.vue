@@ -593,15 +593,15 @@
         selectedIndex: state => state.index.selectedIndex,
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
-        namespace () {
-          return this.showHelpBanner || this.closeScreen ? 'banner' : ''
-        },
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
         }
       }),
-      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList'])
+      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList']),
+      namespace () {
+        return this.showHelpBanner || this.closeScreen ? 'banner' : ''
+      }
     },
     watch: {
       /**
