@@ -2,7 +2,7 @@
   "name": "piano-family-weex",
   "version": "1.0.0",
   "description": "钢琴家庭版weex版本",
-  "author": "Moersing Lin<1261870167@qq.com>",
+  "author": "Moersing<1261870167@qq.com>",
   "private": true,
   "scripts": {
     "start": "npm run serve",
