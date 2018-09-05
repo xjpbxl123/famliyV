@@ -306,6 +306,7 @@
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`).then((res) => {
+          console.log(res)
           if (res.result) {
             this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`)
           }

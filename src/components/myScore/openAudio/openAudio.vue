@@ -1,14 +1,20 @@
 <template>
   <div class="openAudio">
     <statusBar/>
-    <video src="audioUrl" class="audio"></video>
+    <video :src="audioUrl" class="audio" ref="audio" preload></video>
     <div class="audioBox">
         <div class="audioMenu">
             <span class="audioName" v-text="name"></span>
             <div class="time"><span class="currentTime" v-text="currentTime"></span> / <span classs="totalTime" v-text="totalTime"></span></div>
             <div class="audioMess">
-              <div>文件名：<span class="fileName"></span></div>
+              <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
+              <div class="mess">歌曲名：<span class="songName" v-text="songName"></span></div>
+              <div class="mess">艺人：<span class="singer" v-text="singer"></span></div>
+              <div class="mess">专辑：<span class="album" v-text="album"></span></div>
             </div>
+        </div>
+        <div class="songSpan">
+          <span class="iconfont icon-song songIcon"></span>
         </div>
     </div>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -31,6 +37,10 @@
         audioUrl: '',
         toolbarHidden: false,
         name: '汤姆家的猫',
+        fileName: '汤姆家的猫',
+        songName: '汤姆家的猫',
+        singer: '毛阿敏',
+        album: '汤姆家的猫',
         controlButtons: [
           {
             pianoKey: 73,
@@ -57,7 +67,8 @@
             id: 204
         }],
         currentTime: '00:00',
-        totalTime: '00:00'
+        totalTime: '00:00',
+        isPlaying: false
       }
     },
     find: {
@@ -65,7 +76,12 @@
         this.buttonActions('fastBackward')
       },
       [KEY75] () {
-        this.buttonActions('playOrPause')
+        console.log(this.$refs.audio)
+        if (!this.isPlaying) {
+          this.$refs.audio.play()
+        } else {
+          this.$refs.audio.pause()
+        }
       },
       [KEY78] () {
         this.buttonActions('fastForward')
@@ -81,8 +97,36 @@
       }
     },
     methods: {
+      addEventListeners: function () {
+        const self = this
+        self.$refs.audio.addEventListener('timeupdate', self._currentTime)
+        self.$refs.audio.addEventListener('canplay', self._durationTime)
+      },
+      removeEventListeners: function () {
+        const self = this
+        self.$refs.audio.removeEventListener('timeupdate', self._currentTime)
+        self.$refs.audio.removeEventListener('canplay', self._durationTime)
+      },
+      _currentTime: function () {
+        const self = this
+        self.currentTime = parseInt(self.$refs.audio.currentTime)
+        console.log(this.$refs.audio.currentTime)
+      },
+      _durationTime: function () {
+        const self = this
+        self.totalTime = parseInt(self.$refs.audio.duration)
+        console.log(this.$refs.audio.duration)
+      }
+
     },
-    created () {
+    mounted () {
+      if (this.$route.query.url) {
+        this.audioUrl = this.$route.query.url
+        this.addEventListeners()
+      }
+    },
+    beforeDestroyed () {
+      this.removeEventListeners()
     },
     components: {
       statusBar
@@ -103,20 +147,56 @@
             background:rgba(0,0,0,0.2);
             border-radius:10px;
             padding: 0 100px;
+            color:#fff;
             .audioName {
               font-size:48px;
               font-family:PingFangSC-Semibold;
               font-weight:600;
-              color: #fff;
               display: block;
               margin-top: 49px;
+              width: 460px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
             }
             .time {
               font-size:20px;
               font-family:PingFangSC-Regular;
               font-weight:400;
-              color:#fff;
               margin-top: 17px;
+              font-family:PingFangSC-Regular;
+              font-weight:400;
+            }
+            .audioMess {
+              margin-top: 51px;
+              font-size:28px;
+              .mess {
+                margin-top: 22px;
+                width: 460px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+              }
+            }
+            .songSpan {
+              position: absolute;
+              top: 49px;
+              right: 100px;
+              width: 500px;
+              height: 500px;
+              background:rgba(245,245,245,1);
+              box-shadow:0px 10px 20px 0px rgba(0,0,0,0.5);
+              border-radius:16px;
+              border:1px solid rgba(155,155,155,1);
+              .songIcon {
+                font-size: 200px;
+                color: #9B9B9B;
+                opacity: 0.5;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%,-50%);
+              }
             }
         }
     }
