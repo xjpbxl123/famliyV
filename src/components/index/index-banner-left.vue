@@ -9,8 +9,8 @@
         <span class="scan">扫描二维码登录</span>
       </div>
       <div v-else>
-        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" demo="xxx"></findImg>
-        <span class="nick-name" v-text="nickName"></span>
+        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" ></findImg>
+        <span class="nick-name" v-text="nickName || ''"></span>
       </div>
       <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
       <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
@@ -152,9 +152,9 @@
   }
 
   .avatar {
-    width: 163px;
+    width: 163px !important;
     margin: 0 auto;
-    height: 163px;
+    height: 163px !important;
     img {
        border-radius: 50% !important;
     }
