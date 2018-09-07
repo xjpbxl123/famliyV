@@ -2740,8 +2740,8 @@ find-parent-dir@~0.3.0:
   resolved "http://registry.npm.taobao.org/find-parent-dir/download/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
 find-toolbar@^1.1.2:
-  version "1.1.2"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.1.2.tgz#7d1faad199f04b892f911637fcfcc5e8075c8941"
+  version "1.2.1"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.1.tgz#f1b4b6038edf669c6584feb985eec1030ce19ac6"
 
 find-up@^1.0.0:
   version "1.1.2"

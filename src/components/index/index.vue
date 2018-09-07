@@ -119,41 +119,7 @@
   import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
-  import {
-    TOOLBAR_PRESSED,
-    KEY22,
-    KEY27,
-    KEY30,
-    KEY32,
-    KEY34,
-    KEY39,
-    KEY42,
-    KEY46,
-    KEY66,
-    KEY67,
-    KEY68,
-    KEY69,
-    KEY70,
-    KEY75,
-    KEY102,
-    KEY78,
-    LONG_KEY78,
-    KEY80,
-    LONG_KEY80,
-    KEY82,
-    KEY85,
-    KEY87,
-    KEY90,
-    KEY97,
-    LONG_KEY92,
-    KEY92,
-    LONG_KEY94,
-    KEY94,
-    KEY99,
-    INTERCEPT_DOWN,
-    BACK_PRESSED,
-    PEDAL_PRESSED
-  } from 'vue-find'
+  import * as keys from 'vue-find'
   import BannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -350,17 +316,17 @@
     },
     mixins: [initData],
     find: {
-      [TOOLBAR_PRESSED] ({hidden}) {
+      [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
         if (hidden && this.metronome) {
           return
         }
         this.buttonActions('closeMetro')
       },
-      [KEY22] () {
+      [keys.KEY22] () {
         this.buttonActions('closeMetro')
       },
-      [KEY27] () {
+      [keys.KEY27] () {
         if (+new Date() - this.skipTime <= 5000) {
           // 5秒之内不做处理
           console.log('return')
@@ -369,16 +335,16 @@
         this.skipTime = +new Date()
         this.buttonActions('keyBoardMute')
       },
-      [KEY30] () {
+      [keys.KEY30] () {
         this.buttonActions('help')
       },
-      [KEY32] () {
+      [keys.KEY32] () {
         if (!this.logoutCover) {
           return
         }
         this.buttonActions('login')
       },
-      [KEY34] () {
+      [keys.KEY34] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -386,7 +352,7 @@
         this.canEnterModule = false
         this.buttonActions('set')
       },
-      [KEY39] () {
+      [keys.KEY39] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -394,7 +360,7 @@
         this.canEnterModule = false
         this.buttonActions('myScore')
       },
-      [KEY42] () {
+      [keys.KEY42] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -402,7 +368,7 @@
         this.canEnterModule = false
         this.buttonActions('playRecord')
       },
-      [KEY46] () {
+      [keys.KEY46] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -410,27 +376,27 @@
         this.canEnterModule = false
         this.buttonActions('skill')
       },
-      [KEY66] () {
+      [keys.KEY66] () {
         // 打开节拍器
         this.buttonActions('openMetro')
       },
-      [KEY67] () {
+      [keys.KEY67] () {
         // 节拍器减速
         this.buttonActions('speedDown')
       },
-      [KEY68] () {
+      [keys.KEY68] () {
         // 节拍器恢复120
         this.buttonActions('speedRecover')
       },
-      [KEY69] () {
+      [keys.KEY69] () {
         // 节拍器加速
         this.buttonActions('speedUp')
       },
-      [KEY70] () {
+      [keys.KEY70] () {
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
-      [KEY102] () {
+      [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -443,10 +409,10 @@
           this.buttonActions('shutdown')
         }
       },
-      [KEY75] () {
+      [keys.KEY75] () {
         if (!this.logoutCover) this.buttonActions('login')
       },
-      [KEY78] () {
+      [keys.KEY78] () {
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
@@ -454,22 +420,22 @@
           this.buttonActions('left')
         }
       },
-      [LONG_KEY78] () {
+      [keys.LONG_KEY78] () {
         this.buttonActions('left')
       },
-      [KEY80] () {
+      [keys.KEY80] () {
         this.buttonActions('right')
       },
-      [LONG_KEY80] () {
+      [keys.LONG_KEY80] () {
         this.buttonActions('right')
       },
-      [KEY82] () {
+      [keys.KEY82] () {
         this.buttonActions('ok')
       },
-      [KEY85] () {
+      [keys.KEY85] () {
         this.buttonActions('search')
       },
-      [KEY87] () {
+      [keys.KEY87] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -477,35 +443,35 @@
         this.canEnterModule = false
         this.buttonActions('tone')
       },
-      [KEY90] () {
+      [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('changeRightData')
       },
-      [LONG_KEY92] () {
+      [keys.LONG_KEY92] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
-      [KEY92] () {
+      [keys.KEY92] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
-      [LONG_KEY94] () {
+      [keys.LONG_KEY94] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-down')
       },
-      [KEY94] () {
+      [keys.KEY94] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -513,21 +479,21 @@
         console.log('down')
         this.buttonActions('right-down')
       },
-      [KEY97] () {
+      [keys.KEY97] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-play')
       },
-      [KEY99] () {
+      [keys.KEY99] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('openMusicScore')
       },
-      [PEDAL_PRESSED] (key) {
+      [keys.PEDAL_PRESSED] (key) {
         if (this.isPlaying || this.loading) {
           // 播放的时候禁用踏板
           return
@@ -559,14 +525,14 @@
             return this.goBack()
         }
       },
-      [BACK_PRESSED] () {
+      [keys.BACK_PRESSED] () {
         if (this.loading) {
           return
         }
         this.goBack()
       },
       banner: {
-        [INTERCEPT_DOWN] (keys) {
+        [keys.INTERCEPT_DOWN] (keys) {
           if (this.showHelpBanner) {
             this.clickHelp(keys)
           } else {
@@ -846,9 +812,6 @@
             })
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
-          case 'famous':
-            return modules.nativeRouter.openArtistCourseView()
-          // return this.go('/famous')
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
@@ -907,6 +870,7 @@
             }
             switch (activeIndex) {
               case 0:
+                // return modules.nativeRouter.openArtistCourseView()
                 return this.go('/famous')
               case 1:
                 return this.go('/popular')

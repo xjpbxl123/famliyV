@@ -1,20 +1,20 @@
 <template>
   <div class="openVideo">
     <statusBar/>
-    <video :src="audioUrl" class="audio" ref="audio" preload :class="{'fullScreen': fullScreen}"></video>
+    <video :src="videoUrl" class="video" ref="video" preload :class="screenType"></video>
     <div class="videoBox">
       <div class="videoName" v-text="videoName"></div>
       <div class="time">
-        <span class="currentTime" v-text="currentTime"> </span> /
-        <span class="totalTime" v-text="totalTime"> </span>
+        <span class="currentTime" > {{currentTime | timer}}</span> /
+        <span class="totalTime" > {{totalTime | timer}}</span>
       </div>
     </div>
-    <div class="pauseLogo" :class="{'fullScreen': fullScreen}"></div>
-    <div class="halfScreen" v-if="!fullScreen">
+    <div class="pauseLogo"  v-if="!isPlaying"></div>
+    <div class="halfScreen" v-if="screenIndex !== 0" :class="screenType">
       <div class="halfMess">
         <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
         <div class="mess">分辨率：<span class="screenR" >1200*600</span></div>
-        <div class="mess">持续时间：<span class="duration" v-text="totalTime"></span></div>
+        <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
@@ -36,114 +36,176 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, KEY66 } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42 } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
+  import {timeFilter} from '../../../scripts/utils'
   export default {
     data () {
       return {
-        audioUrl: '',
+        videoUrl: '',
         toolbarHidden: false,
-        videoName: '汤姆家的猫',
-        fileName: '汤姆家的猫.mp4',
+        videoName: '',
+        fileName: '',
         controlButtons: [
           {
-            pianoKey: 73,
+            pianoKey: 54,
             icon: '0xe627',
             id: 200
           },
           {
-            pianoKey: 75,
+            pianoKey: 56,
             icon: '0xe680',
             id: 201
           },
           {
-            pianoKey: 78,
+            pianoKey: 58,
             icon: '0xe626',
             id: 202
           },
           {
-            pianoKey: 80,
+            pianoKey: 61,
             icon: '0xe681',
             id: 203
         }],
         textButtons: [{
-          pianoKey: 82,
+          pianoKey: 97,
           icon: '0xe60d',
           id: 204,
           text: '调音台'
         }, {
-          pianoKey: 66,
-          icon: '0xe625',
+          pianoKey: 42,
+          icon: '0xe6e3',
           id: 205,
-          text: '全屏'
+          text: '左半屏'
         }],
-        currentTime: '00:00',
-        totalTime: '00:00',
+        currentTime: '0',
+        totalTime: '0',
         isPlaying: false,
-        fullScreen: true
+        screenType: 'full',
+        screenIndex: 0
+      }
+    },
+    filters: {
+      timer (value) {
+        return timeFilter(value)
+      }
+    },
+    watch: {
+      screenType (val) {
+        switch (val) {
+          case 'half-left':
+            this.textButtons[1].icon = '0xe6e2'
+            this.textButtons[1].text = '全屏'
+            break
+          case 'full':
+            this.textButtons[1].icon = '0xe6e3'
+            this.textButtons[1].text = '左半屏'
+            break
+          case 'half-right':
+          //   this.textButtons[1].icon = '0xe6e4'
+          //   this.textButtons[1].text = '右半屏'
+          //   break
+        }
+      },
+      isPlaying (val) {
+        if (val) {
+          this.controlButtons[1].icon = '0xe673'
+        } else {
+          this.controlButtons[1].icon = '0xe680'
+        }
       }
     },
     find: {
-      [KEY66] () {
+      [KEY42] () {
         this.buttonActions('changeScreen')
       },
-      [KEY73] () {
+      [KEY54] () {
         this.buttonActions('fastBackward')
       },
-      [KEY75] () {
-        console.log(this.$refs.audio)
-        if (!this.isPlaying) {
-          this.$refs.audio.play()
-        } else {
-          this.$refs.audio.pause()
-        }
+      [KEY56] () {
+        this.buttonActions('playOrPause')
       },
-      [KEY78] () {
+      [KEY58] () {
         this.buttonActions('fastForward')
       },
-      [KEY80] () {
+      [KEY61] () {
         this.buttonActions('restart')
       },
-      [KEY82] () {
+      [KEY97] () {
         this.buttonActions('mixer')
       },
       [BACK_PRESSED] () {
-        this.$router.back()
+        this.buttonActions('back')
       }
     },
     methods: {
       buttonActions (type) {
         switch (type) {
-          case 'changeScreen':
-            this.fullScreen = !this.fullScreen
+          case 'playOrPause':
+            this.isPlaying ? this.$refs.video.pause() : this.$refs.video.play()
+            this.isPlaying = !this.isPlaying
             break
+          case 'changeScreen':
+            // 切换屏幕
+            let screen = ['full', 'half-left', 'half-right']
+            let screenIndex = this.screenIndex
+            screenIndex = screenIndex + 1
+            if (screenIndex > 1) screenIndex = 0
+            this.screenIndex = screenIndex
+            this.screenType = screen[screenIndex]
+            break
+          case 'fastBackward':
+            // 快退
+            this.currentTime = Math.max(this.currentTime - 10, 0)
+            this.$refs.video.currentTime = this.currentTime
+            break
+          case 'fastForward':
+            // 快进
+            this.currentTime = Math.min(this.currentTime + 10, this.totalTime)
+            if (this.currentTime === this.totalTime) {
+              this.isPlaying = false
+            }
+            this.$refs.video.currentTime = this.currentTime
+            break
+          case 'restart':
+            // 回到最初
+            this.$refs.video.currentTime = 0
+            break
+          case 'back':
+            this.$router.back()
         }
       },
       addEventListeners: function () {
         const self = this
-        self.$refs.audio.addEventListener('timeupdate', self._currentTime)
-        self.$refs.audio.addEventListener('canplay', self._durationTime)
+        self.$refs.video.addEventListener('timeupdate', self._currentTime)
+        self.$refs.video.addEventListener('canplay', self._durationTime)
       },
       removeEventListeners: function () {
         const self = this
-        self.$refs.audio.removeEventListener('timeupdate', self._currentTime)
-        self.$refs.audio.removeEventListener('canplay', self._durationTime)
+        self.$refs.video.removeEventListener('timeupdate', self._currentTime)
+        self.$refs.video.removeEventListener('canplay', self._durationTime)
       },
       _currentTime: function () {
         const self = this
-        self.currentTime = parseInt(self.$refs.audio.currentTime)
-        console.log(this.$refs.audio.currentTime)
+        self.currentTime = parseInt(self.$refs.video.currentTime)
+        if (self.currentTime === self.totalTime) {
+          this.isPlaying = false
+        }
       },
       _durationTime: function () {
         const self = this
-        self.totalTime = parseInt(self.$refs.audio.duration)
-        console.log(this.$refs.audio.duration)
+        self.totalTime = parseInt(self.$refs.video.duration)
+      },
+      filterUrl (fileName) {
+        this.fileName = fileName || ''
+        let nameArr = fileName.split('.')
+        this.videoName = nameArr[0].split('_')[0].split('#~')[0] || ''
       }
-
     },
     mounted () {
       if (this.$route.query.url) {
-        this.audioUrl = this.$route.query.url
+        this.filterUrl(this.$route.query.fileName)
+        this.videoUrl = this.$route.query.url
         this.addEventListeners()
       }
     },
@@ -161,10 +223,18 @@
         height: 100%;
         position: relative;
         video {
-          width: 50%;
           height: 100%;
-          &.fullScreen {
+          position: absolute;
+          &.full {
             width: 100%;
+          }
+          &.half-left {
+            width: 50%;
+            left: 0;
+          }
+          &.half-right {
+            width: 50%;
+            left: 50%;
           }
         }
         .videoBox {
@@ -193,10 +263,6 @@
           left: 860px;
           background: url('../images/pauseLogo.png') no-repeat;
           background-size: cover;
-          &.fullScreen {
-            left: 50%;
-            transform: translateX(-50%);
-          }
         }
         .halfScreen {
           width: 50%;
@@ -206,6 +272,9 @@
           top: 0;
           background: url('../images/halfScreen_bg.png') no-repeat;
           background-size: cover;
+          &.half-right {
+            left: 0;
+          }
           .halfMess {
             position: absolute;
             top: 476px;

@@ -40,10 +40,6 @@
       iconLoading: {
         type: Boolean,
         default: () => false
-      },
-      showPrompt: {
-        type: Boolean,
-        default: () => false
       }
     },
     data () {
@@ -52,19 +48,8 @@
         show: false
       }
     },
-    watch: {
-      showPrompt: function (val) {
-        console.log(val, 'val')
-        this.show = val
-        if (!this.allExit) {
-          this.timer1 = setTimeout(() => {
-            this.show = false
-          }, this.delay)
-        }
-      }
-    },
     methods: {
-      prompt () {
+      showPrompt () {
         this.show = true
         console.log(this.allExit, 'this.allExit')
         if (!this.allExit) {
@@ -73,7 +58,7 @@
           }, this.delay)
         }
       },
-      hide () {
+      hidePrompt () {
         this.show = false
       }
     },

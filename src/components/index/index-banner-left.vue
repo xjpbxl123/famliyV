@@ -140,13 +140,17 @@
 
   .user-status {
     padding-top: 110px;
+    position: relative;
+    height: 100%;
     .noActive {
-      width:100%;
-      font-size:14px;
+      width: 100%;
+      font-size: 14px;
       text-align: center;
       font-family: MicrosoftYaHei;
-      color:rgba(255,255,255,0.6);
-      margin-top: 22px;
+      color: hsla(0,0%,100%,.6);
+      position: absolute;
+      bottom: 110px;
+      left: 0;
     }
 
   }

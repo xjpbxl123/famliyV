@@ -141,9 +141,9 @@
       position: absolute;
       width: 400px;
       height: 1px;
-      bottom: 10px;
-      background: -webkit-linear-gradient(left, white, rgba(255, 255, 255, 0));
-      left: 106%;
+      bottom: -2px;
+      background: -webkit-linear-gradient(left,#fff,hsla(0,0%,100%,0));
+      left: 0;
     }
   }
   .cover {

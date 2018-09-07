@@ -52,7 +52,7 @@ export default function createStore () {
             },
             localCollect: [],
             localRecent: [],
-            famousPlayCoursesBySet: [],
+            famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
             musicInfo: []
           }

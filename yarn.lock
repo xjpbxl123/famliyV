@@ -2942,9 +2942,15 @@ find-parent-dir@^0.3.0:
   dependencies:
     lodash "^4.17.10"
 
+<<<<<<< HEAD
 find-toolbar@^1.1.9:
   version "1.1.9"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.1.9.tgz#c79ec0b08cd15087771ab9949d0405ab6c05bc44"
+=======
+find-toolbar@^1.2.1:
+  version "1.2.1"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.1.tgz#f1b4b6038edf669c6584feb985eec1030ce19ac6"
+>>>>>>> 添加本地资源排序 打开视频
 
 find-toolbar@^1.2.1:
   version "1.2.1"
@@ -7422,6 +7428,7 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
+<<<<<<< HEAD
 vue-find-hybrid@^1.1.3:
   version "1.2.5"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.2.5.tgz#63bb89da4bee45023eb7754761da3c5f7ba77f61"
@@ -7432,6 +7439,9 @@ vue-find-hybrid@^1.1.3:
     vue "^2.5.2"
 
 vue-find-hybrid@^1.2.9:
+=======
+vue-find-hybrid@^1.0.7, vue-find-hybrid@^1.1.3:
+>>>>>>> 添加本地资源排序 打开视频
   version "1.2.9"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.2.9.tgz#0aeadbb15d6e3797d7b191e4b78c2a2a3843ea9b"
   dependencies:
@@ -7441,8 +7451,13 @@ vue-find-hybrid@^1.2.9:
     vue "^2.5.2"
 
 vue-find@^1.3.3:
+<<<<<<< HEAD
   version "1.4.2"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.4.2.tgz#d2eb1e5b2e1c34660d083e9edfa808eed919fae4"
+=======
+  version "1.4.1"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find/-/vue-find-1.4.1.tgz#cdf2f7b7bbab2e6f518d29b54631b38a0e7f7b17"
+>>>>>>> 添加本地资源排序 打开视频
   dependencies:
     babel-runtime "^6.26.0"
     lodash "^4.17.10"

@@ -12,6 +12,8 @@ const MY_PLAY_INDEX = 'MY_PLAY_INDEX' /// 我的弹奏index
 const MY_PLAY_PATH = 'MY_PLAY_PATH' // 我的录音路径
 const MY_COLLECT_INDEX = 'MY_COLLECT_INDEX' /// 我的收藏index
 const MY_RECENT_INDEX = 'MY_RECENT_INDEX' /// 我的最近打开index
+const ORDER_INDEX = 'ORDER_INDEX' /// 文件排序index
+
 export default {
   namespaced: true,
   state: {
@@ -26,6 +28,7 @@ export default {
     myPlayIndex: 0,
     myCollectIndex: 0,
     myRecentIndex: 0,
+    orderIndex: 0,
     myPlayPath: '$userHistory'
   },
   mutations: {
@@ -37,6 +40,9 @@ export default {
     },
     [LOCAL_SOURCE] (state, data) {
       state.localSource = data
+    },
+    [ORDER_INDEX] (state, data) {
+      state.orderIndex = data
     },
     [LOCAL_SOURCE_PATH] (state, path) {
       state.localSourcePath = path
@@ -74,6 +80,12 @@ export default {
       commit(MY_SCORE_TAP_INDEX, num)
     },
     /**
+     * @desc 文件排序
+     * */
+    setOrderIndex ({commit}, num) {
+      commit(ORDER_INDEX, num)
+    },
+    /**
      * @desc 本地资源选中index
      * */
     setLocalSourceIndex ({commit}, num) {
@@ -100,7 +112,7 @@ export default {
     /**
      * @desc 获取我的曲谱本地资源列表
      * */
-    getLocalSource ({commit}, path) {
+    getLocalSource ({commit, state}, path) {
       file.readFolderFile(path).then((res) => {
         let deleteIndex = []
         res.forEach((item, index) => {
@@ -184,7 +196,37 @@ export default {
             filteredArr.push(item)
           }
         })
-        commit(LOCAL_SOURCE, filteredArr)
+        switch (state.orderIndex) {
+          case 0:
+            // 名称排序
+            filteredArr.sort((a, b) => { return a.name > b.name })
+            commit(LOCAL_SOURCE, filteredArr)
+            break
+          case 1:
+            // 时间排序
+            commit(LOCAL_SOURCE, filteredArr)
+            break
+          case 2:
+            // 类型排序
+            let fondelArr = []
+            let scoreArr = []
+            let anoArr = []
+            filteredArr.map(data => {
+              if (data.type === 'dir') {
+                fondelArr.push(data)
+              } else if (data.filesName) {
+                scoreArr.push(data)
+              } else {
+                anoArr.push(data)
+              }
+            })
+            fondelArr.sort((a, b) => { return a.name > b.name })
+            scoreArr.sort((a, b) => { return a.name > b.name })
+            anoArr.sort((a, b) => { return a.name > b.name })
+            fondelArr = fondelArr.concat(scoreArr, anoArr)
+            commit(LOCAL_SOURCE, fondelArr)
+            break
+        }
       })
     },
     /**

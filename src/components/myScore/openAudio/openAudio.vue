@@ -4,8 +4,8 @@
     <audio :src="audioUrl" class="audio" ref="audio" preload></audio>
     <div class="audioBox">
         <div class="audioMenu">
-            <span class="audioName" v-text="name"></span>
-            <div class="time"><span class="currentTime" v-text="currentTime"></span> / <span classs="totalTime" v-text="totalTime"></span></div>
+            <span class="audioName" v-text="songName"></span>
+            <div class="time"><span class="currentTime">{{currentTime | timer}}</span> / <span classs="totalTime" >{{totalTime | timer}}</span></div>
             <div class="audioMess">
               <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
               <div class="mess">歌曲名：<span class="songName" v-text="songName"></span></div>
@@ -37,69 +37,78 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
+  import {timeFilter} from '../../../scripts/utils'
   export default {
     data () {
       return {
         audioUrl: '',
         toolbarHidden: false,
-        name: '汤姆家的猫',
-        fileName: '汤姆家的猫',
-        songName: '汤姆家的猫',
-        singer: '毛阿敏',
-        album: '汤姆家的猫',
+        fileName: '',
+        songName: '',
+        singer: '',
+        album: '',
         controlButtons: [
           {
-            pianoKey: 73,
+            pianoKey: 54,
             icon: '0xe627',
             id: 200
           },
           {
-            pianoKey: 75,
+            pianoKey: 56,
             icon: '0xe680',
             id: 201
           },
           {
-            pianoKey: 78,
+            pianoKey: 58,
             icon: '0xe626',
             id: 202
           },
           {
-            pianoKey: 80,
+            pianoKey: 61,
             icon: '0xe681',
             id: 203
         }],
         textButtons: [ {
-          pianoKey: 82,
+          pianoKey: 97,
           icon: '0xe60d',
           id: 204,
           text: '调音台'
         }],
-        currentTime: '00:00',
-        totalTime: '00:00',
+        currentTime: '0',
+        totalTime: '0',
         isPlaying: false
       }
     },
+    filters: {
+      timer (value) {
+        return timeFilter(value)
+      }
+    },
+    watch: {
+      isPlaying (val) {
+        if (val) {
+          this.controlButtons[1].icon = '0xe673'
+        } else {
+          this.controlButtons[1].icon = '0xe680'
+        }
+      }
+    },
     find: {
-      [KEY73] () {
+      [KEY54] () {
         this.buttonActions('fastBackward')
       },
-      [KEY75] () {
-        console.log(this.$refs.audio)
-        if (!this.isPlaying) {
-          this.$refs.audio.play()
-        } else {
-          this.$refs.audio.pause()
-        }
+      [KEY56] () {
+        this.buttonActions('playOrPause')
       },
-      [KEY78] () {
+      [KEY58] () {
         this.buttonActions('fastForward')
       },
-      [KEY80] () {
+      [KEY61] () {
         this.buttonActions('restart')
       },
-      [KEY82] () {
+      [KEY97] () {
         this.buttonActions('mixer')
       },
       [BACK_PRESSED] () {
@@ -107,6 +116,33 @@
       }
     },
     methods: {
+      buttonActions (type) {
+        switch (type) {
+          case 'playOrPause':
+            this.isPlaying ? this.$refs.audio.pause() : this.$refs.audio.play()
+            this.isPlaying = !this.isPlaying
+            break
+          case 'fastBackward':
+            // 快退
+            this.currentTime = Math.max(this.currentTime - 10, 0)
+            this.$refs.audio.currentTime = this.currentTime
+            break
+          case 'fastForward':
+            // 快进
+            this.currentTime = Math.min(this.currentTime + 10, this.totalTime)
+            if (this.currentTime === this.totalTime) {
+              this.isPlaying = false
+            }
+            this.$refs.audio.currentTime = this.currentTime
+            break
+          case 'restart':
+            // 回到最初
+            this.$refs.audio.currentTime = 0
+            break
+          case 'back':
+            this.$router.back()
+        }
+      },
       addEventListeners: function () {
         const self = this
         self.$refs.audio.addEventListener('timeupdate', self._currentTime)
@@ -120,17 +156,23 @@
       _currentTime: function () {
         const self = this
         self.currentTime = parseInt(self.$refs.audio.currentTime)
-        console.log(this.$refs.audio.currentTime)
+        if (self.currentTime === self.totalTime) {
+          this.isPlaying = false
+        }
       },
       _durationTime: function () {
         const self = this
         self.totalTime = parseInt(self.$refs.audio.duration)
-        console.log(this.$refs.audio.duration)
+      },
+      filterUrl (fileName) {
+        this.fileName = fileName || ''
+        let nameArr = fileName.split('.')
+        this.songName = nameArr[0].split('_')[0]
       }
-
     },
     mounted () {
       if (this.$route.query.url) {
+        this.filterUrl(this.$route.query.fileName)
         this.audioUrl = this.$route.query.url
         this.addEventListeners()
       }

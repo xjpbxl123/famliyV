@@ -112,7 +112,7 @@
           case 'ok':
             this.$router.push({
               path: '/famous-play',
-              query: {courseSetID: this.famousAuthor.courseSetList[this.famousBookSelect].courseSetId}
+              query: {courseSetID: this.famousAuthor.courseSetList[this.famousBookSelect].courseSetId, authorName: this.famousAuthor.courseSetList[this.famousBookSelect].authorName}
             })
         }
       },
