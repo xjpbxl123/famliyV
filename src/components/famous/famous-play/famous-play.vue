@@ -412,7 +412,7 @@
         return download.downloadAll([video, midi]).progress((process) => {
           this.progress = parseInt(process.allProgress * 100)
         }).then((data) => {
-          if (data.code !== 0) {
+          if (data.code && data.code !== 0) {
             this.errorHandling(data)
             return
           }
@@ -454,7 +454,7 @@
           })
         }).then((data) => {
           console.log(data)
-          if (data.code !== 0) {
+          if (data.code && data.code !== 0) {
             this.errorHandling(data)
             return
           }
@@ -544,6 +544,7 @@
         })
       },
       sendMessage () {
+        this.$refs.weex.focus()
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
       },
       vioceControl (data) {

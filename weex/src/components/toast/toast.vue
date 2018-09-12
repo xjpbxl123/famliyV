@@ -14,7 +14,7 @@
     data () {
       return {
         text: '网络连接出错，请检查网络',
-        syncInfo: require('../../images/icon-sync-info.jpg')
+        syncInfo: require('./images/icon-sync-info.jpg')
       }
     },
     methods: {
