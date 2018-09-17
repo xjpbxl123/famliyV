@@ -37,7 +37,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, PEDAL_PRESSED } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
   export default {
@@ -110,6 +110,16 @@
       },
       [KEY97] () {
         this.buttonActions('mixer')
+      },
+      [PEDAL_PRESSED] (key) {
+        switch (key.id) {
+          case 116:
+            // 踏板1号键 快退
+            return this.buttonActions('fastBackward')
+          case 117:
+            // 踏板2号键 快进
+            return this.buttonActions('fastForward')
+        }
       },
       [BACK_PRESSED] () {
         this.$router.back()

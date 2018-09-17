@@ -30,7 +30,7 @@
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
         <icon-item id="888"
             key="888"
-            icon="0xe65a"
+            icon="0xe75b"
             :text="orderButtonText"
             pianoKey="70"
             :hidden="orderButtonHidden || !deleteCover"
@@ -338,7 +338,6 @@
       },
       orderIndex (value) {
         let orderName = ['名称', '时间', '类型']
-        // let icons = ['', '0xe6a3', '']
         this.orderButtonText = orderName[value]
         this.getLocalSource()
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)

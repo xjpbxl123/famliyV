@@ -124,15 +124,16 @@ export default {
           } else {
             if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif') {
               item.typeName = 'picture'
-            } else if (suffix === 'mp3' || suffix === 'wav') {
-              item.typeName = 'mp3'
-            } else if (suffix === 'mid') {
-              item.typeName = 'midi'
-            } else if (suffix === 'pdf') {
-              item.typeName = 'pdf'
-            } else if (suffix === 'mp4') {
-              item.typeName = 'video'
-            }
+            } else
+              if (suffix === 'mp3' || suffix === 'wav') {
+                item.typeName = 'mp3'
+              } else if (suffix === 'mid') {
+                item.typeName = 'midi'
+              } else if (suffix === 'pdf') {
+                item.typeName = 'pdf'
+              } else if (suffix === 'mp4') {
+                item.typeName = 'video'
+              }
           }
           let filesName = []
           res.forEach((item1, index1) => {
@@ -208,20 +209,38 @@ export default {
             // 类型排序
             let fondelArr = []
             let scoreArr = []
-            let anoArr = []
+            let pdfArr = []
+            let mp3Arr = []
+            let videoArr = []
+            let midiArr = []
+            let imgArr = []
             filteredArr.map(data => {
               if (data.type === 'dir') {
                 fondelArr.push(data)
               } else if (data.filesName) {
                 scoreArr.push(data)
               } else {
-                anoArr.push(data)
+                if (data.typeName === 'picture') {
+                  imgArr.push(data)
+                } else if (data.typeName === 'mp3') {
+                  mp3Arr.push(data)
+                } else if (data.typeName === 'video') {
+                  videoArr.push(data)
+                } else if (data.typeName === 'midi') {
+                  midiArr.push(data)
+                } else if (data.typeName === 'pdf') {
+                  pdfArr.push(data)
+                }
               }
             })
             fondelArr.sort((a, b) => { return a.name > b.name })
             scoreArr.sort((a, b) => { return a.name > b.name })
-            anoArr.sort((a, b) => { return a.name > b.name })
-            scoreArr = scoreArr.concat(fondelArr, anoArr)
+            pdfArr.sort((a, b) => { return a.name > b.name })
+            mp3Arr.sort((a, b) => { return a.name > b.name })
+            videoArr.sort((a, b) => { return a.name > b.name })
+            midiArr.sort((a, b) => { return a.name > b.name })
+            imgArr.sort((a, b) => { return a.name > b.name })
+            scoreArr = scoreArr.concat(fondelArr, pdfArr, mp3Arr, videoArr, midiArr, imgArr)
             commit(LOCAL_SOURCE, scoreArr)
             break
         }
