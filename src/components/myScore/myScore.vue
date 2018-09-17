@@ -33,7 +33,7 @@
             icon="0xe65a"
             :text="orderButtonText"
             pianoKey="70"
-            :hidden="orderButtonHidden"
+            :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
             style="{backgroundColor:'#3000',textColor: '#fff',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
@@ -338,6 +338,7 @@
       },
       orderIndex (value) {
         let orderName = ['名称', '时间', '类型']
+        // let icons = ['', '0xe6a3', '']
         this.orderButtonText = orderName[value]
         this.getLocalSource()
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)

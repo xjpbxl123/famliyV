@@ -128,8 +128,6 @@ export default {
               item.typeName = 'mp3'
             } else if (suffix === 'mid') {
               item.typeName = 'midi'
-            } else if (suffix === 'xml') {
-              item.typeName = 'xml'
             } else if (suffix === 'pdf') {
               item.typeName = 'pdf'
             } else if (suffix === 'mp4') {
@@ -170,7 +168,7 @@ export default {
           }
         })
         let newArr = []
-        res.forEach((item, index) => {
+        res.forEach(item => {
           let flag = true
           let nameArr2 = item.name.split('.')
           let name2 = nameArr2[0]
@@ -186,12 +184,12 @@ export default {
           }
         })
         let filteredArr = []
-        newArr.forEach((item, index) => {
+        newArr.forEach(item => {
           if (item.type === 'dir' && item.typeName) {
             filteredArr.push(item)
           }
         })
-        newArr.forEach((item, index) => {
+        newArr.forEach(item => {
           if (item.type === 'file' && item.typeName) {
             filteredArr.push(item)
           }
@@ -223,8 +221,8 @@ export default {
             fondelArr.sort((a, b) => { return a.name > b.name })
             scoreArr.sort((a, b) => { return a.name > b.name })
             anoArr.sort((a, b) => { return a.name > b.name })
-            fondelArr = fondelArr.concat(scoreArr, anoArr)
-            commit(LOCAL_SOURCE, fondelArr)
+            scoreArr = scoreArr.concat(fondelArr, anoArr)
+            commit(LOCAL_SOURCE, scoreArr)
             break
         }
       })
