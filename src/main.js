@@ -28,15 +28,25 @@ if (isInFindClient) {
   Vue.use(VueFind)
   const store = createStore()
   const router = new VueRouter({routes})
+  /** 临时优化方案,先让页面先初始化,再初始化缓存，最后进入路由 */
+  router.beforeEach((to, from, next) => {
+    if (!store.state.isSynced) {
+      store.dispatch('initEnv').then(() => {
+        store.dispatch('initialNativeStorage').then(() => {
+          next()
+        })
+      })
+    } else {
+      next()
+    }
+  })
   Vue.prototype.$store = store
-  Promise.all([store.dispatch('initialNativeStorage'), store.dispatch('initEnv')]).then(() => {
-    vue = new Vue({
-      el: '#app',
-      render: h => h(App),
-      router,
-      store: store,
-      find: new VueFind(find)
-    })
+  vue = new Vue({
+    el: '#app',
+    render: h => h(App),
+    router,
+    store: store,
+    find: new VueFind(find)
   })
 } else {
   console.log('%c请在Find客户端中打开', 'color:green')
