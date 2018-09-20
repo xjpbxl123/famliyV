@@ -1,6 +1,8 @@
 <template>
   <div class="banner-left">
-    <i class="iconfont icon-logo"></i>
+    <!-- <i class="iconfont icon-logo"></i> -->
+    <div class="placeHolder"></div>
+    <findImg class="findLogo" :src="pianoInfo.pic" :beforeImage="logoUrl" :errorImage="logoUrl"></findImg>
     <div class="user-status hide" :class="{show:isSynced}">
       <div v-if="!isLogin">
         <div class="qr-code">
@@ -57,13 +59,15 @@
       usedTime: Object,
       getUserInfo: Function,
       isActivation: Boolean,
-      isCalendar: Boolean
+      isCalendar: Boolean,
+      pianoInfo: Object
     },
     data () {
       return {
         adminUrl: require('./images/admin.png'),
         interval: null,
-        nickName: ''
+        nickName: '',
+        logoUrl: require('./images/logo.jpg')
       }
     },
     watch: {
@@ -122,7 +126,20 @@
     height: 100%;
     text-align: center;
     box-sizing: border-box;
+    position: relative;
     background-color: rgba(0, 0, 0, 0.1);
+    .placeHolder {
+       width: 100%;
+       height: 45px;
+     }
+     .findLogo {
+       width: 174px;
+       height: 68px;
+       position: absolute;
+       left: 50%;
+       top: 70px;
+       transform: translateX(-50%);
+    }
   }
 
   .hide {
@@ -149,7 +166,7 @@
       font-family: MicrosoftYaHei;
       color: hsla(0,0%,100%,.6);
       position: absolute;
-      bottom: 110px;
+      bottom: 100px;
       left: 0;
     }
 

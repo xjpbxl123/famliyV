@@ -12,6 +12,7 @@
         :getUserInfo="getUserInfo"
         :isActivation="isActivation"
         :isCalendar="isCalendar"
+        :pianoInfo="pianoInfo"
       />
       <content-center
         :setCenterSelect="setCenterSelect"
@@ -548,6 +549,7 @@
         isSynced: state => state.storage.isSynced,
         isActivation: state => state.storage.isActivation,
         isCalendar: state => state.storage.isCalendar,
+        pianoInfo: state => state.storage.pianoInfo,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -1350,9 +1352,13 @@
         modules.notification.remove('ClearCache')
         modules.notification.remove('pageLifecycle')
         modules.notification.remove('checkPedalMute')
+      },
+      getPianoInfo () {
+        return this.$store.dispatch('getPianoInfo', {root: true})
       }
     },
     created () {
+      this.getPianoInfo()
       this.adjustPlayer()
       this.createSession()
       this.getIsSupportMutePedal()

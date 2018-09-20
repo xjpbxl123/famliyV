@@ -2,6 +2,7 @@
  * Created by Moersing on 2018/4/3 .
  * */
 import Vuex from 'vuex'
+import axios from 'axios'
 import http from '../scripts/http'
 import index from './modules/index'
 import login from './modules/login'
@@ -37,7 +38,7 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         cache: {
           renderCache: {
-            famousAuthor: {},
+            famousAuthor: {courseSetList: []},
             allArtists: {authors: []},
             recentOpenList: [],
             popularGenre: [],
@@ -54,7 +55,8 @@ export default function createStore () {
             localRecent: [],
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
-            musicInfo: []
+            musicInfo: [],
+            pianoInfo: {orn: 'family', pic: ''} // 钢琴orn/logo
           }
         } // 数据本地缓存
       },
@@ -63,7 +65,7 @@ export default function createStore () {
     },
     getters: {
       /**
-       * 首页热门曲谱
+       *
        * @param state
        * @returns {*}
        */
@@ -163,7 +165,8 @@ export default function createStore () {
             nativeStorage.get(tableName, 'playCalendar'),
             nativeStorage.get(tableName, 'isLogin'),
             nativeStorage.get(tableName, 'userInfo'),
-            nativeStorage.get(tableName, 'sessionId')
+            nativeStorage.get(tableName, 'sessionId'),
+            nativeStorage.get(tableName, 'pianoInfo')
           ])
             .then(data => {
               commit(SET_STORAGE, {
@@ -171,6 +174,7 @@ export default function createStore () {
                 isLogin: data[1] && data[1].value ? data[1].value : false,
                 userInfo: data[2] && data[2].value ? data[2].value : {},
                 sessionId: data[3] && data[3].value ? data[3].value : null,
+                pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
                 isSynced: true
               })
               return dispatch('initCacheStorage', [...data, ...[tableName]])
@@ -210,7 +214,7 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[4], JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[5], JSON.stringify(userId)).then(param => {
             let cache = {}
             cache['renderCache'] = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
@@ -298,6 +302,49 @@ export default function createStore () {
         })
       },
       /**
+        * @desc 获取钢琴orn/logo
+        * */
+      getPianoInfo ({dispatch, state}) {
+        return modules.device.getMacSerialNumber().then((data) => {
+          if (data) {
+            let content = {
+              header: {
+                seq: 0,
+                sess: '',
+                desc: '',
+                code: 0,
+                dst: '',
+                orn: '',
+                ext: '',
+                lang: 'zh_cn',
+                size: 0,
+                ver: 512,
+                cmd: 'familyClient.getPianoInfo',
+                type: 2,
+                stmp: Date.now()
+              },
+              body: {
+                macSn: data
+              }
+            }
+            return axios.post(state.environments.HTTP_ROOT, JSON.stringify(content)).then(res => {
+              // orn: "family"
+              // pic: "https://public.findpiano.cn/1.com"
+              // 发给原生
+              if (res.data.body && res.data.body.orn) {
+                if (res.data.body.orn !== 'family') {
+                  modules.settings.setProperty('merchantImagePath', res.data.body.bigPic)
+                  modules.settings.setProperty('merchantOrn', res.data.body.orn)
+                  return dispatch('setNativeStorage', {pianoInfo: res.data.body})
+                }
+              }
+            }).catch((error) => {
+              return error
+            })
+          }
+        })
+      },
+      /**
        * @desc 用户注销
        * */
       logout ({dispatch, state}) {
@@ -317,25 +364,9 @@ export default function createStore () {
        * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch, state}) {
-        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
-          modules.user.logOut()
-          // 清用户信息
-          let root = state.environments.HTTP_ROOT
-          let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-          return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}}).then(() => {
-            // 清缓存数据 清除日历数据
-            let month = `${new Date().getMonth() + 1}`
-            if (!state.storage.playCalendar[month]) {
-              return
-            }
-            let playCalendarData = [].concat(JSON.parse(JSON.stringify(state.storage.playCalendar[month])))
-            playCalendarData.forEach((data) => {
-              if (data.practiced) {
-                data.practiced = false
-              }
-            })
-            return dispatch('setNativeStorage', {'playCalendar': {[month]: playCalendarData}})
-          })
+        let rootArr = ['http://etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        rootArr.map((value) => {
+          nativeStorage.clear('findFamily-' + value)
         })
       },
       /**

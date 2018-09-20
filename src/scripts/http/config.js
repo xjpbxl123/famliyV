@@ -1,7 +1,7 @@
 /**
  * Created by Moersing on 2018/4/3 .
  * */
-import { device, nativeStorage } from 'find-sdk'
+import { nativeStorage, device } from 'find-sdk'
 import {getCurEnvs} from '../utils'
 /**
  *@desc Get default params
@@ -37,9 +37,9 @@ export const getDefaultParams = (() => {
       return Object.assign(defaultParams, {orn})
     }
     /// orn is about device information,it's required.
-    if (orn) {
-      return mergeSessionId()
-    }
+    // if (orn) {
+    //   return mergeSessionId()
+    // }
     return device.getOrn().then(result => {
       /// only get once
       orn = result

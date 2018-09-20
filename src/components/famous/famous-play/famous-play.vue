@@ -19,7 +19,7 @@
     <fh-weex :style="weexStyle" ref="weex" :hidden="weexHidden"/>
     <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="button in videoButton"
               :hidden="!mixerHidden"
               :pianoKey="button.pianoKey"

@@ -1,9 +1,9 @@
 <template>
   <div :style="{background:`url(${cover})`}">
     <statusBar/>
-    <find-title :title="famousAuthor.courseSetList[0].authorName" :style="styles"></find-title>
+    <find-title :title="this.$route.query.name" :style="styles"></find-title>
     <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="famousBookSelect" :setFamousBookSelect="setFamousBookSelect" v-if="hasLoaded"></famous-book-swiper>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="button in famousButton"
         :pianoKey="button.pianoKey"
         :key="button.icon"
@@ -22,7 +22,7 @@
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import eventsHub from 'scripts/eventsHub'
   import {errorHandling} from '../../../scripts/utils'
-  import { KEY78, KEY80, KEY82, LONG_KEY78, LONG_KEY80 } from 'vue-find'
+  import { KEY78, KEY80, KEY82, LONG_KEY78, LONG_KEY80, BACK_PRESSED } from 'vue-find'
 
   export default {
     name: 'famous-book',
@@ -55,16 +55,15 @@
     },
     computed: {
       ...mapState({
-        'famousAuthor': function (state) {
+        famousAuthor: function (state) {
           let famousAuthor = state.storage.cache.renderCache.famousAuthor[this.$route.query.authorId]
           if (famousAuthor) {
             // 有缓存
-            this.hasLoaded = true
             eventsHub.$emit('closeToast')
           }
           return famousAuthor || {courseSetList: [{authorName: ''}]}
         },
-        'famousBookSelect': state => state.famous.famousBookSelect
+        famousBookSelect: state => state.famous.famousBookSelect
       }),
       ...mapGetters([])
     },
@@ -79,9 +78,17 @@
         let cover = this.$route.query.cover
         let artistId = this.getId()
         this.cover = cover
+        if (cover) {
+          window.fp.modules.file.cacheUrl(cover).then(data => {
+            if (data.code === 0) {
+              this.cover = data.url
+            }
+          })
+        }
         this.$store.dispatch('famous/getCourseSetByArtistToFamily', {artistId}).then((data) => {
           if (this.hasLoaded || (data && data.famousAuthor)) {
             // 有缓存 或者有数据
+            this.hasLoaded = true
             eventsHub.$emit('closeToast')
           } else {
             errorHandling(data)
@@ -137,6 +144,10 @@
       },
       [KEY82] () {
         this.action('ok')
+      },
+      [BACK_PRESSED] () {
+        this.$router.back()
+        this.$store.dispatch('famous/setFamousBookSelect', 0)
       }
     },
     components: {

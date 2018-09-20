@@ -128,22 +128,13 @@
     position: absolute;
     top: 85px;
     left: 100px;
-    width: 448px;
+    width: 650px;
     span {
       width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       display: inline-block;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      width: 400px;
-      height: 1px;
-      bottom: -2px;
-      background: -webkit-linear-gradient(left,#fff,hsla(0,0%,100%,0));
-      left: 0;
     }
   }
   .cover {

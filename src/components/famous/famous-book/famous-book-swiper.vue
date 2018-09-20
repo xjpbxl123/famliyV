@@ -86,6 +86,9 @@
         return -460 * select - (select + select) * 40
       }
     },
+    mounted () {
+      console.log(this.famousBookList, 'sss')
+    },
     watch: {
     },
     components: {

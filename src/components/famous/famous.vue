@@ -3,7 +3,7 @@
     <statusBar/>
     <famous-swiper :famousList="allArtists.authors" :select="famousSetSelect" :defaultLeft="defaultLeft" :setFamousSetSelect="setFamousSetSelect"/>
     <find-title title="名师课程"></find-title>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <icon-item v-for="button in famousButton"
         :pianoKey="button.pianoKey"
         :key="button.icon"
@@ -105,7 +105,8 @@
         }
         let authorId = this.allArtists.authors[this.famousSetSelect].authorId
         let cover = this.allArtists.authors[this.famousSetSelect].bgCover
-        this.$router.push({path: '/famous-book', query: {authorId, cover}})
+        let name = this.allArtists.authors[this.famousSetSelect].name
+        this.$router.push({path: '/famous-book', query: {authorId, cover, name}})
       }
     },
     find: {

@@ -46,7 +46,7 @@ export default {
         cmd: 'artist.getCourseSetByArtistToFamily'
       }).then(({body}) => {
         if (body) {
-          dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
+          return dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
         }
       }).catch((error) => {
         return error
@@ -58,7 +58,7 @@ export default {
         'courseSetId': courseSetID - 0,
         ...defaultData
       }).then((data) => {
-        if (!data.header.code) {
+        if (data.header.code === 0) {
           let courseSetData = data.body.courseList
           courseSetData.map((value) => {
             if (value.courseId) {
@@ -66,8 +66,6 @@ export default {
             }
           })
           return dispatch('videoHasDownload', {body: data.body, courseSetID})
-        } else {
-          return data
         }
       }).catch((error) => {
         return error

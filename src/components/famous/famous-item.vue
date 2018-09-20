@@ -59,20 +59,18 @@
     display: inline-block;
     transition: all .2s;
     position: relative;
-    &:after {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: 1px solid rgba(255, 255, 255, 0);
-      transition: all 0.5s linear 0s;
-      position: absolute;
-      z-index: 10;
-    }
     &.active {
       margin-right: 10px;
       &:after {
+        content: '';
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(255, 255, 255, 0);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
         border: 6px solid #00A2E7;
         img {
           display: block;
