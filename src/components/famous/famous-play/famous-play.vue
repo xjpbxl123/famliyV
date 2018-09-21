@@ -75,7 +75,7 @@
         playerSource: {
           mp4: {
             videoUrl: '',
-            midiUrl: ''
+            videoMidiUrl: ''
           }
         },
         buttons: [
@@ -389,7 +389,7 @@
           this.playerSource = {
             mp4: {
               videoUrl: data[0].path,
-              midiUrl: data[1].path
+              videoMidiUrl: data[1].path
             }
           }
           this.sendMessageAgain()
