@@ -3,6 +3,16 @@
  * */
 import { volume } from 'find-sdk'
 export default {
+  data () {
+    return {
+      mixerStyle: {
+        right: 0,
+        top: 280,
+        width: 3840,
+        height: 800
+      }
+    }
+  },
   methods: {
     vioceControl (data) {
       switch (data.name) {
@@ -19,6 +29,7 @@ export default {
     },
     initMixerData () {
       let self = this
+      self.$refs.mixer.focus()
       volume.getAllVolumeSize().then(data => {
         self.$find.sendMessage({
           method: 'allVolumeSize',
@@ -36,9 +47,5 @@ export default {
         params: {show: !this.mixerHidden}
       })
     }
-
-  },
-  created () {
-
   }
 }

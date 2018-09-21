@@ -1,7 +1,7 @@
 <template>
   <div class="vidioPlay">
     <h1 v-if="palyHidden" v-text="'正在下载中:'+progress+'%'"></h1>
-    <fh-player ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
+    <fh-player  ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
       <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
@@ -162,13 +162,6 @@
           width: 690,
           height: 1080,
           borderWidth: 3
-        },
-        mixerStyle: {
-          right: 0,
-          top: 280,
-          width: 3840,
-          height: 800
-          // backgroundColor: '#767676'
         },
         videoButton: [
           {
@@ -522,23 +515,27 @@
        */
       playerInitComplete (data) {
         let self = this
-        if (data.result) {
-          console.log('进来了')
-          setTimeout(() => {
-            self.toolbarHidden = !self.toolbarHidden
-          }, 1000)
+        if (!data.result) {
+          return
         }
+        self.toolbarHidden = !self.toolbarHidden
         this.$refs.player.info().then((data) => {
-          self.orgBpm = data.originalBpm
-          self.curBpm = data.curBpm
+          if (data.originalBpm) {
+            self.orgBpm = data.originalBpm
+            self.curBpm = data.curBpm
+          }
         })
         this.$refs.video.getTotalTime().then((data) => {
-          let timeString = this.timeFilter(data)
-          this.totalTime.text = timeString
+          if (data) {
+            let timeString = this.timeFilter(data)
+            this.totalTime.text = timeString
+          }
         })
         this.$refs.video.getCurrentTime().then((data) => {
-          let timeString1 = this.timeFilter(data)
-          this.currentTime.text = timeString1
+          if (data) {
+            let timeString1 = this.timeFilter(data)
+            this.currentTime.text = timeString1
+          }
         })
       },
       sendMessage () {

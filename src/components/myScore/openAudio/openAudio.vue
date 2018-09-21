@@ -17,8 +17,10 @@
           <span class="iconfont icon-song songIcon"></span>
         </div>
     </div>
-    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
+    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
+    <toolbar :darkBgHidden="true" >
         <icon-item v-for="(button) in controlButtons"
+            :hidden="toolbarHidden"
             :id="button.id"
             :key="button.id"
             :icon="button.icon"
@@ -26,6 +28,7 @@
             :longClick="button.longClick"
             :style="{backgroundColor:'#3000',dotColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
+            :hidden="toolbarHidden"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -37,9 +40,11 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, PEDAL_PRESSED } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, PEDAL_PRESSED, receiveMsgFromWeex } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
+  import mixerMixin from '../../common/mixer-mixin.js'
+  import {getCurEnvs} from 'scripts/utils'
   export default {
     data () {
       return {
@@ -49,6 +54,7 @@
         songName: '',
         singer: '',
         album: '',
+        mixerHidden: true,
         controlButtons: [
           {
             pianoKey: 54,
@@ -81,6 +87,7 @@
         isPlaying: false
       }
     },
+    mixins: [mixerMixin],
     filters: {
       timer (value) {
         return timeFilter(value)
@@ -122,7 +129,10 @@
         }
       },
       [BACK_PRESSED] () {
-        this.$router.back()
+        this.buttonActions('back')
+      },
+      [receiveMsgFromWeex] ({method, params}) {
+        this[method] && this[method](params)
       }
     },
     methods: {
@@ -149,7 +159,19 @@
             // 回到最初
             this.$refs.audio.currentTime = 0
             break
+          case 'mixer':
+            console.log('打开调音台')
+            this.mixerHidden = !this.mixerHidden
+            this.toolbarHidden = !this.toolbarHidden
+            this.initMixerData()
+            break
           case 'back':
+            if (!this.mixerHidden) {
+              // 如果调音台打开了 关闭调音台
+              this.mixerHidden = !this.mixerHidden
+              this.toolbarHidden = !this.toolbarHidden
+              return this.closeMixer()
+            }
             this.$router.back()
         }
       },
@@ -178,9 +200,20 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.songName = nameArr[0].split('_')[0]
+      },
+      openMixerUrl () {
+        getCurEnvs().then(env => {
+          let weexUrl = env.WEEX_URL
+          this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res => {
+            console.log(res, 'res2')
+            if (res.result) {
+            }
+          })
+        })
       }
     },
     mounted () {
+      this.openMixerUrl()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.audioUrl = this.$route.query.url
