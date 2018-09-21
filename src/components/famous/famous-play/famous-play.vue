@@ -524,11 +524,10 @@
         let self = this
         if (data.result) {
           console.log('进来了')
-          self.toolbarHidden = !self.toolbarHidden
+          setTimeout(() => {
+            self.toolbarHidden = !self.toolbarHidden
+          }, 1000)
         }
-        setTimeout(() => {
-          console.log(self.toolbarHidden)
-        }, 5000)
         this.$refs.player.info().then((data) => {
           self.orgBpm = data.originalBpm
           self.curBpm = data.curBpm
