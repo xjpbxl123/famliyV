@@ -73,7 +73,7 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
       </div>
     </div>
-    <toolbar>
+    <toolbar :darkBgHidden="true">
       <group id="400" :hidden="!show">
         <icon-item v-for="button in buttons1"
                 :pianoKey="button.pianoKey"

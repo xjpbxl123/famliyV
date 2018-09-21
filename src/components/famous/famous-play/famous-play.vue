@@ -21,7 +21,7 @@
     <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
     <toolbar :darkBgHidden="true">
       <icon-item v-for="button in videoButton"
-              :hidden="!mixerHidden"
+              :hidden="toolbarHidden"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
@@ -29,7 +29,7 @@
               :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
               :icon="button.icon"/>
       <icon-item v-for="button in buttons"
-              :hidden="!mixerHidden"
+              :hidden="toolbarHidden"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
@@ -38,7 +38,7 @@
               :text="button.text"
               titlePosition='below'
               :icon="button.icon"/>
-      <slider ref="slider" :hidden="!mixerHidden" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
+      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -61,15 +61,16 @@
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
-  import { download, volume } from 'find-sdk'
+  import { download } from 'find-sdk'
   import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
+  import mixerMixin from '../../common/mixer-mixin.js'
   export default {
     data () {
       return {
         progress: 0,
         palyHidden: true,
-        toolbarHidden: false,
+        toolbarHidden: true,
         toastHidden: true,
         playerSource: {
           mp4: {
@@ -197,6 +198,7 @@
         inter: null
       }
     },
+    mixins: [mixerMixin],
     find: {
       [KEY66] () {
         /**
@@ -275,52 +277,22 @@
          * @desc 打开调音台
          */
         let self = this
-        if (!self.weexHidden) {
-          self.$find.sendMessage({
-            method: 'controlButton',
-            params: {show: false}
-          })
-        }
         self.$refs.mixer.focus()
         self.mixerHidden = !self.mixerHidden
+        self.toolbarHidden = !self.toolbarHidden
         self.weexHidden = !self.mixerHidden
-        volume.getAllVolumeSize().then(data => {
-          console.log(data, 'data')
-          console.log(self.$find)
-          self.$find.sendMessage({
-            method: 'allVolumeSize',
-            params: data
-          })
-        })
-        self.$find.sendMessage({
-          method: 'controlButtons',
-          params: {show: true}
-        })
+        self.initMixerData()
       },
       [KEY68] () {
         /**
          * @desc 打开视频列表
          */
         this.$refs.weex.focus()
-        let flag = false
         if (this.weexHidden) {
           this.showWeex()
-          flag = true
+        } else {
+          this.hideWeex()
         }
-        this.$refs.weex.animation({
-          duration: 800,
-          timingFunction: 'ease',
-          styles: {
-            transform: !flag ? 'translateX(690px)' : 'translateX(-690px)'
-          }
-        }).then((data) => {
-          if (flag) {
-            return
-          }
-          if (!this.weexHidden) {
-            this.showWeex()
-          }
-        })
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
@@ -328,10 +300,8 @@
       [BACK_PRESSED] () {
         if (!this.mixerHidden) {
           this.mixerHidden = !this.mixerHidden
-          this.$find.sendMessage({
-            method: 'controlButtons',
-            params: {show: !this.mixerHidden}
-          })
+          this.toolbarHidden = !this.toolbarHidden
+          this.closeMixer()
         } else {
           this.$router.back()
         }
@@ -515,7 +485,7 @@
         }
         return mm + ':' + ss
       },
-      showWeex () {
+      controlWeex () {
         if (!this.palyHidden) {
           // 视频下载完成
           this.weexHidden = !this.weexHidden
@@ -525,11 +495,40 @@
           })
         }
       },
+      showWeex () {
+        this.controlWeex()
+        this.$refs.weex.animation({
+          duration: 300,
+          timingFunction: 'ease',
+          styles: {
+            transform: 'translateX(-690px)'
+          }
+        }).then((data) => {
+        })
+      },
+      hideWeex () {
+        this.$refs.weex.animation({
+          duration: 300,
+          timingFunction: 'ease',
+          styles: {
+            transform: 'translateX(690px)'
+          }
+        }).then((data) => {
+          this.controlWeex()
+        })
+      },
       /**
        * @desc video init successful
        */
       playerInitComplete (data) {
         let self = this
+        if (data.result) {
+          console.log('进来了')
+          self.toolbarHidden = !self.toolbarHidden
+        }
+        setTimeout(() => {
+          console.log(self.toolbarHidden)
+        }, 5000)
         this.$refs.player.info().then((data) => {
           self.orgBpm = data.originalBpm
           self.curBpm = data.curBpm
@@ -546,25 +545,6 @@
       sendMessage () {
         this.$refs.weex.focus()
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
-      },
-      vioceControl (data) {
-        switch (data.name) {
-          case 'setMute':
-            console.log(data, 'data')
-            volume.volumeMute(data.type, data.value)
-            break
-          case 'volumeSet':
-            volume.volumeSet(data.type, data.value, false).then(data => {
-              console.log(data)
-            })
-            break
-        }
-      },
-      mute (data) {
-        console.log(data)
-      },
-      add (data) {
-        console.log(data, 'data')
       }
     },
     computed: {
@@ -587,6 +567,9 @@
       }
     },
     watch: {
+      toolbarHidden (val) {
+        console.log('我变化了', val)
+      },
       isPlay (val) {
         this.videoButton[1].icon = val ? '0xe673' : '0xe657'
       },
