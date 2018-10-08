@@ -5,6 +5,7 @@ const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
 const RIGHT_SELECTED_INDEX = 'RIGHT_SELECT_INDEX' /// 最近打开索引
 const RIGHT_TYPE = 'RIGHT_TYPE'
 const MORE_INDEX = 'MORE_INDEX'
+const MORE_INDEX_TITLE = 'MORE_INDEX_TITLE'
 export default {
   namespaced: true,
   state: {
@@ -16,7 +17,8 @@ export default {
       scoringTime: '' //  评分时间
     },
     rightType: 'recentOpen',
-    moreIndex: 0
+    moreIndex: 0,
+    moreIndexTitle: '最近更新'
 
   },
   mutations: {
@@ -34,6 +36,9 @@ export default {
     },
     [MORE_INDEX] (state, data) {
       state.moreIndex = data
+    },
+    [MORE_INDEX_TITLE] (state, data) {
+      state.moreIndexTitle = data
     }
   },
   actions: {
@@ -42,6 +47,12 @@ export default {
      * */
     setSelected ({commit}, num) {
       commit(SELECTED_INDEX, num)
+    },
+    /**
+     * @desc 设置查看更多页面选中的数据类型
+     * */
+    setIndexMoreTitle ({commit}, num) {
+      commit(MORE_INDEX_TITLE, num)
     },
     /**
      * @desc 设置右侧列表选中的项
@@ -54,6 +65,38 @@ export default {
      * */
     setMoreIndex ({commit}, num) {
       commit(MORE_INDEX, num)
+    },
+    /**
+     * @desc 获取最近更新
+     * */
+    getRecentBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      return http.post('', {
+        cmd: 'musicScore.getRecentBooks',
+        tagId,
+        page
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
+     * @desc 获取热门更新
+     * */
+    getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      return http.post('', {
+        cmd: 'musicScore.getHottestBooks',
+        tagId,
+        page
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
     },
     /**
      * @desc 获取用户数据模式是否激活

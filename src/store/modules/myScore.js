@@ -119,6 +119,11 @@ export default {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
           let name = nameArr[0]
+          if (nameArr.length > 2) {
+            for (let i = 1; i <= nameArr.length - 2; i++) {
+              name += '.' + nameArr[i]
+            }
+          }
           if (item.type === 'dir') {
             item.typeName = 'open-now'
           } else {
@@ -129,6 +134,8 @@ export default {
                 item.typeName = 'mp3'
               } else if (suffix === 'mid') {
                 item.typeName = 'midi'
+              } else if (suffix === 'xml') {
+                item.typeName = 'xml'
               } else if (suffix === 'pdf') {
                 item.typeName = 'pdf'
               } else if (suffix === 'mp4') {
@@ -139,6 +146,11 @@ export default {
           res.forEach((item1, index1) => {
             let nameArr1 = item1.name.split('.')
             let name1 = nameArr1[0]
+            if (nameArr1.length > 2) {
+              for (let i = 1; i <= nameArr1.length - 2; i++) {
+                name1 += '.' + nameArr1[i]
+              }
+            }
             let suffix1 = nameArr1[nameArr1.length - 1]
             if (name1 === name) {
               filesName.push(item1.name)
@@ -173,10 +185,28 @@ export default {
           let flag = true
           let nameArr2 = item.name.split('.')
           let name2 = nameArr2[0]
+          if (item.filesName) {
+            name2 = item.name
+          } else {
+            if (nameArr2.length > 2) {
+              for (let i = 1; i <= nameArr2.length - 2; i++) {
+                name2 += '.' + nameArr2[i]
+              }
+            }
+          }
           newArr.forEach((item1, index) => {
             let nameArr3 = item1.name.split('.')
             let name3 = nameArr3[0]
-            if (item1.name === item.name || (name2.indexOf(name3) !== -1 && name2.indexOf('_sp') !== -1)) {
+            if (item1.filesName) {
+              name3 = item1.name
+            } else {
+              if (nameArr3.length > 2) {
+                for (let i = 1; i <= nameArr3.length - 2; i++) {
+                  name3 += '.' + nameArr3[i]
+                }
+              }
+            }
+            if (name2 === name3 || (name2.indexOf(name3) !== -1 && name2.indexOf('_sp') !== -1)) {
               flag = false
             }
           })
@@ -195,6 +225,7 @@ export default {
             filteredArr.push(item)
           }
         })
+        console.log(newArr)
         switch (state.orderIndex) {
           case 0:
             // 名称排序

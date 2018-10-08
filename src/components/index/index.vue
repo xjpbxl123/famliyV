@@ -175,7 +175,8 @@
         bigBUtton: [
           {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
           {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}}
+          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
+          {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}}
         ],
         controlButtons: [
           {
@@ -376,6 +377,14 @@
         }
         this.canEnterModule = false
         this.buttonActions('skill')
+      },
+      [keys.KEY49] () {
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
+        this.buttonActions('indexMore')
       },
       [keys.KEY66] () {
         // 打开节拍器
@@ -818,6 +827,8 @@
             return this.go('/shutdown')
           case 'myScore':
             return this.go('/myScore')
+          case 'indexMore':
+            return this.go('/indexMore')
           case 'closeMetro':
             console.log('close')
             if (this.metronome) {

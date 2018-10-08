@@ -447,7 +447,7 @@
                     }
                     modules.nativeRouter.openPDFFile({'path': res.path})
                   })
-                } else if (data.typeName === 'song') {
+                } else if (data.typeName === 'song' || data.typeName === 'xml') {
                   // 合成曲谱播放
                   let scoreObj = {}
                   let houzhuiArr = []
@@ -458,6 +458,9 @@
                     mp4: 'videoPath',
                     mp3: 'mp3Path',
                     xml: 'xmlPath'
+                  }
+                  if (data.typeName === 'xml') {
+                    return this.playXml(this.localSourcePath + '/' + data.name, data.name)
                   }
                   modules.file.pathComplement(this.localSourcePath).then((res) => {
                     if (!res.path) {
@@ -855,6 +858,13 @@
         modules.file.pathComplement(path).then((res) => {
           if (res.path) {
             modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': {'midiPath': res.path}})
+          }
+        })
+      },
+      playXml (path, name) {
+        modules.file.pathComplement(path).then((res) => {
+          if (res.path) {
+            modules.nativeRouter.openMidiPlayer({'isLocal': true, 'localDic': {'xmlPath': res.path, 'name': name}})
           }
         })
       },

@@ -54,7 +54,7 @@
     h1 {
       position: absolute;
       top: 50%;
-      left: 50%;
+      left: 32%;
       font-size: 40px;
     }
   }

@@ -42,6 +42,8 @@ export default function createStore () {
             allArtists: {authors: []},
             recentOpenList: [],
             popularGenre: [],
+            hottest: {bookList: []},
+            recentUpdate: {bookList: []},
             collectList: [],
             yearList: [],
             scoreSetList: [],
@@ -74,12 +76,6 @@ export default function createStore () {
       },
       recentBooks: state => {
         return state.storage.cache.renderCache.recentUpdate
-      },
-      hotBooksAll: state => {
-        return state.storage.cache.renderCache.hottestAll
-      },
-      recentBooksAll: state => {
-        return state.storage.cache.renderCache.recentUpdateAll
       },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists
@@ -332,11 +328,9 @@ export default function createStore () {
               // pic: "https://public.findpiano.cn/1.com"
               // 发给原生
               if (res.data.body && res.data.body.orn) {
-                if (res.data.body.orn !== 'family') {
-                  modules.settings.setProperty('merchantImagePath', res.data.body.bigPic)
-                  modules.settings.setProperty('merchantOrn', res.data.body.orn)
-                  return dispatch('setNativeStorage', {pianoInfo: res.data.body})
-                }
+                modules.settings.setProperty('merchantImagePath', res.data.body.bigPic)
+                modules.settings.setProperty('merchantOrn', res.data.body.orn)
+                return dispatch('setNativeStorage', {pianoInfo: res.data.body})
               }
             }).catch((error) => {
               return error
