@@ -42,7 +42,7 @@
     </fh-player>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button,index) in userActionButtons"
-            :hidden="hideOtherButtons || !logoutCover"
+            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -52,7 +52,7 @@
             :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
 
         <text-icon-item v-for="(button) in bigBUtton"
-            :hidden="hideOtherButtons || !logoutCover"
+            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
             :key="button.id"
             :id="button.id"
             :text="button.text"
@@ -60,7 +60,7 @@
             :positionPixels="button.positionPixels"
             :style="button.style"
             :icon="button.icon"/>
-        <group id="501" :hidden="hideOtherButtons || !logoutCover">
+        <group id="501" :hidden="hideOtherButtons || !logoutCover || peilianLoading">
           <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
           <icon-item id="401" pianoKey="67" text="" icon="0xe601"
@@ -79,7 +79,7 @@
           :icon="button.icon"
           :pianoKey="button.pianoKey"
           :selected="button.selected"
-          :hidden="button.hidden || hideOtherButtons || !logoutCover"
+          :hidden="button.hidden || hideOtherButtons || !logoutCover || peilianLoading"
           :checkable="button.checkable"
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
@@ -91,7 +91,7 @@
           :icon="button.icon"
           :pianoKey="button.pianoKey"
           :selected="button.selected"
-          :hidden="button.hidden || !logoutCover"
+          :hidden="button.hidden || !logoutCover || peilianLoading"
           :checkable="button.checkable"
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: '#fff'}"/>
@@ -104,7 +104,17 @@
           :style="{backgroundColor:'#3000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
-            :hidden="logoutCover"
+            :hidden="logoutCover || peilianLoading"
+            :key="index"
+            :id="button.id"
+            :icon="button.icon"
+            :text="button.text"
+            :pianoKey="button.pianoKey"
+            titlePosition="below"
+            v-if="button.show"
+            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
+         <icon-item v-for="(button,index) in peilianButtons"
+            :hidden="!peilianLoading || !button.show"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -150,6 +160,7 @@
         isPlaying: false,
         isPlayingMusicId: 0,
         interval: null,
+        peilianLoading: false,
         logoutCover: true,
         isOpeningScore: false,
         userActionButtons: [
@@ -299,6 +310,32 @@
             show: true
           }
         ],
+        peilianButtons: [
+          {
+            pianoKey: 75,
+            text: '取消',
+            icon: '0xe60a',
+            id: 388,
+            backgroundColor: '#2fff',
+            show: false
+          },
+          {
+            pianoKey: 78,
+            text: '直接进入',
+            icon: '0xe60a',
+            id: 389,
+            backgroundColor: '#2fff',
+            show: false
+          },
+          {
+            pianoKey: 80,
+            text: '更新',
+            icon: '0xe651',
+            id: 390,
+            backgroundColor: '#2fff',
+            show: false
+          }
+        ],
         metronome: false,
         speed: 120,
         metre: '3',
@@ -313,7 +350,9 @@
         isPlayingIndex: 0,
         isPlayingType: '',
         loading: false,
-        instance: ''
+        instance: '',
+        downloadInfo: {},
+        openPeilian: false
       }
     },
     mixins: [initData],
@@ -379,12 +418,22 @@
         this.buttonActions('skill')
       },
       [keys.KEY49] () {
+        // 陪练
         if (!this.canEnterModule) {
           console.log('return')
           return
         }
         this.canEnterModule = false
         this.buttonActions('indexMore')
+      },
+      [keys.KEY51] () {
+        // 陪练
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
+        this.buttonActions('peilian')
       },
       [keys.KEY66] () {
         // 打开节拍器
@@ -420,9 +469,19 @@
         }
       },
       [keys.KEY75] () {
-        if (!this.logoutCover) this.buttonActions('login')
+        if (this.peilianLoading) {
+          return this.buttonActions('canceldownload')
+        }
+        if (!this.logoutCover) {
+          this.buttonActions('login')
+        }
       },
       [keys.KEY78] () {
+        if (this.peilianLoading) {
+          // 直接进入
+          console.log('直接进入')
+          return
+        }
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
@@ -434,6 +493,11 @@
         this.buttonActions('left')
       },
       [keys.KEY80] () {
+        if (this.peilianLoading) {
+          // 直接进入
+          this.downloadPartner()
+          return
+        }
         this.buttonActions('right')
       },
       [keys.LONG_KEY80] () {
@@ -576,7 +640,9 @@
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
-        }
+        },
+        partnerVersion: state => state.storage.cache.renderCache.partnerVersion,
+        localPartnerVersion: state => state.storage.cache.renderCache.localPartnerVersion
       }),
       ...mapGetters(['recentOpenList', 'collectList', 'musicInfo', 'musicList']),
       namespace () {
@@ -744,6 +810,11 @@
         this.$router.push(params)
       },
       goBack () {
+        if (this.openPeilian) {
+          // 打开了陪练项目 关闭即可
+          this.openPeilian = !this.openPeilian
+          return modules.nativeRouter.openWebView('$web/findClient/index.html')
+        }
         if (this.isPlaying) {
           this.$refs.player.pause()
           this.$refs.player.reset()
@@ -1008,8 +1079,91 @@
             this.closeScreen = bool
             modules.device.turnOnScreen(!bool)
             break
+          case 'peilian':
+            // 陪练
+            console.log('陪练')
+            this.peilianLoading = true
+            eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+            // 获取线上最新版本
+            return this.$store.dispatch('index/getPartnerVersion').then((data) => {
+              this.downloadInfo = data.partnerVersion.url
+              modules.file.pathComplement('$web/findPartner/package.json').then((res) => {
+                if (res.path) {
+                  // 判断文件是否存在
+                  modules.file.fileExists(res.path).then((res1) => {
+                    if (!res1) {
+                      // 本地没有 判断网络问题
+                      if (!data.partnerVersion) {
+                        // 拉不到线上版本 提示网络问题
+                        console.log('本地没有且拉不到线上版本 提示网络问题')
+                        this.peilianLoading = false
+                        this.canEnterModule = true
+                        eventsHub.$emit('closeToast')
+                        errorHandling(data)
+                      } else {
+                        console.log('本地没有，拉到了线上版本 直接下载')
+                        // 拉到了线上版本 直接下载 显示取消按钮
+                        this.downloadPartner()
+                      }
+                    } else {
+                      // 本地有 判断网络问题
+                      return this.$store.dispatch('index/getLocalPartnerVersion', res.http).then((data1) => {
+                        // 读取本地JSON文件 拿到本地版本信息
+                        if (!data.partnerVersion) {
+                          // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
+                          console.log('本地有且拉不到线上版本 直接打开即可')
+                          this.openPartner()
+                        } else {
+                          if (!this.localPartnerVersion.version) {
+                            // 没有拿到本地版本 直接去下载
+                            return this.downloadPartner()
+                          }
+                          // 拉到了线上版本 做版本比较 判断是否需要更新
+                          console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
+                          let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
+                          if (isNeedUpdate) {
+                            // 需要更新 弹框提示 显示直接进入和更新按钮
+                            self.peilianButtons[0].show = false
+                            self.peilianButtons[1].show = true
+                            self.peilianButtons[2].show = true
+                            eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                          } else {
+                            // 不需要更新 直接打开即可
+                            this.openPartner()
+                          }
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            })
+          case 'canceldownload':
+            this.canceldownload()
+            break
           default:
             console.log('108')
+        }
+      },
+      // 直接打开陪练
+      openPartner () {
+        this.peilianLoading = false
+        this.canEnterModule = true
+        eventsHub.$emit('closeToast')
+        this.canEnterModule = true
+        // 做登录验证
+        if (this.isLogin) {
+          return this.$store.dispatch('getUserInfo').then(data => {
+            if (!data.userInfo.userId) {
+              modules.user.logOut()
+            } else {
+              modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
+                alert(data)
+              })
+            }
+          })
+        } else {
+          eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
         }
       },
       // 加入最近打开
@@ -1031,6 +1185,96 @@
         }
         if (this.rightType === 'recentOpen') {
           this.$store.dispatch('index/setRightSelect', 0)
+        }
+      },
+      downloadPartner () {
+        let downloadInfo = this.downloadInfo
+        let localPath, targetPath
+        let self = this
+        // 只显示取消按钮
+        self.peilianButtons[0].show = true
+        self.peilianButtons[1].show = false
+        self.peilianButtons[2].show = false
+        modules.file.pathComplement('$downLoadHtmls').then((result) => {
+          console.log(result)
+          localPath = result.path
+          return modules.file.pathComplement('$web/findPartner')
+        }).then((result) => {
+          targetPath = result.path
+          downloadInfo.localPath = localPath
+          self.downloadInfo = downloadInfo
+          download.downloadFile({
+            url: downloadInfo.url,
+            md5: downloadInfo.md5,
+            fsize: downloadInfo.fsize,
+            localPath: localPath
+          }).progress(progress => {
+            eventsHub.$emit('toast', {text: '下载中 ' + parseInt(progress.progress * 100) + '%', iconLoading: false, icon: 'icon-updating', allExit: true})
+          }).then(res => {
+            console.log(res)
+            if (res.path) {
+              modules.file.unZip(res.path, targetPath).then(function (data) {
+                if (data.code !== undefined) {
+                  console.log('解压失败' + data.desc)
+                } else {
+                  console.log('解压成功 直接打开')
+                  self.openPartner()
+                }
+              })
+            }
+          })
+        })
+      },
+      canceldownload () {
+        let downloadInfo = this.downloadInfo
+        download.abort({
+          url: downloadInfo.url,
+          md5: downloadInfo.md5,
+          fsize: downloadInfo.fsize,
+          localPath: downloadInfo.localPath
+        }).then(res => {
+          console.log(res)
+          this.peilianLoading = false
+          this.canEnterModule = true
+          eventsHub.$emit('closeToast')
+        })
+      },
+      contrastVersion (serverVersionInfo, localVersionInfo) {
+        // 先比较版本号再比较build号
+        let serverVersion = serverVersionInfo.version
+        let localVersion = localVersionInfo.version
+        let serverBuild = serverVersionInfo.build
+        let localBuild = localVersionInfo.build
+
+        let serverVersionArr = serverVersion.split('.')
+        let serverVersion1 = [serverVersionArr[0], serverVersionArr[1]].join('.')
+        let serverVersion2 = serverVersionArr[2]
+        console.log(serverVersion1, serverVersion2)
+
+        let localVersionArr = localVersion.split('.')
+        let localVersion1 = [localVersionArr[0], localVersionArr[1]].join('.')
+        let localVersion2 = localVersionArr[2]
+        console.log(localVersion1, localVersion2)
+
+        if (serverVersion1 > localVersion1) { // 需要更新
+          console.log('需要更新')
+          return true
+        } else if (serverVersion1 === localVersion1) { // 继续对比
+          if (serverVersion2 > localVersion2) { // 需要更新
+            console.log('需要更新')
+            return true
+          } else if (serverVersion2 === localVersion2) { // 继续对比
+            if (serverBuild > localBuild) { // 需要更新
+              console.log('需要更新')
+              return true
+            } else { // 不需要更新
+              return false
+            }
+          } else if (serverVersion2 < localVersion2) { // 不需要更新
+            return false
+          }
+        } else if (serverVersion1 < localVersion1) { // 不需要更新
+          return false
         }
       },
       player (musicObj, tick) {

@@ -81,7 +81,10 @@ export default function createStore () {
             },
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
-            musicInfo: []
+            musicInfo: [],
+            partnerVersion: {},
+            localPartnerVersion: {},
+            pianoInfo: {orn: 'family', pic: ''} // 钢琴orn/logo
           }
         } // 数据本地缓存
       },
@@ -138,6 +141,12 @@ export default function createStore () {
       },
       musicInfo: state => {
         return state.storage.cache.renderCache.musicInfo
+      },
+      partnerVersion: state => {
+        return state.storage.cache.renderCache.partnerVersion
+      },
+      localPartnerVersion: state => {
+        return state.storage.cache.renderCache.localPartnerVersion
       }
     },
     mutations: {

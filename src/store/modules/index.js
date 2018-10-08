@@ -1,4 +1,5 @@
 import http from '../../scripts/http'
+import axios from 'axios'
 import { getUsedTime, modules } from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
@@ -122,6 +123,39 @@ export default {
         return dispatch('setNativeStorage', {isActivation: data.isActivation}, {root: true}).then(() => {
           return dispatch('setNativeStorage', {isCalendar: data.isCalendar}, {root: true})
         })
+      })
+    },
+    /**
+     * @desc 获取陪练版本数据
+     * */
+    getPartnerVersion ({dispatch}) {
+      return http.post('', {
+        cmd: 'system.getApp',
+        appType: 'testing',
+        appName: 'findPartner'
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {partnerVersion: res.body.app}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
+     * @desc 获取本地陪练版本数据
+     * */
+    getLocalPartnerVersion ({dispatch}, url) {
+      return axios.get(url, {
+      }).then(data => {
+        let res = data.data
+        if (res.version) {
+          let version = res.version
+          let build = res.build
+          let versionObj = {version, build}
+          return dispatch('setCacheToStorage', {localPartnerVersion: versionObj}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     /**
