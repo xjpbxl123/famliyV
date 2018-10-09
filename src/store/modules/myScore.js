@@ -313,7 +313,7 @@ export default {
         }
         switch (orIndex) {
           case 0:
-            // 名称排序
+            //  名称排序
             res.sort((a, b) => { return a.name > b.name })
             if (type === 'Upan') {
               commit(UPAN_SOURCE, res)
