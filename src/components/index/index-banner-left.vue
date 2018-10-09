@@ -1,6 +1,8 @@
 <template>
   <div class="banner-left">
-    <i class="iconfont icon-logo"></i>
+    <!-- <i class="iconfont icon-logo"></i> -->
+    <div class="placeHolder"></div>
+    <findImg class="findLogo" :src="pianoInfo.pic" :beforeImage="logoUrl" :errorImage="logoUrl"></findImg>
     <div class="user-status hide" :class="{show:isSynced}">
       <div v-if="!isLogin">
         <div class="qr-code">
@@ -9,8 +11,8 @@
         <span class="scan">扫描二维码登录</span>
       </div>
       <div v-else>
-        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" demo="xxx"></findImg>
-        <span class="nick-name" v-text="nickName"></span>
+        <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" ></findImg>
+        <span class="nick-name" v-text="nickName || ''"></span>
       </div>
       <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
       <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
@@ -57,13 +59,15 @@
       usedTime: Object,
       getUserInfo: Function,
       isActivation: Boolean,
-      isCalendar: Boolean
+      isCalendar: Boolean,
+      pianoInfo: Object
     },
     data () {
       return {
         adminUrl: require('./images/admin.png'),
         interval: null,
-        nickName: ''
+        nickName: '',
+        logoUrl: require('./images/logo.jpg')
       }
     },
     watch: {
@@ -122,7 +126,20 @@
     height: 100%;
     text-align: center;
     box-sizing: border-box;
+    position: relative;
     background-color: rgba(0, 0, 0, 0.1);
+    .placeHolder {
+       width: 100%;
+       height: 45px;
+     }
+     .findLogo {
+       width: 174px;
+       height: 68px;
+       position: absolute;
+       left: 50%;
+       top: 70px;
+       transform: translateX(-50%);
+    }
   }
 
   .hide {
@@ -140,21 +157,25 @@
 
   .user-status {
     padding-top: 110px;
+    position: relative;
+    height: 100%;
     .noActive {
-      width:100%;
-      font-size:14px;
+      width: 100%;
+      font-size: 14px;
       text-align: center;
       font-family: MicrosoftYaHei;
-      color:rgba(255,255,255,0.6);
-      margin-top: 22px;
+      color: hsla(0,0%,100%,.6);
+      position: absolute;
+      bottom: 100px;
+      left: 0;
     }
 
   }
 
   .avatar {
-    width: 163px;
+    width: 163px !important;
     margin: 0 auto;
-    height: 163px;
+    height: 163px !important;
     img {
        border-radius: 50% !important;
     }

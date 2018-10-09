@@ -1,7 +1,7 @@
 <template>
   <div class='famous-wrap'>
     <ul class="famous-swiper" :style="{ transform: `translateX(${left}px)` }">
-      <famous-item v-for="(item,index) in famousList" :key="index" :select="select" :index="index" :famous="item"/>
+      <famous-item v-for="(item,index) in famousList" :key="index" :select="select" :index="index" :famous="item" :setFamousSetSelect="setFamousSetSelect"/>
     </ul>
   </div>
 </template>
@@ -29,7 +29,8 @@
         default: () => {
           return 1293
         }
-      }
+      },
+      setFamousSetSelect: {type: Function}
     },
     data () {
       return {

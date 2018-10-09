@@ -12,11 +12,9 @@
         :getUserInfo="getUserInfo"
         :isActivation="isActivation"
         :isCalendar="isCalendar"
+        :pianoInfo="pianoInfo"
       />
       <content-center
-        :endIndex.sync="endIndex"
-        :recentBooks="recentBooks"
-        :hotBooks="hotBooks"
         :setCenterSelect="setCenterSelect"
         :selectedIndex="selectedIndex"/>
       <bannerRight
@@ -122,48 +120,7 @@
   import { mapState, mapGetters } from 'vuex'
   import findButtonBanner from '../common/find-button-banner/find-button-banner'
   import bannerHelp from './index-banner-help'
-  import {
-    TOOLBAR_PRESSED,
-    KEY22,
-    KEY27,
-    KEY30,
-    KEY32,
-    KEY34,
-    KEY39,
-    KEY42,
-    KEY46,
-    KEY49,
-    KEY51,
-    KEY54,
-    KEY58,
-    KEY66,
-    KEY67,
-    KEY68,
-    KEY69,
-    KEY70,
-    KEY102,
-    KEY73,
-    LONG_KEY73,
-    KEY75,
-    LONG_KEY75,
-    KEY78,
-    LONG_KEY78,
-    KEY80,
-    LONG_KEY80,
-    KEY82,
-    KEY85,
-    KEY87,
-    KEY90,
-    KEY97,
-    LONG_KEY92,
-    KEY92,
-    LONG_KEY94,
-    KEY94,
-    KEY99,
-    INTERCEPT_DOWN,
-    BACK_PRESSED,
-    PEDAL_PRESSED
-  } from 'vue-find'
+  import * as keys from 'vue-find'
   import BannerLeft from './index-banner-left'
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
@@ -172,8 +129,6 @@
   import initData from './initData.js'
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
-  const lefts = [11, 4, 8]
-  const rights = [7, 10, 3]
   export default {
     data () {
       return {
@@ -218,13 +173,10 @@
           }
         ],
         bigBUtton: [
-          {id: 7, pianoKey: 39, text: '流行经典', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
-          {id: 8, pianoKey: 42, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '教材系列', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
-          {id: 4, pianoKey: 49, text: '我的曲谱', icon: '0xe6af', positionPixels: -30, style: {backgroundColor: '#C499FF,#A15CFF', dotColor: '#A15CFF'}},
-          {id: 5, pianoKey: 51, text: '弹奏录制', icon: '0xe615', positionPixels: 30, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
-          {id: 10, pianoKey: 54, text: '乐理&技巧', icon: '0xe69f', positionPixels: 40, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}},
-          {id: 9, pianoKey: 58, text: '音乐王国', icon: '0xe604', positionPixels: 0, style: {backgroundColor: '#FBB264,#FC8F1B', dotColor: '#FC8F1B'}}
+          {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
+          {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
+          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
+          {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}}
         ],
         controlButtons: [
           {
@@ -247,7 +199,7 @@
             id: 100
           },
           {
-            pianoKey: 73,
+            pianoKey: 78,
             text: '',
             icon: '0xe660',
             backgroundColor: '#3000',
@@ -256,30 +208,12 @@
             longClick: true
           },
           {
-            pianoKey: 75,
+            pianoKey: 80,
             text: '',
             icon: '0xe65b',
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 12,
-            longClick: true
-          },
-          {
-            pianoKey: 78,
-            text: '',
-            icon: '0xe63b',
-            backgroundColor: '#3000',
-            dotColor: '#fff',
-            id: 13,
-            longClick: true
-          },
-          {
-            pianoKey: 80,
-            text: '',
-            icon: '0xe650',
-            backgroundColor: '#3000',
-            dotColor: '#fff',
-            id: 14,
             longClick: true
           },
           {
@@ -384,17 +318,17 @@
     },
     mixins: [initData],
     find: {
-      [TOOLBAR_PRESSED] ({hidden}) {
+      [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
         if (hidden && this.metronome) {
           return
         }
         this.buttonActions('closeMetro')
       },
-      [KEY22] () {
+      [keys.KEY22] () {
         this.buttonActions('closeMetro')
       },
-      [KEY27] () {
+      [keys.KEY27] () {
         if (+new Date() - this.skipTime <= 5000) {
           // 5秒之内不做处理
           console.log('return')
@@ -403,16 +337,16 @@
         this.skipTime = +new Date()
         this.buttonActions('keyBoardMute')
       },
-      [KEY30] () {
+      [keys.KEY30] () {
         this.buttonActions('help')
       },
-      [KEY32] () {
+      [keys.KEY32] () {
         if (!this.logoutCover) {
           return
         }
         this.buttonActions('login')
       },
-      [KEY34] () {
+      [keys.KEY34] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -420,31 +354,7 @@
         this.canEnterModule = false
         this.buttonActions('set')
       },
-      [KEY39] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('popular')
-      },
-      [KEY42] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('famous')
-      },
-      [KEY46] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('material')
-      },
-      [KEY49] () {
+      [keys.KEY39] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -452,7 +362,7 @@
         this.canEnterModule = false
         this.buttonActions('myScore')
       },
-      [KEY51] () {
+      [keys.KEY42] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -460,8 +370,7 @@
         this.canEnterModule = false
         this.buttonActions('playRecord')
       },
-      [KEY54] () {
-        //  乐理与技巧
+      [keys.KEY46] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -469,38 +378,35 @@
         this.canEnterModule = false
         this.buttonActions('skill')
       },
-      [KEY58] () {
-        // 音乐王国
+      [keys.KEY49] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
         }
-        if (this.isLogin) {
-          this.canEnterModule = false
-        }
-        this.buttonActions('game')
+        this.canEnterModule = false
+        this.buttonActions('indexMore')
       },
-      [KEY66] () {
+      [keys.KEY66] () {
         // 打开节拍器
         this.buttonActions('openMetro')
       },
-      [KEY67] () {
+      [keys.KEY67] () {
         // 节拍器减速
         this.buttonActions('speedDown')
       },
-      [KEY68] () {
+      [keys.KEY68] () {
         // 节拍器恢复120
         this.buttonActions('speedRecover')
       },
-      [KEY69] () {
+      [keys.KEY69] () {
         // 节拍器加速
         this.buttonActions('speedUp')
       },
-      [KEY70] () {
+      [keys.KEY70] () {
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
-      [KEY102] () {
+      [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -513,42 +419,33 @@
           this.buttonActions('shutdown')
         }
       },
-      [KEY73] () {
-        this.buttonActions('left')
+      [keys.KEY75] () {
+        if (!this.logoutCover) this.buttonActions('login')
       },
-      [LONG_KEY73] () {
-        this.buttonActions('left')
-      },
-      [KEY75] () {
-        !this.logoutCover ? this.buttonActions('login') : this.buttonActions('right')
-      },
-      [LONG_KEY75] () {
-        this.buttonActions('right')
-      },
-      [KEY78] () {
+      [keys.KEY78] () {
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast')
           this.logoutCover = !this.logoutCover
         } else {
-          this.buttonActions('up')
+          this.buttonActions('left')
         }
       },
-      [LONG_KEY78] () {
-        this.buttonActions('up')
+      [keys.LONG_KEY78] () {
+        this.buttonActions('left')
       },
-      [KEY80] () {
-        this.buttonActions('down')
+      [keys.KEY80] () {
+        this.buttonActions('right')
       },
-      [LONG_KEY80] () {
-        this.buttonActions('down')
+      [keys.LONG_KEY80] () {
+        this.buttonActions('right')
       },
-      [KEY82] () {
+      [keys.KEY82] () {
         this.buttonActions('ok')
       },
-      [KEY85] () {
+      [keys.KEY85] () {
         this.buttonActions('search')
       },
-      [KEY87] () {
+      [keys.KEY87] () {
         if (!this.canEnterModule) {
           console.log('return')
           return
@@ -556,35 +453,35 @@
         this.canEnterModule = false
         this.buttonActions('tone')
       },
-      [KEY90] () {
+      [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('changeRightData')
       },
-      [LONG_KEY92] () {
+      [keys.LONG_KEY92] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
-      [KEY92] () {
+      [keys.KEY92] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-up')
       },
-      [LONG_KEY94] () {
+      [keys.LONG_KEY94] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-down')
       },
-      [KEY94] () {
+      [keys.KEY94] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -592,21 +489,21 @@
         console.log('down')
         this.buttonActions('right-down')
       },
-      [KEY97] () {
+      [keys.KEY97] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('right-play')
       },
-      [KEY99] () {
+      [keys.KEY99] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
         }
         this.buttonActions('openMusicScore')
       },
-      [PEDAL_PRESSED] (key) {
+      [keys.PEDAL_PRESSED] (key) {
         if (this.isPlaying || this.loading) {
           // 播放的时候禁用踏板
           return
@@ -638,14 +535,14 @@
             return this.goBack()
         }
       },
-      [BACK_PRESSED] () {
+      [keys.BACK_PRESSED] () {
         if (this.loading) {
           return
         }
         this.goBack()
       },
       banner: {
-        [INTERCEPT_DOWN] (keys) {
+        [keys.INTERCEPT_DOWN] (keys) {
           if (this.showHelpBanner) {
             this.clickHelp(keys)
           } else {
@@ -661,6 +558,7 @@
         isSynced: state => state.storage.isSynced,
         isActivation: state => state.storage.isActivation,
         isCalendar: state => state.storage.isCalendar,
+        pianoInfo: state => state.storage.pianoInfo,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -672,25 +570,15 @@
         selectedIndex: state => state.index.selectedIndex,
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
-        namespace () {
-          return this.showHelpBanner || this.closeScreen ? 'banner' : ''
-        },
         rightType: state => state.index.rightType,
         scoreList: function (state) {
           return state.storage.cache.renderCache.scoreList
-        },
-        hotBooks: function (state) {
-          let hotBooks = state.storage.cache.renderCache.hottest
-          this.hasLoaded = !!hotBooks.bookList.length
-          return hotBooks
-        },
-        recentBooks: function (state) {
-          let recentBooks = state.storage.cache.renderCache.recentUpdate
-          this.hasLoaded = !!recentBooks.bookList.length
-          return recentBooks
         }
       }),
-      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList'])
+      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList']),
+      namespace () {
+        return this.showHelpBanner || this.closeScreen ? 'banner' : ''
+      }
     },
     watch: {
       /**
@@ -719,9 +607,6 @@
         } else {
           this.userActionButtons[1].text = '登录'
         }
-      },
-      sessionId (val) {
-        this.initializeData()
       }
     },
     methods: {
@@ -885,8 +770,6 @@
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
-        let hotBooks = this.hotBooks
-        let recentBooks = this.recentBooks
         // 如果是帮助页
         switch (type) {
           case 'help' :
@@ -940,13 +823,12 @@
             })
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
-          case 'famous':
-            return modules.nativeRouter.openArtistCourseView()
-          // return this.go('/famous')
           case 'shutdown':
             return this.go('/shutdown')
           case 'myScore':
             return this.go('/myScore')
+          case 'indexMore':
+            return this.go('/indexMore')
           case 'closeMetro':
             console.log('close')
             if (this.metronome) {
@@ -987,69 +869,36 @@
             })
             break
           case 'left':
-            if (activeIndex <= 0) {
-              return
-            }
-            let leftIndex = lefts.indexOf(activeIndex)
-            if (leftIndex !== -1) {
-              activeIndex = rights[leftIndex]
-            } else {
-              activeIndex--
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
+            this.$store.dispatch('index/setSelected', Math.max(activeIndex - 1, 0))
             break
           case 'right':
-            if (activeIndex === 13) {
-              return
-            }
-            let rightIndex = rights.indexOf(activeIndex)
-            if (rightIndex !== -1) {
-              activeIndex = lefts[rightIndex]
-            } else {
-              activeIndex++
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
-            break
-          case 'up':
-            /// 处理热门曲谱的index
-            if (activeIndex > 10) {
-              activeIndex -= 3
-            } else if (activeIndex >= 4 && activeIndex < 8) {
-              activeIndex -= 4
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
-            break
-          case 'down':
-            /// 处理热门曲谱的index
-            if (activeIndex > 7 && activeIndex <= 10) {
-              activeIndex += 3
-            } else if (activeIndex < 4) {
-              activeIndex += 4
-            }
-            this.$store.dispatch('index/setSelected', activeIndex)
+            this.$store.dispatch('index/setSelected', Math.min(activeIndex + 1, 3))
             break
           case 'tone':
             return modules.nativeRouter.openTimbreView()
           case 'ok':
-            if (recentBooks.bookList.length === 0) {
+            if (!this.canEnterModule) {
+              console.log('return')
               return
             }
-            if (activeIndex === 7) {
-              return this.$router.push({path: '/indexMore', query: {title: '最近更新'}})
-            }
-            if (hotBooks.bookList.length === 0) {
-              return
-            }
-            if (activeIndex === 13) {
-              return this.$router.push({path: '/indexMore', query: {title: '热门曲谱'}})
-            }
-            if (activeIndex >= 0 && activeIndex < 7) {
-              // 最近更新
-              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(recentBooks.bookList[activeIndex])}})
-            }
-            if (activeIndex >= 8 && activeIndex < 13) {
-              // 热门曲谱
-              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(hotBooks.bookList[activeIndex - 8])}})
+            switch (activeIndex) {
+              case 0:
+                // return modules.nativeRouter.openArtistCourseView()
+                return this.go('/famous')
+              case 1:
+                return this.go('/popular')
+              case 2:
+                return modules.game.openKingdom().then((data) => {
+                  if (!data) {
+                    this.canEnterModule = true
+                    // 做登录验证
+                    if (this.isLogin) {
+                      return this.$store.dispatch('getUserInfo')
+                    }
+                  }
+                })
+              case 3:
+                return this.go('/material')
             }
             break
           case 'right-up':
@@ -1514,9 +1363,13 @@
         modules.notification.remove('ClearCache')
         modules.notification.remove('pageLifecycle')
         modules.notification.remove('checkPedalMute')
+      },
+      getPianoInfo () {
+        return this.$store.dispatch('getPianoInfo', {root: true})
       }
     },
     created () {
+      this.getPianoInfo()
       this.adjustPlayer()
       this.createSession()
       this.getIsSupportMutePedal()

@@ -28,6 +28,14 @@
             :hidden="!button.show || !deleteCover"
             :longClick="button.longClick"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+        <icon-item id="888"
+            key="888"
+            icon="0xe75b"
+            :text="orderButtonText"
+            pianoKey="70"
+            :hidden="orderButtonHidden || !deleteCover"
+            titlePosition="below"
+            style="{backgroundColor:'#3000',textColor: '#fff',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
             :id="button.id"
             :key="button.id"
@@ -36,7 +44,7 @@
             :hidden="!button.show || !deleteCover"
             :longClick="button.longClick"
             titlePosition="in"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
+            :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.id===myScoreTapIndex?button.activeColor: button.dotColor}"/>
         <icon-item v-for="(button,index) in logoutButtons"
             :hidden="deleteCover"
             :key="index"
@@ -61,28 +69,12 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import {modules} from 'find-sdk'
   import findPrompt from '../common/find-prompt/find-prompt'
-  import {
-    KEY39,
-    KEY42,
-    KEY46,
-    KEY49,
-    KEY54,
-    KEY75,
-    KEY78,
-    KEY80,
-    KEY82,
-    KEY85,
-    KEY90,
-    LONG_KEY78,
-    LONG_KEY80,
-    BACK_PRESSED,
-    TOOLBAR_PRESSED,
-    PEDAL_PRESSED
-  } from 'vue-find'
+  import * as keys from 'vue-find'
   export default {
     data () {
       return {
         toolbarHidden: false,
+        orderButtonText: '名称',
         tapButtons: [
           {
             pianoKey: 39,
@@ -212,28 +204,31 @@
       }
     },
     find: {
-      [TOOLBAR_PRESSED] ({hidden}) {
+      [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
       },
-      [KEY39] () {
+      [keys.KEY39] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
       },
-      [KEY42] () {
+      [keys.KEY42] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
       },
-      [KEY46] () {
+      [keys.KEY46] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
       },
-      [KEY49] () {
+      [keys.KEY49] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
       },
-      [KEY54] () {
+      [keys.KEY54] () {
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
       },
-      [KEY75] () {
+      [keys.KEY70] () {
+        if (this.myRecordIndex === 0) this.buttonActions('changeOrder')
+      },
+      [keys.KEY75] () {
         if (!this.deleteCover) this.buttonActions('delete')
       },
-      [KEY78] () {
+      [keys.KEY78] () {
         if (!this.deleteCover) {
           this.deleteCover = !this.deleteCover
           this.$refs.prompt.hidePrompt()
@@ -241,28 +236,28 @@
           this.buttonActions('up')
         }
       },
-      [KEY80] () {
+      [keys.KEY80] () {
         this.buttonActions('down')
       },
-      [LONG_KEY78] () {
+      [keys.LONG_KEY78] () {
         this.buttonActions('up')
       },
-      [LONG_KEY80] () {
+      [keys.LONG_KEY80] () {
         this.buttonActions('down')
       },
-      [KEY82] () {
+      [keys.KEY82] () {
         this.buttonActions('ok')
       },
-      [KEY85] () {
+      [keys.KEY85] () {
         this.buttonActions('delete')
       },
-      [KEY90] () {
+      [keys.KEY90] () {
         this.buttonActions('scoreList')
       },
-      [BACK_PRESSED] () {
+      [keys.BACK_PRESSED] () {
         this.buttonActions('back')
       },
-      [PEDAL_PRESSED] (key) {
+      [keys.PEDAL_PRESSED] (key) {
         switch (key.id) {
           case 116:
             // 踏板1号键
@@ -287,6 +282,7 @@
           } else {
             this.controlButtons[this.controlButtons.length - 1].show = false
           }
+          state.myScore.myScoreTapIndex === 0 ? this.orderButtonHidden = false : this.orderButtonHidden = true
           return state.myScore.myScoreTapIndex
         },
         localSourceIndex: state => state.myScore.localSourceIndex,
@@ -298,6 +294,7 @@
         myPlayIndex: state => state.myScore.myPlayIndex,
         myPlay: state => state.myScore.myPlay,
         myPlayPath: state => state.myScore.myPlayPath,
+        orderIndex: state => state.myScore.orderIndex,
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
         isLogin (state) {
@@ -338,6 +335,12 @@
           let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
           this.title = title[value]
         }
+      },
+      orderIndex (value) {
+        let orderName = ['名称', '时间', '类型']
+        this.orderButtonText = orderName[value]
+        this.getLocalSource()
+        this.$store.dispatch('myScore/setLocalSourceIndex', 0)
       }
     },
     methods: {
@@ -434,15 +437,17 @@
                 console.log(data)
                 // 去打开文件
                 if (data.typeName === 'picture') {
+                  // 图片
                   this.$router.push({path: '/openImg', query: {url: data.http}})
                 } else if (data.typeName === 'pdf') {
+                  // pdf
                   modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
                     if (!res.path) {
                       return
                     }
                     modules.nativeRouter.openPDFFile({'path': res.path})
                   })
-                } else if (data.typeName === 'song') {
+                } else if (data.typeName === 'song' || data.typeName === 'xml') {
                   // 合成曲谱播放
                   let scoreObj = {}
                   let houzhuiArr = []
@@ -453,6 +458,9 @@
                     mp4: 'videoPath',
                     mp3: 'mp3Path',
                     xml: 'xmlPath'
+                  }
+                  if (data.typeName === 'xml') {
+                    return this.playXml(this.localSourcePath + '/' + data.name, data.name)
                   }
                   modules.file.pathComplement(this.localSourcePath).then((res) => {
                     if (!res.path) {
@@ -479,8 +487,13 @@
                     modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
                   })
                 } else if (data.typeName === 'midi') {
+                  // midi
                   this.playMidi(this.localSourcePath + '/' + data.name)
                   break
+                } else if (data.typeName === 'mp3') {
+                  this.$router.push({path: '/openAudio', query: {url: data.http, fileName: data.name}})
+                } else if (data.typeName === 'video') {
+                  this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
                 }
               }
             }
@@ -524,6 +537,14 @@
               this.$router.back()
               this.destroyedFunc()
             }
+            break
+          case 'changeOrder':
+            let orderIndex = this.orderIndex + 1
+            if (orderIndex > 2) {
+              orderIndex = 0
+            }
+            this.$store.dispatch('myScore/setOrderIndex', orderIndex)
+            break
         }
       },
       /**
@@ -837,6 +858,13 @@
         modules.file.pathComplement(path).then((res) => {
           if (res.path) {
             modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': {'midiPath': res.path}})
+          }
+        })
+      },
+      playXml (path, name) {
+        modules.file.pathComplement(path).then((res) => {
+          if (res.path) {
+            modules.nativeRouter.openMidiPlayer({'isLocal': true, 'localDic': {'xmlPath': res.path, 'name': name}})
           }
         })
       },

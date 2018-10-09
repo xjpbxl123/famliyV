@@ -12,6 +12,8 @@ const MY_PLAY_INDEX = 'MY_PLAY_INDEX' /// 我的弹奏index
 const MY_PLAY_PATH = 'MY_PLAY_PATH' // 我的录音路径
 const MY_COLLECT_INDEX = 'MY_COLLECT_INDEX' /// 我的收藏index
 const MY_RECENT_INDEX = 'MY_RECENT_INDEX' /// 我的最近打开index
+const ORDER_INDEX = 'ORDER_INDEX' /// 文件排序index
+
 export default {
   namespaced: true,
   state: {
@@ -26,6 +28,7 @@ export default {
     myPlayIndex: 0,
     myCollectIndex: 0,
     myRecentIndex: 0,
+    orderIndex: 0,
     myPlayPath: '$userHistory'
   },
   mutations: {
@@ -37,6 +40,9 @@ export default {
     },
     [LOCAL_SOURCE] (state, data) {
       state.localSource = data
+    },
+    [ORDER_INDEX] (state, data) {
+      state.orderIndex = data
     },
     [LOCAL_SOURCE_PATH] (state, path) {
       state.localSourcePath = path
@@ -74,6 +80,12 @@ export default {
       commit(MY_SCORE_TAP_INDEX, num)
     },
     /**
+     * @desc 文件排序
+     * */
+    setOrderIndex ({commit}, num) {
+      commit(ORDER_INDEX, num)
+    },
+    /**
      * @desc 本地资源选中index
      * */
     setLocalSourceIndex ({commit}, num) {
@@ -100,34 +112,45 @@ export default {
     /**
      * @desc 获取我的曲谱本地资源列表
      * */
-    getLocalSource ({commit}, path) {
+    getLocalSource ({commit, state}, path) {
       file.readFolderFile(path).then((res) => {
         let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
           let name = nameArr[0]
+          if (nameArr.length > 2) {
+            for (let i = 1; i <= nameArr.length - 2; i++) {
+              name += '.' + nameArr[i]
+            }
+          }
           if (item.type === 'dir') {
             item.typeName = 'open-now'
           } else {
             if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif') {
               item.typeName = 'picture'
-            } else if (suffix === 'mp3' || suffix === 'wav') {
-              item.typeName = 'mp3'
-            } else if (suffix === 'mid') {
-              item.typeName = 'midi'
-            } else if (suffix === 'xml') {
-              item.typeName = 'xml'
-            } else if (suffix === 'pdf') {
-              item.typeName = 'pdf'
-            } else if (suffix === 'mp4') {
-              item.typeName = 'video'
-            }
+            } else
+              if (suffix === 'mp3' || suffix === 'wav') {
+                item.typeName = 'mp3'
+              } else if (suffix === 'mid') {
+                item.typeName = 'midi'
+              } else if (suffix === 'xml') {
+                item.typeName = 'xml'
+              } else if (suffix === 'pdf') {
+                item.typeName = 'pdf'
+              } else if (suffix === 'mp4') {
+                item.typeName = 'video'
+              }
           }
           let filesName = []
           res.forEach((item1, index1) => {
             let nameArr1 = item1.name.split('.')
             let name1 = nameArr1[0]
+            if (nameArr1.length > 2) {
+              for (let i = 1; i <= nameArr1.length - 2; i++) {
+                name1 += '.' + nameArr1[i]
+              }
+            }
             let suffix1 = nameArr1[nameArr1.length - 1]
             if (name1 === name) {
               filesName.push(item1.name)
@@ -158,14 +181,32 @@ export default {
           }
         })
         let newArr = []
-        res.forEach((item, index) => {
+        res.forEach(item => {
           let flag = true
           let nameArr2 = item.name.split('.')
           let name2 = nameArr2[0]
+          if (item.filesName) {
+            name2 = item.name
+          } else {
+            if (nameArr2.length > 2) {
+              for (let i = 1; i <= nameArr2.length - 2; i++) {
+                name2 += '.' + nameArr2[i]
+              }
+            }
+          }
           newArr.forEach((item1, index) => {
             let nameArr3 = item1.name.split('.')
             let name3 = nameArr3[0]
-            if (item1.name === item.name || (name2.indexOf(name3) !== -1 && name2.indexOf('_sp') !== -1)) {
+            if (item1.filesName) {
+              name3 = item1.name
+            } else {
+              if (nameArr3.length > 2) {
+                for (let i = 1; i <= nameArr3.length - 2; i++) {
+                  name3 += '.' + nameArr3[i]
+                }
+              }
+            }
+            if (name2 === name3 || (name2.indexOf(name3) !== -1 && name2.indexOf('_sp') !== -1)) {
               flag = false
             }
           })
@@ -174,17 +215,66 @@ export default {
           }
         })
         let filteredArr = []
-        newArr.forEach((item, index) => {
+        newArr.forEach(item => {
           if (item.type === 'dir' && item.typeName) {
             filteredArr.push(item)
           }
         })
-        newArr.forEach((item, index) => {
+        newArr.forEach(item => {
           if (item.type === 'file' && item.typeName) {
             filteredArr.push(item)
           }
         })
-        commit(LOCAL_SOURCE, filteredArr)
+        console.log(newArr)
+        switch (state.orderIndex) {
+          case 0:
+            // 名称排序
+            filteredArr.sort((a, b) => { return a.name > b.name })
+            commit(LOCAL_SOURCE, filteredArr)
+            break
+          case 1:
+            // 时间排序
+            commit(LOCAL_SOURCE, filteredArr)
+            break
+          case 2:
+            // 类型排序
+            let fondelArr = []
+            let scoreArr = []
+            let pdfArr = []
+            let mp3Arr = []
+            let videoArr = []
+            let midiArr = []
+            let imgArr = []
+            filteredArr.map(data => {
+              if (data.type === 'dir') {
+                fondelArr.push(data)
+              } else if (data.filesName) {
+                scoreArr.push(data)
+              } else {
+                if (data.typeName === 'picture') {
+                  imgArr.push(data)
+                } else if (data.typeName === 'mp3') {
+                  mp3Arr.push(data)
+                } else if (data.typeName === 'video') {
+                  videoArr.push(data)
+                } else if (data.typeName === 'midi') {
+                  midiArr.push(data)
+                } else if (data.typeName === 'pdf') {
+                  pdfArr.push(data)
+                }
+              }
+            })
+            fondelArr.sort((a, b) => { return a.name > b.name })
+            scoreArr.sort((a, b) => { return a.name > b.name })
+            pdfArr.sort((a, b) => { return a.name > b.name })
+            mp3Arr.sort((a, b) => { return a.name > b.name })
+            videoArr.sort((a, b) => { return a.name > b.name })
+            midiArr.sort((a, b) => { return a.name > b.name })
+            imgArr.sort((a, b) => { return a.name > b.name })
+            scoreArr = scoreArr.concat(fondelArr, pdfArr, mp3Arr, videoArr, midiArr, imgArr)
+            commit(LOCAL_SOURCE, scoreArr)
+            break
+        }
       })
     },
     /**

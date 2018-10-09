@@ -1,5 +1,5 @@
 <template>
-  <li class="famous-book-item" :class="select==index && 'active'">
+  <li class="famous-book-item" :class="select==index && 'active'" @click="setFamousBookSelect(index)">
     <slot></slot>
   </li>
 </template>
@@ -17,9 +17,8 @@
     background-size: 100% 100%;
     animation: fadeRighr 1s;
     &.active {
-      height: 405px;
-      width: 540px;
-      margin: 0 0 0 50px;
+      transform: scale(1.16);
+      transition: all .5s linear;
     }
   }
 
@@ -44,6 +43,9 @@
       },
       item: {
         type: Object
+      },
+      setFamousBookSelect: {
+        type: Function
       }
     },
     data () {

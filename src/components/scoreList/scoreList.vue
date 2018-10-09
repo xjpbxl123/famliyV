@@ -4,7 +4,8 @@
       <div class="left">
         <scoreListLeftDeffer v-if="query.differ" :differ="JSON.parse(query.differ)"></scoreListLeftDeffer>
         <scoreListLeftYear v-if="query.year" :year="JSON.parse(query.year)"></scoreListLeftYear>
-        <scoreListLeftStyle v-if="!query.differ && !query.year" :book="JSON.parse(query.book)"></scoreListLeftStyle>
+        <scoreListLeftStyle v-if="query.book" :book="JSON.parse(query.book)"></scoreListLeftStyle>
+        <scoreListLeftFamous v-if="query.famous" :book="JSON.parse(query.famous)"></scoreListLeftFamous>
       </div>
       <scoreList-center ref="center" :scoreList="scoreList" :scoreIndex="scoreIndex" :setSelect="setSelect"/>
       <scoreList-music-detail :scoreList="scoreList" :scoreIndex="scoreIndex" v-show="!dataError"/>
@@ -39,6 +40,7 @@
   import scoreListChooseType from './scoreList-choose-type'
   import scoreListChooseButtons from './scoreList-choose-buttons'
   import scoreListLeftDeffer from './scoreList-left-deffer'
+  import scoreListLeftFamous from './scoreList-left-famous'
   import scoreListLeftYear from './scoreList-left-year'
   import scoreListLeftStyle from './scoreList-left-style'
   import statusBar from '../common/find-status-bar/find-status-bar'
@@ -270,6 +272,8 @@
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.differ).id]
           } else if (query.year) {
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.year).id]
+          } else if (query.famous) {
+            arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.famous).id]
           } else {
             arr = state.storage.cache.renderCache.scoreList[JSON.parse(query.book).bookId]
           }
@@ -319,6 +323,9 @@
           id = JSON.parse(query.differ).id
         } else if (query.year) {
           id = JSON.parse(query.year).id
+        } else if (query.famous) {
+          typeName = 'musicScore'
+          id = JSON.parse(query.famous).id
         } else {
           id = JSON.parse(query.book).bookId
           typeName = 'musicScore'
@@ -592,7 +599,8 @@
       scoreListLeftYear,
       scoreListLeftStyle,
       scoreListChooseButtons,
-      statusBar
+      statusBar,
+      scoreListLeftFamous
     }
   }
 </script>

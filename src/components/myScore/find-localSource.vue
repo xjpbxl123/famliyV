@@ -63,6 +63,7 @@
     methods: {
     },
     created () {
+      if (this.localSourceIndex >= 5) this.rightTop = (this.localSourceIndex - 4) * 120 * -1
     },
     components: {
     }

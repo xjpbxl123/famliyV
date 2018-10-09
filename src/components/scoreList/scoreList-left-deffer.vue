@@ -45,15 +45,6 @@
       position: absolute;
       top: 85px;
       left: 240px;
-      &::after {
-        content: '';
-        position: absolute;
-        width: 500px;
-        height: 1px;
-        bottom: 10px;
-        background: -webkit-linear-gradient(left, white, rgba(255, 255, 255, 0));
-        left: 120%;
-      }
     }
     .cover {
       width: 340px;

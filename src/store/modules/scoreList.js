@@ -20,7 +20,7 @@ export default {
     /**
      * @desc 获取曲谱列表
      * */
-    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
+    getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 500}, typeName, id}) {
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
       if (typeName === 'other') {
@@ -137,7 +137,7 @@ export default {
     /**
      * @desc 只获取获取曲谱列表，不用处理数据
      * */
-    getMusicList ({dispatch}, {page = {'offset': 0, 'count': 100}, typeName, id}) {
+    getMusicList ({dispatch}, {page = {'offset': 0, 'count': 500}, typeName, id}) {
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
       return http.post('', {

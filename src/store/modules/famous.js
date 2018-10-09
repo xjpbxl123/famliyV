@@ -32,7 +32,11 @@ export default {
         ...defaultData,
         cmd: 'artist.getAllArtistsToFamily'
       }).then(({body}) => {
-        body && dispatch('setCacheToStorage', {allArtists: body}, {root: true})
+        if (body) {
+          return dispatch('setCacheToStorage', {allArtists: body}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     getCourseSetByArtistToFamily ({dispatch}, data) {
@@ -41,7 +45,11 @@ export default {
         ...data,
         cmd: 'artist.getCourseSetByArtistToFamily'
       }).then(({body}) => {
-        body && dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
+        if (body) {
+          return dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
+        }
+      }).catch((error) => {
+        return error
       })
     },
     getCoursesBySet ({dispatch}, {courseSetID}) {
@@ -50,7 +58,7 @@ export default {
         'courseSetId': courseSetID - 0,
         ...defaultData
       }).then((data) => {
-        if (!data.header.code) {
+        if (data.header.code === 0) {
           let courseSetData = data.body.courseList
           courseSetData.map((value) => {
             if (value.courseId) {
@@ -58,9 +66,9 @@ export default {
             }
           })
           return dispatch('videoHasDownload', {body: data.body, courseSetID})
-        } else {
-          return data
         }
+      }).catch((error) => {
+        return error
       })
     },
     /**

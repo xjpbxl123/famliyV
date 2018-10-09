@@ -3,9 +3,9 @@
     <statusBar/>
     <div class="banner-content">
       <content-center
-        :title="title"
-        :books="title==='最近更新'?recentBooksAll:hotBooksAll"
-        :selectedIndex="indexx"
+        :title="moreIndexTitle"
+        :books="moreIndexTitle==='最近更新'?recentBooksAll:hotBooksAll"
+        :selectedIndex="moreIndex"
         :setSelect="setSelect"
         />
     </div>
@@ -17,6 +17,14 @@
                  :pianoKey="button.pianoKey"
                  :longClick="button.longClick"
                  :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+      <icon-item
+            key="70"
+            id="115"
+            icon="0xe6da"
+            :text="moreIndexTitle"
+            pianoKey="70"
+            titlePosition="below"
+            style="{backgroundColor:'#3000',color: '#fff',textColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
@@ -27,6 +35,7 @@
   import eventsHub from 'scripts/eventsHub'
   import {errorHandling} from '../../scripts/utils'
   import {
+    KEY70,
     KEY73,
     KEY75,
     KEY78,
@@ -85,12 +94,13 @@
             id: 114
           }
         ],
-        title: this.$route.query.title,
-        toolbarHidden: false,
-        indexx: 0
+        toolbarHidden: false
       }
     },
     find: {
+      [KEY70] () {
+        this.buttonActions('changeData')
+      },
       [KEY73] () {
         this.buttonActions('left')
       },
@@ -136,8 +146,11 @@
         moreIndex (state) {
           return state.index.moreIndex
         },
+        moreIndexTitle (state) {
+          return state.index.moreIndexTitle
+        },
         hotBooksAll: function (state) {
-          if (this.title === '热门曲谱') {
+          if (this.moreIndexTitle === '热门曲谱') {
             let hotBooksAll = state.storage.cache.renderCache.hottestAll
             if (hotBooksAll.bookList.length > 0) {
               eventsHub.$emit('closeToast')
@@ -147,7 +160,7 @@
           }
         },
         recentBooksAll: function (state) {
-          if (this.title === '最近更新') {
+          if (this.moreIndexTitle === '最近更新') {
             let recentBooksAll = state.storage.cache.renderCache.recentUpdateAll
             if (recentBooksAll.bookList.length > 0) {
               eventsHub.$emit('closeToast')
@@ -164,7 +177,7 @@
        * @desc 鼠标事件
        * */
       setSelect (index) {
-        let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
+        let books = this.moreIndexTitle === '最近更新' ? this.recentBooksAll : this.hotBooksAll
         return this.$store.dispatch('index/setMoreIndex', index).then(() => {
           return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[index])}})
         })
@@ -173,37 +186,46 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
-        let indexx = this.indexx
-        let books = this.title === '最近更新' ? this.recentBooksAll : this.hotBooksAll
+        let indexx = this.moreIndex
+        let books = this.moreIndexTitle === '最近更新' ? this.recentBooksAll : this.hotBooksAll
         if (books.bookList.length <= 0) {
           return
         }
         switch (type) {
+          case 'changeData':
+            let title = this.moreIndexTitle
+            if (title === '最近更新') {
+              title = '热门曲谱'
+            } else {
+              title = '最近更新'
+            }
+            return this.$store.dispatch('index/setMoreIndex', 0).then(() => {
+              return this.$store.dispatch('index/setIndexMoreTitle', title)
+            })
           case 'left':
             this.indexx = Math.max(indexx - 1, 0)
-            break
+            return this.$store.dispatch('index/setMoreIndex', this.indexx)
           case 'right':
             this.indexx = Math.min(indexx + 1, 19)
-            break
+            return this.$store.dispatch('index/setMoreIndex', this.indexx)
           case 'up':
             /// 处理热门曲谱的index
             if (indexx - 10 >= 0) {
               this.indexx = this.indexx - 10
             }
-            break
+            return this.$store.dispatch('index/setMoreIndex', this.indexx)
           case 'down':
             /// 处理热门曲谱的index
             if (indexx + 10 < 20) {
               this.indexx = indexx + 10
             }
-            break
+            return this.$store.dispatch('index/setMoreIndex', this.indexx)
           case 'ok':
-            if (this.title === '热门曲谱') {
+            if (this.moreIndexTitle === '热门曲谱') {
               books = this.hotBooksAll
             }
-            return this.$store.dispatch('index/setMoreIndex', this.indexx).then(() => {
-              return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
-            })
+            return this.$router.push({path: '/scoreList', query: {book: JSON.stringify(books.bookList[this.moreIndex])}})
+
           default:
             console.log('108')
         }
@@ -215,7 +237,7 @@
       }
     },
     created () {
-      if (this.title === '最近更新') {
+      if (this.moreIndexTitle === '最近更新') {
         return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
           if (this.hasLoaded || (data && data.hottestAll)) {
             eventsHub.$emit('closeToast')

@@ -1,26 +1,24 @@
 import http from '../../scripts/http'
 import { getUsedTime, modules } from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
-const RECENT_BOOKS = 'RECENT_BOOKS' /// 最近更新
-const HOT_BOOKS = 'HOT_BOOKS' /// 热门
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
 const RIGHT_SELECTED_INDEX = 'RIGHT_SELECT_INDEX' /// 最近打开索引
 const RIGHT_TYPE = 'RIGHT_TYPE'
 const MORE_INDEX = 'MORE_INDEX'
+const MORE_INDEX_TITLE = 'MORE_INDEX_TITLE'
 export default {
   namespaced: true,
   state: {
     selectedIndex: 0,
     rightSelectedIndex: 0,
-    recentBooks: {bookList: []},
-    hotBooks: {bookList: []},
     usedTime: {
       autoPlayTime: '', //  自动演奏时间
       openAppTime: '', //  累计开始使用时间
       scoringTime: '' //  评分时间
     },
     rightType: 'recentOpen',
-    moreIndex: 0
+    moreIndex: 0,
+    moreIndexTitle: '最近更新'
 
   },
   mutations: {
@@ -30,12 +28,6 @@ export default {
     [RIGHT_SELECTED_INDEX] (state, index) {
       state.rightSelectedIndex = index
     },
-    [RECENT_BOOKS] (state, recentBooks) {
-      state.recentBooks = recentBooks
-    },
-    [HOT_BOOKS] (state, hotBooks) {
-      state.hotBooks = hotBooks
-    },
     [PIANO_USED_TIME] (state, data) {
       state.usedTime = Object.assign({}, data)
     },
@@ -44,6 +36,9 @@ export default {
     },
     [MORE_INDEX] (state, data) {
       state.moreIndex = data
+    },
+    [MORE_INDEX_TITLE] (state, data) {
+      state.moreIndexTitle = data
     }
   },
   actions: {
@@ -52,6 +47,12 @@ export default {
      * */
     setSelected ({commit}, num) {
       commit(SELECTED_INDEX, num)
+    },
+    /**
+     * @desc 设置查看更多页面选中的数据类型
+     * */
+    setIndexMoreTitle ({commit}, num) {
+      commit(MORE_INDEX_TITLE, num)
     },
     /**
      * @desc 设置右侧列表选中的项
@@ -68,18 +69,14 @@ export default {
     /**
      * @desc 获取最近更新
      * */
-    getRecentBooks ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+    getRecentBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
         page
       }).then(res => {
         if (res.header.code === 0) {
-          let re = JSON.parse(JSON.stringify(res.body))
-          return dispatch('setCacheToStorage', {recentUpdateAll: res.body}, {root: true}).then(() => {
-            re.bookList = re.bookList.slice(0, 7)
-            return dispatch('setCacheToStorage', {recentUpdate: re}, {root: true})
-          })
+          return dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
         }
       }).catch((error) => {
         return error
@@ -88,18 +85,14 @@ export default {
     /**
      * @desc 获取热门更新
      * */
-    getHotBooks ({dispatch, commit, state}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+    getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
       return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
         page
       }).then(res => {
         if (res.header.code === 0) {
-          let ho = JSON.parse(JSON.stringify(res.body))
-          return dispatch('setCacheToStorage', {hottestAll: res.body}, {root: true}).then(() => {
-            ho.bookList = ho.bookList.slice(0, 5)
-            return dispatch('setCacheToStorage', {hottest: ho}, {root: true})
-          })
+          return dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
         }
       }).catch((error) => {
         return error

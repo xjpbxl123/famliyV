@@ -6,7 +6,7 @@
         <span class="price buy" v-else>{{item.payment}}</span>
         <span class="video iconfont icon-with-video" v-if="item.hasVideo"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
-        <span class="viewNum">{{item.hotNum}}+</span>
+        <span class="viewNum">{{item.hotNum}}</span>
         <span class="musicName">{{item.name}}</span>
         <span class="new">new</span>
     </li>

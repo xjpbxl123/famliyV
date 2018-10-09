@@ -112,4 +112,20 @@ const checkMobile = function (str) {
     return false
   }
 }
-export { os, formatDate, getCurEnvs, errorHandling, checkMobile }
+
+const timeFilter = function (time) {
+  if (time === 0) {
+    return '00:00'
+  }
+  time = parseInt(time)
+  let mm = parseInt(time / 60)
+  if (mm < 10) {
+    mm = String('0' + mm)
+  }
+  let ss = parseInt(time % 60)
+  if (ss < 10) {
+    ss = String('0' + ss)
+  }
+  return mm + ':' + ss
+}
+export { os, formatDate, getCurEnvs, errorHandling, checkMobile, timeFilter }
