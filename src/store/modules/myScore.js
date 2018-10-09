@@ -182,7 +182,7 @@ export default {
           }
           return []
         }
-        // 第一步 剔除掉不支持的文件 并加上文件格式属性
+        //   第一步 剔除掉不支持的文件 并加上文件格式属性
         res.forEach((value, index) => {
           if (value.type === 'dir') {
             value.typeName = 'open-now'
