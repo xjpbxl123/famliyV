@@ -38,7 +38,7 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         cache: {
           renderCache: {
-            famousAuthor: {courseSetList: []},
+            famousAuthor: {},
             allArtists: {authors: []},
             recentOpenList: [],
             popularGenre: [],
@@ -79,6 +79,9 @@ export default function createStore () {
       },
       allArtists: state => {
         return state.storage.cache.renderCache.allArtists
+      },
+      famousAuthor: state => {
+        return state.storage.cache.renderCache.famousAuthor
       },
       recentOpenList: state => {
         return state.storage.cache.renderCache.recentOpenList

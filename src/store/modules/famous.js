@@ -31,8 +31,8 @@ export default {
       return http.post('', {
         ...defaultData,
         cmd: 'artist.getAllArtistsToFamily'
-      }).then(({body}) => {
-        if (body) {
+      }).then(({header, body}) => {
+        if (header.code === 0) {
           return dispatch('setCacheToStorage', {allArtists: body}, {root: true})
         }
       }).catch((error) => {
@@ -44,8 +44,8 @@ export default {
         ...defaultData,
         ...data,
         cmd: 'artist.getCourseSetByArtistToFamily'
-      }).then(({body}) => {
-        if (body) {
+      }).then(({header, body}) => {
+        if (header.code === 0) {
           return dispatch('setCacheToStorage', {famousAuthor: body, id: data.artistId}, {root: true})
         }
       }).catch((error) => {

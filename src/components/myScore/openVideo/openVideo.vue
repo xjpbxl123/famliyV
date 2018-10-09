@@ -9,7 +9,6 @@
         <span class="totalTime" > {{totalTime | timer}}</span>
       </div>
     </div>
-    <div class="pauseLogo"  v-if="!isPlaying"></div>
     <div class="halfScreen" v-if="screenIndex !== 0" :class="screenType">
       <div class="halfMess">
         <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
@@ -80,9 +79,9 @@
           text: '调音台'
         }, {
           pianoKey: 42,
-          icon: '0xe6e3',
+          icon: '0xe6e2',
           id: 205,
-          text: '左半屏'
+          text: '全屏'
         }],
         currentTime: '0',
         totalTime: '0',
@@ -100,12 +99,12 @@
     watch: {
       screenType (val) {
         switch (val) {
-          case 'half-left':
+          case 'full':
             this.textButtons[1].icon = '0xe6e2'
             this.textButtons[1].text = '全屏'
             break
-          case 'full':
-            this.textButtons[1].icon = '0xe6e3'
+          case 'half-left':
+            this.textButtons[1].icon = '0xe6e4'
             this.textButtons[1].text = '左半屏'
             break
           case 'half-right':
@@ -298,15 +297,6 @@
             font-weight:400;
             color:rgba(255,255,255,1);
           }
-        }
-        .pauseLogo {
-          width: 200px;
-          height: 200px;
-          position: absolute;
-          top: 440px;
-          left: 860px;
-          background: url('../images/pauseLogo.png') no-repeat;
-          background-size: cover;
         }
         .halfScreen {
           width: 50%;

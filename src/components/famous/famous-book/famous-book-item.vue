@@ -15,7 +15,7 @@
     background: url("./image/artistcourse_cover.png") no-repeat;
     -webkit-background-size: 100% 100%;
     background-size: 100% 100%;
-    animation: fadeRighr 1s;
+    animation: fadeRighr 0.5s;
     &.active {
       transform: scale(1.16);
       transition: all .5s linear;

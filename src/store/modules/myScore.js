@@ -127,10 +127,10 @@ export default {
           if (item.type === 'dir') {
             item.typeName = 'open-now'
           } else {
-            if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif') {
+            if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif' || suffix === 'bmp') {
               item.typeName = 'picture'
             } else
-              if (suffix === 'mp3' || suffix === 'wav') {
+              if (suffix === 'mp3' || suffix === 'wav' || suffix === 'wma') {
                 item.typeName = 'mp3'
               } else if (suffix === 'mid') {
                 item.typeName = 'midi'
@@ -138,7 +138,7 @@ export default {
                 item.typeName = 'xml'
               } else if (suffix === 'pdf') {
                 item.typeName = 'pdf'
-              } else if (suffix === 'mp4') {
+              } else if (suffix === 'mp4' || suffix === 'avi' || suffix === 'mov') {
                 item.typeName = 'video'
               }
           }
@@ -246,6 +246,7 @@ export default {
             let videoArr = []
             let midiArr = []
             let imgArr = []
+            let xmlArr = []
             filteredArr.map(data => {
               if (data.type === 'dir') {
                 fondelArr.push(data)
@@ -254,6 +255,8 @@ export default {
               } else {
                 if (data.typeName === 'picture') {
                   imgArr.push(data)
+                } else if (data.typeName === 'xml') {
+                  xmlArr.push(data)
                 } else if (data.typeName === 'mp3') {
                   mp3Arr.push(data)
                 } else if (data.typeName === 'video') {
@@ -271,8 +274,9 @@ export default {
             mp3Arr.sort((a, b) => { return a.name > b.name })
             videoArr.sort((a, b) => { return a.name > b.name })
             midiArr.sort((a, b) => { return a.name > b.name })
+            xmlArr.sort((a, b) => { return a.name > b.name })
             imgArr.sort((a, b) => { return a.name > b.name })
-            scoreArr = scoreArr.concat(fondelArr, pdfArr, mp3Arr, videoArr, midiArr, imgArr)
+            scoreArr = scoreArr.concat(fondelArr, pdfArr, mp3Arr, videoArr, midiArr, xmlArr, imgArr)
             commit(LOCAL_SOURCE, scoreArr)
             break
         }

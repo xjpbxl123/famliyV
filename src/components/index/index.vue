@@ -840,7 +840,7 @@
           case 'openMetro':
             if (!this.metronome) {
               this.toolbarHidden = true
-              modules.metronome.start()
+              modules.metronome.start(true)
               this.metronome = true
             }
             break
