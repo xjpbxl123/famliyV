@@ -157,8 +157,6 @@
 
   .user-status {
     padding-top: 110px;
-    position: relative;
-    height: 100%;
     .noActive {
       width: 100%;
       font-size: 14px;
@@ -169,7 +167,6 @@
       bottom: 100px;
       left: 0;
     }
-
   }
 
   .avatar {
