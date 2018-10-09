@@ -234,6 +234,7 @@ export default {
             break
           case 1:
             // 时间排序
+            filteredArr.sort((a, b) => { return a.createData < b.createData })
             commit(LOCAL_SOURCE, filteredArr)
             break
           case 2:

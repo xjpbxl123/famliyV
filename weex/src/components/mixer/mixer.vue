@@ -47,7 +47,7 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox5">
+    <div class="vioceBox vioceBox5" v-if="false">
       <text class="text1 textA unmute" v-if="!mute5" >音频分音量</text>
       <text class="text1 textA mute" v-else >音频分音量 </text>
       <text class="text2 unmute" v-if="!mute5" >(人声)</text>
@@ -60,7 +60,7 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox6">
+    <div class="vioceBox vioceBox6" v-if="false">
       <text class="text1 textA unmute" v-if="!mute6" >音频分音量</text>
       <text class="text1 textA mute" v-else >音频分音量 </text>
       <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
