@@ -76,7 +76,7 @@ export default {
         page
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {recentUpdate: res.body}, {root: true})
+          return dispatch('setCacheToStorage', {recentBooksAll: res.body}, {root: true})
         }
       }).catch((error) => {
         return error
@@ -92,7 +92,7 @@ export default {
         page
       }).then(res => {
         if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {hottest: res.body}, {root: true})
+          return dispatch('setCacheToStorage', {hotBooksAll: res.body}, {root: true})
         }
       }).catch((error) => {
         return error
