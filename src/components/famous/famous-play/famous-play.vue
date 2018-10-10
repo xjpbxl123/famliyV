@@ -16,7 +16,13 @@
       </fh-label>
     </fh-div>
     <fh-weex :style="weexStyle" ref="weex" />
+<<<<<<< HEAD
     <toolbar :hidden="toolbarHidden1">
+=======
+    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
+    <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
+    <toolbar :darkBgHidden="true">
+>>>>>>> weex图片途径问题
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden || isPlay"
               :pianoKey="button.pianoKey"
@@ -288,7 +294,12 @@
             this.toolbarHidden = false
           }
         } else {
-          this.$router.back()
+          if (!this.weexHidden) {
+            this.hideWeex()
+            this.toolbarHidden = false
+          } else {
+            this.$router.back()
+          }
         }
       },
       [PEDAL_PRESSED] (key) {
@@ -322,6 +333,10 @@
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
           this.canOpenVideoDirectory = res1.result
         })
+<<<<<<< HEAD
+=======
+        console.log(`${weexUrl}components/toast/toast.js`)
+>>>>>>> weex图片途径问题
       })
     },
     methods: {
@@ -607,31 +622,46 @@
         }
       },
       showWeex () {
+<<<<<<< HEAD
         console.log('打开视频列表')
         this.weexHidden = false
         this.$refs.weex.focus()
         this.controlWeex()
         this.$refs.weex.animation({
           duration: 600,
+=======
+        this.$refs.weex.focus()
+        this.weexHidden = false
+        this.$refs.weex.animation({
+          duration: 800,
+>>>>>>> weex图片途径问题
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
           }
+<<<<<<< HEAD
         }).then(() => {
+=======
+        }).then((data) => {
+          this.controlWeex()
+>>>>>>> weex图片途径问题
         })
       },
       hideWeex () {
         console.log('隐藏视频列表')
         this.canClick = false
         this.$refs.weex.animation({
-          duration: 300,
+          duration: 800,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(690px)'
           }
         }).then((data) => {
           this.weexHidden = true
+<<<<<<< HEAD
           this.canClick = true
+=======
+>>>>>>> weex图片途径问题
           this.controlWeex()
         })
       },
