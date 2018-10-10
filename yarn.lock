@@ -2921,9 +2921,9 @@ find-parent-dir@^0.3.0:
   version "0.3.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-parent-dir/-/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
-"find-sdk@git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#develop":
+find-sdk@^1.0.0:
   version "1.0.0"
-  resolved "git+ssh://git@192.168.200.211:FindH5Lib/FindSDK.git#1f566c99e59043231f1a646e8aff1682be78d66f"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-sdk/-/find-sdk-1.0.0.tgz#69a6b5c546a7ef2db3da614d9e3c11ebb7d88126"
   dependencies:
     lodash "^4.17.10"
 
