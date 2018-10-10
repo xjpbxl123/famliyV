@@ -320,10 +320,8 @@
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
-          console.log(res1, 'videoDirectory')
           this.canOpenVideoDirectory = res1.result
         })
-        console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
     methods: {
