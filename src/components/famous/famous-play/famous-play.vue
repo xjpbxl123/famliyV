@@ -270,7 +270,6 @@
          * @desc 打开调音台
          */
         let self = this
-        self.$refs.mixer.focus()
         self.mixerHidden = !self.mixerHidden
         self.toolbarHidden = !self.toolbarHidden
         self.weexHidden = !self.mixerHidden
@@ -321,7 +320,7 @@
             })
           }
         })
-        console.log(`${weexUrl}components/toast/toast.js`)
+        alert(`${weexUrl}components/toast/toast.js`)
       })
     },
     methods: {
@@ -563,9 +562,6 @@
       }
     },
     watch: {
-      toolbarHidden (val) {
-        console.log('我变化了', val)
-      },
       isPlay (val) {
         this.videoButton[1].icon = val ? '0xe673' : '0xe657'
       },

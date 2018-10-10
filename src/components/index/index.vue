@@ -833,7 +833,7 @@
             console.log('close')
             if (this.metronome) {
               this.toolbarHidden = false
-              modules.metronome.stop()
+              modules.metronome.stop(true)
               this.metronome = false
             }
             break
