@@ -35,7 +35,7 @@
             pianoKey="70"
             :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
-            style="{backgroundColor:'#3000',textColor: '#fff',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
             :id="button.id"
             :key="button.id"

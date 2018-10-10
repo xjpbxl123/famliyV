@@ -80,7 +80,8 @@
           pianoKey: 97,
           icon: '0xe60d',
           id: 204,
-          text: '调音台'
+          text: '调音台',
+          backgroundColor: '#3000'
         }],
         currentTime: '0',
         totalTime: '0',

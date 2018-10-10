@@ -16,7 +16,7 @@
                  :icon="button.icon"
                  :pianoKey="button.pianoKey"
                  :longClick="button.longClick"
-                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+                 :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
       <icon-item
             key="70"
             id="115"
@@ -24,7 +24,7 @@
             :text="moreIndexTitle"
             pianoKey="70"
             titlePosition="below"
-            style="{backgroundColor:'#3000',color: '#fff',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
