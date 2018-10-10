@@ -16,7 +16,7 @@
       <fh-label :style="totalTime">
       </fh-label>
     </fh-div>
-    <fh-weex :style="weexStyle" ref="weex" :hidden="weexHidden"/>
+    <fh-weex :style="weexStyle" ref="weex" />
     <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
     <toolbar :darkBgHidden="true">
@@ -280,11 +280,8 @@
          * @desc 打开视频列表
          */
         this.$refs.weex.focus()
-        if (this.weexHidden) {
-          this.showWeex()
-        } else {
-          this.hideWeex()
-        }
+        this.toolbarHidden = true
+        this.showWeex()
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
@@ -295,7 +292,12 @@
           this.toolbarHidden = !this.toolbarHidden
           this.closeMixer()
         } else {
-          this.$router.back()
+          if (!this.weexHidden) {
+            this.hideWeex()
+            this.toolbarHidden = false
+          } else {
+            this.$router.back()
+          }
         }
       }
     },
@@ -320,7 +322,7 @@
             })
           }
         })
-        alert(`${weexUrl}components/toast/toast.js`)
+        console.log(`${weexUrl}components/toast/toast.js`)
       })
     },
     methods: {
@@ -480,7 +482,6 @@
       controlWeex () {
         if (!this.palyHidden) {
           // 视频下载完成
-          this.weexHidden = !this.weexHidden
           this.$find.sendMessage({
             method: 'controlButton',
             params: {show: !this.weexHidden}
@@ -488,24 +489,27 @@
         }
       },
       showWeex () {
-        this.controlWeex()
+        this.$refs.weex.focus()
+        this.weexHidden = false
         this.$refs.weex.animation({
-          duration: 300,
+          duration: 800,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
           }
         }).then((data) => {
+          this.controlWeex()
         })
       },
       hideWeex () {
         this.$refs.weex.animation({
-          duration: 300,
+          duration: 800,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(690px)'
           }
         }).then((data) => {
+          this.weexHidden = true
           this.controlWeex()
         })
       },

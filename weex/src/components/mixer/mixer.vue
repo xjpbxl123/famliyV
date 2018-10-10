@@ -110,7 +110,7 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="800" :hidden="!show">
+      <group id="800" :hidden="true">
         <icon-item v-for="button in buttons5"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
@@ -119,7 +119,7 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="900" :hidden="!show">
+      <group id="900" :hidden="true">
         <icon-item v-for="button in buttons6"
                 :pianoKey="button.pianoKey"
                 :key="button.id"

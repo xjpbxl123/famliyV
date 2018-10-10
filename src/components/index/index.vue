@@ -1252,6 +1252,9 @@
                     mp3: {
                       midiUrl: res.path,
                       accompanyUrl: data.path
+                    },
+                    options: {
+                      countDownEnable: false
                     }
                   }
                   console.log('有mp3, 给播放器赋值', this.playerSource)
@@ -1259,6 +1262,9 @@
                   this.playerSource = {
                     mid: {
                       midiUrl: res.path
+                    },
+                    options: {
+                      countDownEnable: false
                     }
                   }
                   console.log('没有mp3, 给播放器赋值', this.playerSource)
