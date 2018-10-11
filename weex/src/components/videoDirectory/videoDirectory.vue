@@ -38,9 +38,9 @@
       </scroller> -->
     </div>
     <toolbar :darkBgHidden="true">
-      <icon-item :hidden="!show" id="34" pianoKey="92" text="" icon="0xe63c"
+      <icon-item :hidden="!show" longClick="true" id="34" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item :hidden="!show" id="35" pianoKey="94" text="" icon="0xe654"
+      <icon-item :hidden="!show" longClick="true" id="35" pianoKey="94" text="" icon="0xe654"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
       <icon-item :hidden="!show" id="36" pianoKey="97" text="" icon="0xe69a"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>

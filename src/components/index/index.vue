@@ -1344,6 +1344,7 @@
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
+          // 打开原生界面
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
             this.loading = false

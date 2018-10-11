@@ -92,10 +92,10 @@
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
             clearInterval(this.interval)
-            this.interval = window.setInterval(() => {
+            this.interval = setInterval(() => {
               this.getUserInfo().then(res => {
                 if (res.userInfo.userId) {
-                  clearInterval(window.interval)
+                  clearInterval(this.interval)
                 }
               })
             }, 2000)
