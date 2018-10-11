@@ -13,13 +13,13 @@
     mixins: [mixins],
     data () {
       return {
-        text: '网络连接出错，请检查网络',
+        text: '错误',
         syncInfo: require('./images/icon-sync-info.jpg')
       }
     },
     methods: {
       toastMess ({imgName, text}) {
-        this.text = text
+        this.text = text || '错误'
         if (imgName) this.toastImg = this[imgName]
       }
     },

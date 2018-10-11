@@ -358,12 +358,24 @@
           clearInterval(this.inter)
         }, 2000)
       },
+      initData () {
+        if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
+          this.sendMessage()
+          this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
+            this.videoNameStyle.text = this.famousPlayCoursesBySet.courseList[0].courseName
+            this.palyHidden = false
+          })
+        }
+      },
       getCoursesBySet (courseSetID) {
-        this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
+        console.log(this.famousPlayCoursesBySet)
+        return this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
           if (!this.hasLoaded && !data.famousPlayCoursesBySet) {
             // 无缓存并且接口没返回数据 弹提示框
             this.errorHandling(data)
             console.log(data, 'getCoursesBySet')
+          } else {
+            this.initData()
           }
         })
       },
@@ -371,6 +383,7 @@
        * @desc 一进入页面就下载第一个
        **/
       download (videolist) {
+        console.log('download')
         let video = videolist.data.videoHighBitRate
         let midi = videolist.data.midiHighBitRate
         return download.downloadAll([video, midi]).progress((process) => {
@@ -386,6 +399,7 @@
               videoMidiUrl: data[1].path
             }
           }
+          console.log(this.playerSource)
           this.sendMessageAgain()
         })
       },
@@ -568,15 +582,6 @@
     watch: {
       isPlay (val) {
         this.videoButton[1].icon = val ? '0xe673' : '0xe657'
-      },
-      famousPlayCoursesBySet (val) {
-        if (val.courseList.length > 0 && this.palyHidden && this.weexHidden) {
-          this.sendMessage()
-          this.download(val.courseList[0]).then(() => {
-            this.videoNameStyle.text = val.courseList[0].courseName
-            this.palyHidden = false
-          })
-        }
       }
     },
     beforeDestroy () {
