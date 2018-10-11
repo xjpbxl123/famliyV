@@ -1117,7 +1117,7 @@
             modules.device.turnOnScreen(!bool)
             break
           case 'peilian':
-            // 陪练
+            //   陪练
             console.log('陪练')
             // 做登录验证
             if (!this.isLogin) {
