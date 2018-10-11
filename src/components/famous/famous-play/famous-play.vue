@@ -16,13 +16,7 @@
       </fh-label>
     </fh-div>
     <fh-weex :style="weexStyle" ref="weex" />
-<<<<<<< HEAD
     <toolbar :hidden="toolbarHidden1">
-=======
-    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
-    <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
-    <toolbar :darkBgHidden="true">
->>>>>>> weex图片途径问题
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden || isPlay"
               :pianoKey="button.pianoKey"
@@ -333,10 +327,6 @@
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
           this.canOpenVideoDirectory = res1.result
         })
-<<<<<<< HEAD
-=======
-        console.log(`${weexUrl}components/toast/toast.js`)
->>>>>>> weex图片途径问题
       })
     },
     methods: {
@@ -459,6 +449,15 @@
           this.sendMessage()
           this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
             // this.palyHidden = false
+          })
+        }
+      },
+      initData () {
+        if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
+          this.sendMessage()
+          this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
+            this.videoNameStyle.text = this.famousPlayCoursesBySet.courseList[0].courseName
+            this.palyHidden = false
           })
         }
       },
@@ -622,29 +621,17 @@
         }
       },
       showWeex () {
-<<<<<<< HEAD
         console.log('打开视频列表')
         this.weexHidden = false
         this.$refs.weex.focus()
         this.controlWeex()
         this.$refs.weex.animation({
           duration: 600,
-=======
-        this.$refs.weex.focus()
-        this.weexHidden = false
-        this.$refs.weex.animation({
-          duration: 800,
->>>>>>> weex图片途径问题
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
           }
-<<<<<<< HEAD
         }).then(() => {
-=======
-        }).then((data) => {
-          this.controlWeex()
->>>>>>> weex图片途径问题
         })
       },
       hideWeex () {
@@ -658,10 +645,7 @@
           }
         }).then((data) => {
           this.weexHidden = true
-<<<<<<< HEAD
           this.canClick = true
-=======
->>>>>>> weex图片途径问题
           this.controlWeex()
         })
       },
