@@ -31,6 +31,11 @@
           <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
         </cell>
       </list>
+      <!-- <scroller class="scroller" ref="scroller" style="backgrondColor: #000">
+        <div>sssss</div>
+        <div>sssss</div>
+        <div>sssss</div>
+      </scroller> -->
     </div>
     <toolbar :darkBgHidden="true">
       <icon-item :hidden="!show" id="34" pianoKey="92" text="" icon="0xe63c"

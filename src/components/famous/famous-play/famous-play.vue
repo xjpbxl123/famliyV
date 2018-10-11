@@ -62,7 +62,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
   export default {
@@ -136,7 +136,8 @@
           height: 50,
           text: '00:00',
           color: '#fff',
-          fontSize: 30
+          fontSize: 30,
+          temp: 0
         },
         flag: {
           left: 120,
@@ -154,7 +155,8 @@
           height: 50,
           text: '00:00',
           color: '#fff',
-          fontSize: 30
+          fontSize: 30,
+          temp: 0
         },
         weexStyle: {
           right: -690,
@@ -223,47 +225,20 @@
         this.playOrpause()
       },
       [KEY73] () {
-        /**
-         * @desc 速率减
-         */
-        let newBpm = this.curBpm - 20
-        if (newBpm < this.minBPM) {
-          return
-        }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
+        this.delRate()
       },
       [KEY74] () {
-        /**
-         * @desc 速率加
-         */
         this.$refs.player.setRate(1)
         this.curBpm = this.orgBpm
       },
       [KEY75] () {
-        /**
-         * @desc 速率加
-         */
-        let newBpm = this.curBpm + 20
-        if (newBpm > this.maxBPM) {
-          return
-        }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
+        this.addRate()
       },
       [KEY78] () {
-        /**
-         * @desc 视频快退
-         */
-        this.$refs.player.fastBackward(10)
+        this.fastBackward()
       },
       [KEY82] () {
-        /**
-         * @desc 视频快进
-         */
-        this.$refs.player.fastForward(10)
+        this.fastForward()
       },
       [KEY58] () {
         /**
@@ -287,6 +262,13 @@
         this[method] && this[method](params)
       },
       [BACK_PRESSED] () {
+        if (this.isPlay) {
+          // 如果在播放 暂停
+          this.isPlay = false
+          this.setTime()
+          this.toolbarHidden = false
+          return this.$refs.player.pause()
+        }
         if (!this.mixerHidden) {
           this.mixerHidden = !this.mixerHidden
           this.toolbarHidden = !this.toolbarHidden
@@ -298,6 +280,24 @@
           } else {
             this.$router.back()
           }
+        }
+      },
+      [PEDAL_PRESSED] (key) {
+        if (this.toolbarHidden) {
+          // 禁用踏板
+          return
+        }
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.fastBackward()
+          case 117:
+            // 踏板2号键
+            return this.fastForward()
+          case 118:
+            return this.delRate()
+          case 119:
+            return this.addRate()
         }
       }
     },
@@ -326,6 +326,52 @@
       })
     },
     methods: {
+      fastForward () {
+        /**
+         * @desc 视频快进
+         */
+        if (this.currentTime.temp + 10 >= parseInt(this.totalTime.temp)) {
+          this.$refs.player.fastForward(parseInt(this.totalTime.temp) - this.currentTime.temp)
+        } else {
+          this.$refs.player.fastForward(10)
+        }
+        this.setTime()
+      },
+      fastBackward () {
+        /**
+         * @desc 视频快退
+         */
+        if (this.currentTime.temp - 10 <= 0) {
+          this.$refs.player.fastBackward(this.currentTime.temp)
+        } else {
+          this.$refs.player.fastBackward(10)
+        }
+        this.setTime()
+      },
+      addRate () {
+        /**
+         * @desc 速率加
+         */
+        let newBpm = this.curBpm + 20
+        if (newBpm > this.maxBPM) {
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
+      },
+      delRate () {
+        /**
+         * @desc 速率减
+         */
+        let newBpm = this.curBpm - 20
+        if (newBpm < this.minBPM) {
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
+      },
       errorHandling (data) {
         let self = this
         let errorText = ''
@@ -461,25 +507,12 @@
       },
       playOrpause () {
         console.log(this.playerSource)
-        if (this.isPlay) {
-          this.$refs.player.pause()
-        } else {
-          this.$refs.player.play().then((data) => {
-            this.isPlay = false
-            this.$refs.player.reset()
-          })
-        }
-        this.isPlay = !this.isPlay
-        if (!this.isPlay) {
-          this.$refs.video.getTotalTime().then((data) => {
-            let timeString = this.timeFilter(data)
-            this.totalTime.text = timeString
-          })
-          this.$refs.video.getCurrentTime().then((data) => {
-            let timeString1 = this.timeFilter(data)
-            this.currentTime.text = timeString1
-          })
-        }
+        this.toolbarHidden = true
+        this.$refs.player.play().then((data) => {
+          this.isPlay = false
+          this.$refs.player.reset()
+        })
+        this.isPlay = true
       },
       timeFilter (time) {
         time = parseInt(time)
@@ -531,11 +564,11 @@
        * @desc video init successful
        */
       playerInitComplete (data) {
-        let self = this
         if (!data.result) {
           return
         }
-        self.toolbarHidden = !self.toolbarHidden
+        this.toolbarHidden = !this.toolbarHidden
+        // 初始化速率 获取时间
         this.$refs.player.info().then((data) => {
           if (data.originalBpm) {
             self.orgBpm = data.originalBpm
@@ -546,18 +579,23 @@
           if (data) {
             let timeString = this.timeFilter(data)
             this.totalTime.text = timeString
-          }
-        })
-        this.$refs.video.getCurrentTime().then((data) => {
-          if (data) {
-            let timeString1 = this.timeFilter(data)
-            this.currentTime.text = timeString1
+            this.totalTime.temp = data
           }
         })
       },
       sendMessage () {
         this.$refs.weex.focus()
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
+      },
+      setTime () {
+        this.$refs.video.getCurrentTime().then((data) => {
+          console.log(data)
+          if (data !== undefined) {
+            let timeString1 = this.timeFilter(data)
+            this.currentTime.text = timeString1
+            this.currentTime.temp = data
+          }
+        })
       }
     },
     computed: {
@@ -577,11 +615,6 @@
       },
       maxBPM () {
         return this.orgBpm * 1.5
-      }
-    },
-    watch: {
-      isPlay (val) {
-        this.videoButton[1].icon = val ? '0xe673' : '0xe657'
       }
     },
     beforeDestroy () {
