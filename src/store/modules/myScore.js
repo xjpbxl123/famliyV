@@ -419,7 +419,7 @@ export default {
             res.splice(data - index, 1)
           }
         })
-        // 第二步 合并多曲谱
+        //   第二步 合并多曲谱
         let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
