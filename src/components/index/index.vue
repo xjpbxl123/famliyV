@@ -641,7 +641,7 @@
        * */
       getIsSupportMutePedal () {
         modules.settings.getProperty('isSupportMutePedal').then((data) => {
-          this.isSupportMutePedal = data
+          this.isSupportMutePedal = true
           if (data) {
             // 支持
             this.helpImg[0] = require('./images/help-1-s.png')
@@ -1000,10 +1000,10 @@
             })
             break
           case 'keyBoardMute':
-            modules.mutePedal.setPedalMuteOnOff()
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
-              this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', data)
+              modules.mutePedal.setPedalMuteOnOff(data)
+              this.controlButtons[0].checked = !data
+              modules.settings.setProperty('isSpeakerOn', !data)
             })
             break
           case 'closeScreen':
