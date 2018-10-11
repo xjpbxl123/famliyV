@@ -113,55 +113,104 @@ export default {
      * @desc 获取我的曲谱本地资源列表
      * */
     getLocalSource ({commit, state}, path) {
+      let deleteArr = []
       file.readFolderFile(path).then((res) => {
+        // 第一步 剔除掉不支持的文件 并加上文件格式属性
+        res.forEach((value, index) => {
+          if (value.type === 'dir') {
+            value.typeName = 'open-now'
+          } else {
+            let nameArr1 = value.name.split('.')
+            let suffix = nameArr1[nameArr1.length - 1]
+            if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif' || suffix === 'bmp') {
+              value.typeName = 'picture'
+            } else
+              if (suffix === 'mp3' || suffix === 'wav' || suffix === 'wma') {
+                value.typeName = 'mp3'
+              } else if (suffix === 'mid') {
+                value.typeName = 'midi'
+              } else if (suffix === 'xml') {
+                value.typeName = 'xml'
+              } else if (suffix === 'pdf') {
+                value.typeName = 'pdf'
+              } else if (suffix === 'mp4' || suffix === 'avi' || suffix === 'mov') {
+                value.typeName = 'video'
+              }
+          }
+          if (!value.typeName) {
+            deleteArr.push(index)
+          }
+        })
+        let deleArr = [...new Set(deleteArr)]
+        deleArr.forEach((data, index) => {
+          if (index === 0) {
+            res.splice(data, 1)
+          } else {
+            res.splice(data - index, 1)
+          }
+        })
+        // 第二步 合并多曲谱
         let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
           let name = nameArr[0]
-          if (nameArr.length > 2) {
-            for (let i = 1; i <= nameArr.length - 2; i++) {
-              name += '.' + nameArr[i]
-            }
-          }
-          if (item.type === 'dir') {
-            item.typeName = 'open-now'
+          if (item.filesName) {
+            name = item.name
           } else {
-            if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif' || suffix === 'bmp') {
-              item.typeName = 'picture'
-            } else
-              if (suffix === 'mp3' || suffix === 'wav' || suffix === 'wma') {
-                item.typeName = 'mp3'
-              } else if (suffix === 'mid') {
-                item.typeName = 'midi'
-              } else if (suffix === 'xml') {
-                item.typeName = 'xml'
-              } else if (suffix === 'pdf') {
-                item.typeName = 'pdf'
-              } else if (suffix === 'mp4' || suffix === 'avi' || suffix === 'mov') {
-                item.typeName = 'video'
+            if (nameArr.length > 2) {
+              for (let i = 1; i <= nameArr.length - 2; i++) {
+                name += '.' + nameArr[i]
               }
+            }
           }
           let filesName = []
           res.forEach((item1, index1) => {
-            let nameArr1 = item1.name.split('.')
-            let name1 = nameArr1[0]
-            if (nameArr1.length > 2) {
-              for (let i = 1; i <= nameArr1.length - 2; i++) {
-                name1 += '.' + nameArr1[i]
+            if (item1.type !== 'dir') {
+              let nameArr1 = item1.name.split('.')
+              let name1 = nameArr1[0]
+              if (item1.filesName) {
+                name1 = item1.name
+              } else {
+                if (nameArr1.length > 2) {
+                  for (let i = 1; i <= nameArr1.length - 2; i++) {
+                    name1 += '.' + nameArr1[i]
+                  }
+                }
               }
-            }
-            let suffix1 = nameArr1[nameArr1.length - 1]
-            if (name1 === name) {
-              filesName.push(item1.name)
-            } else {
-              if (name1.indexOf(name) !== -1 && name1.indexOf('_sp') !== -1 && suffix1 === 'mid') {
-                deleteIndex.push(index1)
-                filesName.push(item1.name)
-              }
-              if (name1.indexOf(name) !== -1 && name1.indexOf('_video_4k') !== -1 && suffix1 === 'mp4') {
-                filesName.push(item1.name)
-                deleteIndex.push(index1)
+              let suffix1 = nameArr1[nameArr1.length - 1]
+              let acceptArr = ['mid', 'xml', 'mp4', 'mp3']
+              // 文件类型是这几种才需要合成
+              let canOne = false
+              let canTwo = false
+              if (name1 === name) {
+                acceptArr.forEach((value) => {
+                  if (value === suffix) {
+                    canOne = true
+                  }
+                  if (value === suffix1) {
+                    canTwo = true
+                  }
+                })
+                if (item1.filesName && canOne) {
+                  // 删除与合成文件名相同的文件
+                  deleteIndex.push(index)
+                } else {
+                  if (canOne && canTwo) {
+                    filesName.push(item1.name)
+                  }
+                }
+              } else {
+                // 以‘_sp’开头的 mid文件也需要合成
+                if (name1.indexOf(name) !== -1 && name1.indexOf('_sp') !== -1 && suffix1 === 'mid') {
+                  deleteIndex.push(index1)
+                  filesName.push(item1.name)
+                }
+                // 以‘_video_4k’开头的 mp4文件也需要合成
+                if (name1.indexOf(name) !== -1 && name1.indexOf('_video_4k') !== -1 && suffix1 === 'mp4') {
+                  filesName.push(item1.name)
+                  deleteIndex.push(index1)
+                }
               }
             }
           })
@@ -171,7 +220,6 @@ export default {
             item.typeName = 'song'
           }
         })
-
         let delArr = [...new Set(deleteIndex)]
         delArr.forEach((data, index) => {
           if (index === 0) {
@@ -180,62 +228,17 @@ export default {
             res.splice(data - index, 1)
           }
         })
-        let newArr = []
-        res.forEach(item => {
-          let flag = true
-          let nameArr2 = item.name.split('.')
-          let name2 = nameArr2[0]
-          if (item.filesName) {
-            name2 = item.name
-          } else {
-            if (nameArr2.length > 2) {
-              for (let i = 1; i <= nameArr2.length - 2; i++) {
-                name2 += '.' + nameArr2[i]
-              }
-            }
-          }
-          newArr.forEach((item1, index) => {
-            let nameArr3 = item1.name.split('.')
-            let name3 = nameArr3[0]
-            if (item1.filesName) {
-              name3 = item1.name
-            } else {
-              if (nameArr3.length > 2) {
-                for (let i = 1; i <= nameArr3.length - 2; i++) {
-                  name3 += '.' + nameArr3[i]
-                }
-              }
-            }
-            if (name2 === name3 || (name2.indexOf(name3) !== -1 && name2.indexOf('_sp') !== -1)) {
-              flag = false
-            }
-          })
-          if (flag) {
-            newArr.push(item)
-          }
-        })
-        let filteredArr = []
-        newArr.forEach(item => {
-          if (item.type === 'dir' && item.typeName) {
-            filteredArr.push(item)
-          }
-        })
-        newArr.forEach(item => {
-          if (item.type === 'file' && item.typeName) {
-            filteredArr.push(item)
-          }
-        })
-        console.log(newArr)
+        // 排序
         switch (state.orderIndex) {
           case 0:
             // 名称排序
-            filteredArr.sort((a, b) => { return a.name > b.name })
-            commit(LOCAL_SOURCE, filteredArr)
+            res.sort((a, b) => { return a.name > b.name })
+            commit(LOCAL_SOURCE, res)
             break
           case 1:
             // 时间排序
-            filteredArr.sort((a, b) => { return a.createData < b.createData })
-            commit(LOCAL_SOURCE, filteredArr)
+            res.sort((a, b) => { return a.createData < b.createData })
+            commit(LOCAL_SOURCE, res)
             break
           case 2:
             // 类型排序
@@ -247,7 +250,7 @@ export default {
             let midiArr = []
             let imgArr = []
             let xmlArr = []
-            filteredArr.map(data => {
+            res.map(data => {
               if (data.type === 'dir') {
                 fondelArr.push(data)
               } else if (data.filesName) {
