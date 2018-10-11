@@ -125,7 +125,7 @@ export default {
             if (suffix === 'jpg' || suffix === 'png' || suffix === 'jpeg' || suffix === 'gif' || suffix === 'bmp') {
               value.typeName = 'picture'
             } else
-              if (suffix === 'mp3' || suffix === 'wav' || suffix === 'wma') {
+              if (suffix === 'mp3' || suffix === 'wav') {
                 value.typeName = 'mp3'
               } else if (suffix === 'mid') {
                 value.typeName = 'midi'
@@ -133,7 +133,7 @@ export default {
                 value.typeName = 'xml'
               } else if (suffix === 'pdf') {
                 value.typeName = 'pdf'
-              } else if (suffix === 'mp4' || suffix === 'avi' || suffix === 'mov') {
+              } else if (suffix === 'mp4' || suffix === 'mov') {
                 value.typeName = 'video'
               }
           }
