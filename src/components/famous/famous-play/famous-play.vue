@@ -7,8 +7,6 @@
       </fh-video>
     </fh-player>
     <fh-div :style="labelStyle" :hidden="isPlay || palyHidden">
-      <fh-label :style="videoNameStyle">
-      </fh-label>
       <fh-label :style="currentTime">
       </fh-label>
       <fh-label :style="flag">
@@ -103,11 +101,11 @@
         ],
         labelStyle: {
           left: 6,
-          top: 27,
+          top: 46,
           width: 420,
           height: 130,
           text: '',
-          backgroundColor: '#50000000',
+          backgroundColor: '#0000',
           borderRadius: 16
         },
         toastStyle: {
@@ -118,16 +116,6 @@
           top: 500,
           left: 2043,
           borderRadius: 16
-        },
-        videoNameStyle: {
-          left: 6,
-          top: 27,
-          width: 420,
-          height: 40,
-          text: '',
-          color: '#fff',
-          fontSize: 48,
-          textAlign: 'left'
         },
         currentTime: {
           left: 6,
@@ -283,10 +271,6 @@
         }
       },
       [PEDAL_PRESSED] (key) {
-        if (this.toolbarHidden) {
-          // 禁用踏板
-          return
-        }
         switch (key.id) {
           case 116:
             // 踏板1号键
@@ -330,23 +314,35 @@
         /**
          * @desc 视频快进
          */
+        let rate = 10
         if (this.currentTime.temp + 10 >= parseInt(this.totalTime.temp)) {
-          this.$refs.player.fastForward(parseInt(this.totalTime.temp) - this.currentTime.temp)
-        } else {
-          this.$refs.player.fastForward(10)
+          rate = parseInt(this.totalTime.temp) - this.currentTime.temp
         }
-        this.setTime()
+        this.$refs.player.fastForward(rate).then(() => {
+          this.setTime()
+        })
       },
       fastBackward () {
         /**
          * @desc 视频快退
          */
+        let rate = 10
         if (this.currentTime.temp - 10 <= 0) {
-          this.$refs.player.fastBackward(this.currentTime.temp)
-        } else {
-          this.$refs.player.fastBackward(10)
+          rate = this.currentTime.temp
         }
-        this.setTime()
+        this.$refs.player.fastBackward(rate).then(() => {
+          this.setTime()
+        })
+      },
+      setTime () {
+        this.$refs.video.getCurrentTime().then((data) => {
+          console.log(data)
+          if (data !== undefined) {
+            let timeString1 = this.timeFilter(data)
+            this.currentTime.text = timeString1
+            this.currentTime.temp = data
+          }
+        })
       },
       addRate () {
         /**
@@ -408,7 +404,6 @@
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.sendMessage()
           this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
-            this.videoNameStyle.text = this.famousPlayCoursesBySet.courseList[0].courseName
             this.palyHidden = false
           })
         }
@@ -491,7 +486,6 @@
                 midiUrl: data[1].path
               }
             }
-            this.videoNameStyle.text = courseItem.courseName
           } else {
             this.sendMessageAgain()
           }
@@ -575,6 +569,7 @@
             self.curBpm = data.curBpm
           }
         })
+        this.$refs.video.mute(false)
         this.$refs.video.getTotalTime().then((data) => {
           if (data) {
             let timeString = this.timeFilter(data)
@@ -586,16 +581,6 @@
       sendMessage () {
         this.$refs.weex.focus()
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
-      },
-      setTime () {
-        this.$refs.video.getCurrentTime().then((data) => {
-          console.log(data)
-          if (data !== undefined) {
-            let timeString1 = this.timeFilter(data)
-            this.currentTime.text = timeString1
-            this.currentTime.temp = data
-          }
-        })
       }
     },
     computed: {

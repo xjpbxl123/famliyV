@@ -89,8 +89,10 @@
         position: relative;
         transition: all 0.4s linear;
         border-radius: 10px;
+        overflow: hidden;
         &.active {
           transform: scale(1.15);
+          overflow: visible;
           .bottom {
             width: 100% !important;
             border-radius: 0 !important;
