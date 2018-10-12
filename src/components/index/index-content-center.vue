@@ -38,37 +38,15 @@
           text: '名师课程'
         }, {
           text: '音乐王国'
-        }],
-        opa1: 'rgba(105,105,255,0.7)',
-        opa2: 'rgba(105, 105, 255, 0.8)'
+        }]
       }
     },
     watch: {
-      selectedIndex: function (val) {
-        this.opa(val)
-      }
+      // selectedIndex: function (val) {
+      //   this.opa(val)
+      // }
     },
     methods: {
-      opa (selectIndex) {
-        switch (selectIndex) {
-          case 0:
-            this.opa1 = 'rgba(105, 105, 255, 0.7)'
-            this.opa2 = 'rgba(105, 105, 255, 0.8)'
-            break
-          case 1:
-            this.opa1 = 'rgba(0,171,126,0.7)'
-            this.opa2 = 'rgba(0,171,126,0.8)'
-            break
-          case 2:
-            this.opa1 = 'rgba(252,174,35, 0.7)'
-            this.opa2 = 'rgba(252,174,35, 0.8)'
-            break
-          case 3:
-            this.opa1 = 'rgba(51,130,219, 0.7)'
-            this.opa2 = 'rgba(51,130,219, 0.8)'
-            break
-        }
-      }
     },
     created () {
       this.opa(this.selectedIndex)
