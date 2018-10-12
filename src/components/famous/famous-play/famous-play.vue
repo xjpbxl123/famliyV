@@ -472,6 +472,17 @@
           }
         })
       },
+      sendLocation () {
+        modules.global.getKeyboardPosition().then((data) => {
+          if (data) {
+            this.$find.sendMessage({
+              method: 'location',
+              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
+            })
+            // this.position = [data[70].centerX - 6, data[78].centerX - 6, data[85].centerX - 6, data[92].centerX, data[99].centerX - 1]
+          }
+        })
+      },
       /**
        * @desc 一进入页面就下载第一个
        **/
@@ -574,6 +585,17 @@
           if (!isDownload) {
             this.sendMessageAgain()
           }
+          // if (isDownload) {
+          //   this.isPlay && this.playOrpause()
+          //   this.playerSource = {
+          //     mp4: {
+          //       videoUrl: data[0].path,
+          //       midiUrl: data[1].path
+          //     }
+          //   }
+          // } else {
+          //   this.sendMessageAgain()
+          // }
         })
       },
       sendMessageAgain () {
