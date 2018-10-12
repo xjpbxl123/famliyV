@@ -31,13 +31,13 @@
     data () {
       return {
         pages: [{
-          text: '名师课程'
-        }, {
           text: '流行经典'
         }, {
-          text: '音乐王国'
-        }, {
           text: '教材练习'
+        }, {
+          text: '名师课程'
+        }, {
+          text: '音乐王国'
         }],
         opa1: 'rgba(105,105,255,0.7)',
         opa2: 'rgba(105, 105, 255, 0.8)'
@@ -95,7 +95,6 @@
           overflow: visible;
           .bottom {
             width: 100% !important;
-            border-radius: 0 !important;
             opacity: 0.8;
           }
           .icon {
@@ -117,6 +116,8 @@
           bottom: 0px;
           right: 0;
           z-index: 1000;
+          border-radius: 0 0 10px 0;
+          overflow: hidden
         }
         .bottom {
           position: absolute;
@@ -125,16 +126,17 @@
           width:100%;
           height:200px;
           opacity:0.9;
-          border-radius: 10px;
+          border-radius: 0 0 10px 10px;
         }
         .wave {
           position: absolute;
           bottom: 0;
           left: 0;
-          width:100%;
-          height:268px;
-          border-radius: 10px;
+          width: 100%;
+          height: 268px;
+          border-radius: 0 0 10px 10px;
           z-index: 120;
+          overflow: hidden;
           .wave1 {
             position: absolute;
             bottom: 0;
@@ -159,13 +161,83 @@
           width:100%;
           font-size:55px;
           text-indent: 51px;
-          font-family:MicrosoftYaHei;
-          font-weight:400;
-          font-weight: 600;
+          font-family: MicrosoftYaHei;
+          font-weight: 400;
           z-index: 200;
           color:rgba(255,254,254,1);
       }
         &:nth-child(1) {
+          margin-right: 140px;
+          background: url('./images/popular_bg.png') no-repeat;
+          background-size: cover;
+          .img {
+            position: absolute;
+            background: url('./images/popular_img.png') no-repeat;
+            background-size: cover;
+            width: 195px;
+            height: 525px;
+            right: -20px;
+            top: 67px;
+          }
+          .wave {
+            .wave1 {
+              background: url('./images/green1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/green2.png');
+              background-size: 100% 100%;
+            }
+          }
+          .icon {
+            background: url('./images/popular_icon.png') no-repeat;
+            background-size: cover;
+          }
+          .bottom {
+            background:linear-gradient(0deg,rgba(0,171,126,1) 0%,rgba(120,240,126,1) 100%);
+          }
+          &::before {
+            background: url('./images/popular_bottom.png') no-repeat;
+            background-size: cover;
+          }
+        }
+        &:nth-child(2) {
+          background: url('./images/material_bg.png') no-repeat;
+          background-size: cover;
+          margin-right: 207px;
+          .img {
+            position: absolute;
+            background: url('./images/material_img.png') no-repeat;
+            background-size: cover;
+            width: 386px;
+            height: 351px;
+            left: 91px;
+            top: 15px;
+            z-index: 100;
+          }
+          .wave {
+            .wave1 {
+              background: url('./images/blue1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/blue2.png');
+              background-size: 100% 100%;
+            }
+          }
+          .icon {
+            background: url('./images/material_icon.png') no-repeat;
+            background-size: cover;
+          }
+          .bottom {
+            background:linear-gradient(0deg,rgba(51,130,219,1) 2%,rgba(32,230,218,1) 100%);
+          }
+          &::before {
+            background: url('./images/material_bottom.png') no-repeat;
+            background-size: cover;
+          }
+        }
+        &:nth-child(3) {
           background: url('./images/famous_bg.png') no-repeat;
           background-size: cover;
           margin-right: 140px;
@@ -200,45 +272,10 @@
             background-size: cover;
           }
         }
-        &:nth-child(2) {
-          margin-right: 207px;
-          background: url('./images/popular_bg.png') no-repeat;
-          background-size: cover;
-          .img {
-            position: absolute;
-            background: url('./images/popular_img.png') no-repeat;
-            background-size: cover;
-            width: 195px;
-            height: 525px;
-            right: -20px;
-            top: 67px;
-          }
-          .wave {
-            .wave1 {
-              background: url('./images/green1.png');
-              background-size: 100% 100%;
-            }
-            .wave2 {
-              background: url('./images/green2.png');
-              background-size: 100% 100%;
-            }
-          }
-          .icon {
-            background: url('./images/popular_icon.png') no-repeat;
-            background-size: cover;
-          }
-          .bottom {
-            background:linear-gradient(0deg,rgba(0,171,126,1) 0%,rgba(120,240,126,1) 100%);
-          }
-          &::before {
-            background: url('./images/popular_bottom.png') no-repeat;
-            background-size: cover;
-          }
-        }
-        &:nth-child(3) {
+        &:nth-child(4) {
           background: url('./images/kindom_bg.png') no-repeat;
           background-size: cover;
-          margin-right: 140px;
+          margin-right: 0;
           .img {
             position: absolute;
             background: url('./images/kindom_img.png') no-repeat;
@@ -268,42 +305,6 @@
           }
           &::before {
             background: url('./images/kindom_bottom.png') no-repeat;
-            background-size: cover;
-          }
-        }
-        &:nth-child(4) {
-          background: url('./images/material_bg.png') no-repeat;
-          background-size: cover;
-          margin-right: 0;
-          .img {
-            position: absolute;
-            background: url('./images/material_img.png') no-repeat;
-            background-size: cover;
-            width: 386px;
-            height: 351px;
-            left: 91px;
-            top: 15px;
-            z-index: 100;
-          }
-          .wave {
-            .wave1 {
-              background: url('./images/blue1.png');
-              background-size: 100% 100%;
-            }
-            .wave2 {
-              background: url('./images/blue2.png');
-              background-size: 100% 100%;
-            }
-          }
-          .icon {
-            background: url('./images/material_icon.png') no-repeat;
-            background-size: cover;
-          }
-          .bottom {
-            background:linear-gradient(0deg,rgba(51,130,219,1) 2%,rgba(32,230,218,1) 100%);
-          }
-          &::before {
-            background: url('./images/material_bottom.png') no-repeat;
             background-size: cover;
           }
         }

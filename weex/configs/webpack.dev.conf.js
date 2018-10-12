@@ -70,7 +70,7 @@ const devWebpackConfig = webpackMerge.smart(commonConfig[0], {
    * See: http://webpack.github.io/docs/configuration.html#module
    */
   module: {
-    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true}).concat([utils.fileLoaders()])
+    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true}).concat([utils.fileLoaders('/images')])
   },
   /**
    * Developer tool to enhance debugging
@@ -149,7 +149,7 @@ const devWebpackConfig = webpackMerge.smart(commonConfig[0], {
  */
 const weexConfig = webpackMerge.smart(commonConfig[1], {
   module: {
-    rules: [utils.fileLoaders()]
+    rules: [utils.fileLoaders('/images')]
   },
   watch: true
 })

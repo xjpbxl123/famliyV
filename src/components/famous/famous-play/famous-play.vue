@@ -59,7 +59,7 @@
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
-  import { download } from 'find-sdk'
+  import { download, modules } from 'find-sdk'
   import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
@@ -178,7 +178,9 @@
         files: [],
         orgBpm: 120,
         curBpm: 120,
-        inter: null
+        inter: null,
+        playNow: false,
+        playIndex: 0
       }
     },
     mixins: [mixerMixin],
@@ -210,7 +212,7 @@
         /**
          * @desc 暂停或者播放
          */
-        this.playOrpause()
+        this.play()
       },
       [KEY73] () {
         this.delRate()
@@ -236,6 +238,7 @@
         self.mixerHidden = !self.mixerHidden
         self.toolbarHidden = !self.toolbarHidden
         self.weexHidden = !self.mixerHidden
+        this.sendLocation()
         self.initMixerData()
       },
       [KEY68] () {
@@ -420,6 +423,17 @@
           }
         })
       },
+      sendLocation () {
+        modules.global.getKeyboardPosition().then((data) => {
+          if (data) {
+            this.$find.sendMessage({
+              method: 'location',
+              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
+            })
+            // this.position = [data[70].centerX - 6, data[78].centerX - 6, data[85].centerX - 6, data[92].centerX, data[99].centerX - 1]
+          }
+        })
+      },
       /**
        * @desc 一进入页面就下载第一个
        **/
@@ -450,6 +464,27 @@
       weexDownload ({courseItem, index, isDownload}) {
         console.log(courseItem, index, isDownload)
         this.index = index
+        if (index === this.playIndex && isDownload) {
+          // 如果选中的是当前视频 直接播放就行了
+          this.hideWeex()
+          return this.play()
+        }
+        if (isDownload) {
+          // 已经下载过了 直接播放
+          this.playerSource = {
+            mp4: {
+              videoUrl: courseItem.videoDownload,
+              videoMidiUrl: courseItem.midiDownload
+            }
+          }
+          this.$find.sendMessage({
+            method: 'weexPlayIndex',
+            params: {playIndex: index}
+          })
+          this.playNow = true
+          this.playIndex = index
+          return this.hideWeex()
+        }
         if (this.progressing && !isDownload) {
           download.abortAll(this.files).then((data) => {
             console.log(data)
@@ -462,7 +497,6 @@
         let video = courseItem.data.videoHighBitRate
         let midi = courseItem.data.midiHighBitRate
         console.log(video, midi)
-
         this.files = [video, midi]
         return download.downloadAll([video, midi]).progress((process) => {
           console.log(`进度：${process.allProgress}`)
@@ -478,17 +512,20 @@
             return
           }
           this.progressing = false
-          if (isDownload) {
-            this.isPlay && this.playOrpause()
-            this.playerSource = {
-              mp4: {
-                videoUrl: data[0].path,
-                midiUrl: data[1].path
-              }
-            }
-          } else {
+          if (!isDownload) {
             this.sendMessageAgain()
           }
+          // if (isDownload) {
+          //   this.isPlay && this.playOrpause()
+          //   this.playerSource = {
+          //     mp4: {
+          //       videoUrl: data[0].path,
+          //       midiUrl: data[1].path
+          //     }
+          //   }
+          // } else {
+          //   this.sendMessageAgain()
+          // }
         })
       },
       sendMessageAgain () {
@@ -499,7 +536,7 @@
           this.sendMessage()
         })
       },
-      playOrpause () {
+      play () {
         console.log(this.playerSource)
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
@@ -577,10 +614,14 @@
             this.totalTime.temp = data
           }
         })
+        if (this.playNow) {
+          // 立即开始播放
+          this.play()
+        }
       },
       sendMessage () {
-        this.$refs.weex.focus()
-        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
+        if (this.$refs.weex) this.$refs.weex.focus()
+        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet, playIndex: 0}})
       }
     },
     computed: {

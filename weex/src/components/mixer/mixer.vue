@@ -1,7 +1,7 @@
 <template>
   <div class="mixer">
     <image :src="back" class="back"></image>
-    <div class="vioceBox vioceBox1 ">
+    <div class="vioceBox vioceBox1" :style="{left: left1}">
       <text class="text1 unmute" v-if="!mute1" >总音量</text>
       <text class="text1 mute" v-else >总音量 </text>
       <text class="value unmute" v-if="!mute1">{{value1}}</text>
@@ -12,42 +12,40 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox2">
-      <text class="text1 unmute" v-if="!mute2" >电子音源音量</text>
-      <text class="text1 mute" v-else >电子音源音量 </text>
+    <div class="vioceBox vioceBox2" :style="{left: left2}">
+      <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
+      <text class="text1 mute" v-else >自动演奏 </text>
       <text class="value unmute" v-if="!mute2">{{value2}}</text>
       <text class="value mute" v-else>{{value2}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
-      </div>
-    </div>
-    <div class="vioceBox vioceBox3">
-      <text class="text1 unmute" v-if="!mute3" >自动演奏音量</text>
-      <text class="text1 mute" v-else >自动演奏音量 </text>
-      <text class="value unmute" v-if="!mute3">{{value3}}</text>
-      <text class="value mute" v-else>{{value3}} </text>
       <image :src="bar" class="vioceBar">
       </image>
       <div class="bar">
         <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox4">
-      <text class="text1 textA unmute" v-if="!mute4" >音频音量</text>
-      <text class="text1 textA mute" v-else >音频音量 </text>
-      <text class="text2 unmute" v-if="!mute4" >(视频/伴奏)</text>
-      <text class="text2 mute" v-else >(视频/伴奏) </text>
-      <text class="value valueA unmute" v-if="!mute4">{{value4}}</text>
-      <text class="value valueA mute" v-else>{{value4}} </text>
+    <div class="vioceBox vioceBox3" :style="{left: left3}">
+      <text class="text1 unmute" v-if="!mute3">电子音源</text>
+      <text class="text1 mute" v-else >电子音源 </text>
+      <text class="value unmute" v-if="!mute3">{{value3}}</text>
+      <text class="value mute" v-else>{{value3}} </text>
       <image :src="bar" class="vioceBar">
       </image>
-      <div class="bar barA">
+      <div class="bar">
+        <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+      </div>
+    </div>
+    <div class="vioceBox vioceBox4" :style="{left: left4}">
+      <text class="text1 unmute" v-if="!mute4" >音频</text>
+      <text class="text1 mute" v-else >音频 </text>
+      <text class="value unmute" v-if="!mute4">{{value4}}</text>
+      <text class="value mute" v-else>{{value4}} </text>
+      <image :src="bar" class="vioceBar">
+      </image>
+      <div class="bar">
         <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox5" v-if="false">
+    <div class="vioceBox vioceBox5" v-if="false" :style="{left: left5}">
       <text class="text1 textA unmute" v-if="!mute5" >音频分音量</text>
       <text class="text1 textA mute" v-else >音频分音量 </text>
       <text class="text2 unmute" v-if="!mute5" >(人声)</text>
@@ -60,7 +58,7 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox6" v-if="false">
+    <div class="vioceBox vioceBox6" v-if="false" :style="{left: left6}">
       <text class="text1 textA unmute" v-if="!mute6" >音频分音量</text>
       <text class="text1 textA mute" v-else >音频分音量 </text>
       <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
@@ -280,7 +278,13 @@
         offset1: 0,
         offset2: 0,
         offset3: 0,
-        offset4: 0
+        offset4: 0,
+        left1: 0,
+        left2: 0,
+        left3: 0,
+        left4: 0,
+        left5: 0,
+        left6: 0
       }
     },
     methods: {
@@ -289,13 +293,19 @@
       },
       allVolumeSize ({electronic, media, autoPlay, all}) {
         this.value1 = all.value
-        this.value2 = electronic.value
-        this.value3 = autoPlay.value
+        this.value2 = autoPlay.value
+        this.value3 = electronic.value
         this.value4 = media.value
         this.mute1 = all.mute
-        this.mute2 = electronic.mute
-        this.mute3 = autoPlay.mute
+        this.mute2 = autoPlay.mute
+        this.mute3 = electronic.mute
         this.mute4 = media.mute
+      },
+      location ({location}) {
+        this.left1 = location[0] - 103
+        this.left2 = location[1] - 103
+        this.left3 = location[2] - 103
+        this.left4 = location[3] - 103
       }
     },
     computed: {
@@ -355,7 +365,7 @@
               this.value4 = Math.min(this.value1 - this.offset3, 15)
             }
             break
-          // 电子音源音量
+          // 自动演奏音量
           case 56:
             this.value2 = Math.max(this.value2 - 1, 1)
             break
@@ -366,7 +376,7 @@
           case 58:
             this.value2 = Math.min(this.value2 + 1, 15)
             break
-          // 自动演奏音量
+          // 电子音源音量
           case 61:
             this.value3 = Math.max(this.value3 - 1, 1)
             break
@@ -434,7 +444,7 @@
         }
         this.sliderTop1 = 506 - val * 34
       },
-      value2: function (val, oldval) {
+      value3: function (val, oldval) {
         this.offset1 = this.value1 - val
         if (!this.mute2) {
           find.sendMsgToWeb({
@@ -444,7 +454,7 @@
         }
         this.sliderTop2 = 506 - val * 34
       },
-      value3: function (val, oldval) {
+      value2: function (val, oldval) {
         this.offset2 = this.value1 - val
         if (!this.mute3) {
           find.sendMsgToWeb({
@@ -502,14 +512,14 @@
       mute2: function (val, oldval) {
         find.sendMsgToWeb({
           method: 'vioceControl',
-          params: {name: 'setMute', type: 'electronic', value: val}
+          params: {name: 'setMute', type: 'autoPlay', value: val}
         })
         if (!val) {
           // 放音
           this.buttons2[1].icon = '0xe603'
           find.sendMsgToWeb({
             method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: this.value2}
+            params: {name: 'volumeSet', type: 'autoPlay', value: this.value2}
           })
         } else {
           // 静音
@@ -519,14 +529,14 @@
       mute3: function (val, oldval) {
         find.sendMsgToWeb({
           method: 'vioceControl',
-          params: {name: 'setMute', type: 'autoPlay', value: val}
+          params: {name: 'setMute', type: 'electronic', value: val}
         })
         if (!val) {
           // 放音
           this.buttons3[1].icon = '0xe603'
           find.sendMsgToWeb({
             method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
+            params: {name: 'volumeSet', type: 'electronic', value: this.value3}
           })
         } else {
           // 静音
@@ -592,24 +602,6 @@
   flex-direction: column;
 }
 
-.vioceBox1 {
-  left: 1184px;
-}
-
-.vioceBox2 {
-  left: 1484px;
-}
-
-.vioceBox3 {
-  left: 1700px;
-}
-
-.vioceBox4 {
-  left: 2000px;
-  height: 672px;
-  top: 68px;
-}
-
 .vioceBox5 {
   left: 2222px;
   height: 672px;
@@ -631,14 +623,13 @@
 }
 
 .text1{
-  width:214px;
+  width: 214px;
   text-align: center;
-  font-size:28px;
-  height: 28px;
+  font-size: 28px;
+  height: 35px;
   text-indent: 40px;
-  font-family:Adobe Heiti Std R;
-  line-height:51px;
-  margin-bottom: 37px;
+  font-family: Adobe Heiti Std R;
+  margin-bottom: 30px;
 }
 
 .textA {

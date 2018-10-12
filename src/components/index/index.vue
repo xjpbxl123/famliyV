@@ -801,10 +801,6 @@
             return this.go('/search')
           case 'settings':
             return false
-          case 'popular':
-            return this.go('/popular')
-          case 'material':
-            return this.go('/material')
           case 'skill':
             return modules.nativeRouter.openAppsView()
           case 'game':
@@ -883,11 +879,13 @@
             }
             switch (activeIndex) {
               case 0:
+                return this.go('/popular')
+              case 1:
+                return this.go('/material')
+              case 2:
                 // return modules.nativeRouter.openArtistCourseView()
                 return this.go('/famous')
-              case 1:
-                return this.go('/popular')
-              case 2:
+              case 3:
                 return modules.game.openKingdom().then((data) => {
                   if (!data) {
                     this.canEnterModule = true
@@ -897,8 +895,6 @@
                     }
                   }
                 })
-              case 3:
-                return this.go('/material')
             }
             break
           case 'right-up':

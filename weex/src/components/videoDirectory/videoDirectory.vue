@@ -20,7 +20,7 @@
               <text class="progress">{{`${item.progress}%`}}</text>
             </div>
             <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-            v-if="item.midiDownload && item.videoDownload && !item.progress"></image>
+            v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
             <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
             v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
           </div>
@@ -72,7 +72,8 @@
         select: 0,
         progress: 0,
         rightTop: 0,
-        show: false
+        show: false,
+        playIndex: 0
       }
     },
     methods: {
@@ -105,8 +106,12 @@
           params
         })
       },
-      getVideoList ({videoList}) {
+      getVideoList ({videoList, playIndex}) {
         this.videoList = videoList
+        this.playIndex = playIndex
+      },
+      weexPlayIndex ({playIndex}) {
+        this.playIndex = playIndex
       },
       weexProgress ({progress, index}) {
         this.progress = progress

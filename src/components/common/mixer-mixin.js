@@ -15,6 +15,7 @@ export default {
   },
   methods: {
     vioceControl (data) {
+      console.log(data)
       switch (data.name) {
         case 'setMute':
           console.log(data, 'data')
