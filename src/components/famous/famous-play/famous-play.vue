@@ -456,7 +456,6 @@
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.sendMessage()
           this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
-            this.videoNameStyle.text = this.famousPlayCoursesBySet.courseList[0].courseName
             this.palyHidden = false
           })
         }
