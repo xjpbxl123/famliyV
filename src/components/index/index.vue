@@ -480,7 +480,7 @@
         if (this.peilianLoading) {
           // 直接进入
           console.log('直接进入')
-          return
+          return this.openPartner()
         }
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast')
@@ -810,10 +810,10 @@
         this.$router.push(params)
       },
       goBack () {
-        if (this.openPeilian) {
+        if (this.peilianLoading) {
           // 打开了陪练项目 关闭即可
-          this.openPeilian = !this.openPeilian
-          return modules.nativeRouter.openWebView('$web/findClient/index.html')
+          this.peilianLoading = !this.peilianLoading
+          return
         }
         if (this.isPlaying) {
           this.$refs.player.pause()
@@ -1123,9 +1123,9 @@
                           let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
                           if (isNeedUpdate) {
                             // 需要更新 弹框提示 显示直接进入和更新按钮
-                            self.peilianButtons[0].show = false
-                            self.peilianButtons[1].show = true
-                            self.peilianButtons[2].show = true
+                            this.peilianButtons[0].show = false
+                            this.peilianButtons[1].show = true
+                            this.peilianButtons[2].show = true
                             eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
                           } else {
                             // 不需要更新 直接打开即可
