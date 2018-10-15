@@ -43,7 +43,7 @@
       eventsHub.$on('toast', (params) => {
         let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
         params = Object.assign({}, defaultParams, params)
-        eventsHub.$emit('closeToast')
+        if (this.loadingInstance) eventsHub.$emit('closeToast')
         this.loadingInstance = toast(params)
       })
       eventsHub.$on('closeToast', () => {

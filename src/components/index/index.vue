@@ -163,6 +163,7 @@
         peilianLoading: false,
         logoutCover: true,
         isOpeningScore: false,
+        isDownloadingPeilian: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -494,7 +495,7 @@
       },
       [keys.KEY80] () {
         if (this.peilianLoading) {
-          // 直接进入
+          // 去下载
           this.downloadPartner()
           return
         }
@@ -813,6 +814,11 @@
         if (this.peilianLoading) {
           // 打开了陪练项目 关闭即可
           this.peilianLoading = !this.peilianLoading
+          eventsHub.$emit('closeToast')
+          if (this.isDownloadingPeilian) {
+            // 如果在下载 停止下载
+            this.canceldownload()
+          }
           return
         }
         if (this.isPlaying) {
@@ -1188,6 +1194,7 @@
         }
       },
       downloadPartner () {
+        this.isDownloadingPeilian = true
         let downloadInfo = this.downloadInfo
         let localPath, targetPath
         let self = this
