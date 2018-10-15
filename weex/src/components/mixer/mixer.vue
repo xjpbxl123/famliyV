@@ -279,10 +279,10 @@
         offset2: 0,
         offset3: 0,
         offset4: 0,
-        left1: 0,
-        left2: 0,
-        left3: 0,
-        left4: 0,
+        left1: 1188,
+        left2: 1490,
+        left3: 1706,
+        left4: 2008,
         left5: 0,
         left6: 0
       }
