@@ -476,17 +476,6 @@
           }
         })
       },
-      sendLocation () {
-        modules.global.getKeyboardPosition().then((data) => {
-          if (data) {
-            console.log([data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX])
-            this.$find.sendMessage({
-              method: 'location',
-              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
-            })
-          }
-        })
-      },
       /**
        * @desc 一进入页面就下载第一个
        **/
