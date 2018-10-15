@@ -1163,7 +1163,8 @@
               modules.user.logOut()
             } else {
               modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
-                alert(data)
+                // alert(data)
+                  console.log("打开陪练模块",data)
               })
             }
           })
