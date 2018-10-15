@@ -444,25 +444,25 @@
         }
         this.sliderTop1 = 506 - val * 34
       },
-      value3: function (val, oldval) {
-        this.offset1 = this.value1 - val
-        if (!this.mute2) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: val}
-          })
-        }
-        this.sliderTop2 = 506 - val * 34
-      },
       value2: function (val, oldval) {
         this.offset2 = this.value1 - val
-        if (!this.mute3) {
+        if (!this.mute2) {
           find.sendMsgToWeb({
             method: 'vioceControl',
             params: {name: 'volumeSet', type: 'autoPlay', value: val}
           })
         }
         this.sliderTop3 = 506 - val * 34
+      },
+      value3: function (val, oldval) {
+        this.offset1 = this.value1 - val
+        if (!this.mute3) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'electronic', value: val}
+          })
+        }
+        this.sliderTop2 = 506 - val * 34
       },
       value4: function (val, oldval) {
         this.offset3 = this.value1 - val

@@ -6,7 +6,7 @@
       <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
     </fh-player>
-    <fh-div :style="labelStyle" :hidden="isPlay || palyHidden">
+    <fh-div :style="labelStyle" :hidden="palyHidden">
       <fh-label :style="currentTime">
       </fh-label>
       <fh-label :style="flag">
@@ -17,7 +17,7 @@
     <fh-weex :style="weexStyle" ref="weex" />
     <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden"
               :pianoKey="button.pianoKey"
@@ -60,7 +60,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download, modules } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
   export default {
@@ -69,6 +69,7 @@
         progress: 0,
         palyHidden: true,
         toolbarHidden: true,
+        toolbarHidden1: false,
         toastHidden: true,
         playerSource: {
           mp4: {
@@ -101,11 +102,10 @@
         ],
         labelStyle: {
           left: 6,
-          top: 46,
+          top: 4,
           width: 420,
-          height: 130,
+          height: 50,
           text: '',
-          backgroundColor: '#0000',
           borderRadius: 16
         },
         toastStyle: {
@@ -119,8 +119,8 @@
         },
         currentTime: {
           left: 6,
-          top: 70,
-          width: 120,
+          top: 0,
+          width: 110,
           height: 50,
           text: '00:00',
           color: '#fff',
@@ -128,8 +128,8 @@
           temp: 0
         },
         flag: {
-          left: 120,
-          top: 70,
+          left: 110,
+          top: 0,
           width: 20,
           height: 50,
           text: '/',
@@ -137,8 +137,8 @@
           fontSize: 30
         },
         totalTime: {
-          left: 140,
-          top: 70,
+          left: 120,
+          top: 0,
           width: 120,
           height: 50,
           text: '00:00',
@@ -180,11 +180,15 @@
         curBpm: 120,
         inter: null,
         playNow: false,
-        playIndex: 0
+        playIndex: 0,
+        interval: null
       }
     },
     mixins: [mixerMixin],
     find: {
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden1 = hidden
+      },
       [KEY66] () {
         /**
          * @desc 练习
@@ -256,20 +260,28 @@
         if (this.isPlay) {
           // 如果在播放 暂停
           this.isPlay = false
-          this.setTime()
           this.toolbarHidden = false
+          clearInterval(this.interval)
           return this.$refs.player.pause()
         }
         if (!this.mixerHidden) {
-          this.mixerHidden = !this.mixerHidden
-          this.toolbarHidden = !this.toolbarHidden
-          this.closeMixer()
-        } else {
-          if (!this.weexHidden) {
-            this.hideWeex()
-            this.toolbarHidden = false
+          if (this.toolbarHidden1) {
+            this.toolbarHidden1 = false
           } else {
-            this.$router.back()
+            this.mixerHidden = !this.mixerHidden
+            this.toolbarHidden = !this.toolbarHidden
+            this.closeMixer()
+          }
+        } else {
+          if (this.toolbarHidden1) {
+            this.toolbarHidden1 = false
+          } else {
+            if (!this.weexHidden) {
+              this.hideWeex()
+              this.toolbarHidden = false
+            } else {
+              this.$router.back()
+            }
           }
         }
       },
@@ -487,7 +499,8 @@
         }
         if (this.progressing && !isDownload) {
           download.abortAll(this.files).then((data) => {
-            console.log(data)
+            this.progressing = false
+            this.sendMessageAgain()
           })
         } else {
           this.continueDownload(courseItem, index, isDownload)
@@ -499,15 +512,17 @@
         console.log(video, midi)
         this.files = [video, midi]
         return download.downloadAll([video, midi]).progress((process) => {
-          console.log(`进度：${process.allProgress}`)
           this.progressing = true
-          this.$find.sendMessage({
-            method: 'weexProgress',
-            params: {progress: parseInt(process.allProgress * 100), index}
-          })
+          if (process['0']) {
+            // 只取video下载的进度
+            this.$find.sendMessage({
+              method: 'weexProgress',
+              params: {progress: parseInt(process['0'].progress * 100), index}
+            })
+          }
         }).then((data) => {
           console.log(data)
-          if (data.code && data.code !== 0) {
+          if (data.code && data.code !== 0 && data.code !== 22002) {
             this.errorHandling(data)
             return
           }
@@ -515,17 +530,6 @@
           if (!isDownload) {
             this.sendMessageAgain()
           }
-          // if (isDownload) {
-          //   this.isPlay && this.playOrpause()
-          //   this.playerSource = {
-          //     mp4: {
-          //       videoUrl: data[0].path,
-          //       midiUrl: data[1].path
-          //     }
-          //   }
-          // } else {
-          //   this.sendMessageAgain()
-          // }
         })
       },
       sendMessageAgain () {
@@ -540,9 +544,13 @@
         console.log(this.playerSource)
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
+          clearInterval(this.interval)
           this.isPlay = false
           this.$refs.player.reset()
         })
+        this.interval = setInterval(() => {
+          this.setTime()
+        }, 100)
         this.isPlay = true
       },
       timeFilter (time) {

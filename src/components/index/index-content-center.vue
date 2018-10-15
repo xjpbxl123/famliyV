@@ -42,14 +42,10 @@
       }
     },
     watch: {
-      // selectedIndex: function (val) {
-      //   this.opa(val)
-      // }
     },
     methods: {
     },
     created () {
-      this.opa(this.selectedIndex)
     }
   }
 </script>
@@ -139,7 +135,6 @@
           width:100%;
           font-size:55px;
           text-indent: 51px;
-          font-family: MicrosoftYaHei;
           font-weight: 400;
           z-index: 200;
           color:rgba(255,254,254,1);
