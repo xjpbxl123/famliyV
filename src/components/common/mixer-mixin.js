@@ -1,7 +1,7 @@
 /**
  * Created by Tommy on 2018/5/23 .
  * */
-import { volume } from 'find-sdk'
+import { volume, modules } from 'find-sdk'
 export default {
   data () {
     return {
@@ -35,6 +35,16 @@ export default {
         self.$find.sendMessage({
           method: 'allVolumeSize',
           params: data
+        })
+        // 发送位置信息给调音台
+        modules.global.getKeyboardPosition().then((data) => {
+          if (data) {
+            console.log([data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX])
+            this.$find.sendMessage({
+              method: 'location',
+              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
+            })
+          }
         })
       })
       self.$find.sendMessage({

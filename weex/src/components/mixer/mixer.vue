@@ -436,42 +436,34 @@
     },
     watch: {
       value1: function (val, oldval) {
-        if (!this.mute1) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'all', value: val}
-          })
-        }
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'volumeSet', type: 'all', value: val}
+        })
         this.sliderTop1 = 506 - val * 34
       },
       value2: function (val, oldval) {
         this.offset2 = this.value1 - val
-        if (!this.mute2) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'autoPlay', value: val}
-          })
-        }
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'volumeSet', type: 'autoPlay', value: val}
+        })
         this.sliderTop3 = 506 - val * 34
       },
       value3: function (val, oldval) {
         this.offset1 = this.value1 - val
-        if (!this.mute3) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: val}
-          })
-        }
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'volumeSet', type: 'electronic', value: val}
+        })
         this.sliderTop2 = 506 - val * 34
       },
       value4: function (val, oldval) {
         this.offset3 = this.value1 - val
-        if (!this.mute4) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'media', value: val}
-          })
-        }
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'volumeSet', type: 'media', value: val}
+        })
         this.sliderTop4 = 506 - val * 34
       },
       value5: function (val, oldval) {
@@ -488,22 +480,22 @@
         if (!val) {
           // 放音
           this.buttons1[1].icon = '0xe603'
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'all', value: this.value1}
-          })
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: this.value2}
-          })
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
-          })
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'media', value: this.value4}
-          })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'all', value: this.value1}
+          // })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'electronic', value: this.value2}
+          // })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
+          // })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'media', value: this.value4}
+          // })
         } else {
           // 静音
           this.buttons1[1].icon = '0xe68c'
@@ -517,10 +509,10 @@
         if (!val) {
           // 放音
           this.buttons2[1].icon = '0xe603'
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'autoPlay', value: this.value2}
-          })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'autoPlay', value: this.value2}
+          // })
         } else {
           // 静音
           this.buttons2[1].icon = '0xe68c'
@@ -534,10 +526,10 @@
         if (!val) {
           // 放音
           this.buttons3[1].icon = '0xe603'
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: this.value3}
-          })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'electronic', value: this.value3}
+          // })
         } else {
           // 静音
           this.buttons3[1].icon = '0xe68c'
@@ -551,10 +543,10 @@
         if (!val) {
           // 放音
           this.buttons4[1].icon = '0xe603'
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'media', value: this.value4}
-          })
+          // find.sendMsgToWeb({
+          //   method: 'vioceControl',
+          //   params: {name: 'volumeSet', type: 'media', value: this.value4}
+          // })
         } else {
           // 静音
           this.buttons4[1].icon = '0xe68c'

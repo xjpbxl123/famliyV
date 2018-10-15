@@ -37,14 +37,14 @@
               <div class="video-cell-image-pic">
                 <image :src="linkImg" style="height: 75px;width: 100px;"></image>
               </div>
-              <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress">
+              <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress !== undefiend">
                 <text class="progress">下载中</text>
                 <text class="progress">{{`${item.progress}%`}}</text>
               </div>
               <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
               v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
               <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-              v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
+              v-if="!item.progress && item.progress === undefined && (!item.midiDownload || !item.videoDownload)"></image>
             </div>
             <div class="video-cell-desc">
               <text class="video-cell-desc-title">{{item.courseSetName}}</text>
@@ -132,9 +132,8 @@
           params
         })
       },
-      getVideoList ({videoList, playIndex}) {
+      getVideoList ({videoList}) {
         this.videoList = videoList
-        this.playIndex = playIndex
       },
       weexPlayIndex ({playIndex}) {
         this.playIndex = playIndex

@@ -59,7 +59,7 @@
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
-  import { download, modules } from 'find-sdk'
+  import { download } from 'find-sdk'
   import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
@@ -243,8 +243,6 @@
         self.toolbarHidden = !self.toolbarHidden
         self.weexHidden = !self.mixerHidden
         self.initMixerData()
-        // 发送位置信息给调音台
-        this.sendLocation()
       },
       [KEY68] () {
         /**
@@ -436,17 +434,6 @@
           }
         })
       },
-      sendLocation () {
-        modules.global.getKeyboardPosition().then((data) => {
-          if (data) {
-            console.log([data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX])
-            this.$find.sendMessage({
-              method: 'location',
-              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
-            })
-          }
-        })
-      },
       /**
        * @desc 一进入页面就下载第一个
        **/
@@ -455,7 +442,11 @@
         let video = videolist.data.videoHighBitRate
         let midi = videolist.data.midiHighBitRate
         return download.downloadAll([video, midi]).progress((process) => {
-          this.progress = parseInt(process.allProgress * 100)
+          this.progress = 0
+          if (process['0']) {
+            // 只取video下载的进度
+            this.progress = parseInt(process['0'].progress * 100)
+          }
         }).then((data) => {
           if (data.code && data.code !== 0) {
             this.errorHandling(data)
@@ -508,19 +499,26 @@
         }
       },
       continueDownload (courseItem, index, isDownload) {
+        console.log('weex通知开始下载')
         let video = courseItem.data.videoHighBitRate
         let midi = courseItem.data.midiHighBitRate
         console.log(video, midi)
         this.files = [video, midi]
+        this.progressing = true
+        this.$find.sendMessage({
+          method: 'weexProgress',
+          params: {progress: 0, index}
+        })
         return download.downloadAll([video, midi]).progress((process) => {
-          this.progressing = true
+          let progress = 0
           if (process['0']) {
             // 只取video下载的进度
-            this.$find.sendMessage({
-              method: 'weexProgress',
-              params: {progress: parseInt(process['0'].progress * 100), index}
-            })
+            progress = parseInt(process['0'].progress * 100)
           }
+          this.$find.sendMessage({
+            method: 'weexProgress',
+            params: {progress: progress, index}
+          })
         }).then((data) => {
           console.log(data)
           if (data.code && data.code !== 0 && data.code !== 22002) {
@@ -630,7 +628,7 @@
       },
       sendMessage () {
         if (this.$refs.weex) this.$refs.weex.focus()
-        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet, playIndex: 0}})
+        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
       }
     },
     computed: {
