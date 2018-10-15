@@ -109,9 +109,8 @@
           params
         })
       },
-      getVideoList ({videoList, playIndex}) {
+      getVideoList ({videoList}) {
         this.videoList = videoList
-        this.playIndex = playIndex
       },
       weexPlayIndex ({playIndex}) {
         this.playIndex = playIndex
