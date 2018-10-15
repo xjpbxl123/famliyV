@@ -288,11 +288,15 @@
             this.toolbarHidden = false
           }
         } else {
-          if (!this.weexHidden) {
-            this.hideWeex()
-            this.toolbarHidden = false
+          if (this.toolbarHidden1) {
+            this.toolbarHidden1 = false
           } else {
-            this.$router.back()
+            if (!this.weexHidden) {
+              this.hideWeex()
+              this.toolbarHidden = false
+            } else {
+              this.$router.back()
+            }
           }
         }
       },
@@ -585,17 +589,6 @@
           if (!isDownload) {
             this.sendMessageAgain()
           }
-          // if (isDownload) {
-          //   this.isPlay && this.playOrpause()
-          //   this.playerSource = {
-          //     mp4: {
-          //       videoUrl: data[0].path,
-          //       midiUrl: data[1].path
-          //     }
-          //   }
-          // } else {
-          //   this.sendMessageAgain()
-          // }
         })
       },
       sendMessageAgain () {
@@ -610,6 +603,7 @@
         console.log(this.playerSource)
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
+          clearInterval(this.interval)
           this.isPlay = false
           this.toolbarHidden = false
           this.$refs.player.reset()
