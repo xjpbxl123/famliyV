@@ -1156,7 +1156,6 @@
         this.peilianLoading = false
         this.canEnterModule = true
         eventsHub.$emit('closeToast')
-        this.canEnterModule = true
         // 做登录验证
         if (this.isLogin) {
           return this.$store.dispatch('getUserInfo').then(data => {
