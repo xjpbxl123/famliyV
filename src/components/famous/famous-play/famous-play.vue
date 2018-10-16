@@ -592,7 +592,6 @@
         console.log(this.playerSource)
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
-          clearInterval(this.interval)
           this.isPlay = false
           this.toolbarHidden = false
           this.$refs.player.reset()
@@ -642,7 +641,7 @@
         console.log('隐藏视频列表')
         this.canClick = false
         this.$refs.weex.animation({
-          duration: 800,
+          duration: 300,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(690px)'
