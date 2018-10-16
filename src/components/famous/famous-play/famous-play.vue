@@ -113,7 +113,7 @@
           fontSize: 36,
           width: 640,
           height: 360,
-          top: 500,
+          top: 320,
           left: 2043,
           borderRadius: 16
         },
@@ -371,7 +371,7 @@
          * @desc 速率加
          */
         let newBpm = this.curBpm + 20
-        if (newBpm > this.maxBPM) {
+        if (newBpm >= this.maxBPM) {
           this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节'})
           return
         }
@@ -385,7 +385,7 @@
          * @desc 速率减
          */
         let newBpm = this.curBpm - 20
-        if (newBpm < this.minBPM) {
+        if (newBpm <= this.minBPM) {
           this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节'})
           return
         }
@@ -631,14 +631,15 @@
           return
         }
         this.toolbarHidden = !this.toolbarHidden
-        // 初始化速率 获取时间
+        // 初始化速率
         this.$refs.player.info().then((data) => {
           if (data.originalBpm) {
-            self.orgBpm = data.originalBpm
-            self.curBpm = data.curBpm
+            this.orgBpm = parseInt(data.originalBpm)
+            this.curBpm = parseInt(data.curBpm)
           }
         })
         this.$refs.video.mute(false)
+        // 获取时间
         this.$refs.video.getTotalTime().then((data) => {
           if (data) {
             let timeString = this.timeFilter(data)
@@ -646,6 +647,7 @@
             this.totalTime.temp = data
           }
         })
+        this.setTime()
         if (this.playNow) {
           // 立即开始播放
           this.play()
@@ -669,10 +671,10 @@
       }),
       ...mapGetters([]),
       minBPM () {
-        return this.orgBpm * 0.5
+        return parseInt(this.orgBpm * 0.5)
       },
       maxBPM () {
-        return this.orgBpm * 1.5
+        return parseInt(this.orgBpm * 1.5)
       }
     },
     beforeDestroy () {
