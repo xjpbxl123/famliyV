@@ -996,7 +996,7 @@
                 return modules.game.openKingdom().then((data) => {
                   if (!data) {
                     this.canEnterModule = true
-                    //   做登录验证
+                    //     做登录验证
                     if (this.isLogin) {
                       return this.$store.dispatch('getUserInfo').then(data => {
                         if (!data.userInfo.userId) {
