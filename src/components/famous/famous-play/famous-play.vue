@@ -419,7 +419,7 @@
           this.errorHandling({speedValue: 0.5, desc: '速度调节 (原速1X)'})
           return
         }
-        // let newRate = newBpm / this.orgBpm
+        //   let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newSpeed)
         this.speedValue = newSpeed
         this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})
