@@ -178,10 +178,13 @@
         files: [],
         orgBpm: 120,
         curBpm: 120,
-        inter: null,
         playNow: false,
         playIndex: 0,
-        interval: null
+        interval: null,
+        inter: null,
+        inter1: null,
+        inter2: null,
+        canClick: true
       }
     },
     mixins: [mixerMixin],
@@ -224,6 +227,7 @@
       [KEY74] () {
         this.$refs.player.setRate(1)
         this.curBpm = this.orgBpm
+        this.errorHandling({speedValue: this.curBpm, desc: '当前速度调节'})
       },
       [KEY75] () {
         this.addRate()
@@ -239,6 +243,9 @@
          * @desc 打开调音台
          */
         let self = this
+        if (!self.canClick) {
+          return
+        }
         self.mixerHidden = !self.mixerHidden
         self.toolbarHidden = !self.toolbarHidden
         self.weexHidden = !self.mixerHidden
@@ -248,6 +255,9 @@
         /**
          * @desc 打开视频列表
          */
+        if (!this.canClick) {
+          return
+        }
         this.$refs.weex.focus()
         this.toolbarHidden = true
         this.showWeex()
@@ -299,14 +309,12 @@
         }
       }
     },
-    created () {
+    mounted () {
       let courseSetID = this.$route.query.courseSetID
       /**
        * @desc 根据courseSetID获取教程视频文件列表
        */
       this.getCoursesBySet(courseSetID)
-    },
-    mounted () {
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res) => {
@@ -364,11 +372,13 @@
          */
         let newBpm = this.curBpm + 20
         if (newBpm > this.maxBPM) {
+          this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节'})
           return
         }
         let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newRate)
         this.curBpm = newBpm
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节'})
       },
       delRate () {
         /**
@@ -376,14 +386,18 @@
          */
         let newBpm = this.curBpm - 20
         if (newBpm < this.minBPM) {
+          this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节'})
           return
         }
         let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newRate)
         this.curBpm = newBpm
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节'})
       },
       errorHandling (data) {
+        console.log(data, 'errorData')
         let self = this
+        self.canClick = false
         let errorText = ''
         let code = ''
         if (data.message === 'Network Error') {
@@ -393,6 +407,7 @@
         }
         switch (code) {
           case '-100':
+          case 20000:
             // 网络错误
             errorText = '网络连接出错，请检查网络'
             break
@@ -403,15 +418,23 @@
           default:
             errorText = data.desc || data.message || ''
         }
-        self.toastHidden = false
-        self.$refs.toast.focus()
-        self.$find.sendMessage({
-          method: 'toastMess',
-          params: {text: errorText, imgName: 'syncInfo'}
-        })
+        clearTimeout(this.inter2)
+        this.inter2 = setTimeout(() => {
+          self.toastHidden = false
+          self.$refs.toast.focus()
+          self.$find.sendMessage({
+            method: 'toastMess',
+            params: {text: errorText, imgName: 'syncInfo', speedValue: data.speedValue}
+          })
+        }, 400)
+        clearTimeout(this.inter)
         this.inter = setTimeout(() => {
           self.toastHidden = true
-          clearInterval(this.inter)
+          this.canClick = true
+          clearTimeout(this.inter1)
+          this.inter1 = setTimeout(() => {
+            this.$refs.weex.focus()
+          }, 400)
         }, 2000)
       },
       initData () {
@@ -448,8 +471,8 @@
             this.progress = parseInt(process['0'].progress * 100)
           }
         }).then((data) => {
-          if (data.code && data.code !== 0) {
-            this.errorHandling(data)
+          if (data['0'].code && data['0'].code !== 0 && data['0'].code !== 22002) {
+            this.errorHandling(data['0'])
             return
           }
           this.playerSource = {
@@ -521,8 +544,8 @@
           })
         }).then((data) => {
           console.log(data)
-          if (data.code && data.code !== 0 && data.code !== 22002) {
-            this.errorHandling(data)
+          if (data['0'].code && data['0'].code !== 0 && data['0'].code !== 22002) {
+            this.errorHandling(data['0'])
             return
           }
           this.progressing = false
@@ -543,9 +566,9 @@
         console.log(this.playerSource)
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
-          clearInterval(this.interval)
           this.isPlay = false
           this.$refs.player.reset()
+          clearInterval(this.interval)
         })
         this.interval = setInterval(() => {
           this.setTime()
@@ -577,7 +600,7 @@
         this.$refs.weex.focus()
         this.weexHidden = false
         this.$refs.weex.animation({
-          duration: 800,
+          duration: 600,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
@@ -587,14 +610,16 @@
         })
       },
       hideWeex () {
+        this.canClick = false
         this.$refs.weex.animation({
-          duration: 800,
+          duration: 300,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(690px)'
           }
         }).then((data) => {
           this.weexHidden = true
+          this.canClick = true
           this.controlWeex()
         })
       },
@@ -651,7 +676,10 @@
       }
     },
     beforeDestroy () {
-      clearInterval(this.inter)
+      clearInterval(this.interval)
+      clearTimeout(this.inter)
+      clearTimeout(this.inter1)
+      clearTimeout(this.inter2)
     }
   }
 </script>
