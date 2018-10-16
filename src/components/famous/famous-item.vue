@@ -57,7 +57,7 @@
 <style lang="scss" scoped type=text/scss>
   .famous-item {
     display: inline-block;
-    transition: all .4s;
+    transition: all .1s;
     position: relative;
     &.active {
       margin-right: 10px;
