@@ -1605,7 +1605,7 @@
         // this.playSet()
         this.$refs.player.play().then(() => {
           if (this.loading) {
-            // 如果正在loading 不自动切
+            //   如果正在loading 不自动切
             return
           }
           this.isPlaying = false
