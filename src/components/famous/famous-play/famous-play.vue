@@ -227,7 +227,7 @@
       [KEY74] () {
         this.$refs.player.setRate(1)
         this.curBpm = this.orgBpm
-        this.errorHandling({speedValue: this.curBpm, desc: '当前速度调节'})
+        this.errorHandling({speedValue: this.curBpm, desc: '当前速度调节', maxValue: this.maxBPM})
       },
       [KEY75] () {
         this.addRate()
@@ -375,13 +375,13 @@
          */
         let newBpm = this.curBpm + 20
         if (newBpm > this.maxBPM) {
-          this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节'})
+          this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节', maxValue: this.maxBPM})
           return
         }
         let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newRate)
         this.curBpm = newBpm
-        this.errorHandling({speedValue: newBpm, desc: '当前速度调节'})
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
       },
       delRate () {
         /**
@@ -389,13 +389,13 @@
          */
         let newBpm = this.curBpm - 20
         if (newBpm < this.minBPM) {
-          this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节'})
+          this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节', maxValue: this.maxBPM})
           return
         }
         let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newRate)
         this.curBpm = newBpm
-        this.errorHandling({speedValue: newBpm, desc: '当前速度调节'})
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
       },
       errorHandling (data) {
         console.log(data, 'errorData')
@@ -427,7 +427,7 @@
           self.$refs.toast.focus()
           self.$find.sendMessage({
             method: 'toastMess',
-            params: {text: errorText, imgName: 'syncInfo', speedValue: data.speedValue}
+            params: {text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue}
           })
         }, 400)
         clearTimeout(this.inter)

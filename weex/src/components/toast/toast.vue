@@ -3,8 +3,8 @@
         <image :src="toastImg" v-if="!speedValue" style="height: 120px;width: 120px;position: absolute;top: 70px;left: 260px;" >
         </image>
         <div class="speedBar" v-else>
-          <div class="valueBar" :style="{width: (speedValue/180)*380+'px'}">
-            <div class="ball" :style="{left: ((speedValue/180)*380 - 24)+'px'}"></div>
+          <div class="valueBar" :style="{width: (speedValue/maxValue)*380+'px'}">
+            <div class="ball" :style="{left: ((speedValue/maxValue)*380 - 24)+'px'}"></div>
           </div>
         </div>
          <text class="value"  v-if="speedValue">{{speedValue}}</text>
@@ -21,14 +21,16 @@
       return {
         text: '错误',
         syncInfo: require('./images/icon-sync-info.jpg'),
-        speedValue: 0
+        speedValue: 0,
+        maxValue: 180
       }
     },
     methods: {
-      toastMess ({imgName, text, speedValue}) {
+      toastMess ({imgName, text, speedValue, maxValue}) {
         this.text = text
         if (imgName) this.toastImg = this[imgName]
         this.speedValue = speedValue
+        this.maxValue = maxValue
       }
     },
     computed () {

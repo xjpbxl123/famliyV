@@ -45,6 +45,7 @@ export default {
       let self = this
       self.$refs.mixer.focus()
       volume.getAllVolumeSize().then(data => {
+        console.log(data, '音量信息')
         self.$find.sendMessage({
           method: 'allVolumeSize',
           params: data

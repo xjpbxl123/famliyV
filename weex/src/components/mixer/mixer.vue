@@ -17,7 +17,7 @@
       <text class="text1 mute" v-else >自动演奏 </text>
       <text class="value unmute" v-if="!mute2">{{value2}}</text>
       <text class="value mute" v-else>{{value2}} </text>
-      <image :src="bar" class="vioceBar">
+      <image :src="bar1" class="vioceBar">
       </image>
       <div class="bar">
         <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
@@ -260,6 +260,7 @@
         value5: 15,
         value6: 15,
         bar: require('./images/bar.png'),
+        bar1: require('./images/bar1.png'),
         slider: require('./images/slider.png'),
         back: require('./images/pic_background.png'),
         sliderTop1: 0,
