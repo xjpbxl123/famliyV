@@ -648,7 +648,6 @@
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', data)
             })
           }
         })
@@ -999,7 +998,6 @@
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               modules.mutePedal.setPedalMuteOnOff(data)
               this.controlButtons[0].checked = !data
-              modules.settings.setProperty('isSpeakerOn', !data)
             })
             break
           case 'closeScreen':
@@ -1284,8 +1282,8 @@
             eventsHub.$emit('toast', {text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.loading = false
             this.hideOtherButtons = false
-            return
           }
+          return
         }
         this.loading = false
         console.log('loading结束，开始播放曲谱')
@@ -1295,9 +1293,6 @@
         }
         console.log(data, 'playerInitComplete')
         console.log(this.playerSource, '没播过调play()')
-        if (!data.result) {
-          return
-        }
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
@@ -1307,6 +1302,7 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
+
         this.playSet()
         this.$refs.player.play().then(() => {
           if (this.loading) {
