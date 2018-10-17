@@ -2,14 +2,16 @@
   <div class="box">
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
-        <div class="img"></div>
-        <div class="icon"></div>
-        <div class="bottom" v-if="selectedIndex !== index"></div>
-        <div class="wave" v-else>
-          <span class="wave1"></span>
-          <span class="wave2"></span>
+        <div class="box">
+          <div class="img"></div>
+          <div class="icon"></div>
+          <div class="bottom" v-if="selectedIndex !== index"></div>
+          <div class="wave" v-else>
+            <span class="wave1"></span>
+            <span class="wave2"></span>
+          </div>
+          <span v-text="item.text" class="moduleName"></span>
         </div>
-        <span v-text="item.text" class="moduleName"></span>
       </li>
     </ul>
   </div>
@@ -63,10 +65,19 @@
         position: relative;
         transition: all 0.4s linear;
         border-radius: 10px;
-        overflow: hidden;
+        .box {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          top: 0;
+          left: 0;
+          overflow: hidden;
+        }
         &.active {
           transform: scale(1.15);
-          overflow: visible;
+          .box {
+            overflow: visible;
+          }
           .bottom {
             width: 100% !important;
             opacity: 0.8;
@@ -86,7 +97,7 @@
         .icon {
           position: absolute;
           width: 266px;
-          height: 188px;
+          height: 200px;
           bottom: 0px;
           right: 0;
           z-index: 1000;
@@ -98,8 +109,8 @@
           bottom: 0;
           left: 0;
           width:100%;
-          height:200px;
-          opacity:0.9;
+          height: 200px;
+          opacity: 0.9;
           border-radius: 0 0 10px 10px;
         }
         .wave {
@@ -132,9 +143,9 @@
         .moduleName {
           position: absolute;
           bottom: 29px;
-          width:100%;
-          font-size:55px;
-          text-indent: 51px;
+          width: 100%;
+          font-size: 48px;
+          text-indent: 52px;
           font-weight: 400;
           z-index: 200;
           color:rgba(255,254,254,1);
@@ -163,6 +174,7 @@
             }
           }
           .icon {
+            width: 242px;
             background: url('./images/popular_icon.png') no-repeat;
             background-size: cover;
           }
@@ -199,6 +211,7 @@
             }
           }
           .icon {
+            width: 318px;
             background: url('./images/material_icon.png') no-repeat;
             background-size: cover;
           }
@@ -215,6 +228,7 @@
           background-size: cover;
           margin-right: 140px;
           .icon {
+            width: 218px;
             background: url('./images/famous_icon.png') no-repeat;
             background-size: cover;
           }
@@ -224,7 +238,7 @@
             background-size: cover;
             width: 100%;
             height: 100%;
-            left: -110px;
+            left: -50px;
             top: 0;
           }
           .wave {
@@ -238,7 +252,8 @@
             }
           }
           .bottom {
-            background:linear-gradient(0deg,rgb(18, 18, 66) 0%,rgba(190,168,255,1) 100%);
+            background:linear-gradient(0deg,rgba(105,105,255,1) 0%,rgba(190,168,255,1) 100%);
+            width:450px;
           }
           &::before {
             background: url('./images/famous_bottom.png') no-repeat;
@@ -270,6 +285,7 @@
             }
           }
           .icon {
+            width: 257px;
             background: url('./images/kindom_icon.png') no-repeat;
             background-size: cover;
           }
@@ -285,13 +301,11 @@
     }
   }
   @keyframes wave1{
-    0% {background-position: 0 bottom;}
-    50% {background-position: 225px bottom;}
-    100% {background-position: 450px bottom;}
+    0% {background-position: 0 0;}
+    100% {background-position: 450px 0;}
   }
   @keyframes wave2{
-    0% {background-position: 0 bottom;}
-    50% {background-position: 225px bottom;}
-    100% {background-position: 450px bottom;}
+    0% {background-position: 0 0;}
+    100% {background-position: 450px 0;}
   }
 </style>

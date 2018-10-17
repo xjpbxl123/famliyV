@@ -284,7 +284,8 @@
         left3: 1706,
         left4: 2008,
         left5: 0,
-        left6: 0
+        left6: 0,
+        notAutoSet: false
       }
     },
     methods: {
@@ -306,12 +307,34 @@
         this.left2 = location[1] - 103
         this.left3 = location[2] - 103
         this.left4 = location[3] - 103
+      },
+      setVolumeData ({volumeData}) {
+        // case SpeakerVolumeStep    电子音源音量    0
+        // case MediaVolumeStep     音频音量      1
+        // case AutoplayVolumeStep  自动演奏   2
+        // case VolumeStep      总音量         3
+        this.notAutoSet = true
+        switch (volumeData.type) {
+          case 0:
+            this.value3 = volumeData.value
+            break
+          case 1:
+            this.value4 = volumeData.value
+            break
+          case 2:
+            this.value2 = volumeData.value
+            break
+          case 3:
+            this.value1 = volumeData.value
+            break
+        }
       }
     },
     computed: {
     },
     created () {
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
+        this.notAutoSet = false
         let keyEvent = arg.data.keys[0]
         let val = this.value1
         switch (keyEvent) {
@@ -436,35 +459,43 @@
     },
     watch: {
       value1: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'volumeSet', type: 'all', value: val}
-        })
         this.sliderTop1 = 506 - val * 34
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'all', value: val}
+          })
+        }
       },
       value2: function (val, oldval) {
         this.offset2 = this.value1 - val
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'volumeSet', type: 'autoPlay', value: val}
-        })
         this.sliderTop3 = 506 - val * 34
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'autoPlay', value: val}
+          })
+        }
       },
       value3: function (val, oldval) {
         this.offset1 = this.value1 - val
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'volumeSet', type: 'electronic', value: val}
-        })
         this.sliderTop2 = 506 - val * 34
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'electronic', value: val}
+          })
+        }
       },
       value4: function (val, oldval) {
         this.offset3 = this.value1 - val
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'volumeSet', type: 'media', value: val}
-        })
         this.sliderTop4 = 506 - val * 34
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'media', value: val}
+          })
+        }
       },
       value5: function (val, oldval) {
         this.sliderTop5 = 506 - val * 34

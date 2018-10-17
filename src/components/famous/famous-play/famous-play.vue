@@ -295,6 +295,9 @@
         }
       },
       [PEDAL_PRESSED] (key) {
+        if (!this.mixerHidden || !this.weexHidden) {
+          return
+        }
         switch (key.id) {
           case 116:
             // 踏板1号键
@@ -371,7 +374,7 @@
          * @desc 速率加
          */
         let newBpm = this.curBpm + 20
-        if (newBpm >= this.maxBPM) {
+        if (newBpm > this.maxBPM) {
           this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节'})
           return
         }
@@ -385,7 +388,7 @@
          * @desc 速率减
          */
         let newBpm = this.curBpm - 20
-        if (newBpm <= this.minBPM) {
+        if (newBpm < this.minBPM) {
           this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节'})
           return
         }

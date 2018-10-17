@@ -13,6 +13,19 @@ export default {
       }
     }
   },
+  watch: {
+    mixerHidden: function (value) {
+      if (value) {
+        // 调音台关闭 停止监听音量设置
+        console.log('调音台关闭 停止监听音量设置')
+        modules.notification.remove('VolumeChange')
+      } else {
+        // 调音台开启 开启监听音量设置
+        console.log('调音台开启 开启监听音量设置')
+        this.listenVolumeOrMuteDidChange()
+      }
+    }
+  },
   methods: {
     vioceControl (data) {
       console.log(data)
@@ -56,6 +69,16 @@ export default {
       this.$find.sendMessage({
         method: 'controlButtons',
         params: {show: !this.mixerHidden}
+      })
+    },
+    listenVolumeOrMuteDidChange () {
+      modules.global.listenVolumeOrMuteDidChange()
+      modules.notification.regist('VolumeChange', (data) => {
+        console.log(data)
+        this.$find.sendMessage({
+          method: 'setVolumeData',
+          params: {volumeData: data}
+        })
       })
     }
   }

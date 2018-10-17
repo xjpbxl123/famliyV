@@ -1379,7 +1379,6 @@
       this.getMetronomeStatus()
       this.clearCache()
       this.checkPedalMute()
-      this.playSet()
     },
     beforeDestroy () {
       this.toolbarHidden = true
