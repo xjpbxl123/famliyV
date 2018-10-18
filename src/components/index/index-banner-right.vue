@@ -204,7 +204,7 @@
   justify-content: flex-end;
 }
 .banner-right {
-  width: 688px;
+  width: 708px;
   height: 1040px;
   margin-top: 40px;
   background-color: rgba(0, 0, 0, 0.1);
