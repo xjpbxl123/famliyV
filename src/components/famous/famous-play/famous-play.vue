@@ -672,14 +672,15 @@
     },
     computed: {
       ...mapState({
-        'famousPlayCoursesBySet': function (state) {
+        famousPlayCoursesBySet: function (state) {
           let famousPlayCoursesBySet = state.storage.cache.renderCache.famousPlayCoursesBySet[this.$route.query.courseSetID]
           if (famousPlayCoursesBySet) {
             // 有缓存
             this.hasLoaded = true
           }
           return famousPlayCoursesBySet || {courseList: []}
-        }
+        },
+        pianoType: state => state.storage.pianoType
       }),
       ...mapGetters([]),
       minBPM () {

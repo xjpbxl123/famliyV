@@ -2,6 +2,7 @@
  * Created by Tommy on 2018/5/23 .
  * */
 import { volume, modules } from 'find-sdk'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -12,6 +13,11 @@ export default {
         height: 800
       }
     }
+  },
+  computed: {
+    ...mapState({
+      pianoType: state => state.storage.pianoType
+    })
   },
   watch: {
     mixerHidden: function (value) {
@@ -63,7 +69,7 @@ export default {
       })
       self.$find.sendMessage({
         method: 'controlButtons',
-        params: {show: !self.mixerHidden}
+        params: {show: !self.mixerHidden, pianoType: this.pianoType}
       })
     },
     closeMixer () {

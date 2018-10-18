@@ -12,7 +12,7 @@
         <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
       </div>
     </div>
-    <div class="vioceBox vioceBox2" :style="{left: left2}">
+    <div class="vioceBox vioceBox2" :style="{left: left2}" v-if="pianoType === 'real'">
       <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
       <text class="text1 mute" v-else >自动演奏 </text>
       <text class="value unmute" v-if="!mute2">{{value2}}</text>
@@ -81,7 +81,7 @@
                 :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                 :icon="button.icon"/>
       </group>
-      <group id="500" :hidden="!show">
+      <group id="500" :hidden="!show || pianoType !== 'real'">
         <icon-item v-for="button in buttons2"
                 :pianoKey="button.pianoKey"
                 :key="button.id"
@@ -286,12 +286,14 @@
         left4: 2008,
         left5: 0,
         left6: 0,
-        notAutoSet: false
+        notAutoSet: false,
+        pianoType: 'real'
       }
     },
     methods: {
-      controlButtons ({show}) {
+      controlButtons ({show, pianoType}) {
         this.show = show
+        this.pianoType = pianoType
       },
       allVolumeSize ({electronic, media, autoPlay, all}) {
         this.value1 = all.value
