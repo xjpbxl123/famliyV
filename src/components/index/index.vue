@@ -559,6 +559,7 @@
         isActivation: state => state.storage.isActivation,
         isCalendar: state => state.storage.isCalendar,
         pianoInfo: state => state.storage.pianoInfo,
+        pianoType: state => state.storage.pianoType,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -669,15 +670,14 @@
        * @desc 获取钢琴类型
        * */
       playSet () {
-        modules.device.getPianoType().then((data) => {
-          if (data === 0 || data === 1) {
-            // 真钢默认开启自动演奏
-            modules.settings.setProperty('isAutoPlayOn', true)
-          } else if (data === 2 || data === 3) {
-            // 电钢默认开启电子音源
-            modules.settings.setProperty('isSpeakerOn', true)
-          }
-        })
+        if (this.pianoType === 'real') {
+          // 真钢默认开启自动演奏
+          modules.settings.setProperty('isAutoPlayOn', true)
+          modules.settings.setProperty('isSpeakerOn', false)
+        } else if (this.pianoType === 'electric') {
+          // 电钢默认开启电子音源
+          modules.settings.setProperty('isSpeakerOn', true)
+        }
       },
       /**
        * @desc 监听清空缓存/恢复出厂设置
@@ -1365,10 +1365,14 @@
       },
       getPianoInfo () {
         return this.$store.dispatch('getPianoInfo', {root: true})
+      },
+      getPianoType () {
+        return this.$store.dispatch('getPianoType', {root: true})
       }
     },
     created () {
       this.getPianoInfo()
+      this.getPianoType()
       this.adjustPlayer()
       this.createSession()
       this.getIsSupportMutePedal()

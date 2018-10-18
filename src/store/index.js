@@ -58,7 +58,8 @@ export default function createStore () {
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
             musicInfo: [],
-            pianoInfo: {orn: 'family', pic: ''} // 钢琴orn/logo
+            pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
+            pianoType: '' // 钢琴类型
           }
         } // 数据本地缓存
       },
@@ -165,7 +166,8 @@ export default function createStore () {
             nativeStorage.get(tableName, 'isLogin'),
             nativeStorage.get(tableName, 'userInfo'),
             nativeStorage.get(tableName, 'sessionId'),
-            nativeStorage.get(tableName, 'pianoInfo')
+            nativeStorage.get(tableName, 'pianoInfo'),
+            nativeStorage.get(tableName, 'pianoType')
           ])
             .then(data => {
               commit(SET_STORAGE, {
@@ -174,6 +176,7 @@ export default function createStore () {
                 userInfo: data[2] && data[2].value ? data[2].value : {},
                 sessionId: data[3] && data[3].value ? data[3].value : null,
                 pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
+                pianoType: data[5] && data[5].value ? data[5].value : '',
                 isSynced: true
               })
               return dispatch('initCacheStorage', [...data, ...[tableName]])
@@ -213,7 +216,7 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[5], JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[6], JSON.stringify(userId)).then(param => {
             let cache = {}
             cache['renderCache'] = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
@@ -339,6 +342,18 @@ export default function createStore () {
               return error
             })
           }
+        })
+      },
+      /**
+        * @desc 获取钢琴类型（真钢or电钢）
+        * */
+      getPianoType ({dispatch}) {
+        modules.device.getPianoType().then((data) => {
+          let type = 'electric'
+          if (data === 0 || data === 1) {
+            type = 'real'
+          }
+          return dispatch('setNativeStorage', {pianoType: type})
         })
       },
       /**
