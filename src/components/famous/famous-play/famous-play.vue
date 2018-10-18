@@ -460,7 +460,7 @@
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.sendMessage()
           this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
-            this.palyHidden = false
+            // this.palyHidden = false
           })
         }
       },
@@ -638,7 +638,7 @@
         })
       },
       hideWeex () {
-        console.log('隐藏视频列表')
+        console.log(' 隐藏视频列表')
         this.canClick = false
         this.$refs.weex.animation({
           duration: 300,
