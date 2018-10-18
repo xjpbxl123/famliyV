@@ -185,7 +185,9 @@
         inter: null,
         inter1: null,
         inter2: null,
-        canClick: true
+        canClick: true,
+        canOpenVideoDirectory: false,
+        canOpenMixer: false
       }
     },
     mixins: [mixerMixin],
@@ -244,7 +246,7 @@
          * @desc 打开调音台
          */
         let self = this
-        if (!self.canClick) {
+        if (!self.canClick || !this.canOpenMixer) {
           return
         }
         self.mixerHidden = !self.mixerHidden
@@ -256,7 +258,7 @@
         /**
          * @desc 打开视频列表
          */
-        if (!this.canClick) {
+        if (!this.canClick || !this.canOpenVideoDirectory) {
           return
         }
         this.$refs.weex.focus()
@@ -321,16 +323,16 @@
       this.getCoursesBySet(courseSetID)
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
-        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res) => {
-          console.log(res, 'res1')
-          if (res.result) {
-            this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res => {
-              console.log(res, 'res2')
-              if (res.result) {
-                this.$refs.toast.openUrl(`${weexUrl}components/toast/toast.js`, {})
-              }
+        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
+          console.log(res1, 'videoDirectory')
+          this.canOpenVideoDirectory = res1.result
+          this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res2 => {
+            console.log(res2, 'mixer')
+            this.canOpenMixer = res2.result
+            this.$refs.toast.openUrl(`${weexUrl}components/toast/toast.js`, {}).then(res3 => {
+              console.log(res3, 'toast')
             })
-          }
+          })
         })
         console.log(`${weexUrl}components/toast/toast.js`)
       })
@@ -445,7 +447,7 @@
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
           this.sendMessage()
           this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
-            this.palyHidden = false
+            // this.palyHidden = false
           })
         }
       },
@@ -601,7 +603,7 @@
         }
       },
       showWeex () {
-        this.$refs.weex.focus()
+        console.log('打开视频列表')
         this.weexHidden = false
         this.$refs.weex.animation({
           duration: 600,
@@ -610,10 +612,12 @@
             transform: 'translateX(-690px)'
           }
         }).then((data) => {
+          this.$refs.weex.focus()
           this.controlWeex()
         })
       },
       hideWeex () {
+        console.log('隐藏视频列表')
         this.canClick = false
         this.$refs.weex.animation({
           duration: 300,
@@ -634,6 +638,7 @@
         if (!data.result) {
           return
         }
+        this.palyHidden = false
         this.toolbarHidden = !this.toolbarHidden
         // 初始化速率
         this.$refs.player.info().then((data) => {
