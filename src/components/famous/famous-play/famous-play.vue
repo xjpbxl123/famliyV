@@ -605,15 +605,18 @@
       showWeex () {
         console.log('打开视频列表')
         this.weexHidden = false
+        this.$refs.weex.focus()
+        this.controlWeex()
         this.$refs.weex.animation({
           duration: 600,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
           }
-        }).then((data) => {
-          this.$refs.weex.focus()
-          this.controlWeex()
+        }).then(() => {
+          setTimeout(() => {
+            this.$refs.weex.focus()
+          }, 1000)
         })
       },
       hideWeex () {
