@@ -1682,7 +1682,7 @@
         return this.$store.dispatch('getPianoType', {root: true})
       },
       registVloume () {
-        // 监听音量设置
+        //   监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
           if (data && data.type === 1) {
