@@ -638,7 +638,7 @@
         })
       },
       hideWeex () {
-        console.log(' 隐藏视频列表')
+        console.log('隐藏视频列表')
         this.canClick = false
         this.$refs.weex.animation({
           duration: 300,
