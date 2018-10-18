@@ -89,7 +89,7 @@ export default function createStore () {
             localPartnerVersion: {},
             isUpanInsert: false
           }
-        } // 数据本地缓存
+        } //   数据本地缓存
       },
       materialSelect: 0,
       popularGenreSelect: 0
