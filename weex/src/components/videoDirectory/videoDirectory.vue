@@ -54,7 +54,7 @@
           </div>
     </scroller>
     </div>
-    <toolbar :darkBgHidden="true">
+    <toolbar>
       <icon-item :hidden="!show" longClick="true" id="34" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
       <icon-item :hidden="!show" longClick="true" id="35" pianoKey="94" text="" icon="0xe654"

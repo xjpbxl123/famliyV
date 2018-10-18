@@ -17,14 +17,15 @@
     <fh-weex :style="weexStyle" ref="weex" />
     <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
-    <toolbar :darkBgHidden="true" :hidden="toolbarHidden1">
+    <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
               :id="button.id"
-              :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
+              :gradient="true"
+              :style="{backgroundColor: '#6000',dotColor: '#fff'}"
               :icon="button.icon"/>
       <icon-item v-for="button in buttons"
               :hidden="toolbarHidden"
@@ -36,7 +37,7 @@
               :text="button.text"
               titlePosition='below'
               :icon="button.icon"/>
-      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
+      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="curBpm" :min="minBPM" :max="maxBPM">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -82,21 +83,21 @@
             pianoKey: 66,
             icon: '0xe623',
             id: 207,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '练习'
           },
           {
             pianoKey: 68,
             icon: '0xe635',
             id: 205,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '视频列表'
           },
           {
             pianoKey: 58,
             icon: '0xe60d',
             id: 206,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '调音台'
           }
         ],

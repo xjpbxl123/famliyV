@@ -128,7 +128,7 @@
             left: 0;
             height: 268px;
             width: 100%;
-            animation: wave1 5s linear infinite;
+            animation: wave1 4s linear infinite;
           }
           .wave2 {
             position: absolute;
@@ -137,7 +137,7 @@
             height: 258px;
             width: 100%;
             background-position: 0 bottom;
-            animation: wave2 2s linear infinite;
+            animation: wave2 3s linear infinite;
           }
         }
         .moduleName {
