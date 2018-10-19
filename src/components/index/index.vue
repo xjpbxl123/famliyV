@@ -384,7 +384,7 @@
       },
       [keys.KEY27] () {
         if (+new Date() - this.skipTime <= 5000) {
-          // 5秒之内不做处理
+          //   5秒之内不做处理
           console.log('return')
           return
         }
