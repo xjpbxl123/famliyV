@@ -128,7 +128,6 @@
                   :icon="button.icon"/>
         </group>
         <icon-item
-                  :hidden="!show"
                   pianoKey="85"
                   key="100"
                   longClick="true"

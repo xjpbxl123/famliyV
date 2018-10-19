@@ -285,33 +285,34 @@
         color: #fff;
         position: absolute;
         top: 40px;
-        left: 35px;
+        left: 25px;
         transform: translate3d(0,0,0);
         &.play {
           animation:turn 2s infinite linear;
         }
       }
       .musicInfo {
-        width: 390px;
+        width: 380px;
         height: 100%;
         box-sizing: border-box;
         padding-top: 30px;
         position: absolute;
-        left: 106px;
+        left: 96px;
         .musicName {
           width: 100%;
-          font-size: 30px;
+          font-size: 28px;
           text-overflow: ellipsis;
           white-space: nowrap;
           display: inline-block;
           overflow: hidden;
         }
         .bookName {
+          width: 100%;
           text-overflow: ellipsis;
           white-space: nowrap;
           display: inline-block;
           opacity: 0.5;
-          font-size: 24px;
+          font-size: 22px;
           margin-top: 12px;
           overflow: hidden;
         }
@@ -320,11 +321,14 @@
           position: absolute;
           top:50%;
           transform: translate3d(0,-50%,0);
-          right: 40px;
+          width: 140px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          left: 480px;
           opacity: 0.55;
-          font-size: 24px;
+          font-size: 22px;
         }
-
     }
 
   }
