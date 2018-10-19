@@ -288,16 +288,7 @@
             this.toolbarHidden = false
           }
         } else {
-          if (this.toolbarHidden1) {
-            this.toolbarHidden1 = false
-          } else {
-            if (!this.weexHidden) {
-              this.hideWeex()
-              this.toolbarHidden = false
-            } else {
-              this.$router.back()
-            }
-          }
+          this.$router.back()
         }
       },
       [PEDAL_PRESSED] (key) {
