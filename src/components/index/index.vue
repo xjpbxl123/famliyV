@@ -99,9 +99,9 @@
           key="201"
           id="201"
           icon="0xe625"
-          pianoKey="102"
+          pianoKey="90"
           :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#2fff',textColor: '#fff',dotColor: '#fff'}"/>
+          :style="{backgroundColor:'#3000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
             :hidden="logoutCover"
@@ -191,7 +191,7 @@
             hidden: true
           },
           {
-            pianoKey: 102,
+            pianoKey: 90,
             text: '',
             icon: '0xe609',
             backgroundColor: '#3000',
@@ -243,7 +243,7 @@
         ],
         playButtons: [
           {
-            pianoKey: 90,
+            pianoKey: 102,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
@@ -406,7 +406,7 @@
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
-      [keys.KEY102] () {
+      [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -453,7 +453,7 @@
         this.canEnterModule = false
         this.buttonActions('tone')
       },
-      [keys.KEY90] () {
+      [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return

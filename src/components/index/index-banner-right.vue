@@ -204,7 +204,7 @@
   justify-content: flex-end;
 }
 .banner-right {
-  width: 708px;
+  width: 608px;
   height: 1040px;
   margin-top: 40px;
   background-color: rgba(0, 0, 0, 0.1);
@@ -292,7 +292,7 @@
         }
       }
       .musicInfo {
-        width: 406px;
+        width: 390px;
         height: 100%;
         box-sizing: border-box;
         padding-top: 30px;

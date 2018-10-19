@@ -16,7 +16,6 @@
         <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
-    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <toolbar :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
@@ -42,14 +41,12 @@
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
-  import {getCurEnvs} from 'scripts/utils'
   export default {
     data () {
       return {
         videoUrl: '',
         toolbarHidden: false,
         videoName: '',
-        mixerHidden: true,
         fileName: '',
         controlButtons: [
           {
@@ -194,17 +191,9 @@
             break
           case 'mixer':
             console.log('打开调音台')
-            this.mixerHidden = !this.mixerHidden
-            this.toolbarHidden = !this.toolbarHidden
-            this.initMixerData()
+            this.openMixer()
             break
           case 'back':
-            if (!this.mixerHidden) {
-              // 如果调音台打开了 关闭调音台
-              this.mixerHidden = !this.mixerHidden
-              this.toolbarHidden = !this.toolbarHidden
-              return this.closeMixer()
-            }
             this.$router.back()
         }
       },
@@ -233,20 +222,9 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.videoName = nameArr[0].split('_')[0].split('#~')[0] || ''
-      },
-      openMixerUrl () {
-        getCurEnvs().then(env => {
-          let weexUrl = env.WEEX_URL
-          this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res => {
-            console.log(res, 'res2')
-            if (res.result) {
-            }
-          })
-        })
       }
     },
     mounted () {
-      this.openMixerUrl()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.videoUrl = this.$route.query.url

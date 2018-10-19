@@ -3,6 +3,7 @@
  * */
 import { volume, modules } from 'find-sdk'
 import { mapState } from 'vuex'
+import {getCurEnvs} from 'scripts/utils'
 export default {
   data () {
     return {
@@ -19,19 +20,6 @@ export default {
       pianoType: state => state.storage.pianoType
     })
   },
-  watch: {
-    mixerHidden: function (value) {
-      if (value) {
-        // 调音台关闭 停止监听音量设置
-        console.log('调音台关闭 停止监听音量设置')
-        modules.notification.remove('VolumeChange')
-      } else {
-        // 调音台开启 开启监听音量设置
-        console.log('调音台开启 开启监听音量设置')
-        this.listenVolumeOrMuteDidChange()
-      }
-    }
-  },
   methods: {
     vioceControl (data) {
       console.log(data)
@@ -47,38 +35,8 @@ export default {
           break
       }
     },
-    initMixerData () {
-      let self = this
-      self.$refs.mixer.focus()
-      volume.getAllVolumeSize().then(data => {
-        console.log(data, '音量信息')
-        self.$find.sendMessage({
-          method: 'allVolumeSize',
-          params: data
-        })
-        // 发送位置信息给调音台
-        modules.global.getKeyboardPosition().then((data) => {
-          if (data) {
-            console.log([data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX])
-            this.$find.sendMessage({
-              method: 'location',
-              params: {location: [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]}
-            })
-          }
-        })
-      })
-      self.$find.sendMessage({
-        method: 'controlButtons',
-        params: {show: !self.mixerHidden, pianoType: this.pianoType}
-      })
-    },
-    closeMixer () {
-      this.$find.sendMessage({
-        method: 'controlButtons',
-        params: {show: !this.mixerHidden}
-      })
-    },
     listenVolumeOrMuteDidChange () {
+      console.log('开始监听')
       modules.global.listenVolumeOrMuteDidChange()
       modules.notification.regist('VolumeChange', (data) => {
         console.log(data)
@@ -87,6 +45,34 @@ export default {
           params: {volumeData: data}
         })
       })
+    },
+    openMixer () {
+      getCurEnvs().then(env => {
+        let weexUrl = env.WEEX_URL
+        volume.getAllVolumeSize().then(data1 => {
+          console.log(data1, '音量信息')
+          // 发送位置信息给调音台
+          modules.global.getKeyboardPosition().then((data) => {
+            if (data) {
+              let location = [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]
+              modules.page.openWeexViewController(`${weexUrl}components/mixer/mixer.js`, {
+                volumeValue: data1,
+                location: location,
+                pianoType: this.pianoType
+              }).then(res => {
+                console.log(res)
+                this.listenVolumeOrMuteDidChange()
+              })
+            }
+          })
+        })
+      })
+    },
+    closeMixer (data) {
+      if (data.close) {
+        console.log('停止监听')
+        modules.notification.remove('VolumeChange')
+      }
     }
   }
 }

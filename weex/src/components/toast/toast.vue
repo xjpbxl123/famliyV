@@ -1,5 +1,6 @@
 <template>
     <div class="prompt">
+      <div class="box">
         <image :src="toastImg" v-if="!speedValue" style="height: 120px;width: 120px;position: absolute;top: 70px;left: 260px;" >
         </image>
         <div class="speedBar" v-else>
@@ -9,6 +10,7 @@
         </div>
          <text class="value"  v-if="speedValue">{{speedValue}}</text>
         <text class="text">{{text}}</text>
+      </div>
     </div>
 </template>
 
@@ -25,18 +27,14 @@
         maxValue: 180
       }
     },
-    methods: {
-      toastMess ({imgName, text, speedValue, maxValue}) {
-        this.text = text
-        if (imgName) this.toastImg = this[imgName]
-        this.speedValue = speedValue
-        this.maxValue = maxValue
-      }
-    },
     computed () {
     },
     created () {
       this.toastImg = this.syncInfo
+      if (weex.config.imgName) this.toastImg = this[weex.config.imgName]
+      this.text = weex.config.text
+      this.speedValue = weex.config.speedValue
+      this.maxValue = weex.config.maxValue
     },
     components: {
     }
@@ -45,9 +43,16 @@
 
 <style lang='css' type="text/css">
     .prompt {
-        width: 640px;
-        height: 360px;
-        background-color: rgba(0, 0, 0, 0.6);
+      width: 3840px;
+      height: 1080px;
+    }
+    .box {
+      width: 640px;
+      height: 360px;
+      top: 320;
+      left: 2043;
+      border-radius: 16;
+      background-color: rgba(0, 0, 0, 0.6);
     }
     .text {
       font-size: 36px;

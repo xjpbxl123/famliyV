@@ -1,142 +1,144 @@
 <template>
   <div class="mixer">
-    <image :src="back" class="back"></image>
-    <div class="vioceBox vioceBox1" :style="{left: left1}">
-      <text class="text1 unmute" v-if="!mute1" >总音量</text>
-      <text class="text1 mute" v-else >总音量 </text>
-      <text class="value unmute" v-if="!mute1">{{value1}}</text>
-      <text class="value mute" v-else>{{value1}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
+    <div class="box">
+      <image :src="back" class="back"></image>
+      <div class="vioceBox vioceBox1" :style="{left: left1}">
+        <text class="text1 unmute" v-if="!mute1" >总音量</text>
+        <text class="text1 mute" v-else >总音量 </text>
+        <text class="value unmute" v-if="!mute1">{{value1}}</text>
+        <text class="value mute" v-else>{{value1}} </text>
+        <image :src="bar" class="vioceBar">
+        </image>
+        <div class="bar">
+          <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
+        </div>
       </div>
-    </div>
-    <div class="vioceBox vioceBox2" :style="{left: left2}" v-if="pianoType === 'real'">
-      <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
-      <text class="text1 mute" v-else >自动演奏 </text>
-      <text class="value unmute" v-if="!mute2">{{value2}}</text>
-      <text class="value mute" v-else>{{value2}} </text>
-      <image :src="bar1" class="vioceBar">
-      </image>
-      <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
+      <div class="vioceBox vioceBox2" :style="{left: left2}" v-if="pianoType === 'real'">
+        <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
+        <text class="text1 mute" v-else >自动演奏 </text>
+        <text class="value unmute" v-if="!mute2">{{value2}}</text>
+        <text class="value mute" v-else>{{value2}} </text>
+        <image :src="bar1" class="vioceBar">
+        </image>
+        <div class="bar">
+          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
+        </div>
       </div>
-    </div>
-    <div class="vioceBox vioceBox3" :style="{left: left3}">
-      <text class="text1 unmute" v-if="!mute3">电子音源</text>
-      <text class="text1 mute" v-else >电子音源 </text>
-      <text class="value unmute" v-if="!mute3">{{value3}}</text>
-      <text class="value mute" v-else>{{value3}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+      <div class="vioceBox vioceBox3" :style="{left: left3}">
+        <text class="text1 unmute" v-if="!mute3">电子音源</text>
+        <text class="text1 mute" v-else >电子音源 </text>
+        <text class="value unmute" v-if="!mute3">{{value3}}</text>
+        <text class="value mute" v-else>{{value3}} </text>
+        <image :src="bar" class="vioceBar">
+        </image>
+        <div class="bar">
+          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+        </div>
       </div>
-    </div>
-    <div class="vioceBox vioceBox4" :style="{left: left4}">
-      <text class="text1 unmute" v-if="!mute4" >音频</text>
-      <text class="text1 mute" v-else >音频 </text>
-      <text class="value unmute" v-if="!mute4">{{value4}}</text>
-      <text class="value mute" v-else>{{value4}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar">
-        <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
+      <div class="vioceBox vioceBox4" :style="{left: left4}">
+        <text class="text1 unmute" v-if="!mute4" >音频</text>
+        <text class="text1 mute" v-else >音频 </text>
+        <text class="value unmute" v-if="!mute4">{{value4}}</text>
+        <text class="value mute" v-else>{{value4}} </text>
+        <image :src="bar" class="vioceBar">
+        </image>
+        <div class="bar">
+          <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
+        </div>
       </div>
-    </div>
-    <div class="vioceBox vioceBox5" v-if="false" :style="{left: left5}">
-      <text class="text1 textA unmute" v-if="!mute5" >音频分音量</text>
-      <text class="text1 textA mute" v-else >音频分音量 </text>
-      <text class="text2 unmute" v-if="!mute5" >(人声)</text>
-      <text class="text2 mute" v-else >(人声) </text>
-      <text class="value valueA unmute" v-if="!mute5">{{value5}}</text>
-      <text class="value valueA mute" v-else>{{value5}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar barA">
-        <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
+      <div class="vioceBox vioceBox5" v-if="false" :style="{left: left5}">
+        <text class="text1 textA unmute" v-if="!mute5" >音频分音量</text>
+        <text class="text1 textA mute" v-else >音频分音量 </text>
+        <text class="text2 unmute" v-if="!mute5" >(人声)</text>
+        <text class="text2 mute" v-else >(人声) </text>
+        <text class="value valueA unmute" v-if="!mute5">{{value5}}</text>
+        <text class="value valueA mute" v-else>{{value5}} </text>
+        <image :src="bar" class="vioceBar">
+        </image>
+        <div class="bar barA">
+          <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
+        </div>
       </div>
-    </div>
-    <div class="vioceBox vioceBox6" v-if="false" :style="{left: left6}">
-      <text class="text1 textA unmute" v-if="!mute6" >音频分音量</text>
-      <text class="text1 textA mute" v-else >音频分音量 </text>
-      <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
-      <text class="text2 mute" v-else >(配乐) </text>
-      <text class="value valueA unmute" v-if="!mute6">{{value6}}</text>
-      <text class="value valueA mute" v-else>{{value6}} </text>
-      <image :src="bar" class="vioceBar">
-      </image>
-      <div class="bar barA">
-        <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
+      <div class="vioceBox vioceBox6" v-if="false" :style="{left: left6}">
+        <text class="text1 textA unmute" v-if="!mute6" >音频分音量</text>
+        <text class="text1 textA mute" v-else >音频分音量 </text>
+        <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
+        <text class="text2 mute" v-else >(配乐) </text>
+        <text class="value valueA unmute" v-if="!mute6">{{value6}}</text>
+        <text class="value valueA mute" v-else>{{value6}} </text>
+        <image :src="bar" class="vioceBar">
+        </image>
+        <div class="bar barA">
+          <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
+        </div>
       </div>
+      <toolbar :hidden="toolbarHidden">
+        <group id="400">
+          <icon-item v-for="button in buttons1"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <group id="500" :hidden="pianoType !== 'real'">
+          <icon-item v-for="button in buttons2"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <group id="600">
+          <icon-item v-for="button in buttons3"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <group id="700">
+          <icon-item v-for="button in buttons4"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <group id="800" :hidden="true">
+          <icon-item v-for="button in buttons5"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <group id="900" :hidden="true">
+          <icon-item v-for="button in buttons6"
+                  :pianoKey="button.pianoKey"
+                  :key="button.id"
+                  longClick="true"
+                  :id="button.id"
+                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                  :icon="button.icon"/>
+        </group>
+        <icon-item
+                  :hidden="!show"
+                  pianoKey="85"
+                  key="100"
+                  longClick="true"
+                  id="100"
+                  :style="{color:'#fff',backgroundColor:'#6000',textColor: '#fff',fontSize: '14'}"
+                  titlePosition='below'
+                  icon="0xe676"
+                  text="重置"/>
+      </toolbar>
     </div>
-    <toolbar>
-      <group id="400" :hidden="!show">
-        <icon-item v-for="button in buttons1"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-      <group id="500" :hidden="!show || pianoType !== 'real'">
-        <icon-item v-for="button in buttons2"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-      <group id="600" :hidden="!show">
-        <icon-item v-for="button in buttons3"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-      <group id="700" :hidden="!show">
-        <icon-item v-for="button in buttons4"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-      <group id="800" :hidden="true">
-        <icon-item v-for="button in buttons5"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-      <group id="900" :hidden="true">
-        <icon-item v-for="button in buttons6"
-                :pianoKey="button.pianoKey"
-                :key="button.id"
-                longClick="true"
-                :id="button.id"
-                :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                :icon="button.icon"/>
-      </group>
-       <icon-item
-                :hidden="!show"
-                pianoKey="85"
-                key="100"
-                longClick="true"
-                id="100"
-                :style="{color:'#fff',backgroundColor:'#6000',textColor: '#fff',fontSize: '14'}"
-                titlePosition='below'
-                icon="0xe676"
-                text="重置"/>
-    </toolbar>
   </div>
 </template>
 
@@ -287,7 +289,8 @@
         left5: 0,
         left6: 0,
         notAutoSet: false,
-        pianoType: 'real'
+        pianoType: 'real',
+        toolbarHidden: false
       }
     },
     methods: {
@@ -305,11 +308,11 @@
         this.mute3 = electronic.mute
         this.mute4 = media.mute
       },
-      location ({location}) {
-        this.left1 = location[0] - 103
-        this.left2 = location[1] - 103
-        this.left3 = location[2] - 103
-        this.left4 = location[3] - 103
+      location (data) {
+        this.left1 = data[0] - 103
+        this.left2 = data[1] - 103
+        this.left3 = data[2] - 103
+        this.left4 = data[3] - 103
       },
       setVolumeData ({volumeData}) {
         // case SpeakerVolumeStep    电子音源音量    0
@@ -336,7 +339,27 @@
     computed: {
     },
     created () {
+      this.location(weex.config.location)
+      this.allVolumeSize(weex.config.volumeValue)
+      this.pianoType = weex.config.pianoType || ''
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
+        find.debug(JSON.stringify(arg))
+        if (arg.type === 'backPressed') {
+          if (this.toolbarHidden) {
+            this.toolbarHidden = false
+            return
+          }
+          find.back()
+          find.sendMsgToWeb({
+            method: 'closeMixer',
+            params: {close: true}
+          })
+          return
+        }
+        if (arg.type === 'toolbarSwitchPressed') {
+          this.toolbarHidden = arg.data.hidden
+          return
+        }
         this.notAutoSet = false
         let keyEvent = arg.data.keys[0]
         let val = this.value1
@@ -514,22 +537,6 @@
         if (!val) {
           // 放音
           this.buttons1[1].icon = '0xe603'
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'all', value: this.value1}
-          // })
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'electronic', value: this.value2}
-          // })
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'autoPlay', value: this.value3}
-          // })
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'media', value: this.value4}
-          // })
         } else {
           // 静音
           this.buttons1[1].icon = '0xe68c'
@@ -543,10 +550,6 @@
         if (!val) {
           // 放音
           this.buttons2[1].icon = '0xe603'
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'autoPlay', value: this.value2}
-          // })
         } else {
           // 静音
           this.buttons2[1].icon = '0xe68c'
@@ -560,10 +563,6 @@
         if (!val) {
           // 放音
           this.buttons3[1].icon = '0xe603'
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'electronic', value: this.value3}
-          // })
         } else {
           // 静音
           this.buttons3[1].icon = '0xe68c'
@@ -577,10 +576,6 @@
         if (!val) {
           // 放音
           this.buttons4[1].icon = '0xe603'
-          // find.sendMsgToWeb({
-          //   method: 'vioceControl',
-          //   params: {name: 'volumeSet', type: 'media', value: this.value4}
-          // })
         } else {
           // 静音
           this.buttons4[1].icon = '0xe68c'
@@ -612,9 +607,13 @@
 <style lang='css' type="text/css">
 .mixer {
   width: 3840px;
-  height: 800px;
+  height: 1080px;
 }
 
+.box {
+  top: 280px;
+  left: 0;
+}
 .back {
   width: 3840px;
   height: 800px;

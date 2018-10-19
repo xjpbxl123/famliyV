@@ -15,8 +15,6 @@
       </fh-label>
     </fh-div>
     <fh-weex :style="weexStyle" ref="weex" />
-    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
-    <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
     <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden"
@@ -64,6 +62,7 @@
   import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
+  import toastMixin from '../../common/toast-mixin.js'
   export default {
     data () {
       return {
@@ -71,7 +70,6 @@
         palyHidden: true,
         toolbarHidden: true,
         toolbarHidden1: false,
-        toastHidden: true,
         playerSource: {
           mp4: {
             videoUrl: '',
@@ -107,15 +105,6 @@
           width: 420,
           height: 50,
           text: '',
-          borderRadius: 16
-        },
-        toastStyle: {
-          color: '#fff',
-          fontSize: 36,
-          width: 640,
-          height: 360,
-          top: 320,
-          left: 2043,
           borderRadius: 16
         },
         currentTime: {
@@ -173,7 +162,6 @@
         ],
         isPlay: false,
         weexHidden: true,
-        mixerHidden: true,
         index: 0,
         progressing: false,
         files: [],
@@ -182,15 +170,11 @@
         playNow: false,
         playIndex: 0,
         interval: null,
-        inter: null,
-        inter1: null,
-        inter2: null,
         canClick: true,
-        canOpenVideoDirectory: false,
-        canOpenMixer: false
+        canOpenVideoDirectory: false
       }
     },
-    mixins: [mixerMixin],
+    mixins: [mixerMixin, toastMixin],
     find: {
       [TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden1 = hidden
@@ -245,14 +229,7 @@
         /**
          * @desc 打开调音台
          */
-        let self = this
-        if (!self.canClick || !this.canOpenMixer) {
-          return
-        }
-        self.mixerHidden = !self.mixerHidden
-        self.toolbarHidden = !self.toolbarHidden
-        self.weexHidden = !self.mixerHidden
-        self.initMixerData()
+        this.openMixer()
       },
       [KEY68] () {
         /**
@@ -261,7 +238,6 @@
         if (!this.canClick || !this.canOpenVideoDirectory) {
           return
         }
-        this.$refs.weex.focus()
         this.toolbarHidden = true
         this.showWeex()
       },
@@ -276,29 +252,19 @@
           clearInterval(this.interval)
           return this.$refs.player.pause()
         }
-        if (!this.mixerHidden) {
+        if (!this.weexHidden) {
           if (this.toolbarHidden1) {
             this.toolbarHidden1 = false
           } else {
-            this.mixerHidden = !this.mixerHidden
-            this.toolbarHidden = !this.toolbarHidden
-            this.closeMixer()
+            this.hideWeex()
+            this.toolbarHidden = false
           }
         } else {
-          if (this.toolbarHidden1) {
-            this.toolbarHidden1 = false
-          } else {
-            if (!this.weexHidden) {
-              this.hideWeex()
-              this.toolbarHidden = false
-            } else {
-              this.$router.back()
-            }
-          }
+          this.$router.back()
         }
       },
       [PEDAL_PRESSED] (key) {
-        if (!this.mixerHidden || !this.weexHidden) {
+        if (!this.weexHidden) {
           return
         }
         switch (key.id) {
@@ -326,15 +292,8 @@
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
           console.log(res1, 'videoDirectory')
           this.canOpenVideoDirectory = res1.result
-          this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res2 => {
-            console.log(res2, 'mixer')
-            this.canOpenMixer = res2.result
-            this.$refs.toast.openUrl(`${weexUrl}components/toast/toast.js`, {}).then(res3 => {
-              console.log(res3, 'toast')
-            })
-          })
         })
-        console.log(`${weexUrl}components/toast/toast.js`)
+        console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
     methods: {
@@ -402,8 +361,6 @@
       },
       errorHandling (data) {
         console.log(data, 'errorData')
-        let self = this
-        self.canClick = false
         let errorText = ''
         let code = ''
         if (data.message === 'Network Error') {
@@ -424,24 +381,7 @@
           default:
             errorText = data.desc || data.message || ''
         }
-        clearTimeout(this.inter2)
-        this.inter2 = setTimeout(() => {
-          self.toastHidden = false
-          self.$refs.toast.focus()
-          self.$find.sendMessage({
-            method: 'toastMess',
-            params: {text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue}
-          })
-        }, 400)
-        clearTimeout(this.inter)
-        this.inter = setTimeout(() => {
-          self.toastHidden = true
-          this.canClick = true
-          clearTimeout(this.inter1)
-          this.inter1 = setTimeout(() => {
-            this.$refs.weex.focus()
-          }, 400)
-        }, 2000)
+        this.showToast({text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue})
       },
       initData () {
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
@@ -614,9 +554,6 @@
             transform: 'translateX(-690px)'
           }
         }).then(() => {
-          setTimeout(() => {
-            this.$refs.weex.focus()
-          }, 1000)
         })
       },
       hideWeex () {
@@ -692,9 +629,6 @@
     },
     beforeDestroy () {
       clearInterval(this.interval)
-      clearTimeout(this.inter)
-      clearTimeout(this.inter1)
-      clearTimeout(this.inter2)
     }
   }
 </script>
