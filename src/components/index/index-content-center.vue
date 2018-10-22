@@ -2,16 +2,14 @@
   <div class="box">
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
-        <div class="box">
-          <div class="img"></div>
-          <div class="icon"></div>
-          <div class="bottom" v-if="selectedIndex !== index"></div>
-          <div class="wave" v-else>
-            <span class="wave1"></span>
-            <span class="wave2"></span>
-          </div>
-          <span v-text="item.text" class="moduleName"></span>
+        <div class="img"></div>
+        <div class="icon"></div>
+        <div class="bottom" v-if="selectedIndex !== index"></div>
+        <div class="wave" v-else>
+          <span class="wave1"></span>
+          <span class="wave2"></span>
         </div>
+        <span v-text="item.text" class="moduleName"></span>
       </li>
     </ul>
   </div>
@@ -65,19 +63,8 @@
         position: relative;
         transition: all 0.4s linear;
         border-radius: 10px;
-        .box {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          top: 0;
-          left: 0;
-          overflow: hidden;
-        }
         &.active {
           transform: scale(1.15);
-          .box {
-            overflow: visible;
-          }
           .bottom {
             width: 100% !important;
             opacity: 0.8;

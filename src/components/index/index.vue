@@ -1354,6 +1354,12 @@
             this.hideOtherButtons = false
             this.canEnterModule = true
             this.openMusicScore = false
+            // 退出原生界面的时候 做一次登陆验证
+            return this.$store.dispatch('getUserInfo').then(data => {
+              if (!data.userInfo.userId) {
+                modules.user.logOut()
+              }
+            })
           }
         })
       },
