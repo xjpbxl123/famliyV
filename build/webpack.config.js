@@ -11,7 +11,7 @@ const env = envConfig.env[NODE_ENV] || envConfig.env
 const shouldUseSourceMap = NODE_ENV === 'development' || env.shouldUseSourceMap
 module.exports = {
   context: process.cwd(),
-  entry: ['./build/polyfill.js', './src/main.js'],
+  entry: ['babel-polyfill', './src/main.js'],
   output: {
     path: config.assertRoot,
     publicPath: './',

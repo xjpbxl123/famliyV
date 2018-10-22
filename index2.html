@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background: pink">
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+</body>
+<script src="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts-en.common.js"></script>
+<script type="text/javascript">
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById('main'));
+
+  // 指定图表的配置项和数据
+  var option = {
+    title: {
+      text: 'ECharts 入门示例'
+    },
+    tooltip: {},
+    legend: {
+      data:['销量']
+    },
+    xAxis: {
+      data: ["a","c","b","d","e","f","g","h","i","j","k","m"],
+      axisLine: {      　　　　　　　　//坐标轴轴线相关设置。
+        show: true,　　　　　　　　//是否显示坐标轴轴线。
+        lineStyle: {
+          type: 'solid',
+          width: 2,   　　　　　　　　//坐标轴线线宽。　
+          color: 'blue',　　　　　　　　//颜色。
+          textColor: 'white'
+        },
+        symbol:['none', 'arrow'],
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        show: true,
+        textStyle: {
+          color: "#fff"
+        }
+      },
+    },
+    yAxis: {
+      axisLine: {      　　　　　　　　//坐标轴轴线相关设置。
+        show: true,　　　　　　　　//是否显示坐标轴轴线。
+        lineStyle: {
+          type: 'solid',
+          width: 2,   　　　　　　　　//坐标轴线线宽。　
+          color: 'blue',　　　　　　　　//颜色。
+        },
+        symbol:['none', 'arrow']
+      },
+      axisTick: {
+        show: false
+      },
+      nameTextStyle: {
+        color: 'white'
+      }
+    },
+    series: [{
+      name: '销量',
+      type: 'bar',
+      data: [5, 20, 36, 10, 10, 20, 5, 20, 36, 10, 10, 20],
+      itemStyle: {
+        normal: {
+          label: {
+            show: true, //开启显示
+            position: 'top', //在上方显示
+            textStyle: { //数值样式
+              color: '#ffff',
+              fontSize: 16
+            }
+          }
+        }
+      },
+    }]
+  };
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+</script>
+</html>
