@@ -1164,7 +1164,7 @@
             } else {
               modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
                 // alert(data)
-                  console.log("打开陪练模块",data)
+                console.log(data, '打开陪练模块')
               })
             }
           })
