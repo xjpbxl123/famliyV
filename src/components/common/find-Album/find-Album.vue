@@ -29,7 +29,7 @@
       width: 180px;
       bottom: 0;
       position: absolute;
-      border-radius: 15px 30px 30px 15px;
+      border-radius: 8px 18px 18px 8px;
       overflow: hidden;
       img {
         width: 100%;
@@ -51,7 +51,7 @@
         z-index: 100;
         top: 0;
         left: 0;
-        border-radius: 15px 30px 30px 15px;
+        border-radius: 8px 18px 18px 8px;
         background-image: linear-gradient(-90deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.10) 32%, rgba(0,0,0,0.20) 58%, rgba(0,0,0,0.00) 85%);
       }
     }

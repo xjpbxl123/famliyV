@@ -36,6 +36,8 @@ export default function createStore () {
         userInfo: {}, // 用户信息
         isLogin: false,
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
+        pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
+        pianoType: '', // 钢琴类型
         cache: {
           renderCache: {
             famousAuthor: {},
@@ -57,9 +59,7 @@ export default function createStore () {
             localRecent: [],
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
-            musicInfo: [],
-            pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
-            pianoType: '' // 钢琴类型
+            musicInfo: []
           }
         } // 数据本地缓存
       },
