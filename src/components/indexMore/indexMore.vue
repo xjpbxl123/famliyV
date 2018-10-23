@@ -16,7 +16,7 @@
                  :icon="button.icon"
                  :pianoKey="button.pianoKey"
                  :longClick="button.longClick"
-                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor}"/>
+                 :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
       <icon-item
             key="70"
             id="115"
@@ -24,7 +24,7 @@
             :text="moreIndexTitle"
             pianoKey="70"
             titlePosition="below"
-            style="{backgroundColor:'#3000',color: '#fff',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
@@ -150,24 +150,20 @@
           return state.index.moreIndexTitle
         },
         hotBooksAll: function (state) {
-          if (this.moreIndexTitle === '热门曲谱') {
-            let hotBooksAll = state.storage.cache.renderCache.hottestAll
-            if (hotBooksAll.bookList.length > 0) {
-              eventsHub.$emit('closeToast')
-            }
-            this.hasLoaded = !!hotBooksAll.bookList.length
-            return hotBooksAll
+          let hotBooksAll = state.storage.cache.renderCache.hotBooksAll
+          if (hotBooksAll.bookList.length > 0) {
+            eventsHub.$emit('closeToast')
           }
+          this.hasLoaded = !!hotBooksAll.bookList.length
+          return hotBooksAll
         },
         recentBooksAll: function (state) {
-          if (this.moreIndexTitle === '最近更新') {
-            let recentBooksAll = state.storage.cache.renderCache.recentUpdateAll
-            if (recentBooksAll.bookList.length > 0) {
-              eventsHub.$emit('closeToast')
-            }
-            this.hasLoaded = !!recentBooksAll.bookList.length
-            return recentBooksAll
+          let recentBooksAll = state.storage.cache.renderCache.recentBooksAll
+          if (recentBooksAll.bookList.length > 0) {
+            eventsHub.$emit('closeToast')
           }
+          this.hasLoaded = !!recentBooksAll.bookList.length
+          return recentBooksAll
         }
       }),
       ...mapGetters([])
@@ -203,23 +199,23 @@
               return this.$store.dispatch('index/setIndexMoreTitle', title)
             })
           case 'left':
-            this.indexx = Math.max(indexx - 1, 0)
-            return this.$store.dispatch('index/setMoreIndex', this.indexx)
+            indexx = Math.max(indexx - 1, 0)
+            return this.$store.dispatch('index/setMoreIndex', indexx)
           case 'right':
-            this.indexx = Math.min(indexx + 1, 19)
-            return this.$store.dispatch('index/setMoreIndex', this.indexx)
+            indexx = Math.min(indexx + 1, 19)
+            return this.$store.dispatch('index/setMoreIndex', indexx)
           case 'up':
             /// 处理热门曲谱的index
             if (indexx - 10 >= 0) {
-              this.indexx = this.indexx - 10
+              indexx = indexx - 10
             }
-            return this.$store.dispatch('index/setMoreIndex', this.indexx)
+            return this.$store.dispatch('index/setMoreIndex', indexx)
           case 'down':
             /// 处理热门曲谱的index
             if (indexx + 10 < 20) {
-              this.indexx = indexx + 10
+              indexx = indexx + 10
             }
-            return this.$store.dispatch('index/setMoreIndex', this.indexx)
+            return this.$store.dispatch('index/setMoreIndex', indexx)
           case 'ok':
             if (this.moreIndexTitle === '热门曲谱') {
               books = this.hotBooksAll
@@ -239,16 +235,15 @@
     created () {
       if (this.moreIndexTitle === '最近更新') {
         return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
-          if (this.hasLoaded || (data && data.hottestAll)) {
+          if (this.hasLoaded || (data && data.recentBooksAll)) {
             eventsHub.$emit('closeToast')
-          } else {
-            errorHandling(data)
-          }
-        })
-      } else {
-        return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
-          if (this.hasLoaded || (data && data.recentUpdateAll)) {
-            eventsHub.$emit('closeToast')
+            return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
+              if (this.hasLoaded || (data && data.hotBooksAll)) {
+                eventsHub.$emit('closeToast')
+              } else {
+                errorHandling(data)
+              }
+            })
           } else {
             errorHandling(data)
           }

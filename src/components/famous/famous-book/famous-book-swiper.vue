@@ -23,7 +23,7 @@
       height: 405px;
       position: absolute;
       left: 1955px;
-      transition: all .5s;
+      transition: all .8s linear;
       .famous-book-bar {
         padding-top: 30px;
         box-sizing: border-box;
@@ -33,7 +33,7 @@
         width: 100%;
         background: url("./image/pic_blue_small.png") no-repeat;
         text-align: center;
-        font-size: 30px;
+        font-size: 26px;
         color: #FFFFFF;
         letter-spacing: 0;
         display: flex;

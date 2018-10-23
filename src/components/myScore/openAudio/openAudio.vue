@@ -17,7 +17,6 @@
           <span class="iconfont icon-song songIcon"></span>
         </div>
     </div>
-    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
     <toolbar :darkBgHidden="true" >
         <icon-item v-for="(button) in controlButtons"
             :hidden="toolbarHidden"
@@ -44,7 +43,6 @@
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
-  import {getCurEnvs} from 'scripts/utils'
   export default {
     data () {
       return {
@@ -54,7 +52,6 @@
         songName: '',
         singer: '',
         album: '',
-        mixerHidden: true,
         controlButtons: [
           {
             pianoKey: 54,
@@ -80,7 +77,8 @@
           pianoKey: 97,
           icon: '0xe60d',
           id: 204,
-          text: '调音台'
+          text: '调音台',
+          backgroundColor: '#3000'
         }],
         currentTime: '0',
         totalTime: '0',
@@ -161,17 +159,9 @@
             break
           case 'mixer':
             console.log('打开调音台')
-            this.mixerHidden = !this.mixerHidden
-            this.toolbarHidden = !this.toolbarHidden
-            this.initMixerData()
+            this.openMixer()
             break
           case 'back':
-            if (!this.mixerHidden) {
-              // 如果调音台打开了 关闭调音台
-              this.mixerHidden = !this.mixerHidden
-              this.toolbarHidden = !this.toolbarHidden
-              return this.closeMixer()
-            }
             this.$router.back()
         }
       },
@@ -200,20 +190,9 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.songName = nameArr[0].split('_')[0]
-      },
-      openMixerUrl () {
-        getCurEnvs().then(env => {
-          let weexUrl = env.WEEX_URL
-          this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res => {
-            console.log(res, 'res2')
-            if (res.result) {
-            }
-          })
-        })
       }
     },
     mounted () {
-      this.openMixerUrl()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.audioUrl = this.$route.query.url

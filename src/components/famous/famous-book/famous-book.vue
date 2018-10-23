@@ -2,7 +2,7 @@
   <div :style="{background:`url(${cover})`}">
     <statusBar/>
     <find-title :title="this.$route.query.name" :style="styles"></find-title>
-    <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="famousBookSelect" :setFamousBookSelect="setFamousBookSelect" v-if="hasLoaded"></famous-book-swiper>
+    <famous-book-swiper :famousBookList="famousAuthor.courseSetList" :select="famousBookSelect" :setFamousBookSelect="setFamousBookSelect" v-show="hasLoaded"></famous-book-swiper>
     <toolbar :darkBgHidden="true">
       <icon-item v-for="button in famousButton"
         :pianoKey="button.pianoKey"
@@ -55,15 +55,18 @@
     },
     computed: {
       ...mapState({
-        famousAuthor: function (state) {
+        'famousBookSelect': state => {
+          return state.famous.famousBookSelect
+        },
+        'famousAuthor': function (state) {
           let famousAuthor = state.storage.cache.renderCache.famousAuthor[this.$route.query.authorId]
           if (famousAuthor) {
             // 有缓存
+            this.hasLoaded = true
             eventsHub.$emit('closeToast')
           }
-          return famousAuthor || {courseSetList: [{authorName: ''}]}
-        },
-        famousBookSelect: state => state.famous.famousBookSelect
+          return famousAuthor || {courseSetList: []}
+        }
       }),
       ...mapGetters([])
     },

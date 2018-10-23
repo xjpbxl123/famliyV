@@ -8,7 +8,7 @@
       <text class="video-mun fwhite">{{`共${videoList.sum || 0}个`}}</text>
     </div>
     <div class="contentBox">
-      <list class="video-list" :style="{marginTop: rightTop+'px'}">
+      <!-- <list class="video-list" :style="{marginTop: rightTop+'px'}">
         <cell class="video-cell" v-for="(item,index) in videoList.courseList" :key="index"
               :style="index==select && styleObject">
           <div class="video-cell-image">
@@ -20,7 +20,7 @@
               <text class="progress">{{`${item.progress}%`}}</text>
             </div>
             <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-            v-if="item.midiDownload && item.videoDownload && !item.progress"></image>
+            v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
             <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
             v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
           </div>
@@ -30,12 +30,34 @@
           </div>
           <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
         </cell>
-      </list>
+      </list> -->
+      <scroller class="video-list">
+          <div class="video-cell" v-for="(item, index) in videoList.courseList" :ref="'item'+index" :key="index"  :style="index==select && styleObject">
+            <div class="video-cell-image">
+              <div class="video-cell-image-pic">
+                <image :src="linkImg" style="height: 75px;width: 100px;"></image>
+              </div>
+              <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress !== undefiend">
+                <text class="progress">下载中</text>
+                <text class="progress">{{`${item.progress}%`}}</text>
+              </div>
+              <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
+              v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
+              <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
+              v-if="!item.progress && item.progress === undefined && (!item.midiDownload || !item.videoDownload)"></image>
+            </div>
+            <div class="video-cell-desc">
+              <text class="video-cell-desc-title">{{item.courseSetName}}</text>
+              <text class="video-cell-desc-art">{{item.courseName}}</text>
+            </div>
+            <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
+          </div>
+    </scroller>
     </div>
-    <toolbar :darkBgHidden="true">
-      <icon-item :hidden="!show" id="34" pianoKey="92" text="" icon="0xe63c"
+    <toolbar>
+      <icon-item :hidden="!show" longClick="true" id="34" pianoKey="92" text="" icon="0xe63c"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
-      <icon-item :hidden="!show" id="35" pianoKey="94" text="" icon="0xe654"
+      <icon-item :hidden="!show" longClick="true" id="35" pianoKey="94" text="" icon="0xe654"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
       <icon-item :hidden="!show" id="36" pianoKey="97" text="" icon="0xe69a"
                  :style="{color:'#fff',backgroundColor:'#6000',dotColor: '#6000',textColor:'#fff'}"/>
@@ -48,6 +70,7 @@
   import mixins from '../mixin.js'
   const globalEvent = weex.requireModule('globalEvent')
   const find = weex.requireModule('find')
+  const dom = weex.requireModule('dom')
   export default {
     name: 'videoDirectory',
     mixins: [mixins],
@@ -67,7 +90,8 @@
         select: 0,
         progress: 0,
         rightTop: 0,
-        show: false
+        show: false,
+        playIndex: 0
       }
     },
     methods: {
@@ -75,12 +99,20 @@
         switch (type) {
           case 'down':
             if (this.select < this.videoList.courseList.length - 1) {
-              this.select++
+              this.select = this.select + 1
+            }
+            if (this.select > 6) {
+              let el = this.$refs['item' + (this.select - 6)][0]
+              dom.scrollToElement(el, {})
             }
             break
           case 'up':
             if (this.select > 0) {
               this.select--
+            }
+            if (this.select >= 6) {
+              let ele = this.$refs['item' + (this.select - 6)][0]
+              dom.scrollToElement(ele, {})
             }
             break
           case 'ok':
@@ -102,6 +134,9 @@
       },
       getVideoList ({videoList}) {
         this.videoList = videoList
+      },
+      weexPlayIndex ({playIndex}) {
+        this.playIndex = playIndex
       },
       weexProgress ({progress, index}) {
         this.progress = progress

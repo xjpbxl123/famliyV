@@ -92,10 +92,10 @@
         if (this.$refs.qrCode) {
           this.$refs.qrCode.generateQrCode({width: 180}).then(() => {
             clearInterval(this.interval)
-            this.interval = window.setInterval(() => {
+            this.interval = setInterval(() => {
               this.getUserInfo().then(res => {
                 if (res.userInfo.userId) {
-                  clearInterval(window.interval)
+                  clearInterval(this.interval)
                 }
               })
             }, 2000)
@@ -157,8 +157,6 @@
 
   .user-status {
     padding-top: 110px;
-    position: relative;
-    height: 100%;
     .noActive {
       width: 100%;
       font-size: 14px;
@@ -169,7 +167,6 @@
       bottom: 100px;
       left: 0;
     }
-
   }
 
   .avatar {

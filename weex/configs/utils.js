@@ -84,7 +84,7 @@ exports.createNotifierCallback = () => {
 /**
  * @desc Create a file loader for images asserts.
  * */
-exports.fileLoaders = function (publicPath = '/images/') {
+exports.fileLoaders = function (publicPath = 'images/') {
   return {
     test: /\.(png|jpg|gif)$/,
     use: [

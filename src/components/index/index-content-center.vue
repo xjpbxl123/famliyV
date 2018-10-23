@@ -31,47 +31,21 @@
     data () {
       return {
         pages: [{
-          text: '名师课程'
-        }, {
           text: '流行经典'
         }, {
-          text: '音乐王国'
-        }, {
           text: '教材练习'
-        }],
-        opa1: 'rgba(105,105,255,0.7)',
-        opa2: 'rgba(105, 105, 255, 0.8)'
+        }, {
+          text: '名师课程'
+        }, {
+          text: '音乐王国'
+        }]
       }
     },
     watch: {
-      selectedIndex: function (val) {
-        this.opa(val)
-      }
     },
     methods: {
-      opa (selectIndex) {
-        switch (selectIndex) {
-          case 0:
-            this.opa1 = 'rgba(105, 105, 255, 0.7)'
-            this.opa2 = 'rgba(105, 105, 255, 0.8)'
-            break
-          case 1:
-            this.opa1 = 'rgba(0,171,126,0.7)'
-            this.opa2 = 'rgba(0,171,126,0.8)'
-            break
-          case 2:
-            this.opa1 = 'rgba(252,174,35, 0.7)'
-            this.opa2 = 'rgba(252,174,35, 0.8)'
-            break
-          case 3:
-            this.opa1 = 'rgba(51,130,219, 0.7)'
-            this.opa2 = 'rgba(51,130,219, 0.8)'
-            break
-        }
-      }
     },
     created () {
-      this.opa(this.selectedIndex)
     }
   }
 </script>
@@ -93,7 +67,6 @@
           transform: scale(1.15);
           .bottom {
             width: 100% !important;
-            border-radius: 0 !important;
             opacity: 0.8;
           }
           .icon {
@@ -111,35 +84,38 @@
         .icon {
           position: absolute;
           width: 266px;
-          height: 188px;
+          height: 200px;
           bottom: 0px;
           right: 0;
           z-index: 1000;
+          border-radius: 0 0 10px 0;
+          overflow: hidden
         }
         .bottom {
           position: absolute;
           bottom: 0;
           left: 0;
           width:100%;
-          height:200px;
-          opacity:0.9;
-          border-radius: 10px;
+          height: 200px;
+          opacity: 0.9;
+          border-radius: 0 0 10px 10px;
         }
         .wave {
           position: absolute;
           bottom: 0;
           left: 0;
-          width:100%;
-          height:268px;
-          border-radius: 10px;
+          width: 100%;
+          height: 268px;
+          border-radius: 0 0 10px 10px;
           z-index: 120;
+          overflow: hidden;
           .wave1 {
             position: absolute;
             bottom: 0;
             left: 0;
             height: 268px;
             width: 100%;
-            animation: wave1 5s linear infinite;
+            animation: wave1 4s linear infinite;
           }
           .wave2 {
             position: absolute;
@@ -148,58 +124,21 @@
             height: 258px;
             width: 100%;
             background-position: 0 bottom;
-            animation: wave2 2s linear infinite;
+            animation: wave2 3s linear infinite;
           }
         }
         .moduleName {
           position: absolute;
           bottom: 29px;
-          width:100%;
-          font-size:55px;
-          text-indent: 51px;
-          font-family:MicrosoftYaHei;
-          font-weight:400;
-          font-weight: 600;
+          width: 100%;
+          font-size: 48px;
+          text-indent: 52px;
+          font-weight: 400;
           z-index: 200;
           color:rgba(255,254,254,1);
       }
         &:nth-child(1) {
-          background: url('./images/famous_bg.png') no-repeat;
-          background-size: cover;
           margin-right: 140px;
-          .icon {
-            background: url('./images/famous_icon.png') no-repeat;
-            background-size: cover;
-          }
-          .img {
-            position: absolute;
-            background: url('./images/famous_img.png') no-repeat;
-            background-size: cover;
-            width: 100%;
-            height: 100%;
-            left: -110px;
-            top: 0;
-          }
-          .wave {
-            .wave1 {
-              background: url('./images/purple1.png');
-              background-size: 100% 100%;
-            }
-            .wave2 {
-              background: url('./images/purple2.png');
-              background-size: 100% 100%;
-            }
-          }
-          .bottom {
-            background:linear-gradient(0deg,rgb(18, 18, 66) 0%,rgba(190,168,255,1) 100%);
-          }
-          &::before {
-            background: url('./images/famous_bottom.png') no-repeat;
-            background-size: cover;
-          }
-        }
-        &:nth-child(2) {
-          margin-right: 207px;
           background: url('./images/popular_bg.png') no-repeat;
           background-size: cover;
           .img {
@@ -222,6 +161,7 @@
             }
           }
           .icon {
+            width: 242px;
             background: url('./images/popular_icon.png') no-repeat;
             background-size: cover;
           }
@@ -233,46 +173,10 @@
             background-size: cover;
           }
         }
-        &:nth-child(3) {
-          background: url('./images/kindom_bg.png') no-repeat;
-          background-size: cover;
-          margin-right: 140px;
-          .img {
-            position: absolute;
-            background: url('./images/kindom_img.png') no-repeat;
-            background-size: cover;
-            width: 534px;
-            height: 580px;
-            left: -30px;
-            top: -20px;
-            z-index: 100;
-          }
-          .wave {
-            .wave1 {
-              background: url('./images/yellow1.png');
-              background-size: 100% 100%;
-            }
-            .wave2 {
-              background: url('./images/yellow2.png');
-              background-size: 100% 100%;
-            }
-          }
-          .icon {
-            background: url('./images/kindom_icon.png') no-repeat;
-            background-size: cover;
-          }
-          .bottom {
-            background:linear-gradient(0deg,rgba(252,174,35,1) 0%,rgba(255,198,0,1) 100%);
-          }
-          &::before {
-            background: url('./images/kindom_bottom.png') no-repeat;
-            background-size: cover;
-          }
-        }
-        &:nth-child(4) {
+        &:nth-child(2) {
           background: url('./images/material_bg.png') no-repeat;
           background-size: cover;
-          margin-right: 0;
+          margin-right: 207px;
           .img {
             position: absolute;
             background: url('./images/material_img.png') no-repeat;
@@ -294,6 +198,7 @@
             }
           }
           .icon {
+            width: 318px;
             background: url('./images/material_icon.png') no-repeat;
             background-size: cover;
           }
@@ -305,17 +210,89 @@
             background-size: cover;
           }
         }
+        &:nth-child(3) {
+          background: url('./images/famous_bg.png') no-repeat;
+          background-size: cover;
+          margin-right: 140px;
+          .icon {
+            width: 218px;
+            background: url('./images/famous_icon.png') no-repeat;
+            background-size: cover;
+          }
+          .img {
+            position: absolute;
+            background: url('./images/famous_img.png') no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            left: -50px;
+            top: 0;
+          }
+          .wave {
+            .wave1 {
+              background: url('./images/purple1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/purple2.png');
+              background-size: 100% 100%;
+            }
+          }
+          .bottom {
+            background:linear-gradient(0deg,rgba(105,105,255,1) 0%,rgba(190,168,255,1) 100%);
+            width:450px;
+          }
+          &::before {
+            background: url('./images/famous_bottom.png') no-repeat;
+            background-size: cover;
+          }
+        }
+        &:nth-child(4) {
+          background: url('./images/kindom_bg.png') no-repeat;
+          background-size: cover;
+          margin-right: 0;
+          .img {
+            position: absolute;
+            background: url('./images/kindom_img.png') no-repeat;
+            background-size: cover;
+            width: 534px;
+            height: 580px;
+            left: -30px;
+            top: -20px;
+            z-index: 100;
+          }
+          .wave {
+            .wave1 {
+              background: url('./images/yellow1.png');
+              background-size: 100% 100%;
+            }
+            .wave2 {
+              background: url('./images/yellow2.png');
+              background-size: 100% 100%;
+            }
+          }
+          .icon {
+            width: 257px;
+            background: url('./images/kindom_icon.png') no-repeat;
+            background-size: cover;
+          }
+          .bottom {
+            background:linear-gradient(0deg,rgba(252,174,35,1) 0%,rgba(255,198,0,1) 100%);
+          }
+          &::before {
+            background: url('./images/kindom_bottom.png') no-repeat;
+            background-size: cover;
+          }
+        }
       }
     }
   }
   @keyframes wave1{
-    0% {background-position: 0 bottom;}
-    50% {background-position: 225px bottom;}
-    100% {background-position: 450px bottom;}
+    0% {background-position: 0 0;}
+    100% {background-position: 450px 0;}
   }
   @keyframes wave2{
-    0% {background-position: 0 bottom;}
-    50% {background-position: 225px bottom;}
-    100% {background-position: 450px bottom;}
+    0% {background-position: 0 0;}
+    100% {background-position: 450px 0;}
   }
 </style>

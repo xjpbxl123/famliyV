@@ -17,7 +17,7 @@ const UglifyJsparallelPlugin = require('webpack-uglify-parallel')
  */
 const weexConfig = webpackMerge.smart(commonConfig[1], {
   module: {
-    rules: [utils.fileLoaders('/weex/images')]
+    rules: [utils.fileLoaders('../../images')]
   },
   /*
    * Add additional plugins to the compiler.
@@ -51,7 +51,7 @@ const weexConfig = webpackMerge.smart(commonConfig[1], {
  */
 const webConfig = webpackMerge.smart(commonConfig[0], {
   module: {
-    rules: [utils.fileLoaders('/weex/images')]
+    rules: [utils.fileLoaders('../../images')]
   },
   /**
    * Developer tool to enhance debugging

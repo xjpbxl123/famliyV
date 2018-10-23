@@ -6,9 +6,7 @@
       <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
     </fh-player>
-    <fh-div :style="labelStyle" :hidden="isPlay || palyHidden">
-      <fh-label :style="videoNameStyle">
-      </fh-label>
+    <fh-div :style="labelStyle" :hidden="palyHidden">
       <fh-label :style="currentTime">
       </fh-label>
       <fh-label :style="flag">
@@ -16,17 +14,16 @@
       <fh-label :style="totalTime">
       </fh-label>
     </fh-div>
-    <fh-weex :style="weexStyle" ref="weex" :hidden="weexHidden"/>
-    <fh-weex :style="mixerStyle" ref="mixer" :hidden="mixerHidden"/>
-    <fh-weex :style="toastStyle" ref="toast" :hidden="toastHidden" />
-    <toolbar :darkBgHidden="true">
+    <fh-weex :style="weexStyle" ref="weex" />
+    <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
               :hidden="toolbarHidden"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
               :id="button.id"
-              :style="{backgroundColor: '#DB652F',dotColor: '#DB652F'}"
+              :gradient="true"
+              :style="{backgroundColor: '#6000',dotColor: '#fff'}"
               :icon="button.icon"/>
       <icon-item v-for="button in buttons"
               :hidden="toolbarHidden"
@@ -38,7 +35,7 @@
               :text="button.text"
               titlePosition='below'
               :icon="button.icon"/>
-      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#0B8290'}" :value="curBpm" :min="minBPM" :max="maxBPM">
+      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="curBpm" :min="minBPM" :max="maxBPM">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -62,16 +59,17 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
+  import toastMixin from '../../common/toast-mixin.js'
   export default {
     data () {
       return {
         progress: 0,
         palyHidden: true,
         toolbarHidden: true,
-        toastHidden: true,
+        toolbarHidden1: false,
         playerSource: {
           mp4: {
             videoUrl: '',
@@ -83,64 +81,45 @@
             pianoKey: 66,
             icon: '0xe623',
             id: 207,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '练习'
           },
           {
             pianoKey: 68,
             icon: '0xe635',
             id: 205,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '视频列表'
           },
           {
             pianoKey: 58,
             icon: '0xe60d',
             id: 206,
-            backgroundColor: '#1078cc',
+            backgroundColor: '#6000',
             text: '调音台'
           }
         ],
         labelStyle: {
           left: 6,
-          top: 27,
+          top: 4,
           width: 420,
-          height: 130,
+          height: 50,
           text: '',
-          backgroundColor: '#50000000',
           borderRadius: 16
-        },
-        toastStyle: {
-          color: '#fff',
-          fontSize: 36,
-          width: 640,
-          height: 360,
-          top: 500,
-          left: 2043,
-          borderRadius: 16
-        },
-        videoNameStyle: {
-          left: 6,
-          top: 27,
-          width: 420,
-          height: 40,
-          text: '',
-          color: '#fff',
-          fontSize: 48,
-          textAlign: 'left'
         },
         currentTime: {
           left: 6,
-          top: 70,
-          width: 120,
+          top: 0,
+          width: 110,
           height: 50,
           text: '00:00',
           color: '#fff',
-          fontSize: 30
+          fontSize: 30,
+          temp: 0
         },
         flag: {
-          left: 120,
-          top: 70,
+          left: 110,
+          top: 0,
           width: 20,
           height: 50,
           text: '/',
@@ -148,13 +127,14 @@
           fontSize: 30
         },
         totalTime: {
-          left: 140,
-          top: 70,
+          left: 120,
+          top: 0,
           width: 120,
           height: 50,
           text: '00:00',
           color: '#fff',
-          fontSize: 30
+          fontSize: 30,
+          temp: 0
         },
         weexStyle: {
           right: -690,
@@ -182,17 +162,23 @@
         ],
         isPlay: false,
         weexHidden: true,
-        mixerHidden: true,
         index: 0,
         progressing: false,
         files: [],
         orgBpm: 120,
         curBpm: 120,
-        inter: null
+        playNow: false,
+        playIndex: 0,
+        interval: null,
+        canClick: true,
+        canOpenVideoDirectory: false
       }
     },
-    mixins: [mixerMixin],
+    mixins: [mixerMixin, toastMixin],
     find: {
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden1 = hidden
+      },
       [KEY66] () {
         /**
          * @desc 练习
@@ -220,113 +206,161 @@
         /**
          * @desc 暂停或者播放
          */
-        this.playOrpause()
+        this.play()
       },
       [KEY73] () {
-        /**
-         * @desc 速率减
-         */
-        let newBpm = this.curBpm - 20
-        if (newBpm < this.minBPM) {
-          return
-        }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
+        this.delRate()
       },
       [KEY74] () {
-        /**
-         * @desc 速率加
-         */
         this.$refs.player.setRate(1)
         this.curBpm = this.orgBpm
+        this.errorHandling({speedValue: this.curBpm, desc: '当前速度调节', maxValue: this.maxBPM})
       },
       [KEY75] () {
-        /**
-         * @desc 速率加
-         */
-        let newBpm = this.curBpm + 20
-        if (newBpm > this.maxBPM) {
-          return
-        }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
+        this.addRate()
       },
       [KEY78] () {
-        /**
-         * @desc 视频快退
-         */
-        this.$refs.player.fastBackward(10)
+        this.fastBackward()
       },
       [KEY82] () {
-        /**
-         * @desc 视频快进
-         */
-        this.$refs.player.fastForward(10)
+        this.fastForward()
       },
       [KEY58] () {
         /**
          * @desc 打开调音台
          */
-        let self = this
-        self.$refs.mixer.focus()
-        self.mixerHidden = !self.mixerHidden
-        self.toolbarHidden = !self.toolbarHidden
-        self.weexHidden = !self.mixerHidden
-        self.initMixerData()
+        this.openMixer()
       },
       [KEY68] () {
         /**
          * @desc 打开视频列表
          */
-        this.$refs.weex.focus()
-        if (this.weexHidden) {
-          this.showWeex()
-        } else {
-          this.hideWeex()
+        if (!this.canClick || !this.canOpenVideoDirectory) {
+          return
         }
+        this.toolbarHidden = true
+        this.showWeex()
       },
       [receiveMsgFromWeex] ({method, params}) {
         this[method] && this[method](params)
       },
       [BACK_PRESSED] () {
-        if (!this.mixerHidden) {
-          this.mixerHidden = !this.mixerHidden
-          this.toolbarHidden = !this.toolbarHidden
-          this.closeMixer()
+        if (this.isPlay) {
+          // 如果在播放 暂停
+          this.isPlay = false
+          this.toolbarHidden = false
+          clearInterval(this.interval)
+          return this.$refs.player.pause()
+        }
+        if (!this.weexHidden) {
+          if (this.toolbarHidden1) {
+            this.toolbarHidden1 = false
+          } else {
+            this.hideWeex()
+            this.toolbarHidden = false
+          }
         } else {
           this.$router.back()
         }
+      },
+      [PEDAL_PRESSED] (key) {
+        if (!this.weexHidden) {
+          return
+        }
+        switch (key.id) {
+          case 116:
+            // 踏板1号键
+            return this.fastBackward()
+          case 117:
+            // 踏板2号键
+            return this.fastForward()
+          case 118:
+            return this.delRate()
+          case 119:
+            return this.addRate()
+        }
       }
     },
-    created () {
+    mounted () {
       let courseSetID = this.$route.query.courseSetID
       /**
        * @desc 根据courseSetID获取教程视频文件列表
        */
       this.getCoursesBySet(courseSetID)
-    },
-    mounted () {
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
-        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res) => {
-          console.log(res, 'res1')
-          if (res.result) {
-            this.$refs.mixer.openUrl(`${weexUrl}components/mixer/mixer.js`, {}).then(res => {
-              console.log(res, 'res2')
-              if (res.result) {
-                this.$refs.toast.openUrl(`${weexUrl}components/toast/toast.js`, {})
-              }
-            })
-          }
+        this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
+          console.log(res1, 'videoDirectory')
+          this.canOpenVideoDirectory = res1.result
         })
-        console.log(`${weexUrl}components/toast/toast.js`)
+        console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
     methods: {
+      fastForward () {
+        /**
+         * @desc 视频快进
+         */
+        let rate = 10
+        if (this.currentTime.temp + 10 >= parseInt(this.totalTime.temp)) {
+          rate = parseInt(this.totalTime.temp) - this.currentTime.temp
+        }
+        this.$refs.player.fastForward(rate).then(() => {
+          this.setTime()
+        })
+      },
+      fastBackward () {
+        /**
+         * @desc 视频快退
+         */
+        let rate = 10
+        if (this.currentTime.temp - 10 <= 0) {
+          rate = this.currentTime.temp
+        }
+        this.$refs.player.fastBackward(rate).then(() => {
+          this.setTime()
+        })
+      },
+      setTime () {
+        this.$refs.video.getCurrentTime().then((data) => {
+          console.log(data)
+          if (data !== undefined) {
+            let timeString1 = this.timeFilter(data)
+            this.currentTime.text = timeString1
+            this.currentTime.temp = data
+          }
+        })
+      },
+      addRate () {
+        /**
+         * @desc 速率加
+         */
+        let newBpm = this.curBpm + 20
+        if (newBpm > this.maxBPM) {
+          this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节', maxValue: this.maxBPM})
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
+      },
+      delRate () {
+        /**
+         * @desc 速率减
+         */
+        let newBpm = this.curBpm - 20
+        if (newBpm < this.minBPM) {
+          this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节', maxValue: this.maxBPM})
+          return
+        }
+        let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newRate)
+        this.curBpm = newBpm
+        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
+      },
       errorHandling (data) {
-        let self = this
+        console.log(data, 'errorData')
         let errorText = ''
         let code = ''
         if (data.message === 'Network Error') {
@@ -336,6 +370,7 @@
         }
         switch (code) {
           case '-100':
+          case 20000:
             // 网络错误
             errorText = '网络连接出错，请检查网络'
             break
@@ -346,23 +381,25 @@
           default:
             errorText = data.desc || data.message || ''
         }
-        self.toastHidden = false
-        self.$refs.toast.focus()
-        self.$find.sendMessage({
-          method: 'toastMess',
-          params: {text: errorText, imgName: 'syncInfo'}
-        })
-        this.inter = setTimeout(() => {
-          self.toastHidden = true
-          clearInterval(this.inter)
-        }, 2000)
+        this.showToast({text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue})
+      },
+      initData () {
+        if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
+          this.sendMessage()
+          this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
+            // this.palyHidden = false
+          })
+        }
       },
       getCoursesBySet (courseSetID) {
-        this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
+        console.log(this.famousPlayCoursesBySet)
+        return this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
           if (!this.hasLoaded && !data.famousPlayCoursesBySet) {
             // 无缓存并且接口没返回数据 弹提示框
             this.errorHandling(data)
             console.log(data, 'getCoursesBySet')
+          } else {
+            this.initData()
           }
         })
       },
@@ -370,13 +407,18 @@
        * @desc 一进入页面就下载第一个
        **/
       download (videolist) {
+        console.log('download')
         let video = videolist.data.videoHighBitRate
         let midi = videolist.data.midiHighBitRate
         return download.downloadAll([video, midi]).progress((process) => {
-          this.progress = parseInt(process.allProgress * 100)
+          this.progress = 0
+          if (process['0']) {
+            // 只取video下载的进度
+            this.progress = parseInt(process['0'].progress * 100)
+          }
         }).then((data) => {
-          if (data.code && data.code !== 0) {
-            this.errorHandling(data)
+          if (data['0'].code && data['0'].code !== 0 && data['0'].code !== 22002) {
+            this.errorHandling(data['0'])
             return
           }
           this.playerSource = {
@@ -385,6 +427,7 @@
               videoMidiUrl: data[1].path
             }
           }
+          console.log(this.playerSource)
           this.sendMessageAgain()
         })
       },
@@ -394,44 +437,65 @@
       weexDownload ({courseItem, index, isDownload}) {
         console.log(courseItem, index, isDownload)
         this.index = index
+        if (index === this.playIndex && isDownload) {
+          // 如果选中的是当前视频 直接播放就行了
+          this.hideWeex()
+          return this.play()
+        }
+        if (isDownload) {
+          // 已经下载过了 直接播放
+          this.playerSource = {
+            mp4: {
+              videoUrl: courseItem.videoDownload,
+              videoMidiUrl: courseItem.midiDownload
+            }
+          }
+          this.$find.sendMessage({
+            method: 'weexPlayIndex',
+            params: {playIndex: index}
+          })
+          this.playNow = true
+          this.playIndex = index
+          return this.hideWeex()
+        }
         if (this.progressing && !isDownload) {
           download.abortAll(this.files).then((data) => {
-            console.log(data)
+            this.progressing = false
+            this.sendMessageAgain()
           })
         } else {
           this.continueDownload(courseItem, index, isDownload)
         }
       },
       continueDownload (courseItem, index, isDownload) {
+        console.log('weex通知开始下载')
         let video = courseItem.data.videoHighBitRate
         let midi = courseItem.data.midiHighBitRate
         console.log(video, midi)
-
         this.files = [video, midi]
+        this.progressing = true
+        this.$find.sendMessage({
+          method: 'weexProgress',
+          params: {progress: 0, index}
+        })
         return download.downloadAll([video, midi]).progress((process) => {
-          console.log(`进度：${process.allProgress}`)
-          this.progressing = true
+          let progress = 0
+          if (process['0']) {
+            // 只取video下载的进度
+            progress = parseInt(process['0'].progress * 100)
+          }
           this.$find.sendMessage({
             method: 'weexProgress',
-            params: {progress: parseInt(process.allProgress * 100), index}
+            params: {progress: progress, index}
           })
         }).then((data) => {
           console.log(data)
-          if (data.code && data.code !== 0) {
-            this.errorHandling(data)
+          if (data['0'].code && data['0'].code !== 0 && data['0'].code !== 22002) {
+            this.errorHandling(data['0'])
             return
           }
           this.progressing = false
-          if (isDownload) {
-            this.isPlay && this.playOrpause()
-            this.playerSource = {
-              mp4: {
-                videoUrl: data[0].path,
-                midiUrl: data[1].path
-              }
-            }
-            this.videoNameStyle.text = courseItem.courseName
-          } else {
+          if (!isDownload) {
             this.sendMessageAgain()
           }
         })
@@ -444,27 +508,18 @@
           this.sendMessage()
         })
       },
-      playOrpause () {
+      play () {
         console.log(this.playerSource)
-        if (this.isPlay) {
-          this.$refs.player.pause()
-        } else {
-          this.$refs.player.play().then((data) => {
-            this.isPlay = false
-            this.$refs.player.reset()
-          })
-        }
-        this.isPlay = !this.isPlay
-        if (!this.isPlay) {
-          this.$refs.video.getTotalTime().then((data) => {
-            let timeString = this.timeFilter(data)
-            this.totalTime.text = timeString
-          })
-          this.$refs.video.getCurrentTime().then((data) => {
-            let timeString1 = this.timeFilter(data)
-            this.currentTime.text = timeString1
-          })
-        }
+        this.toolbarHidden = true
+        this.$refs.player.play().then((data) => {
+          this.isPlay = false
+          this.$refs.player.reset()
+          clearInterval(this.interval)
+        })
+        this.interval = setInterval(() => {
+          this.setTime()
+        }, 100)
+        this.isPlay = true
       },
       timeFilter (time) {
         time = parseInt(time)
@@ -481,7 +536,6 @@
       controlWeex () {
         if (!this.palyHidden) {
           // 视频下载完成
-          this.weexHidden = !this.weexHidden
           this.$find.sendMessage({
             method: 'controlButton',
             params: {show: !this.weexHidden}
@@ -489,17 +543,22 @@
         }
       },
       showWeex () {
+        console.log('打开视频列表')
+        this.weexHidden = false
+        this.$refs.weex.focus()
         this.controlWeex()
         this.$refs.weex.animation({
-          duration: 300,
+          duration: 600,
           timingFunction: 'ease',
           styles: {
             transform: 'translateX(-690px)'
           }
-        }).then((data) => {
+        }).then(() => {
         })
       },
       hideWeex () {
+        console.log('隐藏视频列表')
+        this.canClick = false
         this.$refs.weex.animation({
           duration: 300,
           timingFunction: 'ease',
@@ -507,6 +566,8 @@
             transform: 'translateX(690px)'
           }
         }).then((data) => {
+          this.weexHidden = true
+          this.canClick = true
           this.controlWeex()
         })
       },
@@ -514,73 +575,60 @@
        * @desc video init successful
        */
       playerInitComplete (data) {
-        let self = this
         if (!data.result) {
           return
         }
-        self.toolbarHidden = !self.toolbarHidden
+        this.palyHidden = false
+        this.toolbarHidden = !this.toolbarHidden
+        // 初始化速率
         this.$refs.player.info().then((data) => {
           if (data.originalBpm) {
-            self.orgBpm = data.originalBpm
-            self.curBpm = data.curBpm
+            this.orgBpm = parseInt(data.originalBpm)
+            this.curBpm = parseInt(data.curBpm)
           }
         })
+        this.$refs.video.mute(false)
+        // 获取时间
         this.$refs.video.getTotalTime().then((data) => {
           if (data) {
             let timeString = this.timeFilter(data)
             this.totalTime.text = timeString
+            this.totalTime.temp = data
           }
         })
-        this.$refs.video.getCurrentTime().then((data) => {
-          if (data) {
-            let timeString1 = this.timeFilter(data)
-            this.currentTime.text = timeString1
-          }
-        })
+        this.setTime()
+        if (this.playNow) {
+          // 立即开始播放
+          this.play()
+        }
       },
       sendMessage () {
-        this.$refs.weex.focus()
+        if (this.$refs.weex) this.$refs.weex.focus()
         this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
       }
     },
     computed: {
       ...mapState({
-        'famousPlayCoursesBySet': function (state) {
+        famousPlayCoursesBySet: function (state) {
           let famousPlayCoursesBySet = state.storage.cache.renderCache.famousPlayCoursesBySet[this.$route.query.courseSetID]
           if (famousPlayCoursesBySet) {
             // 有缓存
             this.hasLoaded = true
           }
           return famousPlayCoursesBySet || {courseList: []}
-        }
+        },
+        pianoType: state => state.storage.pianoType
       }),
       ...mapGetters([]),
       minBPM () {
-        return this.orgBpm * 0.5
+        return parseInt(this.orgBpm * 0.5)
       },
       maxBPM () {
-        return this.orgBpm * 1.5
-      }
-    },
-    watch: {
-      toolbarHidden (val) {
-        console.log('我变化了', val)
-      },
-      isPlay (val) {
-        this.videoButton[1].icon = val ? '0xe673' : '0xe657'
-      },
-      famousPlayCoursesBySet (val) {
-        if (val.courseList.length > 0 && this.palyHidden && this.weexHidden) {
-          this.sendMessage()
-          this.download(val.courseList[0]).then(() => {
-            this.videoNameStyle.text = val.courseList[0].courseName
-            this.palyHidden = false
-          })
-        }
+        return parseInt(this.orgBpm * 1.5)
       }
     },
     beforeDestroy () {
-      clearInterval(this.inter)
+      clearInterval(this.interval)
     }
   }
 </script>

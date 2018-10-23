@@ -99,9 +99,9 @@
           key="201"
           id="201"
           icon="0xe625"
-          pianoKey="102"
+          pianoKey="90"
           :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#2fff',textColor: '#fff',dotColor: '#fff'}"/>
+          :style="{backgroundColor:'#3000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
             :hidden="logoutCover"
@@ -173,10 +173,10 @@
           }
         ],
         bigBUtton: [
-          {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe69f', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
-          {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
-          {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe69b', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}}
+          {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe763', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
+          {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
+          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
+          {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}}
         ],
         controlButtons: [
           {
@@ -191,7 +191,7 @@
             hidden: true
           },
           {
-            pianoKey: 102,
+            pianoKey: 90,
             text: '',
             icon: '0xe609',
             backgroundColor: '#3000',
@@ -243,7 +243,7 @@
         ],
         playButtons: [
           {
-            pianoKey: 90,
+            pianoKey: 102,
             text: '',
             icon: '0xe6da',
             backgroundColor: '#2fff',
@@ -406,7 +406,7 @@
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
-      [keys.KEY102] () {
+      [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -453,7 +453,7 @@
         this.canEnterModule = false
         this.buttonActions('tone')
       },
-      [keys.KEY90] () {
+      [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
           return
@@ -559,6 +559,7 @@
         isActivation: state => state.storage.isActivation,
         isCalendar: state => state.storage.isCalendar,
         pianoInfo: state => state.storage.pianoInfo,
+        pianoType: state => state.storage.pianoType,
         isLogin (state) {
           let {storage} = state
           if (storage.isLogin) {
@@ -641,14 +642,13 @@
        * */
       getIsSupportMutePedal () {
         modules.settings.getProperty('isSupportMutePedal').then((data) => {
-          this.isSupportMutePedal = data
+          this.isSupportMutePedal = true
           if (data) {
             // 支持
             this.helpImg[0] = require('./images/help-1-s.png')
             this.controlButtons[0].hidden = false
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
               this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', data)
             })
           }
         })
@@ -670,15 +670,14 @@
        * @desc 获取钢琴类型
        * */
       playSet () {
-        modules.device.getPianoType().then((data) => {
-          if (data === 0 || data === 1) {
-            // 真钢默认开启自动演奏
-            modules.settings.setProperty('isAutoPlayOn', true)
-          } else if (data === 2 || data === 3) {
-            // 电钢默认开启电子音源
-            modules.settings.setProperty('isSpeakerOn', true)
-          }
-        })
+        if (this.pianoType === 'real') {
+          // 真钢默认开启自动演奏
+          modules.settings.setProperty('isAutoPlayOn', true)
+          modules.settings.setProperty('isSpeakerOn', false)
+        } else if (this.pianoType === 'electric') {
+          // 电钢默认开启电子音源
+          modules.settings.setProperty('isSpeakerOn', true)
+        }
       },
       /**
        * @desc 监听清空缓存/恢复出厂设置
@@ -801,10 +800,6 @@
             return this.go('/search')
           case 'settings':
             return false
-          case 'popular':
-            return this.go('/popular')
-          case 'material':
-            return this.go('/material')
           case 'skill':
             return modules.nativeRouter.openAppsView()
           case 'game':
@@ -833,14 +828,14 @@
             console.log('close')
             if (this.metronome) {
               this.toolbarHidden = false
-              modules.metronome.stop()
+              modules.metronome.stop(true)
               this.metronome = false
             }
             break
           case 'openMetro':
             if (!this.metronome) {
               this.toolbarHidden = true
-              modules.metronome.start()
+              modules.metronome.start(true)
               this.metronome = true
             }
             break
@@ -883,11 +878,13 @@
             }
             switch (activeIndex) {
               case 0:
+                return this.go('/popular')
+              case 1:
+                return this.go('/material')
+              case 2:
                 // return modules.nativeRouter.openArtistCourseView()
                 return this.go('/famous')
-              case 1:
-                return this.go('/popular')
-              case 2:
+              case 3:
                 return modules.game.openKingdom().then((data) => {
                   if (!data) {
                     this.canEnterModule = true
@@ -897,8 +894,6 @@
                     }
                   }
                 })
-              case 3:
-                return this.go('/material')
             }
             break
           case 'right-up':
@@ -1000,10 +995,9 @@
             })
             break
           case 'keyBoardMute':
-            modules.mutePedal.setPedalMuteOnOff()
             modules.settings.getProperty('isPedalMuteOn').then((data) => {
-              this.controlButtons[0].checked = data
-              modules.settings.setProperty('isSpeakerOn', data)
+              modules.mutePedal.setPedalMuteOnOff(data)
+              this.controlButtons[0].checked = !data
             })
             break
           case 'closeScreen':
@@ -1252,6 +1246,9 @@
                     mp3: {
                       midiUrl: res.path,
                       accompanyUrl: data.path
+                    },
+                    options: {
+                      countDownEnable: false
                     }
                   }
                   console.log('有mp3, 给播放器赋值', this.playerSource)
@@ -1259,6 +1256,9 @@
                   this.playerSource = {
                     mid: {
                       midiUrl: res.path
+                    },
+                    options: {
+                      countDownEnable: false
                     }
                   }
                   console.log('没有mp3, 给播放器赋值', this.playerSource)
@@ -1282,8 +1282,8 @@
             eventsHub.$emit('toast', {text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             this.loading = false
             this.hideOtherButtons = false
-            return
           }
+          return
         }
         this.loading = false
         console.log('loading结束，开始播放曲谱')
@@ -1293,9 +1293,6 @@
         }
         console.log(data, 'playerInitComplete')
         console.log(this.playerSource, '没播过调play()')
-        if (!data.result) {
-          return
-        }
         let recentOpenList = this.isLogin ? this.recentOpenList : this.localRecent
         let collectList = this.isLogin ? this.collectList : this.localCollect
         let rightActiveIndex = this.rightSelectedIndex
@@ -1305,6 +1302,7 @@
         } else if (this.rightType === 'recentOpen') {
           list = recentOpenList
         }
+
         this.playSet()
         this.$refs.player.play().then(() => {
           if (this.loading) {
@@ -1338,6 +1336,7 @@
       },
       adjustPlayer () {
         modules.notification.regist('pageLifecycle', data => {
+          // 打开原生界面
           console.log(data, 'pageLifecycle')
           if (data.case === 'pause') {
             this.loading = false
@@ -1355,6 +1354,12 @@
             this.hideOtherButtons = false
             this.canEnterModule = true
             this.openMusicScore = false
+            // 退出原生界面的时候 做一次登陆验证
+            return this.$store.dispatch('getUserInfo').then(data => {
+              if (!data.userInfo.userId) {
+                modules.user.logOut()
+              }
+            })
           }
         })
       },
@@ -1366,17 +1371,20 @@
       },
       getPianoInfo () {
         return this.$store.dispatch('getPianoInfo', {root: true})
+      },
+      getPianoType () {
+        return this.$store.dispatch('getPianoType', {root: true})
       }
     },
     created () {
       this.getPianoInfo()
+      this.getPianoType()
       this.adjustPlayer()
       this.createSession()
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
       this.checkPedalMute()
-      this.playSet()
     },
     beforeDestroy () {
       this.toolbarHidden = true
