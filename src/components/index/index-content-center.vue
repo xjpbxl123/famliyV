@@ -3,6 +3,7 @@
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
+        <span class="tips" v-if="index === 2">限时免费</span>
         <div class="icon"></div>
         <div class="bottom" v-if="selectedIndex !== index"></div>
         <div class="wave" v-else>
@@ -239,6 +240,20 @@
             width: 218px;
             background: url('./images/famous_icon.png') no-repeat;
             background-size: cover;
+          }
+          .tips {
+            width: 178px;
+            height: 66px;
+            position: absolute;
+            top: 28px;
+            right: -13px;
+            font-size: 30px;
+            line-height: 66px;
+            font-weight: 400;
+            color:rgba(255,254,254,1);
+            background: url('./images/tips_s.png') no-repeat;
+            background-size: cover;
+            text-indent: 40px;
           }
           .img {
             position: absolute;

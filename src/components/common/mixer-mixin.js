@@ -60,7 +60,7 @@ export default {
               modules.page.openWeexViewController(`${weexUrl}components/mixer/mixer.js`, {
                 volumeValue: data1,
                 location: location,
-                pianoType: this.pianoType
+                pianoType: this.pianoType // real 真钢 electric 电钢
               }).then(res => {
                 console.log(res)
                 this.listenVolumeOrMuteDidChange()
