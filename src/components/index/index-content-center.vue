@@ -35,7 +35,7 @@
         }, {
           text: '教材练习'
         }, {
-          text: '名师课程'
+          text: '智能陪练'
         }, {
           text: '音乐王国'
         }]
@@ -143,12 +143,23 @@
           background-size: cover;
           .img {
             position: absolute;
-            background: url('./images/popular_img.png') no-repeat;
+            background: url('./images/pig01.png') no-repeat;
             background-size: cover;
-            width: 195px;
-            height: 525px;
-            right: -20px;
-            top: 67px;
+            width: 450px;
+            height: 564px;
+            left: 0;
+            bottom: 0;
+            transition: all 0.1s linear;
+          }
+          &.active {
+            .img {
+              background: url('./images/pig02.png') no-repeat;
+              background-size: cover;
+              width: 580px;
+              height: 652px;
+              left: -90px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
@@ -179,13 +190,23 @@
           margin-right: 207px;
           .img {
             position: absolute;
-            background: url('./images/material_img.png') no-repeat;
+            background: url('./images/duck01.png') no-repeat;
             background-size: cover;
-            width: 386px;
-            height: 351px;
-            left: 91px;
-            top: 15px;
+            width: 477px;
+            height: 660px;
+            left: 0;
+            top: 0;
             z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/duck02.png') no-repeat;
+              background-size: cover;
+              width: 584px;
+              height: 660px;
+              left: -106px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
@@ -221,12 +242,23 @@
           }
           .img {
             position: absolute;
-            background: url('./images/famous_img.png') no-repeat;
+            background: url('./images/cat01.png') no-repeat;
             background-size: cover;
-            width: 100%;
-            height: 100%;
-            left: -50px;
-            top: 0;
+            width: 415px;
+            height: 573px;
+            left: -32px;
+            bottom: 0;
+            z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/cat02.png') no-repeat;
+              background-size: cover;
+              width: 471px;
+              height: 677px;
+              left: -52px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
@@ -253,13 +285,23 @@
           margin-right: 0;
           .img {
             position: absolute;
-            background: url('./images/kindom_img.png') no-repeat;
+            background: url('./images/mouse01.png') no-repeat;
             background-size: cover;
-            width: 534px;
-            height: 580px;
-            left: -30px;
-            top: -20px;
+            width: 362px;
+            height: 463px;
+            right: 0;
+            bottom: 0;
             z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/mouse02.png') no-repeat;
+              background-size: cover;
+              width: 433px;
+              height: 634px;
+              left: 63px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
