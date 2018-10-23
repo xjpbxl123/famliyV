@@ -63,7 +63,7 @@ export default function createStore () {
         pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
         pianoType: '', // 钢琴类型
         localCollect: [], // 本地收藏列表
-        localRecent: [], // 本地最近打开列表
+        localRecent: [], //   本地最近打开列表
         clearTime1: '',
         cache: {
           renderCache: {
