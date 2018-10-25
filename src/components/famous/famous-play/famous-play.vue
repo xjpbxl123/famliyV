@@ -521,6 +521,7 @@
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
           this.isPlay = false
+          this.toolbarHidden = false
           this.$refs.player.reset()
           clearInterval(this.interval)
         })
