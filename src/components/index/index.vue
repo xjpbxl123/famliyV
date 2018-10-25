@@ -707,7 +707,7 @@
        * @desc 右侧列表鼠标选中
        * */
       setRightSelect (index) {
-        if (this.loading) {
+        if (this.loading || this.peilianLoading) {
           // loading过程中不可点
           return
         }

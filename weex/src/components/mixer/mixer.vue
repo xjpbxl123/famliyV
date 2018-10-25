@@ -21,7 +21,7 @@
         <image :src="bar1" class="vioceBar">
         </image>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox3" :style="{left: left3}">
@@ -32,7 +32,7 @@
         <image :src="bar" class="vioceBar">
         </image>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox4" :style="{left: left4}">
@@ -289,7 +289,8 @@
         left6: 0,
         notAutoSet: false,
         pianoType: 'real',
-        toolbarHidden: false
+        toolbarHidden: false,
+        reset: false
       }
     },
     methods: {
@@ -319,6 +320,7 @@
         // case AutoplayVolumeStep  自动演奏   2
         // case VolumeStep      总音量         3
         this.notAutoSet = true
+        this.reset = false
         switch (volumeData.type) {
           case 0:
             this.value3 = volumeData.value
@@ -360,6 +362,7 @@
           return
         }
         this.notAutoSet = false
+        this.reset = false
         let keyEvent = arg.data.keys[0]
         let val = this.value1
         switch (keyEvent) {
@@ -380,7 +383,7 @@
               this.value3 = Math.min(this.value1 - this.offset2, 15)
             }
             if (this.offset3 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
+              this.value4 = Math.max(this.value1 - this.offset3, 1)
             } else {
               this.value4 = Math.min(this.value1 - this.offset3, 15)
             }
@@ -408,7 +411,7 @@
               this.value3 = Math.min(this.value1 - this.offset2, 15)
             }
             if (this.offset3 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
+              this.value4 = Math.max(this.value1 - this.offset3, 1)
             } else {
               this.value4 = Math.min(this.value1 - this.offset3, 15)
             }
@@ -470,12 +473,11 @@
             break
           case 85:
             // 重置
+            this.reset = true
             this.value1 = 8
             this.value2 = 8
             this.value3 = 8
             this.value4 = 8
-            this.value5 = 8
-            this.value6 = 8
         }
       })
     },
@@ -485,6 +487,12 @@
     watch: {
       value1: function (val, oldval) {
         this.sliderTop1 = 506 - val * 34
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',
@@ -493,8 +501,14 @@
         }
       },
       value2: function (val, oldval) {
-        this.offset2 = this.value1 - val
-        this.sliderTop3 = 506 - val * 34
+        this.offset1 = this.value1 - val
+        this.sliderTop2 = 506 - val * 34
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',
@@ -503,8 +517,14 @@
         }
       },
       value3: function (val, oldval) {
-        this.offset1 = this.value1 - val
-        this.sliderTop2 = 506 - val * 34
+        this.offset2 = this.value1 - val
+        this.sliderTop3 = 506 - val * 34
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',
@@ -515,6 +535,12 @@
       value4: function (val, oldval) {
         this.offset3 = this.value1 - val
         this.sliderTop4 = 506 - val * 34
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',

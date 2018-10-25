@@ -58,7 +58,7 @@
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
-  import { download } from 'find-sdk'
+  import { download, modules } from 'find-sdk'
   import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
@@ -171,7 +171,8 @@
         playIndex: 0,
         interval: null,
         canClick: true,
-        canOpenVideoDirectory: false
+        canOpenVideoDirectory: false,
+        timer: null
       }
     },
     mixins: [mixerMixin, toastMixin],
@@ -410,6 +411,12 @@
         console.log('download')
         let video = videolist.data.videoHighBitRate
         let midi = videolist.data.midiHighBitRate
+        // this.playerSource = {
+        //   mp4: {
+        //     videoMidiUrl: '/Users/zhanxiao/Documents/Find Artist/cachedartist/87/车尔尼599钢琴初级教程01#~&FooEh3L2bmg-4Si-kpKdJ0Mf_r8q.mid',
+        //     videoUrl: '/Users/zhanxiao/Documents/Find Artist/cachedartist/87/车尔尼599钢琴初级教程01#~&lpSTTvjixedZzWUq0YTwyyr8Ed3t.mp4'
+        //   }
+        // }
         return download.downloadAll([video, midi]).progress((process) => {
           this.progress = 0
           if (process['0']) {
@@ -417,6 +424,7 @@
             this.progress = parseInt(process['0'].progress * 100)
           }
         }).then((data) => {
+          console.log(data)
           if (data['0'].code && data['0'].code !== 0 && data['0'].code !== 22002) {
             this.errorHandling(data['0'])
             return
@@ -513,6 +521,7 @@
         this.toolbarHidden = true
         this.$refs.player.play().then((data) => {
           this.isPlay = false
+          this.toolbarHidden = false
           this.$refs.player.reset()
           clearInterval(this.interval)
         })
@@ -575,7 +584,34 @@
        * @desc video init successful
        */
       playerInitComplete (data) {
+        console.log(data)
         if (!data.result) {
+          if (data.code && data.code === 30000) {
+            // 文件出错 根据type类型 删除该文件 回到上一级页面
+            let filePath = this.playerSource['mp4'].videoUrl
+            let errText = '视频资源出错'
+            if (data.type && data.type === 'mid') {
+              filePath = this.playerSource['mp4'].videoMidiUrl
+              errText = 'midi资源出错'
+            }
+            this.errorHandling({desc: errText})
+            modules.file.removeFile(filePath).then(res => {
+              if (res) {
+                // 删除成功 回退到上个页面
+                this.timer = setTimeout(() => {
+                  this.$router.back()
+                }, 2000)
+              }
+            })
+          }
+          // else if (data.code && data.code === 30001) {
+          //   let errText = '视频资源不存在'
+          //   if (data.type && data.type === 'mid') {
+          //     errText = 'midi资源不存在'
+          //   }
+          //   // 文件不存在 根据type提示资源文件不存在
+          //   this.errorHandling({desc: errText})
+          // }
           return
         }
         this.palyHidden = false
@@ -629,6 +665,7 @@
     },
     beforeDestroy () {
       clearInterval(this.interval)
+      clearTimeout(this.timer)
     }
   }
 </script>

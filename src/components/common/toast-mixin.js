@@ -20,9 +20,13 @@ export default {
           console.log(res)
         })
       })
+      let time = 2000
+      if (data.speedValue !== undefined) {
+        time = 500
+      }
       this.timer = setTimeout(() => {
         modules.nativeRouter.back()
-      }, 500)
+      }, time)
     },
     destroyed () {
       clearTimeout(this.timer)

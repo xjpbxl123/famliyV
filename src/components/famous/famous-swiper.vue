@@ -12,7 +12,6 @@
     .famous-swiper {
       height: 100%;
       white-space: nowrap;
-      transition: all .4s;
     }
   }
 </style>
