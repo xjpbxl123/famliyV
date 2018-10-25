@@ -328,6 +328,7 @@
         // case humanVolume  人声              5
         this.reset = false
         this.notAutoSet = true
+        this.reset = false
         switch (volumeData.type) {
           case 0:
             this.value3 = volumeData.value
