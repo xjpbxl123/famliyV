@@ -380,7 +380,7 @@
               this.value3 = Math.min(this.value1 - this.offset2, 15)
             }
             if (this.offset3 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
+              this.value4 = Math.max(this.value1 - this.offset3, 1)
             } else {
               this.value4 = Math.min(this.value1 - this.offset3, 15)
             }
@@ -408,7 +408,7 @@
               this.value3 = Math.min(this.value1 - this.offset2, 15)
             }
             if (this.offset3 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
+              this.value4 = Math.max(this.value1 - this.offset3, 1)
             } else {
               this.value4 = Math.min(this.value1 - this.offset3, 15)
             }
