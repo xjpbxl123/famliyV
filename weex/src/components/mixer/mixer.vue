@@ -21,7 +21,7 @@
         <image :src="bar1" class="vioceBar">
         </image>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox3" :style="{left: left3}">
@@ -32,7 +32,7 @@
         <image :src="bar" class="vioceBar">
         </image>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox4" :style="{left: left4}">
@@ -493,8 +493,8 @@
         }
       },
       value2: function (val, oldval) {
-        this.offset2 = this.value1 - val
-        this.sliderTop3 = 506 - val * 34
+        this.offset1 = this.value1 - val
+        this.sliderTop2 = 506 - val * 34
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',
@@ -503,8 +503,8 @@
         }
       },
       value3: function (val, oldval) {
-        this.offset1 = this.value1 - val
-        this.sliderTop2 = 506 - val * 34
+        this.offset2 = this.value1 - val
+        this.sliderTop3 = 506 - val * 34
         if (!this.notAutoSet) {
           find.sendMsgToWeb({
             method: 'vioceControl',
