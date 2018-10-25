@@ -29,9 +29,11 @@ export default {
           volume.volumeMute(data.type, data.value)
           break
         case 'volumeSet':
-          volume.volumeSet(data.type, data.value, false).then(data => {
-            console.log(data)
-          })
+          if (data.type === 'resetAll') {
+            // 重置 直接调用这个
+            return modules.volume.resetVolume()
+          }
+          volume.volumeSet(data.type, data.value, false)
           break
       }
     },
