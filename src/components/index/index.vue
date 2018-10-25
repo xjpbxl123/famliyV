@@ -772,6 +772,10 @@
        * @desc 书籍列表鼠标选中
        * */
       setCenterSelect (index) {
+        if (this.peilianLoading) {
+          // 正在打开陪练
+          return
+        }
         this.$store.dispatch('index/setSelected', index).then(() => {
           this.buttonActions('ok')
         })
