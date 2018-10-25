@@ -447,14 +447,6 @@
           })
         }
       },
-      initData () {
-        if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
-          this.sendMessage()
-          this.download(this.famousPlayCoursesBySet.courseList[0]).then(() => {
-            // this.palyHidden = false
-          })
-        }
-      },
       getCoursesBySet (courseSetID) {
         console.log(this.famousPlayCoursesBySet)
         return this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
