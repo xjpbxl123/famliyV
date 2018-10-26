@@ -20,6 +20,7 @@ import openVideo from 'components/myScore/openVideo/openVideo-router'
 import search from 'components/search/search-router'
 import indexMore from 'components/indexMore/indexMore-router'
 import openImg from 'components/myScore/openImg/openImg-router'
+import timbre from 'components/timbre/timbre-router'
 const routers = [
   index,
   login,
@@ -37,7 +38,8 @@ const routers = [
   indexMore,
   openImg,
   openAudio,
-  openVideo
+  openVideo,
+  timbre
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV

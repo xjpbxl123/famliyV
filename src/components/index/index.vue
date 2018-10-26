@@ -252,6 +252,14 @@
             backgroundColor: '#3000',
             dotColor: '#fff',
             id: 101
+          },
+          {
+            pianoKey: 88,
+            text: '',
+            icon: '0xe610',
+            backgroundColor: '#3000',
+            dotColor: '#fff',
+            id: 109
           }
         ],
         playButtons: [
@@ -519,6 +527,9 @@
         }
         this.canEnterModule = false
         this.buttonActions('tone')
+      },
+      [keys.KEY88] () {
+        this.go('/timbre')
       },
       [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
