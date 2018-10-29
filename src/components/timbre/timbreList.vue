@@ -11,6 +11,7 @@
                         <div class="img" v-if="item.imgUrl">
                             <img :src="item.imgUrl" alt="">
                         </div>
+                        <span class="yidiaoValue" v-if="item.value !== undefined" v-text="'+'+yidiaoValue"></span>
                         <span class="iconfont icon-arrow-more arrow"></span>
                     </div>
                 </li>
@@ -32,10 +33,16 @@
                             <img :src="item.imgUrl" alt="">
                         </div>
                         <span class="name" v-text="item.name"></span>
-                        <span class="iconfont icon-arrow-more arrow"></span>
+                        <span class="iconfont icon-arrow-more arrow"  v-if="!item.hideArrow"></span>
+                        <span class="iconfont icon-sync-complete arrow arrow1" v-if="index === chosedItemListIndex"></span>
                     </div>
                 </li>
             </ul>
+        </div>
+        <div class="box2" v-if="listIndex1 === 1">
+            <span class="iconfont icon-transpose icon"></span>
+            <span class="text">电子键盘移调</span>
+            <div class="valueBox" v-text="'+'+yidiaoValue"></div>
         </div>
     </div>
     <div class="listTwo" v-if="listIndex === 2">
@@ -55,7 +62,7 @@
                             <img :src="item.imgUrl" alt="" v-if="item.imgUrl">
                         </div>
                         <span class="name" v-text="item.name"></span>
-                        <span class="iconfont icon-arrow-more arrow"></span>
+                        <span class="iconfont icon-sync-complete arrow" v-if="item.item === chosedItem"></span>
                     </div>
                 </li>
             </ul>
@@ -104,6 +111,18 @@
       listIndex3: {
         type: Number,
         default: () => 0
+      },
+      yidiaoValue: {
+        type: Number,
+        default: () => 0
+      },
+      chosedItem: {
+        type: Number,
+        default: () => NaN
+      },
+      chosedItemListIndex: {
+        type: Number,
+        default: () => NaN
       }
     },
     watch: {
@@ -129,6 +148,21 @@
               this.rightTop = (value - 8) * 78 * -1
             }
           }
+        } else if (value - oldValue === -9) {
+          // prevPage
+          let height = parseInt(this.rightTop) + 78 * 9
+          this.rightTop = height
+          if (value < 9) {
+            height = 0
+          }
+          this.rightTop = height
+        } else if (value - oldValue === 9) {
+          // nextPage
+          let height = parseInt(this.rightTop) - 78 * 9
+          if (this.list[this.listIndex1].items.length - value < 9) {
+            height = (this.list[this.listIndex1].items.length - 9) * 78 * -1
+          }
+          this.rightTop = height
         }
       }
     },
@@ -227,6 +261,19 @@
                                 top: 0;
                                 right: 48px;
                                 font-size: 30px;
+                            }
+                            .yidiaoValue {
+                                float: right;
+                                width: 50px;
+                                height: 100%;
+                                margin-right: 100px;
+                                text-align: center;
+                                display: block;
+                                line-height: 78px;
+                                font-size: 36px;
+                                font-family: PingFangSC-Semibold;
+                                font-weight: 600;
+                                color:rgba(255,255,255,1);
                             }
                         }
 
@@ -336,9 +383,45 @@
                                 right: 48px;
                                 font-size: 30px;
                             }
+                            .arrow1 {
+                                right: 100px;
+                            }
                         }
 
                     }
+                }
+            }
+            .box2 {
+                position: relative;
+                width: 835px;
+                margin: 0 auto;
+                height: 76px;
+                line-height: 76px;
+                color: #fff;
+                .icon {
+                    float: left;
+                    font-size: 30px;
+                    margin-left: 20px;
+                }
+                .text {
+                    font-size: 30px;
+                    font-family: PingFangSC-Regular;
+                    font-weight: 400;
+                    float: left;
+                    margin-left: 22px;
+                }
+                .valueBox {
+                    float: right;
+                    width: 120px;
+                    height: 40px;
+                    line-height: 40px;
+                    margin-top: 21px;
+                    text-align: center;
+                    background:rgba(255,255,255,0.2);
+                    border-radius: 20px;
+                    font-size: 36px;
+                    font-family: PingFangSC-Semibold;
+                    font-weight: 600;
                 }
             }
         }
