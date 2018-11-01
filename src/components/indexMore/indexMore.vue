@@ -24,7 +24,7 @@
             :text="moreIndexTitle"
             pianoKey="70"
             titlePosition="below"
-            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
@@ -55,7 +55,7 @@
             pianoKey: 73,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 110,
             longClick: true
@@ -64,7 +64,7 @@
             pianoKey: 75,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 111,
             longClick: true
@@ -73,7 +73,7 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 112
           },
@@ -81,7 +81,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 113
           },
@@ -89,7 +89,7 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 114
           }

@@ -60,14 +60,14 @@
             pianoKey: 85,
             text: '',
             icon: '0xe608',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff'
           },
           {
             pianoKey: 90,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             longClick: true
           },
@@ -75,7 +75,7 @@
             pianoKey: 92,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             longClick: true
           },
@@ -83,7 +83,7 @@
             pianoKey: 94,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff'
           }
         ],

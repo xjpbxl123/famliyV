@@ -23,7 +23,7 @@
             :hidden="toolbarHidden"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
-            :style="{backgroundColor:'#3000',dotColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
             :key="index"
             :id="button.id"
@@ -74,13 +74,13 @@
           icon: '0xe60d',
           id: 204,
           text: '调音台',
-          backgroundColor: '#3000'
+          backgroundColor: '#4000'
         }, {
           pianoKey: 42,
           icon: '0xe6e2',
           id: 205,
           text: '全屏',
-          backgroundColor: '#3000'
+          backgroundColor: '#4000'
         }],
         currentTime: '0',
         totalTime: '0',

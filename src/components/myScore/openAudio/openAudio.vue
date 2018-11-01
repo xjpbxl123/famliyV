@@ -25,7 +25,7 @@
             :icon="button.icon"
             :pianoKey="button.pianoKey"
             :longClick="button.longClick"
-            :style="{backgroundColor:'#3000',dotColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
             :hidden="toolbarHidden"
             :key="index"
@@ -78,7 +78,7 @@
           icon: '0xe60d',
           id: 204,
           text: '调音台',
-          backgroundColor: '#3000'
+          backgroundColor: '#4000'
         }],
         currentTime: '0',
         totalTime: '0',

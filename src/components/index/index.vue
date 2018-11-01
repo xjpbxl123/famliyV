@@ -101,7 +101,7 @@
           icon="0xe625"
           pianoKey="90"
           :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#3000',textColor: '#fff',dotColor: '#fff'}"/>
+          :style="{backgroundColor:'#4000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
             :hidden="logoutCover || peilianLoading"
@@ -185,7 +185,7 @@
           }
         ],
         bigBUtton: [
-          {id: 7, pianoKey: 39, text: '我的曲谱', icon: '0xe763', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
+          {id: 7, pianoKey: 39, text: '我的资源', icon: '0xe763', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
           {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
           {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
           {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}},
@@ -196,7 +196,7 @@
             pianoKey: 27,
             text: '',
             icon: '0xe71f',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 20,
             checkable: true,
@@ -207,7 +207,7 @@
             pianoKey: 90,
             text: '',
             icon: '0xe609',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 100
           },
@@ -215,7 +215,7 @@
             pianoKey: 78,
             text: '',
             icon: '0xe660',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 11,
             longClick: true
@@ -224,7 +224,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe65b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 12,
             longClick: true
@@ -233,7 +233,7 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 15
           },
@@ -241,7 +241,7 @@
             pianoKey: 85,
             text: '',
             icon: '0xe64d',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 102
           },
@@ -249,7 +249,7 @@
             pianoKey: 87,
             text: '',
             icon: '0xe610',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 101
           },
@@ -257,7 +257,7 @@
             pianoKey: 88,
             text: '',
             icon: '0xe610',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 109
           }
@@ -308,7 +308,7 @@
             text: '取消',
             icon: '0xe60a',
             id: 288,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           },
           {
@@ -316,7 +316,7 @@
             text: '注销',
             icon: '0xe651',
             id: 289,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           }
         ],

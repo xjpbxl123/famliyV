@@ -35,7 +35,7 @@
             pianoKey="70"
             :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
-            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
             :id="button.id"
             :key="button.id"
@@ -127,7 +127,7 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 5,
             show: true,
@@ -137,7 +137,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 6,
             show: true,
@@ -147,7 +147,7 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 7,
             show: true
@@ -156,7 +156,7 @@
             pianoKey: 85,
             text: '',
             icon: '0xe642',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 8,
             show: true
@@ -165,7 +165,7 @@
             pianoKey: 90,
             text: '',
             icon: '0xe63d',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 9,
             show: false
@@ -177,7 +177,7 @@
             text: '取消',
             icon: '0xe60a',
             id: 288,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           },
           {
@@ -185,7 +185,7 @@
             text: '删除',
             icon: '0xe642',
             id: 289,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           }
         ],

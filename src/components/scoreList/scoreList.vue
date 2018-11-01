@@ -77,7 +77,7 @@
             pianoKey: 73,
             text: '',
             icon: '0xe636',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 11,
             longClick: true
@@ -86,7 +86,7 @@
             pianoKey: 75,
             text: '',
             icon: '0xe64c',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 12,
             longClick: true
@@ -95,7 +95,7 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 13,
             longClick: true
@@ -104,7 +104,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 14,
             longClick: true
@@ -113,7 +113,7 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 15
           },
@@ -121,7 +121,7 @@
             pianoKey: 85,
             text: '',
             icon: '0xe653',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 16
           }

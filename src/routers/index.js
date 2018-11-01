@@ -21,6 +21,7 @@ import search from 'components/search/search-router'
 import indexMore from 'components/indexMore/indexMore-router'
 import openImg from 'components/myScore/openImg/openImg-router'
 import timbre from 'components/timbre/timbre-router'
+import timbreScore from 'components/timbreScore/timbreScore-router'
 const routers = [
   index,
   login,
@@ -39,7 +40,8 @@ const routers = [
   openImg,
   openAudio,
   openVideo,
-  timbre
+  timbre,
+  timbreScore
 ]
 /// staff是曲谱测试，仅开发环境可用
 const NODE_ENV = process.env.NODE_ENV

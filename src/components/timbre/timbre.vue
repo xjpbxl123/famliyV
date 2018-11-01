@@ -11,6 +11,14 @@
               :longClick="button.longClick"
               :hidden="button.hidden"
               :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff',dotColor: button.dotColor,fontSize:30,fontWeight:'bold'}"/>
+        <group id="501" :hidden="yidiaoButtonHidden">
+          <icon-item id="401" pianoKey="85" text="" icon="0xe601"
+                    :style="{color:'#fff',backgroundColor:'#4000',dotColor: '#fff',textColor:'#fff'}"/>
+          <icon-item id="402" pianoKey="86" icon="0xe676" text=""
+                    :style="{color:'#fff',backgroundColor:'#4000',dotColor: '#fff',textColor:'#fff',fontSize:18}"/>
+          <icon-item id="403" pianoKey="87" text="" icon="0xe605"
+                    :style="{color:'#fff',backgroundColor:'#4000',dotColor: '#fff',textColor:'#fff'}"/>
+        </group>
     </toolbar>
   </div>
 </template>
@@ -18,8 +26,8 @@
 <script>
   import statusBar from '../common/find-status-bar/find-status-bar'
   import timbreList from './timbreList'
-  import modules from 'find-sdk'
-  import { LONG_KEY78, LONG_KEY80, KEY73, KEY75, KEY78, KEY80, KEY82, BACK_PRESSED, PEDAL_PRESSED
+  import {modules} from 'find-sdk'
+  import { LONG_KEY78, LONG_KEY80, KEY73, KEY75, KEY78, KEY80, KEY82, KEY85, KEY86, KEY87, BACK_PRESSED, PEDAL_PRESSED
   } from 'vue-find'
   import { mapGetters } from 'vuex'
   export default {
@@ -36,10 +44,11 @@
         title3: '',
         chosedItem: NaN,
         chosedItemListIndex: NaN,
+        yidiaoButtonHidden: true,
         list: [
           {
             name: '电子键盘音色',
-            imgUrl: require('./images/piano.png'),
+            imgUrl: '',
             iconName: 'icon-tone-change',
             items: [
               {
@@ -788,13 +797,13 @@
           }
         ],
         toolbarHidden: false,
-        yidiaoValue: 1,
+        yidiaoValue: null,
         controlButtons: [
           {
             pianoKey: 73,
             text: '',
             icon: '0xe636',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 11,
             longClick: true,
@@ -804,7 +813,7 @@
             pianoKey: 75,
             text: '',
             icon: '0xe64c',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 12,
             hidden: true
@@ -813,7 +822,7 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 13,
             longClick: true
@@ -822,7 +831,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 14,
             longClick: true
@@ -831,9 +840,10 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
-            id: 15
+            id: 15,
+            hidden: false
           }
         ]
       }
@@ -864,6 +874,15 @@
       },
       [KEY82] () {
         this.buttonActions('ok')
+      },
+      [KEY85] () {
+        this.buttonActions('yidiaoDown')
+      },
+      [KEY86] () {
+        this.buttonActions('yidiaoReset')
+      },
+      [KEY87] () {
+        this.buttonActions('yidiaoUp')
       },
       [LONG_KEY78] () {
         this.buttonActions('up')
@@ -913,6 +932,7 @@
               case 0:
                 this.listIndex1 = Math.max(this.listIndex1 - 1, 0)
                 if (this.listIndex1 === 0) {
+                  // 隐藏ok按钮
                   this.title2 = '电子键盘音色'
                 } else {
                   this.title2 = '电子键盘移调'
@@ -921,9 +941,6 @@
               case 1:
                 if (this.listIndex1 === 0) {
                   this.listIndex2 = Math.max(this.listIndex2 - 1, 0)
-                } else {
-                  // 电子键盘移调
-                  this.yidiaoValue = Math.min(this.yidiaoValue + 1, 15)
                 }
                 break
               case 2:
@@ -944,9 +961,6 @@
               case 1:
                 if (this.listIndex1 === 0) {
                   this.listIndex2 = Math.min(this.listIndex2 + 1, this.list[this.listIndex1].items.length - 1)
-                } else {
-                  // 电子键盘移调
-                  this.yidiaoValue = Math.max(this.yidiaoValue - 1, 0)
                 }
                 break
               case 2:
@@ -974,6 +988,20 @@
             }
             this.listIndex = Math.min(this.listIndex + 1, 2)
             break
+          case 'yidiaoDown':
+            // 电子键盘移调
+            this.yidiaoValue = Math.max(this.yidiaoValue - 1, -5)
+            modules.volume.setKeyBoardOffset(this.yidiaoValue)
+            break
+          case 'yidiaoUp':
+            // 电子键盘移调
+            this.yidiaoValue = Math.min(this.yidiaoValue + 1, 7)
+            modules.volume.setKeyBoardOffset(this.yidiaoValue)
+            break
+          case 'yidiaoReset':
+            this.yidiaoValue = 0
+            modules.volume.setKeyBoardOffset(0)
+            break
           case 'back':
             if (this.listIndex - 1 < 0) {
               return this.$router.back()
@@ -981,6 +1009,22 @@
             this.listIndex = Math.max(this.listIndex - 1, 0)
             break
         }
+      },
+      getKeyboardTimbre () {
+        modules.settings.getProperty('keyboardTimbre').then((data) => {
+          this.list[0].items.forEach((value1, index1) => {
+            value1.items && value1.items.forEach((value2, index2) => {
+              if (data === value2.item) {
+                this.chosedItemListIndex = index1
+                this.list[0].imgUrl = value1.imgUrl
+                this.chosedItem = data
+              }
+            })
+          })
+        })
+        modules.settings.getProperty('keyboardOffset').then((data) => {
+          this.yidiaoValue = data
+        })
       }
     },
     watch: {
@@ -992,13 +1036,22 @@
           this.controlButtons[0].hidden = true
           this.controlButtons[1].hidden = true
         }
+      },
+      listIndex1: function (val) {
+        if (this.listIndex === 0 && val === 0) {
+          this.yidiaoButtonHidden = true
+          this.controlButtons[4].hidden = false
+        } else {
+          this.yidiaoButtonHidden = false
+          this.controlButtons[4].hidden = true
+        }
       }
     },
     created () {
       this.initData()
+      this.getKeyboardTimbre()
     },
     mounted () {
-      //   eventsHub.$emit('toast')
     },
     components: {
       statusBar,
