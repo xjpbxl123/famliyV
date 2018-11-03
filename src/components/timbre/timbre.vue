@@ -1006,10 +1006,6 @@
             if (this.listIndex === 1) {
               if (this.listIndex1 === 0) {
                 this.title3 = this.list[0].items[this.listIndex2].name
-              } else {
-                // 电子键盘移调
-                alert('设置成功')
-                return
               }
             }
             this.listIndex = Math.min(this.listIndex + 1, 2)
