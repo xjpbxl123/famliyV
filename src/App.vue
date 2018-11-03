@@ -12,6 +12,7 @@
   import { modules } from 'find-sdk'
   import eventsHub from './scripts/eventsHub'
   import toast from './components/common/toast/toast.js'
+  // import toastMixin from './components/common/toast-mixin.js'
   export default {
     name: 'app',
     data () {
@@ -20,6 +21,7 @@
         loadingInstance: null
       }
     },
+    // mixins: [toastMixin],
     created () {
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
@@ -36,6 +38,25 @@
           this.backgroundUrl = data.backGroundImageName
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
+        }
+      })
+
+      // 监听U盘
+      modules.notification.regist('UpanChange', data => {
+        console.log(window.location.href)
+        this.$store.dispatch('index/setUpanInsert', data.isInsert)
+        if (data.isInsert) {
+          if (window.location.href.indexOf('myScore') !== -1) {
+            // 当前在我的曲谱页面
+            // this.showToast({text: '加载完毕', imgName: 'syncInfo'})
+            modules.nativeRouter.alert('加载完毕', 2)
+          } else {
+            // this.showToast({text: '加载完毕,请在我的资源中打开', imgName: 'syncInfo'})
+            modules.nativeRouter.alert('加载完毕,请在我的资源中打开', 2)
+          }
+        } else {
+          // this.showToast({text: '移除成功', imgName: 'syncInfo'})
+          modules.nativeRouter.alert('移除成功', 2)
         }
       })
 

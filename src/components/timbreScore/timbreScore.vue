@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <statusBar/>
-    <timbreScoreList :list="list" :listIndex="listIndex"  :title1="title1" :title2="title2" :title3="title3"  :listIndex1="listIndex1" :listIndex2="listIndex2" :listIndex3="listIndex3"  :chosedItem="chosedItem" :chosedItemListIndex="chosedItemListIndex" :items="items"/>
+    <timbreScoreList :list="list" :listIndex="listIndex"  :title1="title1" :title2="title2" :title3="title3"  :listIndex1="listIndex1" :listIndex2="listIndex2" :listIndex3="listIndex3"  :chosedItem="chosedItem" :chosedItemListIndex="chosedItemListIndex" :items="items" :setSelect="setSelect"/>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
               :key="button.pianoKey"
@@ -897,7 +897,29 @@
       ...mapGetters(['bookInfo'])
     },
     methods: {
-      initData () {
+      setSelect (index, listName) {
+        console.log(listName)
+        switch (this.listIndex) {
+          case 0:
+            if (listName !== 'list1') {
+              return
+            }
+            this.listIndex1 = index
+            break
+          case 1:
+            if (listName !== 'list2') {
+              return
+            }
+            this.listIndex2 = index
+            break
+          case 2:
+            if (listName !== 'list3') {
+              return
+            }
+            this.listIndex3 = index
+            break
+        }
+        this.buttonActions('ok')
       },
       buttonActions (type) {
         switch (type) {
@@ -957,6 +979,12 @@
           case 'back':
             if (this.listIndex - 1 < 0) {
               return this.$router.back()
+            }
+            if (this.listIndex === 2) {
+              this.listIndex3 = 0
+            }
+            if (this.listIndex === 1) {
+              this.listIndex2 = 0
             }
             this.listIndex = Math.max(this.listIndex - 1, 0)
             break

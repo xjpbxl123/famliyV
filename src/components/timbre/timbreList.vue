@@ -1,10 +1,10 @@
 <template>
  <div class="timbreList">
-    <div class="listOne" v-if="listIndex <= 1">
+    <div class="listOne">
         <div class="title" v-text="title1"></div>
         <div class="box1">
             <ul>
-                <li v-for="(item,index) in list" :key="index"  :class="{active: index===listIndex1 && listIndex === 0}">
+                <li v-for="(item,index) in list" :key="index"  :class="{active: index===listIndex1 && listIndex === 0}" @click="setSelect(index, 'list1')">
                     <div class="item">
                         <span class="icon iconfont"  :class="item.iconName"></span>
                         <span class="name" v-text="item.name"></span>
@@ -18,7 +18,7 @@
             </ul>
         </div>
     </div>
-    <div class="listTwo" :class="{'slideLeft': listIndex === 2}">
+    <div class="listTwo" v-if="listIndex !== 2">
         <div class="title">
             <span class="iconfont icon-arrow-back icon1"></span>
             <span class="title1" v-text="title1"></span>
@@ -27,7 +27,7 @@
         </div>
         <div class="box1" v-if="listIndex1 === 0">
             <ul :style="{top: rightTop+'px'}">
-                <li v-for="(item,index) in list[0].items" :key="index"  :class="{active: index===listIndex2 && listIndex === 1}">
+                <li v-for="(item,index) in list[0].items" :key="index"  :class="{active: index===listIndex2 && listIndex === 1}" @click="setSelect(index, 'list2')">
                     <div class="item">
                         <div class="img" v-if="item.imgUrl">
                             <img :src="item.imgUrl" alt="">
@@ -56,7 +56,7 @@
         </div>
         <div class="box1">
             <ul>
-                <li v-for="(item,index) in list[0].items[this.listIndex2].items" :key="index"  :class="{active: index===listIndex3 && listIndex === 2}">
+                <li v-for="(item,index) in list[0].items[this.listIndex2].items" :key="index"  :class="{active: index===listIndex3 && listIndex === 2}" @click="setSelect(index, 'list3')">
                     <div class="item">
                         <div class="img" :class="{'imgN': !item.imgUrl}" >
                             <img :src="item.imgUrl" alt="" v-if="item.imgUrl">
@@ -123,6 +123,9 @@
       chosedItemListIndex: {
         type: Number,
         default: () => NaN
+      },
+      setSelect: {
+        type: Function
       }
     },
     watch: {
@@ -291,11 +294,6 @@
             background:rgba(0,0,0,0.3);
             border-radius:0px 12px 12px 0px;
             padding-top: 56px;
-            &.slideLeft {
-                left: 850px;
-                background:linear-gradient(-90deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.3) 100%);
-                border-radius:12px 0px 0px 12px;
-            }
             .title {
                 width: 855px;
                 margin: 0 auto;

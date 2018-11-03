@@ -12,7 +12,6 @@ export default {
   },
   methods: {
     showToast (data) {
-      modules.nativeRouter.back()
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         console.log('打开toast页面')

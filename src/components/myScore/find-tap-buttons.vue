@@ -1,6 +1,6 @@
 <template>
     <div class="bottom" >
-        <button class="eachButton" v-for="(item,index) in tapButtons" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)" >
+        <button class="eachButton" v-for="(item,index) in tapButton" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)">
             <span class="line" v-show="myScoreTapIndex === index"></span>
         </button>
     </div>
@@ -15,32 +15,13 @@
       },
       setTapSelect: {
         type: Function
+      },
+      tapButton: {
+        type: Array
       }
     },
     data () {
       return {
-        tapButtons: [
-          {
-            className: 'localSource key-39',
-            text: '本地资源'
-          },
-          {
-            className: 'myCollect key-42',
-            text: '我的收藏'
-          },
-          {
-            className: 'myRecord key-46',
-            text: '我的录音'
-          },
-          {
-            className: 'myPlay key-49',
-            text: '我的弹奏'
-          },
-          {
-            className: 'recentOpen key-54',
-            text: '最近打开'
-          }
-        ]
       }
     },
     methods: {},
@@ -72,6 +53,26 @@
     transform: translateX(86%);
     bottom: 36px;
   }
+  .usb::before {
+    position: absolute;
+    bottom: 5px;
+    content: "USB存储";
+    width: 182px;
+    height: 100px;
+    left: -148px;
+    background: url("./images/btn_page_nor.png");
+    background-size: cover;
+    opacity: 0.8;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+    line-height: 100px;
+  }
+  .usb {
+    .line {
+      transform: translateX(-15%);
+    }
+  }
   .localSource::before {
     position: absolute;
     bottom: 5px;
@@ -89,7 +90,7 @@
   }
   .myCollect {
     .line {
-      transform: translateX(100%);
+      transform: translateX(105%);
     }
   }
   .myCollect::before {
@@ -129,7 +130,7 @@
   }
   .myPlay {
     .line {
-      transform: translateX(80%);
+      transform: translateX(86%);
     }
   }
   .myPlay::before {
@@ -149,7 +150,7 @@
   }
   .recentOpen {
     .line {
-      transform: translateX(-8%);
+      transform: translateX(0);
     }
   }
   .recentOpen::before {

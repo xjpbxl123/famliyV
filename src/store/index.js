@@ -84,7 +84,7 @@ export default function createStore () {
             musicInfo: [],
             partnerVersion: {},
             localPartnerVersion: {},
-            pianoInfo: {orn: 'family', pic: ''} // 钢琴orn/logo
+            isUpanInsert: false
           }
         } // 数据本地缓存
       },
@@ -141,6 +141,9 @@ export default function createStore () {
       },
       musicInfo: state => {
         return state.storage.cache.renderCache.musicInfo
+      },
+      isUpanInsert: state => {
+        return state.storage.cache.renderCache.isUpanInsert
       },
       partnerVersion: state => {
         return state.storage.cache.renderCache.partnerVersion

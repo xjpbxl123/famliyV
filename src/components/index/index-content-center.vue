@@ -62,7 +62,6 @@
         height: 660px;
         float: left;
         position: relative;
-        transition: all 0.4s linear;
         border-radius: 10px;
         &.active {
           transform: scale(1.15);
@@ -150,7 +149,6 @@
             height: 564px;
             left: 0;
             bottom: 0;
-            transition: all 0.1s linear;
           }
           &.active {
             .img {
@@ -205,7 +203,7 @@
               background-size: cover;
               width: 584px;
               height: 660px;
-              left: -106px;
+              left: -90px;
               bottom: 0;
             }
           }

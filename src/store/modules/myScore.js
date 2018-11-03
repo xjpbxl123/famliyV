@@ -4,6 +4,7 @@ const MY_SCORE_TAP_INDEX = 'MY_SCORE_TAP_INDEX' /// 我的曲谱index
 const LOCAL_SOURCE = 'LOCAL_SOURCE' /// 本地资源
 const LOCAL_SOURCE_INDEX = 'LOCAL_SOURCE_INDEX' /// 本地资源index
 const LOCAL_SOURCE_PATH = 'LOCAL_SOURCE_PATH' /// 本地资源路径
+const UPAN_PATH = 'UPAN_PATH'
 const MY_RECORD = 'MY_RECORD' /// 我的录音
 const MY_RECORD_INDEX = 'MY_RECORD_INDEX' /// 我的录音index
 const MY_RECORD_PATH = 'MY_RECORD_PATH' // 我的录音路径
@@ -13,6 +14,9 @@ const MY_PLAY_PATH = 'MY_PLAY_PATH' // 我的录音路径
 const MY_COLLECT_INDEX = 'MY_COLLECT_INDEX' /// 我的收藏index
 const MY_RECENT_INDEX = 'MY_RECENT_INDEX' /// 我的最近打开index
 const ORDER_INDEX = 'ORDER_INDEX' /// 文件排序index
+const UPAN_SOURCE = 'UPAN_SOURCE' /// U盘数据
+const UPAN_ORDER_INDEX = 'UPAN_ORDER_INDEX'
+const UPAN_INDEX = 'UPAN_INDEX'
 
 export default {
   namespaced: true,
@@ -29,9 +33,16 @@ export default {
     myCollectIndex: 0,
     myRecentIndex: 0,
     orderIndex: 0,
-    myPlayPath: '$userHistory'
+    uPanOrderIndex: 0,
+    uPanIndex: 0,
+    myPlayPath: '$userHistory',
+    uPanSource: [],
+    uPanPath: '/Volumes'
   },
   mutations: {
+    [UPAN_SOURCE] (state, data) {
+      state.uPanSource = data
+    },
     [MY_SCORE_TAP_INDEX] (state, index) {
       state.myScoreTapIndex = index
     },
@@ -43,6 +54,9 @@ export default {
     },
     [ORDER_INDEX] (state, data) {
       state.orderIndex = data
+    },
+    [UPAN_ORDER_INDEX] (state, data) {
+      state.uPanOrderIndex = data
     },
     [LOCAL_SOURCE_PATH] (state, path) {
       state.localSourcePath = path
@@ -70,6 +84,12 @@ export default {
     },
     [MY_RECENT_INDEX] (state, index) {
       state.myRecentIndex = index
+    },
+    [UPAN_PATH] (state, path) {
+      state.uPanPath = path
+    },
+    [UPAN_INDEX] (state, index) {
+      state.uPanIndex = index
     }
   },
   actions: {
@@ -86,6 +106,18 @@ export default {
       commit(ORDER_INDEX, num)
     },
     /**
+     * @desc U盘index
+     * */
+    setUpanIndex ({commit}, num) {
+      commit(UPAN_INDEX, num)
+    },
+    /**
+     * @desc U盘文件排序
+     * */
+    setUpanOrderIndex ({commit}, num) {
+      commit(UPAN_ORDER_INDEX, num)
+    },
+    /**
      * @desc 本地资源选中index
      * */
     setLocalSourceIndex ({commit}, num) {
@@ -96,6 +128,12 @@ export default {
      * */
     setLocalSourcePath ({commit}, path) {
       commit(LOCAL_SOURCE_PATH, path)
+    },
+    /**
+     * @desc U盘资源path
+     * */
+    setUpanPath ({commit}, path) {
+      commit(UPAN_PATH, path)
     },
     /**
      * @desc 我的录音path
@@ -110,11 +148,14 @@ export default {
       commit(MY_PLAY_PATH, path)
     },
     /**
-     * @desc 获取我的曲谱本地资源列表
+     * @desc 获取我的曲谱本地资源列表/U盘列表
      * */
-    getLocalSource ({commit, state}, path) {
+    getLocalSource ({commit, state}, {path, type}) {
       let deleteArr = []
-      file.readFolderFile(path).then((res) => {
+      return file.readFolderFile(path).then((res) => {
+        if (path === '/Volumes' && res.length === 0) {
+          return []
+        }
         // 第一步 剔除掉不支持的文件 并加上文件格式属性
         res.forEach((value, index) => {
           if (value.type === 'dir') {
@@ -229,17 +270,29 @@ export default {
           }
         })
         // 排序
-        switch (state.orderIndex) {
+        let orIndex = state.orderIndex
+        if (type === 'Upan') {
+          orIndex = state.uPanOrderIndex
+        }
+        switch (orIndex) {
           case 0:
             // 名称排序
             res.sort((a, b) => { return a.name > b.name })
-            commit(LOCAL_SOURCE, res)
-            break
+            if (type === 'Upan') {
+              commit(UPAN_SOURCE, res)
+            } else {
+              commit(LOCAL_SOURCE, res)
+            }
+            return res
           case 1:
             // 时间排序
             res.sort((a, b) => { return a.createData < b.createData })
-            commit(LOCAL_SOURCE, res)
-            break
+            if (type === 'Upan') {
+              commit(UPAN_SOURCE, res)
+            } else {
+              commit(LOCAL_SOURCE, res)
+            }
+            return res
           case 2:
             // 类型排序
             let fondelArr = []
@@ -280,8 +333,12 @@ export default {
             xmlArr.sort((a, b) => { return a.name > b.name })
             imgArr.sort((a, b) => { return a.name > b.name })
             scoreArr = scoreArr.concat(fondelArr, pdfArr, mp3Arr, videoArr, midiArr, xmlArr, imgArr)
-            commit(LOCAL_SOURCE, scoreArr)
-            break
+            if (type === 'Upan') {
+              commit(UPAN_SOURCE, scoreArr)
+            } else {
+              commit(LOCAL_SOURCE, scoreArr)
+            }
+            return scoreArr
         }
       })
     },

@@ -20,7 +20,6 @@ export default {
     rightType: 'recentOpen',
     moreIndex: 0,
     moreIndexTitle: '最近更新'
-
   },
   mutations: {
     [SELECTED_INDEX] (state, index) {
@@ -273,6 +272,12 @@ export default {
       }).catch((error) => {
         return error
       })
+    },
+    /**
+     * @desc 获取曲子信息
+     * */
+    setUpanInsert ({dispatch} = {}, data) {
+      return dispatch('setCacheToStorage', {isUpanInsert: data}, {root: true})
     }
   }
 }
