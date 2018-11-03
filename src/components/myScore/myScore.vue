@@ -37,6 +37,14 @@
             :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
             :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+         <icon-item id="889"
+            key="889"
+            icon="0xe61c"
+            text="移除存储"
+            pianoKey="66"
+            :hidden="usbButtonHidden"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
             :id="button.id"
             :key="button.id"
@@ -76,6 +84,7 @@
       return {
         toolbarHidden: false,
         orderButtonText: '名称',
+        usbButtonHidden: true,
         tapButtons: [
           {
             pianoKey: 39,
@@ -278,6 +287,9 @@
           this.getUpanList()
         }
       },
+      [keys.KEY66] () {
+        this.buttonActions('popUsb')
+      },
       [keys.KEY70] () {
         if (this.myScoreTapIndex === 0 || this.myScoreTapIndex === 5) this.buttonActions('changeOrder')
       },
@@ -332,7 +344,12 @@
     computed: {
       ...mapState({
         myScoreTapIndex: function (state) {
-          state.myScore.myScoreTapIndex === 4 ? this.controlButtons[this.controlButtons.length - 2].show = false : this.controlButtons[this.controlButtons.length - 2].show = true
+          if (state.myScore.myScoreTapIndex === 4 || state.myScore.myScoreTapIndex === 5) {
+            this.controlButtons[this.controlButtons.length - 2].show = false
+          } else {
+            this.controlButtons[this.controlButtons.length - 2].show = true
+          }
+          state.myScore.myScoreTapIndex === 5 ? this.usbButtonHidden = false : this.usbButtonHidden = true
           if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
             this.controlButtons[this.controlButtons.length - 1].show = true
           } else {
@@ -597,7 +614,12 @@
                   this.playMidi(this.localSourcePath + '/' + data.name)
                   break
                 } else if (data.typeName === 'mp3') {
-                  this.$router.push({path: '/openAudio', query: {url: data.http, fileName: data.name}})
+                  modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
+                  })
                 } else if (data.typeName === 'video') {
                   this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
                 }
@@ -741,7 +763,12 @@
                   this.playMidi(this.uPanPath + '/' + data.name)
                   break
                 } else if (data.typeName === 'mp3') {
-                  this.$router.push({path: '/openAudio', query: {url: data.http, fileName: data.name}})
+                  modules.file.pathComplement(this.uPanPath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
+                  })
                 } else if (data.typeName === 'video') {
                   this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
                 }
@@ -794,6 +821,22 @@
               uPanOrderIndex = 0
             }
             this.$store.dispatch('myScore/setUpanOrderIndex', uPanOrderIndex)
+            break
+          case 'popUsb':
+            // 弹出U盘
+            let usbName = ''
+            if (uPanSource.length > 0) {
+              if (uPanPath === '/Volumes') {
+                usbName = uPanSource[uPanIndex].name
+              } else {
+                let nameArr = uPanPath.split('/')
+                usbName = nameArr[2]
+              }
+              console.log(usbName)
+              modules.file.umountUpan(usbName).then(data => {
+                console.log(data, 'usb弹出结果')
+              })
+            }
             break
         }
       },

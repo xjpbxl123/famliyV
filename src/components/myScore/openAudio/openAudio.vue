@@ -1,16 +1,17 @@
 <template>
   <div class="openAudio">
     <statusBar/>
-    <audio :src="audioUrl" class="audio" ref="audio" preload></audio>
+    <!-- <audio :src="audioUrl" class="audio" ref="audio" preload></audio> -->
+    <fh-audio ref="audio" :style="{top: 0, widht: 0, height: 0}" />
     <div class="audioBox">
         <div class="audioMenu">
             <span class="audioName" v-text="songName"></span>
             <div class="time"><span class="currentTime">{{currentTime | timer}}</span> / <span classs="totalTime" >{{totalTime | timer}}</span></div>
             <div class="audioMess">
               <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
-              <div class="mess">歌曲名：<span class="songName" v-text="songName"></span></div>
-              <div class="mess">艺人：<span class="singer" v-text="singer"></span></div>
-              <div class="mess">专辑：<span class="album" v-text="album"></span></div>
+              <div class="mess">歌曲名：<span class="songName" v-text="songName || '未知'"></span></div>
+              <div class="mess">艺人：<span class="singer" v-text="singer || '未知'"></span></div>
+              <div class="mess">专辑：<span class="album" v-text="album || '未知'"></span></div>
             </div>
         </div>
         <div class="songSpan">
@@ -82,7 +83,9 @@
         }],
         currentTime: '0',
         totalTime: '0',
-        isPlaying: false
+        isPlaying: false,
+        interval: null,
+        hasLoaded: false
       }
     },
     mixins: [mixerMixin],
@@ -137,25 +140,40 @@
       buttonActions (type) {
         switch (type) {
           case 'playOrPause':
-            this.isPlaying ? this.$refs.audio.pause() : this.$refs.audio.play()
+            if (!this.hasLoaded) {
+              return
+            }
+            if (this.isPlaying) {
+              window.fp.uis.audio.pause().then(data => {
+                console.log('播放完成', data)
+              })
+            } else {
+              this.play()
+            }
             this.isPlaying = !this.isPlaying
             break
           case 'fastBackward':
             // 快退
-            this.currentTime = Math.max(this.currentTime - 10, 0)
-            this.$refs.audio.currentTime = this.currentTime
+            let currentTime = this.currentTime
+            currentTime = Math.max(this.currentTime - 10, 0)
+            window.fp.uis.audio.seekTo(currentTime)
+            this.getCurrentTime()
             break
           case 'fastForward':
             // 快进
-            this.currentTime = Math.min(this.currentTime + 10, this.totalTime)
-            if (this.currentTime === this.totalTime) {
-              this.isPlaying = false
-            }
-            this.$refs.audio.currentTime = this.currentTime
+            let currentTime1 = this.currentTime
+            currentTime1 = Math.min(this.currentTime + 10, this.totalTime)
+            console.log(currentTime1)
+            window.fp.uis.audio.seekTo(currentTime1)
+            this.getCurrentTime()
             break
           case 'restart':
             // 回到最初
-            this.$refs.audio.currentTime = 0
+            window.fp.uis.audio.reset()
+            this.getCurrentTime()
+            if (this.isPlaying) {
+              this.play()
+            }
             break
           case 'mixer':
             console.log('打开调音台')
@@ -165,26 +183,31 @@
             this.$router.back()
         }
       },
-      addEventListeners: function () {
-        const self = this
-        self.$refs.audio.addEventListener('timeupdate', self._currentTime)
-        self.$refs.audio.addEventListener('canplay', self._durationTime)
+      play () {
+        this.$refs.audio.play().then(data => {
+          console.log('播放完成', data)
+          window.fp.uis.audio.reset()
+          this.getCurrentTime()
+          clearInterval(this.interval)
+        })
+        this.interval = setInterval(() => {
+          this.getCurrentTime()
+        }, 200)
       },
-      removeEventListeners: function () {
+      getCurrentTime: function () {
         const self = this
-        self.$refs.audio.removeEventListener('timeupdate', self._currentTime)
-        self.$refs.audio.removeEventListener('canplay', self._durationTime)
-      },
-      _currentTime: function () {
-        const self = this
-        self.currentTime = parseInt(self.$refs.audio.currentTime)
+        window.fp.uis.audio.getCurrentTime().then(data => {
+          self.currentTime = parseInt(data)
+        })
         if (self.currentTime === self.totalTime) {
-          this.isPlaying = false
+          self.isPlaying = false
         }
       },
-      _durationTime: function () {
+      getTotalTime: function () {
         const self = this
-        self.totalTime = parseInt(self.$refs.audio.duration)
+        window.fp.uis.audio.getTotalTime().then(data => {
+          self.totalTime = parseInt(data)
+        })
       },
       filterUrl (fileName) {
         this.fileName = fileName || ''
@@ -195,12 +218,26 @@
     mounted () {
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
-        this.audioUrl = this.$route.query.url
-        this.addEventListeners()
+        this.$refs.audio.loadUrl(this.$route.query.url).then(data => {
+          console.log(data, '加载完成')
+          this.hasLoaded = data
+          if (data.result) {
+            this.getTotalTime()
+            window.fp.uis.audio.info().then(data => {
+              if (data) {
+                this.singer = data.artist || '未知'
+                this.album = data.albumName || '未知'
+                if (data.title) {
+                  this.songName = data.title
+                }
+              }
+            })
+          }
+        })
       }
     },
     beforeDestroyed () {
-      this.removeEventListeners()
+      clearInterval(this.interval)
     },
     components: {
       statusBar
