@@ -71,6 +71,7 @@ export default function createStore () {
             hotBooksAll: {bookList: []},
             recentBooksAll: {bookList: []},
             collectList: [],
+            copyArr: [],
             yearList: [],
             scoreSetList: [],
             scoreList: [],
@@ -99,6 +100,9 @@ export default function createStore () {
        */
       hotBooksAll: state => {
         return state.storage.cache.renderCache.hotBooksAll
+      },
+      copyArr: state => {
+        return state.storage.cache.renderCache.copyArr
       },
       recentBooksAll: state => {
         return state.storage.cache.renderCache.recentBooksAll

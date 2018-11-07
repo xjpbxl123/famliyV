@@ -84,6 +84,14 @@
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
 
+        <icon-item id="899"
+            key="899"
+            icon="0xe60d"
+            text="调音台"
+            pianoKey="87"
+            titlePosition="below"
+            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
           :key="index"
@@ -139,6 +147,7 @@
   import initData from './initData.js'
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
+  import mixerMixin from '../common/mixer-mixin.js'
   export default {
     data () {
       return {
@@ -238,7 +247,7 @@
             id: 15
           },
           {
-            pianoKey: 85,
+            pianoKey: 73,
             text: '',
             icon: '0xe64d',
             backgroundColor: '#4000',
@@ -246,7 +255,7 @@
             id: 102
           },
           {
-            pianoKey: 87,
+            pianoKey: 75,
             text: '',
             icon: '0xe610',
             backgroundColor: '#4000',
@@ -365,7 +374,7 @@
         openPeilian: false
       }
     },
-    mixins: [initData],
+    mixins: [initData, mixerMixin],
     find: {
       [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
@@ -466,6 +475,13 @@
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
+      [keys.receiveMsgFromWeex] ({method, params}) {
+        this[method] && this[method](params)
+      },
+      [keys.KEY87] () {
+        console.log('打开调音台')
+        this.openMixer()
+      },
       [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
           // 进入曲谱过程中不可点
@@ -517,10 +533,10 @@
       [keys.KEY82] () {
         this.buttonActions('ok')
       },
-      [keys.KEY85] () {
+      [keys.KEY73] () {
         this.buttonActions('search')
       },
-      [keys.KEY87] () {
+      [keys.KEY75] () {
         if (!this.canEnterModule) {
           console.log('return')
           return

@@ -100,6 +100,18 @@ export default {
       commit(MY_SCORE_TAP_INDEX, num)
     },
     /**
+     * @desc usb资源拷贝数组
+     * */
+    setCopyArr ({dispatch, state}, data) {
+      if (typeof data === 'string') {
+        let copyArr = this.state.storage.cache.renderCache.copyArr
+        copyArr.push(data)
+        return dispatch('setCacheToStorage', {copyArr: copyArr}, {root: true})
+      } else if (typeof data === 'object') {
+        return dispatch('setCacheToStorage', {copyArr: data}, {root: true})
+      }
+    },
+    /**
      * @desc 文件排序
      * */
     setOrderIndex ({commit}, num) {
@@ -273,6 +285,16 @@ export default {
         let orIndex = state.orderIndex
         if (type === 'Upan') {
           orIndex = state.uPanOrderIndex
+          console.log(this.state.storage.cache.renderCache['copyArr'], 'copyArr')
+          console.log(state.uPanPath)
+          // 拿到拷贝状态
+          res.forEach((value) => {
+            this.state.storage.cache.renderCache['copyArr'].forEach((value1) => {
+              if (value1 === state.uPanPath + '/' + value.name) {
+                value.copyed = true
+              }
+            })
+          })
         }
         switch (orIndex) {
           case 0:

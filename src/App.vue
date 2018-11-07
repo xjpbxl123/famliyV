@@ -43,7 +43,7 @@
 
       // 监听U盘
       modules.notification.regist('UpanChange', data => {
-        console.log(window.location.href)
+        this.$store.dispatch('myScore/setCopyArr', [])
         this.$store.dispatch('index/setUpanInsert', data.isInsert)
         if (data.isInsert) {
           if (window.location.href.indexOf('myScore') !== -1) {

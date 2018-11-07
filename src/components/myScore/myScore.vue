@@ -1,10 +1,10 @@
 <template>
   <div class="myScore">
     <statusBar/>
-    <find-wrap :title="title" :pagination=false>
+    <find-wrap :title="title" :pagination="false">
         <div class="logo iconfont icon-logo"> </div>
-        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect"/>
-        <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 5" :localSourceIndex="uPanIndex" :setSelect="setSelect"/>
+        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect" :typeNum="1"/>
+        <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 5" :localSourceIndex="uPanIndex" :setSelect="setSelect"  :typeNum="2"/>
         <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex" :setSelect="setSelect"/>
         <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex" :setSelect="setSelect"/>
         <find-userMess v-show="myScoreTapIndex === 1"
@@ -37,12 +37,20 @@
             :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
             :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
-         <icon-item id="889"
+          <icon-item id="889"
             key="889"
-            icon="0xe61c"
-            text="移除存储"
+            icon="0xe76a"
+            text="推出USB"
             pianoKey="66"
             :hidden="usbButtonHidden"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+          <icon-item id="890"
+            key="890"
+            icon="0xe769"
+            text="拷至本地"
+            pianoKey="85"
+            :hidden="copyButtonHidden"
             titlePosition="below"
             :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
@@ -79,12 +87,14 @@
   import {modules} from 'find-sdk'
   import findPrompt from '../common/find-prompt/find-prompt'
   import * as keys from 'vue-find'
+  import eventsHub from 'scripts/eventsHub'
   export default {
     data () {
       return {
         toolbarHidden: false,
         orderButtonText: '名称',
         usbButtonHidden: true,
+        copyButtonHidden: true,
         tapButtons: [
           {
             pianoKey: 39,
@@ -256,8 +266,9 @@
       [keys.KEY39] () {
         if (this.localSourcePath !== '$userUpload') {
           this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
-          this.getLocalSource()
+          this.$store.dispatch('myScore/setLocalSourceIndex', 0)
         }
+        this.getLocalSource()
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
       },
       [keys.KEY42] () {
@@ -284,11 +295,18 @@
         this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
         if (this.uPanPath !== '/Volumes') {
           this.$store.dispatch('myScore/setUpanPath', '/Volumes')
-          this.getUpanList()
+          this.$store.dispatch('myScore/setUpanIndex', 0)
         }
+        this.getUpanList()
       },
       [keys.KEY66] () {
         this.buttonActions('popUsb')
+      },
+      [keys.KEY85] () {
+        if (!this.copyButtonHidden) {
+          return this.buttonActions('copyFile')
+        }
+        this.buttonActions('delete')
       },
       [keys.KEY70] () {
         if (this.myScoreTapIndex === 0 || this.myScoreTapIndex === 5) this.buttonActions('changeOrder')
@@ -315,9 +333,6 @@
       },
       [keys.KEY82] () {
         this.buttonActions('ok')
-      },
-      [keys.KEY85] () {
-        this.buttonActions('delete')
       },
       [keys.KEY90] () {
         this.buttonActions('scoreList')
@@ -349,7 +364,13 @@
           } else {
             this.controlButtons[this.controlButtons.length - 2].show = true
           }
-          state.myScore.myScoreTapIndex === 5 ? this.usbButtonHidden = false : this.usbButtonHidden = true
+          if (state.myScore.myScoreTapIndex === 5) {
+            this.copyButtonHidden = false
+            this.usbButtonHidden = false
+          } else {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
+          }
           if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
             this.controlButtons[this.controlButtons.length - 1].show = true
           } else {
@@ -401,11 +422,29 @@
         })
       },
       uPanSource (value) {
+        let flag = false
         value.forEach((item, index) => {
           if (item.name === this.dirName1) {
+            flag = true
             this.$store.dispatch('myScore/setUpanIndex', index)
+            if (this.myScoreTapIndex === 5) {
+              if (item.type === 'dir') {
+                this.copyButtonHidden = true
+              } else {
+                this.copyButtonHidden = false
+              }
+            }
           }
         })
+        if (!flag && this.myScoreTapIndex === 5 && value.length !== 0) {
+          if (value[0].type === 'dir') {
+            this.copyButtonHidden = true
+          } else {
+            this.copyButtonHidden = false
+          }
+        } else {
+          this.copyButtonHidden = true
+        }
       },
       myRecord (value) {
         value.forEach((item, index) => {
@@ -425,6 +464,13 @@
         if (value !== old) {
           let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开', 'USB存储']
           this.title = title[value]
+        }
+        if (value === 5) {
+          if (this.uPanSource[this.uPanIndex].type === 'dir') {
+            this.copyButtonHidden = true
+          } else {
+            this.copyButtonHidden = false
+          }
         }
       },
       orderIndex (value) {
@@ -453,6 +499,13 @@
             }
           })
         }, 10000)
+      },
+      uPanIndex (value) {
+        if (this.uPanSource[value].type === 'dir') {
+          this.copyButtonHidden = true
+        } else {
+          this.copyButtonHidden = false
+        }
       }
     },
     methods: {
@@ -835,6 +888,39 @@
               console.log(usbName)
               modules.file.umountUpan(usbName).then(data => {
                 console.log(data, 'usb弹出结果')
+              })
+            }
+            break
+          case 'copyFile':
+            if (this.uPanPath === '/Volumes') {
+              return
+            }
+            let data2 = uPanSource[uPanIndex]
+            if (data2.filesName && data2.filesName.length > 1) {
+              // 合成曲谱
+              data2.filesName.forEach((value, index) => {
+                modules.file.copyFile(this.uPanPath + '/' + value, '$userUpload' + '/' + value).then(data => {
+                  console.log(data, '文件复制结果')
+                  if (data && index === data2.filesName.length - 1) {
+                    this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + data2.name)
+                    eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                    this.getUpanList()
+                  } else {
+                    eventsHub.$emit('toast', {text: '拷贝失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  }
+                })
+              })
+            } else {
+              // 单个文件
+              modules.file.copyFile(this.uPanPath + '/' + data2.name, '$userUpload' + '/' + data2.name).then(data => {
+                console.log(data, '文件复制结果')
+                if (data) {
+                  this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + data2.name)
+                  eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  this.getUpanList()
+                } else {
+                  eventsHub.$emit('toast', {text: '拷贝失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                }
               })
             }
             break
