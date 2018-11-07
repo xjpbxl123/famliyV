@@ -194,6 +194,10 @@
         }
         let {courseSetName, courseName} = course
         let authorName = this.$route.query.authorName
+        if (!course.correlationMusic[0]) {
+          // 没有练习 提示用户
+          return this.errorHandling({desc: '此课程暂无练习'})
+        }
         let id = course.correlationMusic[0].bookId
         let coverSmall = course.correlationMusic[0].coverSmall
         Object.assign(scoreData, {courseSetName, courseName, id, coverSmall, authorName})
@@ -664,6 +668,12 @@
       }
     },
     beforeDestroy () {
+      if (this.progressing) {
+        download.abortAll(this.files).then((data) => {
+          this.progressing = false
+          this.sendMessageAgain()
+        })
+      }
       clearInterval(this.interval)
       clearTimeout(this.timer)
     }
