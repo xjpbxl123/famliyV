@@ -785,7 +785,8 @@
               {
                 name: '打击乐音符',
                 imgUrl: require('./images/Percussive Drums.png'),
-                hideArrow: true
+                hideArrow: true,
+                item: 128
               }
             ]
           },
@@ -999,13 +1000,20 @@
             if (this.listIndex === 2) {
               let item = this.list[0].items[this.listIndex2].items[this.listIndex3].item
               this.chosedItemListIndex = this.listIndex2
-              this.list[0].imgUrl = this.list[0].items[this.listIndex2].imgUrl
+              this.list[0].imgUrl = this.list[0].items[this.listIndex2].items[this.listIndex3].imgUrl || this.list[0].items[this.listIndex2].imgUrl
               this.chosedItem = item
               return modules.device.setKeyboardTimbre(item)
             }
             if (this.listIndex === 1) {
               if (this.listIndex1 === 0) {
-                this.title3 = this.list[0].items[this.listIndex2].name
+                if (this.list[0].items[this.listIndex2].items) {
+                  this.title3 = this.list[0].items[this.listIndex2].name
+                } else {
+                  this.chosedItemListIndex = this.listIndex2
+                  this.chosedItem = this.list[0].items[this.listIndex2].item
+                  this.list[0].imgUrl = this.list[0].items[this.listIndex2].imgUrl
+                  return modules.device.setKeyboardTimbre(this.list[0].items[this.listIndex2].item)
+                }
               }
             }
             this.listIndex = Math.min(this.listIndex + 1, 2)
@@ -1041,10 +1049,15 @@
       getKeyboardTimbre () {
         modules.settings.getProperty('keyboardTimbre').then((data) => {
           this.list[0].items.forEach((value1, index1) => {
+            if (value1.item) {
+              this.chosedItemListIndex = index1
+              this.list[0].imgUrl = value1.imgUrl
+              return
+            }
             value1.items && value1.items.forEach((value2, index2) => {
               if (data === value2.item) {
                 this.chosedItemListIndex = index1
-                this.list[0].imgUrl = value1.imgUrl
+                this.list[0].imgUrl = value2.imgUrl || value1.imgUrl
                 this.chosedItem = data
               }
             })
