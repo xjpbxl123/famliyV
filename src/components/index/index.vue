@@ -261,14 +261,6 @@
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 101
-          },
-          {
-            pianoKey: 88,
-            text: '',
-            icon: '0xe610',
-            backgroundColor: '#4000',
-            dotColor: '#fff',
-            id: 109
           }
         ],
         playButtons: [
@@ -501,6 +493,8 @@
         }
         if (!this.logoutCover) {
           this.buttonActions('login')
+        } else {
+          this.go('/timbre')
         }
       },
       [keys.KEY78] () {
@@ -535,17 +529,6 @@
       },
       [keys.KEY73] () {
         this.buttonActions('search')
-      },
-      [keys.KEY75] () {
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        this.buttonActions('tone')
-      },
-      [keys.KEY88] () {
-        this.go('/timbre')
       },
       [keys.KEY102] () {
         if (this.openMusicScore || this.loading) {
@@ -1590,7 +1573,7 @@
           list = recentOpenList
         }
 
-        this.playSet()
+        // this.playSet()
         this.$refs.player.play().then(() => {
           if (this.loading) {
             // 如果正在loading 不自动切
