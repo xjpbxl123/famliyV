@@ -257,7 +257,7 @@
       },
       [KEY68] () {
         /**
-         * @desc 打开视频列表
+         * @desc   打开视频列表
          */
         if (!this.canClick || !this.canOpenVideoDirectory) {
           return
