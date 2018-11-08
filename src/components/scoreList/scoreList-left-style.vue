@@ -71,12 +71,6 @@
         </li>
       </ul>
     </div>
-    <div class="musicLabels">
-      <i class="iconfont icon-label"></i>
-      <span>
-        曲谱标签：{{book.tagNames}}
-      </span>
-    </div>
     <div class="introduce">
       {{book.desc}}
     </div>
@@ -168,15 +162,7 @@
       }
     }
   }
-  .musicLabels {
-    font-size: 24px;
-    position: absolute;
-    left: 100px;
-    top: 580px;
-    .iconfont {
-      font-size: 24px;
-    }
-  }
+
   .introduce {
     text-indent: 2em;
     position: absolute;
