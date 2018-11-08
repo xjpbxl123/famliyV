@@ -35,9 +35,9 @@
               :text="button.text"
               titlePosition='below'
               :icon="button.icon"/>
-      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="curBpm" :min="minBPM" :max="maxBPM">
+      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
         <titleitem text="-" id="710" pianoKey="73"/>
-        <titleitem text="调速" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
+        <titleitem :text="speedValue+'X'" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
       </slider>
 
@@ -166,13 +166,19 @@
         progressing: false,
         files: [],
         orgBpm: 120,
-        curBpm: 120,
+        curBpm: 0,
         playNow: false,
         playIndex: 0,
         interval: null,
         canClick: true,
         canOpenVideoDirectory: false,
-        timer: null
+        timer: null,
+        speedValue: 1
+      }
+    },
+    watch: {
+      curBpm (val) {
+        console.log(val, 'curBpmcurBpm')
       }
     },
     mixins: [mixerMixin, toastMixin],
@@ -218,8 +224,8 @@
       },
       [KEY74] () {
         this.$refs.player.setRate(1)
-        this.curBpm = this.orgBpm
-        this.errorHandling({speedValue: this.curBpm, desc: '当前速度调节', maxValue: this.maxBPM})
+        // this.curBpm = this.orgBpm
+        this.errorHandling({speedValue: 1, desc: '速度调节 (原速1X)'})
       },
       [KEY75] () {
         this.addRate()
@@ -340,29 +346,29 @@
         /**
          * @desc 速率加
          */
-        let newBpm = this.curBpm + 20
-        if (newBpm > this.maxBPM) {
-          this.errorHandling({speedValue: this.maxBPM, desc: '当前速度调节', maxValue: this.maxBPM})
+        let newSpeed = this.speedValue + 0.25
+        if (newSpeed > 1.5) {
+          this.errorHandling({speedValue: 1.5, desc: '速度调节 (原速1X)'})
           return
         }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
-        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
+        // let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newSpeed)
+        this.speedValue = newSpeed
+        this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})
       },
       delRate () {
         /**
          * @desc 速率减
          */
-        let newBpm = this.curBpm - 20
-        if (newBpm < this.minBPM) {
-          this.errorHandling({speedValue: this.minBPM, desc: '当前速度调节', maxValue: this.maxBPM})
+        let newSpeed = this.speedValue - 0.25
+        if (newSpeed < 0.5) {
+          this.errorHandling({speedValue: 0.5, desc: '速度调节 (原速1X)'})
           return
         }
-        let newRate = newBpm / this.orgBpm
-        this.$refs.player.setRate(newRate)
-        this.curBpm = newBpm
-        this.errorHandling({speedValue: newBpm, desc: '当前速度调节', maxValue: this.maxBPM})
+        // let newRate = newBpm / this.orgBpm
+        this.$refs.player.setRate(newSpeed)
+        this.speedValue = newSpeed
+        this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})
       },
       errorHandling (data) {
         console.log(data, 'errorData')
@@ -623,8 +629,9 @@
         // 初始化速率
         this.$refs.player.info().then((data) => {
           if (data.originalBpm) {
+            console.log(data)
             this.orgBpm = parseInt(data.originalBpm)
-            this.curBpm = parseInt(data.curBpm)
+            this.speedValue = parseInt(data.curBpm) / this.orgBpm
           }
         })
         this.$refs.video.mute(false)
