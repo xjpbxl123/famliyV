@@ -225,6 +225,7 @@
       [KEY74] () {
         this.$refs.player.setRate(1)
         // this.curBpm = this.orgBpm
+        this.speedValue = 1
         this.errorHandling({speedValue: 1, desc: '速度调节 (原速1X)'})
       },
       [KEY75] () {
