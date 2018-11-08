@@ -56,6 +56,8 @@
           }
         } else {
           // this.showToast({text: '移除成功', imgName: 'syncInfo'})
+          this.$store.dispatch('myScore/setUpanIndex', 0)
+          this.$store.dispatch('myScore/setUpanPath', '/Volumes')
           modules.nativeRouter.alert('移除成功', 2)
         }
       })

@@ -256,7 +256,8 @@
           delay: 1000,
           width: 640,
           height: 360
-        }
+        },
+        interval: null
       }
     },
     find: {
@@ -390,14 +391,24 @@
         localSource: state => state.myScore.localSource,
         uPanIndex: state => state.myScore.uPanIndex,
         uPanOrderIndex: state => state.myScore.uPanOrderIndex,
-        uPanSource: state => state.myScore.uPanSource,
+        uPanSource (state) {
+          console.log(state.myScore.uPanSource, 'state.myScore.uPanSource')
+          return state.myScore.uPanSource
+        },
         myRecordIndex: state => state.myScore.myRecordIndex,
         myRecord: state => state.myScore.myRecord,
         myRecordPath: state => state.myScore.myRecordPath,
         myPlayIndex: state => state.myScore.myPlayIndex,
         myPlay: state => state.myScore.myPlay,
         myPlayPath: state => state.myScore.myPlayPath,
-        uPanPath: state => state.myScore.uPanPath,
+        uPanPath (state) {
+          if (this.myScoreTapIndex === 5 && state.myScore.uPanPath === '/Volumes') {
+            this.usbButtonHidden = false
+          } else {
+            this.usbButtonHidden = true
+          }
+          return state.myScore.uPanPath
+        },
         orderIndex: state => state.myScore.orderIndex,
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
@@ -466,7 +477,12 @@
           this.title = title[value]
         }
         if (value === 5) {
-          if (this.uPanSource[this.uPanIndex].type === 'dir') {
+          if (this.uPanSource.length === 0) {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
+            return
+          }
+          if (this.uPanSource[this.uPanIndex] && this.uPanSource[this.uPanIndex].type === 'dir') {
             this.copyButtonHidden = true
           } else {
             this.copyButtonHidden = false
@@ -488,17 +504,32 @@
         this.$store.dispatch('myScore/setUpanIndex', 0)
       },
       isUpanInsert (value) {
-        setTimeout(() => {
-          console.log('拿数据')
+        console.log('拿数据')
+        this.interval = setInterval(() => {
           this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
-            if (data.length !== 0) {
-              // 有U盘插入 显示标签
-              this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
+            console.log(data)
+            if (value) {
+              if (data.length !== 0) {
+                // 有U盘插入检测到数据 清空定时器
+                console.log('有U盘插入检测到数据 清空定时器')
+                if (this.myScoreTapIndex === 5) {
+                  this.usbButtonHidden = false
+                }
+                clearInterval(this.interval)
+                // this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
+              }
             } else {
-              this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+              if (data.length === 0) {
+                // 有U盘弹出 清空定时器
+                console.log('有U盘弹出 清空定时器')
+                this.usbButtonHidden = true
+                this.copyButtonHidden = true
+                clearInterval(this.interval)
+                // this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+              }
             }
           })
-        }, 10000)
+        }, 300)
       },
       uPanIndex (value) {
         if (this.uPanSource[value].type === 'dir') {
@@ -566,7 +597,9 @@
       },
       getUpanList () {
         return this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
-          if (data.length !== 0) {
+          if (data.length === 0) {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
           }
         })
       },
@@ -755,6 +788,7 @@
               if (data.type === 'dir') {
                 let newPath = this.uPanPath + '/' + data.name
                 console.log(newPath)
+                this.usbButtonHidden = true
                 this.$store.dispatch('myScore/setUpanIndex', 0)
                 this.$store.dispatch('myScore/setUpanPath', newPath)
                 this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'})
@@ -861,6 +895,9 @@
               let pathArr = uPanPath.split('/')
               this.dirName1 = pathArr.pop()
               let newPath = pathArr.join('/')
+              if (newPath === '/Volumes') {
+                this.usbButtonHidden = false
+              }
               this.$store.dispatch('myScore/setUpanPath', newPath)
               this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'})
             } else {
@@ -888,6 +925,23 @@
               console.log(usbName)
               modules.file.umountUpan(usbName).then(data => {
                 console.log(data, 'usb弹出结果')
+                if (data) {
+                  this.copyButtonHidden = true
+                  this.usbButtonHidden = true
+                  this.interval = setInterval(() => {
+                    this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
+                      console.log(data)
+                      if (data.length === 0) {
+                        // 有U盘弹出 清空定时器
+                        console.log('有U盘弹出 清空定时器')
+                        modules.nativeRouter.alert('移除成功', 2)
+                        clearInterval(this.interval)
+                      }
+                    })
+                  }, 300)
+                } else {
+                  modules.nativeRouter.alert('移除失败', 2)
+                }
               })
             }
             break
@@ -1359,6 +1413,7 @@
         this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
         this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
         this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+        clearInterval(this.interval)
       }
 
     },

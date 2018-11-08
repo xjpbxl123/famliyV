@@ -163,9 +163,15 @@ export default {
      * @desc 获取我的曲谱本地资源列表/U盘列表
      * */
     getLocalSource ({commit, state}, {path, type}) {
+      console.log(path, 'path')
       let deleteArr = []
       return file.readFolderFile(path).then((res) => {
-        if (path === '/Volumes' && res.length === 0) {
+        if (res.length === 0) {
+          if (type === 'Upan') {
+            commit(UPAN_SOURCE, [])
+          } else {
+            commit(LOCAL_SOURCE, [])
+          }
           return []
         }
         // 第一步 剔除掉不支持的文件 并加上文件格式属性

@@ -85,7 +85,8 @@
         totalTime: '0',
         isPlaying: false,
         interval: null,
-        hasLoaded: false
+        hasLoaded: false,
+        interval1: null
       }
     },
     mixins: [mixerMixin],
@@ -199,15 +200,20 @@
         window.fp.uis.audio.getCurrentTime().then(data => {
           self.currentTime = parseInt(data)
         })
-        if (self.currentTime === self.totalTime) {
+        if (self.currentTime === self.totalTime && self.currentTime !== 0) {
           self.isPlaying = false
         }
       },
       getTotalTime: function () {
         const self = this
-        window.fp.uis.audio.getTotalTime().then(data => {
-          self.totalTime = parseInt(data)
-        })
+        this.interval1 = setInterval(() => {
+          window.fp.uis.audio.getTotalTime().then(data => {
+            if (data !== undefined) {
+              self.totalTime = parseInt(data)
+              clearInterval(this.interval1)
+            }
+          })
+        }, 200)
       },
       filterUrl (fileName) {
         this.fileName = fileName || ''
@@ -238,6 +244,7 @@
     },
     beforeDestroyed () {
       clearInterval(this.interval)
+      clearInterval(this.interval1)
     },
     components: {
       statusBar
