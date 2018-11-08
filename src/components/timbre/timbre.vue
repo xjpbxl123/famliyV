@@ -1049,7 +1049,7 @@
       getKeyboardTimbre () {
         modules.settings.getProperty('keyboardTimbre').then((data) => {
           this.list[0].items.forEach((value1, index1) => {
-            if (value1.item) {
+            if (value1.item === data) {
               this.chosedItemListIndex = index1
               this.list[0].imgUrl = value1.imgUrl
               return
