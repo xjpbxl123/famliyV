@@ -442,6 +442,8 @@
               id = JSON.parse(this.query.differ).id
             } else if (this.query.year) {
               id = JSON.parse(this.query.year).id
+            } else if (this.query.famous) {
+              id = JSON.parse(this.query.famous).id
             }
 
             let hasCollected = false

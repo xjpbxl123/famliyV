@@ -3,12 +3,13 @@
       <div class="box">
         <image :src="toastImg" v-if="!speedValue" style="height: 120px;width: 120px;position: absolute;top: 70px;left: 260px;" >
         </image>
-        <div class="speedBar" v-else>
-          <div class="valueBar" :style="{width: (speedValue/maxValue)*380+'px'}">
-            <div class="ball" :style="{left: ((speedValue/maxValue)*380 - 24)+'px'}"></div>
-          </div>
+         <text class="value"  v-if="speedValue && maxValue" >{{speedValue}}</text>
+         <text class="value noBar" v-if="speedValue && !maxValue">{{speedValue+' X'}}</text>
+          <div class="speedBar" v-if="maxValue">
+            <div class="valueBar" :style="{width: (speedValue/maxValue)*380+'px'}">
+              <div class="ball" :style="{left: ((speedValue/maxValue)*380 - 24)+'px'}"></div>
+            </div>
         </div>
-         <text class="value"  v-if="speedValue">{{speedValue}}</text>
         <text class="text">{{text}}</text>
       </div>
     </div>
@@ -99,5 +100,9 @@
       left: 0;
       color: #FFFFFF;
       font-weight: 600;
+    }
+
+    .noBar {
+      top: 110px;
     }
 </style>
