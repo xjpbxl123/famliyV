@@ -376,7 +376,7 @@ export default function createStore () {
        * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch, state}) {
-        let rootArr = ['http://etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
         rootArr.map((value) => {
           nativeStorage.clear('findFamily-' + value)
         })
