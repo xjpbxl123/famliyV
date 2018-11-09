@@ -53,6 +53,15 @@
         songName: '',
         singer: '',
         album: '',
+        playerHidden: true,
+        audioSource: {
+          mp3: {
+            accompanyUrl: ''
+          },
+          options: {
+            countDownEnable: false
+          }
+        },
         controlButtons: [
           {
             pianoKey: 54,
