@@ -461,7 +461,7 @@ export default function createStore () {
         nativeStorage.clear('findFamily-' + root)
       },
       /**
-       * @desc 用户注销时的数据映射view
+       * @desc   用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
         let root = state.environments.HTTP_ROOT
