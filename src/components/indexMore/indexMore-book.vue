@@ -1,7 +1,9 @@
 <template>
   <div class="box">
     <span>{{bookData.name}}</span>
-    <findImg :src="bookData.coverSmall" ></findImg>
+    <div class="imgBox">
+      <findImg :src="bookData.coverSmall" ></findImg>
+    </div>
   </div>
 </template>
 
@@ -26,15 +28,31 @@
 
 <style lang="scss" scoped>
 .box {
-  width: 230px;
-  height: 324px;
+  width: 250px;
+  height: 360px;
   display: flex;
+  background:rgba(255,255,255,0.1);
+  border-radius: 8px;
   position: relative;
-  img {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    box-shadow: 0 22px 24px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  .imgBox {
+    width: 220px;
+    height: 300px;
+    margin: 0 auto;
+    margin-top: 11px;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.3);
+      z-index: 100;
+    }
   }
   span {
     position: absolute;

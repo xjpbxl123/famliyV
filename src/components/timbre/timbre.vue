@@ -1063,8 +1063,11 @@
             })
           })
         })
+        console.log('获取键盘移调初始值')
         modules.settings.getProperty('keyboardOffset').then((data) => {
-          this.yidiaoValue = data
+          if (data !== undefined) {
+            this.yidiaoValue = data
+          }
         })
       }
     },

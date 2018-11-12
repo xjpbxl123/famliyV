@@ -433,6 +433,11 @@
         })
       },
       uPanSource (value) {
+        if (this.uPanPath !== '/Volumes') {
+          this.orderButtonHidden = false
+        } else {
+          this.orderButtonHidden = true
+        }
         let flag = false
         value.forEach((item, index) => {
           if (item.name === this.dirName1) {

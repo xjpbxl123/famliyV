@@ -613,10 +613,22 @@
       height: 100%;
     .left {
       position: absolute;
-      width: 850px;
+      width: 860px;
       height: 100%;
       top: 0;
       left: 0;
+      background:rgba(0,0,0,0.1);
+      &::before {
+        content: '';
+        position: absolute;
+        top: 255px;
+        right: 0;
+        width: 3px;
+        height: 570px;
+        background: url('./images/line.png');
+        background-size: cover;
+
+      }
     }
   }
 </style>

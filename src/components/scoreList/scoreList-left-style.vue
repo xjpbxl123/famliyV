@@ -45,7 +45,7 @@
           </span>
         </li>
         <li>
-          <i class="iconfont icon-difficulty-level"></i>
+          <i class="iconfont icon-star-empty"></i>
           <span>
             难易级别:
           </span>
@@ -132,8 +132,8 @@
     }
   }
   .cover {
-    width: 295px;
-    height: 358px;
+    width: 264px;
+    height: 340px;
     position: absolute;
     top: 190px;
     left: 100px;
@@ -143,7 +143,7 @@
     height: 358px;
     font-size: 24px;
     position: absolute;
-    right: 0;
+    right: 30px;
     top: 190px;
     font-weight: 700;
     li {
@@ -166,17 +166,16 @@
   .introduce {
     text-indent: 2em;
     position: absolute;
-    top: 650px;
+    top: 603px;
     width: 800px;
     left: 50%;
     font-size: 24px;
     transform: translateX(-50%);
     line-height: 42px;
-
-    height: 250px;
+    height: 380px;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 9;
     -webkit-box-orient: vertical;
     display: -webkit-box;
   }

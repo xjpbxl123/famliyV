@@ -48,17 +48,14 @@
         if (data.isInsert) {
           if (window.location.href.indexOf('myScore') !== -1) {
             // 当前在我的曲谱页面
-            // this.showToast({text: '加载完毕', imgName: 'syncInfo'})
-            modules.nativeRouter.alert('加载完毕', 2)
+            modules.nativeRouter.alert('加载完毕', 2, 3)
           } else {
-            // this.showToast({text: '加载完毕,请在我的资源中打开', imgName: 'syncInfo'})
-            modules.nativeRouter.alert('加载完毕,请在我的资源中打开', 2)
+            modules.nativeRouter.alert('加载完毕,请在我的资源中打开', 2, 3)
           }
         } else {
-          // this.showToast({text: '移除成功', imgName: 'syncInfo'})
           this.$store.dispatch('myScore/setUpanIndex', 0)
           this.$store.dispatch('myScore/setUpanPath', '/Volumes')
-          modules.nativeRouter.alert('移除成功', 2)
+          modules.nativeRouter.alert('移除成功', 2, 3)
         }
       })
 

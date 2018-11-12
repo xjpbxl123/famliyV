@@ -7,18 +7,21 @@
 
 </template>
 <style lang="scss" scope type=text/scss>
+    .star {
+     display: flex;
+    }
+
     .star-full {
         font-size: 22px;
-        transform: rotateZ(45deg);
-        color: #fff;
         margin-right: 8px;
+        color:rgba(255,180,0,1);
     }
 
     .star-empty {
         font-size: 22px;
-        transform: rotateZ(45deg);
         color: #fff;
         margin-right: 8px;
+        color:rgba(255,255,255,0.4);
     }
 </style>
 <script type="es6">
