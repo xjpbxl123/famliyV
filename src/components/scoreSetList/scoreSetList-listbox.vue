@@ -6,7 +6,7 @@
             <div class="imgBox">
               <findImg :src="item.coverSmall" ></findImg>
             </div>
-            <findStar :starNum="4" class="scrore-list-scroStar"></findStar>
+            <findStar :starNum="item.starNum" :grade="item.grade" class="scrore-list-scroStar"></findStar>
           </li>
         </ul>
       </div>

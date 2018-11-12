@@ -10,7 +10,7 @@
       <div class="eachDetail eachDetail2">
         <span class="iconfont icon-star-empty"></span>
         <span>难易级别：</span>
-        <find-star :starNum="scoreList[scoreIndex]&&scoreList[scoreIndex].starNum" />
+        <span>{{gradeName}}</span>
       </div>
       <div class="eachDetail">
         <span class="iconfont icon-update-time"></span>
@@ -35,6 +35,28 @@
   import scoreListListEachItem from './scoreList-list-eachItem'
   import findStar from '../common/find-star/find-star'
   import { formatDate } from 'scripts/utils/index'
+  const gradeNameObj = {
+    0: '启蒙',
+    1: '一级',
+    2: '二级',
+    3: '三级',
+    4: '四级',
+    5: '五级',
+    6: '六级',
+    7: '七级',
+    8: '八级',
+    9: '九级',
+    10: '十级',
+    11: '演奏级'
+  }
+  const starNumObj = {
+    0: '未分级',
+    1: '启蒙',
+    2: '初级',
+    3: '中级',
+    4: '高级',
+    5: '演奏级'
+  }
   export default {
     props: {
       scoreList: {
@@ -58,16 +80,20 @@
     },
     data () {
       return {
-        playType: ''
+        playType: '',
+        gradeName: ''
       }
     },
     methods: {
-    },
-    watch: {
-      scoreIndex: function (val) {
+      initData () {
         let musicData = this.scoreList[this.scoreIndex]
         if (!musicData || !musicData.files) {
           return
+        }
+        if (musicData.grade !== undefined) {
+          this.gradeName = gradeNameObj[musicData.grade]
+        } else {
+          this.gradeName = starNumObj[musicData.starNum]
         }
         this.playType = ''
         musicData.files.forEach(item => {
@@ -79,18 +105,15 @@
         })
       }
     },
-    created () {
-      let musicData = this.scoreList[this.scoreIndex]
-      if (!musicData || !musicData.files) {
-        return
+    watch: {
+      scoreIndex: function (val) {
+        this.initData()
+      },
+      scoreList: function () {
+        this.initData()
       }
-      musicData.files.forEach(item => {
-        if (this.playType) {
-          this.playType = this.playType + ' | ' + item.styleName
-        } else {
-          this.playType = item.styleName
-        }
-      })
+    },
+    mounted () {
     },
     components: {
       scoreListListEachItem,

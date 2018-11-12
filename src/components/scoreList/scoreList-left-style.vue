@@ -40,16 +40,14 @@
           <span>
             种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:
           </span>
-          <span>
-            {{book.type}}
-          </span>
+          <span v-text="book.detail.type === 1 ? '流行&经典': '古典陪练'"></span>
         </li>
         <li>
           <i class="iconfont icon-star-empty"></i>
           <span>
             难易级别:
           </span>
-          <findStar :starNum="book.starNum" class="scrore-list-scroStar"></findStar>
+          <findStar :starNum="book.starNum" :grade="book.grade" class="scrore-list-scroStar"></findStar>
         </li>
         <li>
           <i class="iconfont icon-update-time"></i>
@@ -106,7 +104,8 @@
       }
     },
     methods: {},
-    created () {},
+    created () {
+    },
     components: {
       findImg,
       findStar

@@ -966,7 +966,7 @@
                     eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                     this.getUpanList()
                   } else {
-                    eventsHub.$emit('toast', {text: '拷贝失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                    eventsHub.$emit('toast', {text: '已拷贝', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   }
                 })
               })
@@ -979,7 +979,7 @@
                   eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                   this.getUpanList()
                 } else {
-                  eventsHub.$emit('toast', {text: '拷贝失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {text: '已拷贝', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 }
               })
             }
