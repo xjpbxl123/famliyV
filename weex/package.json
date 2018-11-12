@@ -1,6 +1,6 @@
 {
   "name": "easy-weex",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "weex native and web build boilerplate",
   "scripts": {
     "build": "cross-env NODE_ENV=production easy build prod",
