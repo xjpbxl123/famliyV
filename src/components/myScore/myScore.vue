@@ -727,16 +727,33 @@
               this.deleteCover = !this.deleteCover
               this.$refs.prompt.showPrompt()
             } else {
-              modules.file.removeFile(this.localSourcePath + '/' + data1.name).then(res => {
-                if (res) {
-                  this.deleteCover = !this.deleteCover
-                  this.$refs.prompt.hidePrompt()
-                  this.getLocalSource()
-                  if (this.localSourceIndex - 1 >= 0) {
-                    this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+              if (data1.filesName && data1.filesName.length > 1) {
+                // 删除合成曲谱
+                data1.filesName.forEach((value, index) => {
+                  modules.file.removeFile(this.localSourcePath + '/' + value).then(data => {
+                    if (index === data1.filesName.length - 1) {
+                      this.deleteCover = !this.deleteCover
+                      this.$refs.prompt.hidePrompt()
+                      this.getLocalSource()
+                      if (this.localSourceIndex - 1 >= 0) {
+                        this.$store.dispatch('myScore/setMyRecordIndex', localSourceIndex - 1)
+                      }
+                    }
+                  })
+                })
+              } else {
+                // 删除单个文件
+                modules.file.removeFile(this.localSourcePath + '/' + data1.name).then(res => {
+                  if (res) {
+                    this.deleteCover = !this.deleteCover
+                    this.$refs.prompt.hidePrompt()
+                    this.getLocalSource()
+                    if (this.localSourceIndex - 1 >= 0) {
+                      this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+                    }
                   }
-                }
-              })
+                })
+              }
             }
             break
           case 'back':
@@ -1015,8 +1032,50 @@
                 this.$store.dispatch('myScore/setMyRecordIndex', 0)
               })
             } else {
-              //  去播放midi
-              this.playMidi(this.myRecordPath + '/' + data.name)
+              //  去打开文件
+              if (data.icon === 'icon-xml') {
+                return this.playXml(this.myRecordPath + '/' + data.name, data.name)
+              }
+              if (data.icon === 'icon-midi') {
+                return this.playMidi(this.myRecordPath + '/' + data.name)
+              }
+              if (data.icon === 'icon-song' || data.icon === 'icon-xml') {
+                // 合成曲谱播放
+                let scoreObj = {}
+                let houzhuiArr = []
+                let houzhui = ''
+                let eachName = ''
+                let type = {
+                  mid: 'midiPath',
+                  mp4: 'videoPath',
+                  mp3: 'mp3Path',
+                  xml: 'xmlPath'
+                }
+                if (data.typeName === 'xml') {
+                  return this.playXml(this.myRecordPath + '/' + data.name, data.name)
+                }
+                modules.file.pathComplement(this.myRecordPath).then((res) => {
+                  if (!res.path) {
+                    return
+                  }
+                  data.filesName.forEach((item, index) => {
+                    houzhuiArr = item.split('.')
+                    houzhui = houzhuiArr[houzhuiArr.length - 1]
+                    eachName = houzhuiArr[0]
+                    if (eachName.indexOf('_sp') !== -1) {
+                      // videoMidi
+                      scoreObj.videoMidiPath = res.path + '/' + item
+                    } else {
+                      let name = type[houzhui]
+                      if (name) {
+                        scoreObj[name] = res.path + '/' + item
+                      }
+                    }
+                  })
+                  console.log(scoreObj)
+                  modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
+                })
+              }
             }
             break
           case 'delete':
@@ -1028,16 +1087,33 @@
               this.deleteCover = !this.deleteCover
               this.$refs.prompt.showPrompt()
             } else {
-              modules.file.removeFile(this.myRecordPath + '/' + data1.name).then(res => {
-                if (res) {
-                  this.deleteCover = !this.deleteCover
-                  this.$refs.prompt.hidePrompt()
-                  this.getMyRecord()
-                  if (this.myRecordIndex - 1 >= 0) {
-                    this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+              if (data1.filesName && data1.filesName.length > 1) {
+                // 删除合成曲谱
+                data1.filesName.forEach((value, index) => {
+                  modules.file.removeFile(this.myRecordPath + '/' + value).then(data => {
+                    if (index === data1.filesName.length - 1) {
+                      this.deleteCover = !this.deleteCover
+                      this.$refs.prompt.hidePrompt()
+                      this.getMyRecord()
+                      if (this.myRecordIndex - 1 >= 0) {
+                        this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+                      }
+                    }
+                  })
+                })
+              } else {
+                // 删除单个文件
+                modules.file.removeFile(this.myRecordPath + '/' + data1.name).then(res => {
+                  if (res) {
+                    this.deleteCover = !this.deleteCover
+                    this.$refs.prompt.hidePrompt()
+                    this.getMyRecord()
+                    if (this.myRecordIndex - 1 >= 0) {
+                      this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+                    }
                   }
-                }
-              })
+                })
+              }
             }
             break
           case 'back':

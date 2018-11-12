@@ -4,7 +4,7 @@
         <span class="price free" v-else-if="item.isFree">免费</span>
         <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
         <span class="price buy" v-else>{{item.payment}}</span>
-        <span class="video iconfont icon-with-video" v-if="item.hasVideo"></span>
+        <span class="video iconfont icon-video" v-if="item.hasVideo"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
         <span class="viewNum">{{item.hotNum}}</span>
         <span class="musicName">{{item.name}}</span>
@@ -80,7 +80,7 @@
           }
       }
       .video {
-          font-size: 42px;
+          font-size: 32px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);

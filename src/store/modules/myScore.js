@@ -384,22 +384,122 @@ export default {
         if (res.length === 0) {
           return commit(MY_RECORD, [])
         }
-        let recordData = []
+        // 第一步 剔除掉不支持的文件 并加上文件格式属性
+        let deleteArr = []
+        res.forEach((value, index) => {
+          if (value.type === 'dir') {
+            value.icon = 'icon-open-now'
+          } else {
+            let nameArr1 = value.name.split('.')
+            let suffix = nameArr1[nameArr1.length - 1]
+            if (suffix === 'mid') {
+              value.icon = 'icon-midi'
+            } else if (suffix === 'xml') {
+              value.icon = 'icon-xml'
+            }
+          }
+          if (!value.icon) {
+            deleteArr.push(index)
+          }
+        })
+        let deleArr = [...new Set(deleteArr)]
+        deleArr.forEach((data, index) => {
+          if (index === 0) {
+            res.splice(data, 1)
+          } else {
+            res.splice(data - index, 1)
+          }
+        })
+        // 第二步 合并多曲谱
+        let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')
           let suffix = nameArr[nameArr.length - 1]
-          if (item.type === 'file' && suffix === 'mid') {
-            item.icon = 'icon-midi'
-            recordData.push(item)
+          let name = nameArr[0]
+          if (item.filesName) {
+            name = item.name
+          } else {
+            if (nameArr.length > 2) {
+              for (let i = 1; i <= nameArr.length - 2; i++) {
+                name += '.' + nameArr[i]
+              }
+            }
+          }
+          let filesName = []
+          res.forEach((item1, index1) => {
+            if (item1.type !== 'dir') {
+              let nameArr1 = item1.name.split('.')
+              let name1 = nameArr1[0]
+              if (item1.filesName) {
+                name1 = item1.name
+              } else {
+                if (nameArr1.length > 2) {
+                  for (let i = 1; i <= nameArr1.length - 2; i++) {
+                    name1 += '.' + nameArr1[i]
+                  }
+                }
+              }
+              let suffix1 = nameArr1[nameArr1.length - 1]
+              let acceptArr = ['mid', 'xml']
+              // 文件类型是这几种才需要合成
+              let canOne = false
+              let canTwo = false
+              if (name1 === name) {
+                acceptArr.forEach((value) => {
+                  if (value === suffix) {
+                    canOne = true
+                  }
+                  if (value === suffix1) {
+                    canTwo = true
+                  }
+                })
+                if (item1.filesName && canOne) {
+                  // 删除与合成文件名相同的文件
+                  deleteIndex.push(index)
+                } else {
+                  if (canOne && canTwo) {
+                    filesName.push(item1.name)
+                  }
+                }
+              } else {
+                // 以‘_sp’开头的 mid文件也需要合成
+                if (name1.indexOf(name) !== -1 && name1.indexOf('_sp') !== -1 && suffix1 === 'mid') {
+                  deleteIndex.push(index1)
+                  filesName.push(item1.name)
+                }
+              }
+            }
+          })
+          if (filesName.length > 1) {
+            item.name = name
+            item.filesName = filesName
+            item.icon = 'icon-song'
           }
         })
-        res.forEach((item, index) => {
-          if (item.type === 'dir') {
-            item.icon = 'icon-open-now'
-            recordData.push(item)
+        let delArr = [...new Set(deleteIndex)]
+        delArr.forEach((data, index) => {
+          if (index === 0) {
+            res.splice(data, 1)
+          } else {
+            res.splice(data - index, 1)
           }
         })
-        commit(MY_RECORD, recordData)
+        // let recordData = []
+        // res.forEach((item, index) => {
+        //   let nameArr = item.name.split('.')
+        //   let suffix = nameArr[nameArr.length - 1]
+        //   if (item.type === 'file' && suffix === 'mid') {
+        //     item.icon = 'icon-midi'
+        //     recordData.push(item)
+        //   }
+        // })
+        // res.forEach((item, index) => {
+        //   if (item.type === 'dir') {
+        //     item.icon = 'icon-open-now'
+        //     recordData.push(item)
+        //   }
+        // })
+        commit(MY_RECORD, res)
       })
     },
     /**
