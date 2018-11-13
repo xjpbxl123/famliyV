@@ -63,7 +63,8 @@ export default {
                 pianoType: this.pianoType // real 真钢 electric 电钢
               }).then(res => {
                 console.log(res)
-                this.listenVolumeOrMuteDidChange()
+                this.$store.dispatch('index/isMixerOpen', true)
+                // this.listenVolumeOrMuteDidChange()
               })
             }
           })
@@ -73,7 +74,8 @@ export default {
     closeMixer (data) {
       if (data.close) {
         console.log('停止监听')
-        modules.notification.remove('VolumeChange')
+        this.$store.dispatch('index/isMixerOpen', false)
+        // modules.notification.remove('VolumeChange')
       }
     }
   }

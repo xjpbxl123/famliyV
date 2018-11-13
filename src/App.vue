@@ -12,7 +12,7 @@
   import { modules } from 'find-sdk'
   import eventsHub from './scripts/eventsHub'
   import toast from './components/common/toast/toast.js'
-  // import toastMixin from './components/common/toast-mixin.js'
+  import { mapState } from 'vuex'
   export default {
     name: 'app',
     data () {
@@ -21,8 +21,15 @@
         loadingInstance: null
       }
     },
-    // mixins: [toastMixin],
+    computed: {
+      ...mapState({
+        isLogin (state) {
+          return state.storage.isLogin
+        }
+      })
+    },
     created () {
+      console.log(this.state)
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
@@ -55,10 +62,14 @@
         } else {
           this.$store.dispatch('myScore/setUpanIndex', 0)
           this.$store.dispatch('myScore/setUpanPath', '/Volumes')
+          if (this.isLogin) {
+            this.$store.dispatch('myScore/setCopyArrLogin', [])
+          } else {
+            this.$store.dispatch('myScore/setCopyArr', [])
+          }
           modules.nativeRouter.alert('移除成功', 2, 3)
         }
       })
-
       // 提示框
       eventsHub.$on('toast', (params) => {
         let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}

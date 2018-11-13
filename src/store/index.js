@@ -72,6 +72,7 @@ export default function createStore () {
             recentBooksAll: {bookList: []},
             collectList: [],
             copyArr: [],
+            copyArrLogin: [],
             yearList: [],
             scoreSetList: [],
             scoreList: [],
@@ -85,7 +86,8 @@ export default function createStore () {
             musicInfo: [],
             partnerVersion: {},
             localPartnerVersion: {},
-            isUpanInsert: false
+            isUpanInsert: false,
+            isMixerOpen: false
           }
         } // 数据本地缓存
       },
@@ -103,6 +105,9 @@ export default function createStore () {
       },
       copyArr: state => {
         return state.storage.cache.renderCache.copyArr
+      },
+      copyArrLogin: state => {
+        return state.storage.cache.renderCache.copyArrLogin
       },
       recentBooksAll: state => {
         return state.storage.cache.renderCache.recentBooksAll
@@ -154,6 +159,9 @@ export default function createStore () {
       },
       localPartnerVersion: state => {
         return state.storage.cache.renderCache.localPartnerVersion
+      },
+      isMixerOpen: state => {
+        return state.storage.cache.renderCache.isMixerOpen
       }
     },
     mutations: {

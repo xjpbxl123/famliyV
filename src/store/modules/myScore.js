@@ -106,9 +106,17 @@ export default {
       if (typeof data === 'string') {
         let copyArr = this.state.storage.cache.renderCache.copyArr
         copyArr.push(data)
-        return dispatch('setCacheToStorage', {copyArr: copyArr}, {root: true})
+        if (this.state.storage.isLogin) {
+          return dispatch('setCacheToStorage', {copyArrLogin: copyArr}, {root: true})
+        } else {
+          return dispatch('setCacheToStorage', {copyArr: copyArr}, {root: true})
+        }
       } else if (typeof data === 'object') {
-        return dispatch('setCacheToStorage', {copyArr: data}, {root: true})
+        if (this.state.storage.isLogin) {
+          return dispatch('setCacheToStorage', {copyArrLogin: data}, {root: true})
+        } else {
+          return dispatch('setCacheToStorage', {copyArr: data}, {root: true})
+        }
       }
     },
     /**
@@ -291,11 +299,15 @@ export default {
         let orIndex = state.orderIndex
         if (type === 'Upan') {
           orIndex = state.uPanOrderIndex
-          console.log(this.state.storage.cache.renderCache['copyArr'], 'copyArr')
+          let copyArr = this.state.storage.cache.renderCache['copyArr']
+          if (this.state.storage.isLogin) {
+            copyArr = this.state.storage.cache.renderCache['copyArrLogin'] || []
+          }
+          console.log(copyArr, 'copyArr')
           console.log(state.uPanPath)
           // 拿到拷贝状态
           res.forEach((value) => {
-            this.state.storage.cache.renderCache['copyArr'].forEach((value1) => {
+            copyArr.forEach((value1) => {
               if (value1 === state.uPanPath + '/' + value.name) {
                 value.copyed = true
               }

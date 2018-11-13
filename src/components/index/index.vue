@@ -1644,6 +1644,22 @@
       },
       getPianoType () {
         return this.$store.dispatch('getPianoType', {root: true})
+      },
+      registVloume (func) {
+        console.log(this.isMixerOpen)
+        modules.global.listenVolumeOrMuteDidChange()
+        modules.notification.regist('VolumeChange', (data) => {
+          console.log(data)
+          console.log(this.isMixerOpen)
+          func()
+          if (this.isMixerOpen) {
+            // 如果调音台打开了 发消息给weex
+            this.$find.sendMessage({
+              method: 'setVolumeData',
+              params: {volumeData: data}
+            })
+          }
+        })
       }
     },
     created () {
@@ -1655,6 +1671,7 @@
       this.getMetronomeStatus()
       this.clearCache()
       this.checkPedalMute()
+      this.registVloume()
     },
     beforeDestroy () {
       this.toolbarHidden = true

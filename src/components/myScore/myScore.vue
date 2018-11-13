@@ -257,7 +257,8 @@
           width: 640,
           height: 360
         },
-        interval: null
+        interval: null,
+        canEnter: true
       }
     },
     find: {
@@ -421,7 +422,7 @@
           return state.storage.cache.renderCache.musicList
         }
       }),
-      ...mapGetters(['collectList', 'recentOpenList', 'bookInfo'])
+      ...mapGetters(['collectList', 'recentOpenList', 'bookInfo', 'copyArr', 'copyArrLogin'])
 
     },
     watch: {
@@ -433,6 +434,7 @@
         })
       },
       uPanSource (value) {
+        this.canEnter = true
         if (this.uPanPath !== '/Volumes') {
           this.orderButtonHidden = false
         } else {
@@ -806,9 +808,14 @@
             this.$store.dispatch('myScore/setUpanIndex', uPanIndex)
             break
           case 'ok':
+            console.log(this.canEnter)
             let data = uPanSource[uPanIndex]
             if (data) {
               if (data.type === 'dir') {
+                if (!this.canEnter) {
+                  return
+                }
+                this.canEnter = false
                 let newPath = this.uPanPath + '/' + data.name
                 console.log(newPath)
                 this.usbButtonHidden = true
@@ -957,13 +964,13 @@
                       if (data.length === 0) {
                         // 有U盘弹出 清空定时器
                         console.log('有U盘弹出 清空定时器')
-                        modules.nativeRouter.alert('移除成功', 2)
+                        modules.nativeRouter.alert('移除成功', 2, 3)
                         clearInterval(this.interval)
                       }
                     })
                   }, 300)
                 } else {
-                  modules.nativeRouter.alert('移除失败', 2)
+                  modules.nativeRouter.alert('移除失败', 2, 3)
                 }
               })
             }
@@ -1507,6 +1514,8 @@
       this.getMyRecord()
       this.getMyPlay()
       this.setTitle()
+      console.log(this.copyArr)
+      console.log(this.copyArrLogin)
     },
     components: {
       findWrap,
