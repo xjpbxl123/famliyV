@@ -1103,6 +1103,18 @@
           case 'peilian':
             // 陪练
             console.log('陪练')
+            // 做登录验证
+            if (!this.isLogin) {
+              return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            }
+            if (this.isLogin) {
+              this.$store.dispatch('getUserInfo').then(data => {
+                if (!data.userInfo.userId) {
+                  modules.user.logOut()
+                  return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                }
+              })
+            }
             this.peilianLoading = true
             eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
             // 获取线上最新版本
@@ -1171,21 +1183,10 @@
         this.peilianLoading = false
         this.canEnterModule = true
         eventsHub.$emit('closeToast')
-        // 做登录验证
-        if (this.isLogin) {
-          return this.$store.dispatch('getUserInfo').then(data => {
-            if (!data.userInfo.userId) {
-              modules.user.logOut()
-            } else {
-              modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
-                // alert(data)
-                console.log(data, '打开陪练模块')
-              })
-            }
-          })
-        } else {
-          eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-        }
+        modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
+          // alert(data)
+          console.log(data, '打开陪练模块')
+        })
       },
       // 加入最近打开
       addRecentOpen (musicObj) {
@@ -1645,13 +1646,12 @@
       getPianoType () {
         return this.$store.dispatch('getPianoType', {root: true})
       },
-      registVloume (func) {
+      registVloume () {
         console.log(this.isMixerOpen)
         modules.global.listenVolumeOrMuteDidChange()
         modules.notification.regist('VolumeChange', (data) => {
           console.log(data)
           console.log(this.isMixerOpen)
-          func()
           if (this.isMixerOpen) {
             // 如果调音台打开了 发消息给weex
             this.$find.sendMessage({
