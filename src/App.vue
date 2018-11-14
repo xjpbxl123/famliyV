@@ -62,11 +62,7 @@
         } else {
           this.$store.dispatch('myScore/setUpanIndex', 0)
           this.$store.dispatch('myScore/setUpanPath', '/Volumes')
-          if (this.isLogin) {
-            this.$store.dispatch('myScore/setCopyArrLogin', [])
-          } else {
-            this.$store.dispatch('myScore/setCopyArr', [])
-          }
+          this.$store.dispatch('myScore/setCopyArr', [])
           modules.nativeRouter.alert('移除成功', 2, 3)
         }
       })

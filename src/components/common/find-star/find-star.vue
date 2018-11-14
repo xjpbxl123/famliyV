@@ -1,8 +1,8 @@
 <template>
     <div class="star">
         <div v-if="grade === undefined">
-          <div class="eachStar star-full iconfont icon-star-full" v-for="(num) in parseInt(starNum)" :key="num"></div>
-          <div class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in parseInt(5-starNum)"
+          <div class="eachStar star-full yinfu iconfont icon-popmusic_LV" v-for="(num) in parseInt(starNum)" :key="num"></div>
+          <div class="eachStar star-empty iconfont icon-popmusic_LV" v-for="(num) in parseInt(5-starNum)"
                  :key="num+7"></div>
         </div>
         <div v-else>
@@ -15,15 +15,14 @@
 </template>
 <style lang="scss" scope type=text/scss>
     .star > div {
-     display: flex;
+      display: flex;
     }
 
     .star-full {
-        font-size: 22px;
-        margin-right: 8px;
-        color:rgba(255,180,0,1);
+      font-size: 22px;
+      margin-right: 8px;
+      color:rgba(255,180,0,1);
     }
-
     .star-empty {
         font-size: 22px;
         color: #fff;
@@ -36,6 +35,9 @@
       margin-right: 8px;
       background: url('./images/half-star.png') no-repeat;
       background-size: cover;
+    }
+    .yinfu {
+      color:rgba(255,180,0,1);
     }
 </style>
 <script type="es6">

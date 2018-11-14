@@ -676,6 +676,7 @@
       },
       isLogin (val) {
         this.$store.dispatch('initCacheStorageWhenUserChange', {root: true})
+        this.$store.dispatch('myScore/setCopyArr', [])
         if (this.isPlaying) {
           this.$refs.player.pause()
           this.$refs.player.reset()
