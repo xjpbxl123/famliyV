@@ -16,7 +16,7 @@
         <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
@@ -37,7 +37,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42, PEDAL_PRESSED, receiveMsgFromWeex } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42, PEDAL_PRESSED, receiveMsgFromWeex, TOOLBAR_PRESSED } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
@@ -111,13 +111,6 @@
           //   this.textButtons[1].text = '右半屏'
           //   break
         }
-      },
-      isPlaying (val) {
-        if (val) {
-          this.controlButtons[1].icon = '0xe673'
-        } else {
-          this.controlButtons[1].icon = '0xe680'
-        }
       }
     },
     find: {
@@ -128,7 +121,7 @@
         this.buttonActions('fastBackward')
       },
       [KEY56] () {
-        this.buttonActions('playOrPause')
+        this.buttonActions('play')
       },
       [KEY58] () {
         this.buttonActions('fastForward')
@@ -152,16 +145,26 @@
             return this.buttonActions('fastForward')
         }
       },
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden = hidden
+      },
       [BACK_PRESSED] () {
-        this.buttonActions('back')
+        if (this.isPlaying) {
+          this.$refs.video.pause()
+          this.isPlaying = !this.isPlaying
+          this.toolbarHidden = false
+        } else {
+          this.buttonActions('back')
+        }
       }
     },
     methods: {
       buttonActions (type) {
         switch (type) {
-          case 'playOrPause':
-            this.isPlaying ? this.$refs.video.pause() : this.$refs.video.play()
+          case 'play':
+            this.$refs.video.play()
             this.isPlaying = !this.isPlaying
+            this.toolbarHidden = true
             break
           case 'changeScreen':
             // 切换屏幕
@@ -212,6 +215,7 @@
         self.currentTime = parseInt(self.$refs.video.currentTime)
         if (self.currentTime === self.totalTime) {
           this.isPlaying = false
+          this.toolbarHidden = false
         }
       },
       _durationTime: function () {
@@ -222,9 +226,22 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.videoName = nameArr[0].split('_')[0].split('#~')[0] || ''
+      },
+      registVloume () {
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          if (data && data.type === 1) {
+            console.log(data, 'volumeData')
+            if (self.$refs.video) {
+              self.$refs.video.volume = data.realValue
+            }
+          }
+        })
       }
     },
     mounted () {
+      this.registVloume()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.videoUrl = this.$route.query.url

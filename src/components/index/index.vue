@@ -1648,17 +1648,12 @@
         return this.$store.dispatch('getPianoType', {root: true})
       },
       registVloume () {
-        console.log(this.isMixerOpen)
-        modules.global.listenVolumeOrMuteDidChange()
-        modules.notification.regist('VolumeChange', (data) => {
-          console.log(data)
-          console.log(this.isMixerOpen)
-          if (this.isMixerOpen) {
-            // 如果调音台打开了 发消息给weex
-            this.$find.sendMessage({
-              method: 'setVolumeData',
-              params: {volumeData: data}
-            })
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          if (data && data.type === 1) {
+            console.log(data)
+            self.$refs.player && self.$refs.player.setVolume(data.realValue)
           }
         })
       },

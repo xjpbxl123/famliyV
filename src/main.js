@@ -13,7 +13,7 @@ import find from './scripts/find'
 import VueRouter from 'vue-router'
 import routes from './routers'
 import App from './App.vue'
-
+import './components/common/volume.js'
 const isDev = process.env.NODE_ENV === 'development'
 const devEnvVars = process.env['development']
 Vue.use(vueFindHybrid)

@@ -228,9 +228,20 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.songName = nameArr[0].split('_')[0]
+      },
+      registVloume () {
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          if (data && data.type === 1) {
+            console.log(data, 'volumeData')
+            self.$refs.audio && self.$refs.audio.setVolume(data.realValue)
+          }
+        })
       }
     },
     mounted () {
+      this.registVloume()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.$refs.audio.loadUrl(this.$route.query.url).then(data => {

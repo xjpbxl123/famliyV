@@ -294,6 +294,7 @@
       }
     },
     mounted () {
+      this.registVloume()
       let courseSetID = this.$route.query.courseSetID
       /**
        * @desc 根据courseSetID获取教程视频文件列表
@@ -309,6 +310,16 @@
       })
     },
     methods: {
+      registVloume () {
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          if (data && data.type === 1) {
+            console.log(data, 'volumeData')
+            self.$refs.player && self.$refs.player.setVolume(data.realValue)
+          }
+        })
+      },
       fastForward () {
         /**
          * @desc 视频快进
