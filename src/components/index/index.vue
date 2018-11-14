@@ -1661,9 +1661,13 @@
             })
           }
         })
+      },
+      clearCopyArr () {
+        this.$store.dispatch('myScore/setCopyArr', [])
       }
     },
     created () {
+      this.clearCopyArr()
       this.getPianoInfo()
       this.getPianoType()
       this.adjustPlayer()

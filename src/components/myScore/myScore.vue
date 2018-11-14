@@ -261,6 +261,11 @@
         this.toolbarHidden = hidden
       },
       [keys.KEY39] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         if (this.localSourcePath !== '$userUpload') {
           this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
           this.$store.dispatch('myScore/setLocalSourceIndex', 0)
@@ -269,9 +274,19 @@
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
       },
       [keys.KEY42] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
       },
       [keys.KEY46] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         if (this.myRecordPath !== '$userRecord') {
           this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
           this.getMyRecord()
@@ -279,6 +294,11 @@
         this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
       },
       [keys.KEY49] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
         if (this.myPlayPath !== '$userHistory') {
           this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
@@ -286,9 +306,19 @@
         }
       },
       [keys.KEY54] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
       },
       [keys.KEY58] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
         if (this.uPanPath !== '/Volumes') {
           this.$store.dispatch('myScore/setUpanPath', '/Volumes')
@@ -318,6 +348,11 @@
         }
       },
       [keys.KEY78] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         if (!this.deleteCover) {
           this.deleteCover = !this.deleteCover
           this.isReplace = false
@@ -345,6 +380,11 @@
         this.buttonActions('back')
       },
       [keys.PEDAL_PRESSED] (key) {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         switch (key.id) {
           case 116:
             // 踏板1号键
@@ -809,32 +849,17 @@
         let myScoreTapIndex = this.myScoreTapIndex
         switch (type) {
           case 'up':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             uPanIndex--
             uPanIndex = Math.max(uPanIndex, 0)
             this.$store.dispatch('myScore/setUpanIndex', uPanIndex)
             break
           case 'down':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             uPanIndex++
             uPanIndex = Math.min(uPanIndex, length - 1)
             uPanIndex = Math.max(uPanIndex, 0)
             this.$store.dispatch('myScore/setUpanIndex', uPanIndex)
             break
           case 'ok':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             console.log(this.canEnter)
             let data = uPanSource[uPanIndex]
             if (data) {
@@ -920,11 +945,6 @@
             }
             break
           case 'back':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
@@ -948,11 +968,6 @@
             }
             break
           case 'changeOrder':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             let uPanOrderIndex = this.uPanOrderIndex + 1
             if (uPanOrderIndex > 2) {
               uPanOrderIndex = 0
@@ -993,11 +1008,6 @@
             }
             break
           case 'copyFile':
-            if (this.isLoading) {
-              // 当前正在进行操作
-              console.log('当前正在进行操作')
-              return
-            }
             if (this.uPanPath === '/Volumes') {
               return
             }
@@ -1009,7 +1019,9 @@
                 this.isLoading = true
                 eventsHub.$emit('toast', {text: '替换中', icon: 'icon-loading', iconLoading: true, allExit: true})
                 this.removeFile(this.exitArr, () => {
+                  console.log('删除成功')
                   this.copyFile(data2.filesName, () => {
+                    console.log('替换成功')
                     this.deleteCover = !this.deleteCover
                     this.isReplace = false
                     this.isLoading = false
@@ -1023,6 +1035,7 @@
                 this.exitArr = []
                 this.fileExit(data2.filesName, (data) => {
                   if (data) {
+                    console.log(this.exitArr)
                     eventsHub.$emit('toast', {text: '确认替换吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
                     this.isReplace = true
                     this.deleteCover = !this.deleteCover
@@ -1095,11 +1108,11 @@
         if (this.fileIndex <= filesName.length - 1) {
           modules.file.fileExists('$userUpload/' + filesName[this.fileIndex]).then(res => {
             console.log(filesName[this.fileIndex], 'fileEixt')
-            this.fileIndex = this.fileIndex + 1
-            this.fileExit(filesName, callback)
             if (res) {
               this.exitArr.push('$userUpload/' + filesName[this.fileIndex])
             }
+            this.fileIndex = this.fileIndex + 1
+            this.fileExit(filesName, callback)
           })
         } else {
           this.fileIndex = 0
@@ -1480,6 +1493,11 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         let myScoreTapIndex = this.myScoreTapIndex
         switch (myScoreTapIndex) {
           case 0:
@@ -1648,7 +1666,12 @@
       regist () {
         modules.notification.regist('pageLifecycle', data => {
           // 打开原生界面
+          if (data.case === 'pause') {
+            console.log('打开原生界面')
+            this.canEnter = false
+          }
           if (data.case === 'resume') {
+            console.log('退出原生界面')
             this.canEnter = true
           }
         })
