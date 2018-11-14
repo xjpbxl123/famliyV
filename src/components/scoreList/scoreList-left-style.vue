@@ -47,7 +47,7 @@
           <span>
             难易级别:
           </span>
-          <findStar :starNum="book.starNum" :grade="book.grade" class="scrore-list-scroStar"></findStar>
+          <findStar :starNum="book.starNum" :grade="book.grade" :type="book.detail.type" class="scrore-list-scroStar"></findStar>
         </li>
         <li>
           <i class="iconfont icon-update-time"></i>

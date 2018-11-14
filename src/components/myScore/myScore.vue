@@ -1665,6 +1665,7 @@
       },
       regist () {
         modules.notification.regist('pageLifecycle', data => {
+          console.log('registData')
           // 打开原生界面
           if (data.case === 'pause') {
             console.log('打开原生界面')
@@ -1685,8 +1686,10 @@
       this.getMyRecord()
       this.getMyPlay()
       this.setTitle()
-      this.regist()
       console.log(this.copyArr)
+    },
+    mounted () {
+      this.regist()
     },
     destroyed () {
       modules.notification.remove('pageLifecycle')

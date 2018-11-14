@@ -1665,13 +1665,15 @@
       this.clearCopyArr()
       this.getPianoInfo()
       this.getPianoType()
-      this.adjustPlayer()
       this.createSession()
       this.getIsSupportMutePedal()
       this.getMetronomeStatus()
       this.clearCache()
       this.checkPedalMute()
       this.registVloume()
+    },
+    mounted () {
+      this.adjustPlayer()
     },
     beforeDestroy () {
       this.toolbarHidden = true
