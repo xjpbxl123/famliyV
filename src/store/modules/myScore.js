@@ -104,7 +104,7 @@ export default {
      * */
     setCopyArr ({dispatch, state}, data) {
       if (typeof data === 'string') {
-        let copyArr = this.state.storage.cache.renderCache.copyArr
+        let copyArr = this.state.storage.cache.renderCache.copyArr || []
         copyArr.push(data)
         return dispatch('setCacheToStorage', {copyArr: copyArr}, {root: true})
       } else if (typeof data === 'object') {
