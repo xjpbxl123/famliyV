@@ -403,20 +403,22 @@ export default function createStore () {
             console.log('第一次清的时候 把原来的数据存入新的位置')
             getCurEnvs().then(env => {
               let tableName = 'findFamily-' + env.HTTP_ROOT
-              /// 拿到本地缓存里的最近打开和我的收藏数据
               nativeStorage.get(tableName, '-1').then((data) => {
-                let userData = JSON.parse(JSON.stringify(data.value))
+                let userData = ''
+                if (typeof data.value === 'string') {
+                  userData = JSON.parse(data.value)
+                }
                 console.log(userData)
                 if (userData && userData.localRecent) {
-                  dispatch('index/localRecent', state.storage.cache.renderCache.localRecent || [])
+                  dispatch('index/localRecent', userData.localRecent || [])
                 }
                 if (userData && userData.localCollect) {
-                  dispatch('index/localCollect', state.storage.cache.renderCache.localCollect || [])
+                  dispatch('index/localCollect', userData.localCollect || [])
                 }
               })
             })
           }
-          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 6 * 1000) {
+          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 60 * 1000) {
             console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
             dispatch('setNativeStorage', {clearTime1: Date.now()})
             commit(CLEAR_CACHE)
