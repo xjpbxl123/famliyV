@@ -570,7 +570,6 @@
         userInfo: state => state.storage.userInfo,
         localCollect: state => state.storage.localCollect,
         localRecent: state => state.storage.localRecent,
-        clearTime: state => state.storage.clearTime,
         selectedIndex: state => state.index.selectedIndex,
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,

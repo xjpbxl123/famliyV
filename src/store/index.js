@@ -24,6 +24,27 @@ const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
+const CLEAR_CACHE = 'CLEAR_CACHE'
+let initData = {
+  famousAuthor: {},
+  allArtists: {authors: []},
+  recentOpenList: [],
+  popularGenre: [],
+  hotBooksAll: {bookList: []},
+  recentBooksAll: {bookList: []},
+  collectList: [],
+  yearList: [],
+  scoreSetList: [],
+  scoreList: [],
+  musicList: [],
+  differList: [],
+  materialList: {
+    body: [], sumPage: 1
+  },
+  famousPlayCoursesBySet: {sum: 0, courseList: []},
+  bookInfo: [],
+  musicInfo: []
+}
 export default function createStore () {
   return new Vuex.Store({
     // strict: process.env.NODE_ENV === 'development',
@@ -40,7 +61,7 @@ export default function createStore () {
         pianoType: '', // 钢琴类型
         localCollect: [], // 本地收藏列表
         localRecent: [], // 本地最近打开列表
-        clearTime: '',
+        clearTime1: '',
         cache: {
           renderCache: {
             famousAuthor: {},
@@ -129,6 +150,9 @@ export default function createStore () {
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
       },
+      [CLEAR_CACHE] (state) {
+        state.storage.cache.renderCache = initData
+      },
       [LOGIN_OUT_CACHE] (state, data) {
         state.storage.cache.renderCache = data
       },
@@ -165,7 +189,7 @@ export default function createStore () {
             nativeStorage.get(tableName, 'pianoType'),
             nativeStorage.get(tableName, 'localCollect'),
             nativeStorage.get(tableName, 'localRecent'),
-            nativeStorage.get(tableName, 'clearTime')
+            nativeStorage.get(tableName, 'clearTime1')
           ])
             .then(data => {
               commit(SET_STORAGE, {
@@ -178,7 +202,7 @@ export default function createStore () {
                 isSynced: true,
                 localCollect: data[6] && data[6].value ? data[6].value : [],
                 localRecent: data[7] && data[7].value ? data[7].value : [],
-                clearTime: data[8] && data[8].value ? data[8].value : ''
+                clearTime1: data[8] && data[8].value ? data[8].value : ''
               })
               return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
@@ -368,21 +392,34 @@ export default function createStore () {
       /**
        * @desc 清除缓存
        * */
-      clearCache ({dispatch, state}, auto) {
+      clearCache ({dispatch, state, commit}, auto) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        console.log(state.storage.clearTime, 'state.storage.clearTime')
-        console.log(Date.now() - state.storage.clearTime)
+        console.log(state.storage.clearTime1, 'state.storage.clearTime1')
+        console.log(Date.now() - state.storage.clearTime1)
         if (auto) {
-          if (!state.storage.clearTime) {
+          if (!state.storage.clearTime1) {
             // 第一次清的时候 把原来的数据存入新的位置
             console.log('第一次清的时候 把原来的数据存入新的位置')
-            dispatch('index/localRecent', state.storage.cache.renderCache.localRecent || [])
-            dispatch('index/localCollect', state.storage.cache.renderCache.localCollect || [])
+            getCurEnvs().then(env => {
+              let tableName = 'findFamily-' + env.HTTP_ROOT
+              /// 拿到本地缓存里的最近打开和我的收藏数据
+              nativeStorage.get(tableName, '-1').then((data) => {
+                let userData = JSON.parse(JSON.stringify(data.value))
+                console.log(userData)
+                if (userData && userData.localRecent) {
+                  dispatch('index/localRecent', state.storage.cache.renderCache.localRecent || [])
+                }
+                if (userData && userData.localCollect) {
+                  dispatch('index/localCollect', state.storage.cache.renderCache.localCollect || [])
+                }
+              })
+            })
           }
-          if (!state.storage.clearTime || Date.now() - state.storage.clearTime > 5 * 60 * 1000) {
+          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 6 * 1000) {
             console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
-            dispatch('setNativeStorage', {clearTime: Date.now()})
+            dispatch('setNativeStorage', {clearTime1: Date.now()})
+            commit(CLEAR_CACHE)
             return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
           }
         } else {
@@ -390,7 +427,7 @@ export default function createStore () {
           console.log('收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表')
           dispatch('index/localRecent', [])
           dispatch('index/localCollect', [])
-          dispatch('setNativeStorage', {clearTime: Date.now()})
+          dispatch('setNativeStorage', {clearTime1: Date.now()})
           return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
         }
       },
