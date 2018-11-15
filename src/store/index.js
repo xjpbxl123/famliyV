@@ -398,31 +398,36 @@ export default function createStore () {
         console.log(state.storage.clearTime1, 'state.storage.clearTime1')
         console.log(Date.now() - state.storage.clearTime1)
         if (auto) {
-          if (!state.storage.clearTime1) {
-            // 第一次清的时候 把原来的数据存入新的位置
-            console.log('第一次清的时候 把原来的数据存入新的位置')
-            getCurEnvs().then(env => {
-              let tableName = 'findFamily-' + env.HTTP_ROOT
-              nativeStorage.get(tableName, '-1').then((data) => {
-                let userData = ''
-                if (typeof data.value === 'string') {
-                  userData = JSON.parse(data.value)
-                }
-                console.log(userData)
-                if (userData && userData.localRecent) {
-                  dispatch('index/localRecent', userData.localRecent || [])
-                }
-                if (userData && userData.localCollect) {
-                  dispatch('index/localCollect', userData.localCollect || [])
-                }
+          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 20 * 1000) {
+            if (!state.storage.clearTime1) {
+              // 第一次清的时候 把原来的数据存入新的位置
+              console.log('第一次清的时候 把原来的数据存入新的位置')
+              return getCurEnvs().then(env => {
+                let tableName = 'findFamily-' + env.HTTP_ROOT
+                nativeStorage.get(tableName, '-1').then((data) => {
+                  let userData = ''
+                  if (typeof data.value === 'string') {
+                    userData = JSON.parse(data.value)
+                  }
+                  console.log(userData)
+                  if (userData && userData.localRecent) {
+                    dispatch('index/localRecent', userData.localRecent || [])
+                  }
+                  if (userData && userData.localCollect) {
+                    dispatch('index/localCollect', userData.localCollect || [])
+                  }
+                  console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
+                  dispatch('setNativeStorage', {clearTime1: Date.now()})
+                  commit(CLEAR_CACHE)
+                  return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+                })
               })
-            })
-          }
-          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 60 * 1000) {
-            console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
-            dispatch('setNativeStorage', {clearTime1: Date.now()})
-            commit(CLEAR_CACHE)
-            return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+            } else {
+              console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
+              dispatch('setNativeStorage', {clearTime1: Date.now()})
+              commit(CLEAR_CACHE)
+              return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+            }
           }
         } else {
           // 收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
