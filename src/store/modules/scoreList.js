@@ -96,11 +96,11 @@ export default {
             if (!this.state.storage.isLogin) {
               let collectData = []
               musicIdList.forEach((value) => {
-                if (this.state.storage.cache.renderCache['localCollect'].length === 0) {
+                if (this.state.storage.localCollect.length === 0) {
                   collectData.push({musicId: value, collection: 0})
                 } else {
                   let flag = 0
-                  this.state.storage.cache.renderCache['localCollect'].forEach((value1) => {
+                  this.state.storage.localCollect.forEach((value1) => {
                     if (value === value1.musicId) {
                       // 有收藏记录
                       flag = 1

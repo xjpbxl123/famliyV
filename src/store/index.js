@@ -38,6 +38,9 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
         pianoType: '', // 钢琴类型
+        localCollect: [], // 本地收藏列表
+        localRecent: [], // 本地最近打开列表
+        clearTime: '',
         cache: {
           renderCache: {
             famousAuthor: {},
@@ -55,8 +58,6 @@ export default function createStore () {
             materialList: {
               body: [], sumPage: 1
             },
-            localCollect: [],
-            localRecent: [],
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
             musicInfo: []
@@ -111,12 +112,6 @@ export default function createStore () {
       yearList: state => {
         return state.storage.cache.renderCache.yearList
       },
-      localCollect: state => {
-        return state.storage.cache.renderCache.localCollect
-      },
-      localRecent: state => {
-        return state.storage.cache.renderCache.localRecent
-      },
       bookInfo: state => {
         return state.storage.cache.renderCache.bookInfo
       },
@@ -167,7 +162,10 @@ export default function createStore () {
             nativeStorage.get(tableName, 'userInfo'),
             nativeStorage.get(tableName, 'sessionId'),
             nativeStorage.get(tableName, 'pianoInfo'),
-            nativeStorage.get(tableName, 'pianoType')
+            nativeStorage.get(tableName, 'pianoType'),
+            nativeStorage.get(tableName, 'localCollect'),
+            nativeStorage.get(tableName, 'localRecent'),
+            nativeStorage.get(tableName, 'clearTime')
           ])
             .then(data => {
               commit(SET_STORAGE, {
@@ -177,7 +175,10 @@ export default function createStore () {
                 sessionId: data[3] && data[3].value ? data[3].value : null,
                 pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
                 pianoType: data[5] && data[5].value ? data[5].value : '',
-                isSynced: true
+                isSynced: true,
+                localCollect: data[6] && data[6].value ? data[6].value : [],
+                localRecent: data[7] && data[7].value ? data[7].value : [],
+                clearTime: data[8] && data[8].value ? data[8].value : ''
               })
               return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
@@ -216,7 +217,7 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[6], JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[9], JSON.stringify(userId)).then(param => {
             let cache = {}
             cache['renderCache'] = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
@@ -367,10 +368,24 @@ export default function createStore () {
       /**
        * @desc 清除缓存
        * */
-      clearCache ({state}) {
+      clearCache ({dispatch, state}, auto) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+        if (auto) {
+          console.log(state.storage.clearTime, 'state.storage.clearTime')
+          if (!state.storage.clearTime || Date.now() - state.storage.clearTime > 5 * 60 * 1000) {
+            console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
+            dispatch('setNativeStorage', {clearTime: Date.now()})
+            return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+          }
+        } else {
+          // 收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
+          console.log('收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表')
+          dispatch('index/localRecent', [])
+          dispatch('index/localCollect', [])
+          dispatch('setNativeStorage', {clearTime: Date.now()})
+          return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+        }
       },
       /**
        * @desc 恢复出厂设置 清除所有缓存数据

@@ -285,6 +285,8 @@
           state.myScore.myScoreTapIndex === 0 ? this.orderButtonHidden = false : this.orderButtonHidden = true
           return state.myScore.myScoreTapIndex
         },
+        localCollect: state => state.storage.localCollect,
+        localRecent: state => state.storage.localRecent,
         localSourceIndex: state => state.myScore.localSourceIndex,
         localSourcePath: state => state.myScore.localSourcePath,
         localSource: state => state.myScore.localSource,
@@ -305,7 +307,7 @@
           return state.storage.cache.renderCache.musicList
         }
       }),
-      ...mapGetters(['localCollect', 'collectList', 'recentOpenList', 'localRecent', 'bookInfo'])
+      ...mapGetters(['collectList', 'recentOpenList', 'bookInfo'])
 
     },
     watch: {
