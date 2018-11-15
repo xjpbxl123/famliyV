@@ -501,7 +501,7 @@ export default function createStore () {
       }
     },
     modules: {
-      // Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
+      //  Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
       index,
       login,
       home,
