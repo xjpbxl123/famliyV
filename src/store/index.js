@@ -412,7 +412,7 @@ export default function createStore () {
         })
       },
       /**
-       * @desc 清除缓存
+       * @desc   清除缓存
        * */
       clearCache ({dispatch, state, commit}, auto) {
         let root = state.environments.HTTP_ROOT
