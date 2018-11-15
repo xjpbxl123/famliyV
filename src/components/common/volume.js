@@ -27,6 +27,7 @@ volumeManager.openSoundMix = function (info, fn) {
   window.fp.modules.volume.getAllVolumeSize().then(function (data1) {
     let weexUrl = info.weexUrl
     let pianoType = info.pianoType
+    let showAll = info.showAll || false
     if ((weexUrl === undefined) || (pianoType === undefined)) {
       console.warn('openSoundMix 参数错误' + info)
       return
@@ -34,11 +35,12 @@ volumeManager.openSoundMix = function (info, fn) {
     // 发送位置信息给调音台
     window.fp.modules.global.getKeyboardPosition().then(function (data) {
       if (data) {
-        let location = [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX]
+        let location = [data[50].centerX, data[57].centerX, data[62].centerX, data[69].centerX, data[74].centerX, data[79].centerX]
         window.fp.modules.page.openWeexViewController(weexUrl, {
           volumeValue: data1,
           location: location,
-          pianoType: pianoType // real 真钢 electric 电钢
+          pianoType: pianoType, // real 真钢 electric 电钢
+          showAll: showAll
         }).then(function (res) { // weex 创建成功回调
           volumeManager.isOpenWeex = true
           volumeManager.registWeexNotif()

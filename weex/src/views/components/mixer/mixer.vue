@@ -46,9 +46,9 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox5" v-if="false" :style="{left: left5}">
-        <text class="text1 textA unmute" v-if="!mute5" >音频分音量</text>
-        <text class="text1 textA mute" v-else >音频分音量 </text>
+      <div class="vioceBox vioceBox5" v-if="showAll" :style="{left: left5}">
+        <text class="text1 textA unmute" v-if="!mute5" >音频</text>
+        <text class="text1 textA mute" v-else >音频</text>
         <text class="text2 unmute" v-if="!mute5" >(人声)</text>
         <text class="text2 mute" v-else >(人声) </text>
         <text class="value valueA unmute" v-if="!mute5">{{value5}}</text>
@@ -59,9 +59,9 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox6" v-if="false" :style="{left: left6}">
-        <text class="text1 textA unmute" v-if="!mute6" >音频分音量</text>
-        <text class="text1 textA mute" v-else >音频分音量 </text>
+      <div class="vioceBox vioceBox6" v-if="showAll" :style="{left: left6}">
+        <text class="text1 textA unmute" v-if="!mute6" >音频</text>
+        <text class="text1 textA mute" v-else >音频</text>
         <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
         <text class="text2 mute" v-else >(配乐) </text>
         <text class="value valueA unmute" v-if="!mute6">{{value6}}</text>
@@ -109,7 +109,7 @@
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
         </group>
-        <group id="800" :hidden="true">
+        <group id="800" :hidden="!showAll">
           <icon-item v-for="button in buttons5"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
@@ -118,7 +118,7 @@
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
         </group>
-        <group id="900" :hidden="true">
+        <group id="900" :hidden="!showAll">
           <icon-item v-for="button in buttons6"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
@@ -285,12 +285,13 @@
         left2: 1490,
         left3: 1706,
         left4: 2008,
-        left5: 0,
-        left6: 0,
+        left5: 2326,
+        left6: 2542,
         notAutoSet: false,
         pianoType: 'real',
         toolbarHidden: false,
-        reset: false
+        reset: false,
+        showAll: true
       }
     },
     methods: {
@@ -313,6 +314,8 @@
         this.left2 = data[1] - 103
         this.left3 = data[2] - 103
         this.left4 = data[3] - 103
+        this.left5 = data[4] - 103
+        this.left6 = data[5] - 103
       },
       setVolumeData ({volumeData}) {
         // case SpeakerVolumeStep    电子音源音量    0
@@ -343,6 +346,7 @@
       this.location(weex.config.location)
       this.allVolumeSize(weex.config.volumeValue)
       this.pianoType = weex.config.pianoType || ''
+      this.showAll = weex.config.showAll
       globalEvent.addEventListener('pianoKeyPressed', (arg) => {
         find.debug(JSON.stringify(arg))
         if (arg.type === 'backPressed') {
@@ -683,13 +687,13 @@
 }
 
 .textA {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .text2 {
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   width:214px;
-  height:22px;
+  height:24px;
   text-align: center;
   font-size:22px;
   font-family:Adobe Heiti Std R;
@@ -707,7 +711,7 @@
   margin-bottom: 30px;
 }
 .valueA {
-    margin-bottom: 22px;
+  margin-bottom: 27px;
 }
 .bar {
   position: absolute;
@@ -718,7 +722,7 @@
 }
 
 .barA {
-   bottom: 13px;
+  bottom: 13px;
 }
 
 .slider1 {

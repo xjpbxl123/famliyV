@@ -48,11 +48,15 @@ export default {
     //     })
     //   })
     // },
-    openMixer () {
+    openMixer (data) {
+      let showAll = false
+      if (data && data.showAll) {
+        showAll = data.showAll
+      }
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         weexUrl = `${weexUrl}components/mixer/mixer.js`
-        window.fp.utils.volumeManager.openSoundMix({weexUrl: weexUrl, pianoType: this.pianoType})
+        window.fp.utils.volumeManager.openSoundMix({weexUrl: weexUrl, pianoType: this.pianoType, showAll: showAll})
         // volume.getAllVolumeSize().then(data1 => {
         //   console.log(data1, '音量信息')
         //   // 发送位置信息给调音台
