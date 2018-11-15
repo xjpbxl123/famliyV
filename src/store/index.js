@@ -371,8 +371,15 @@ export default function createStore () {
       clearCache ({dispatch, state}, auto) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        console.log(state.storage.clearTime, 'state.storage.clearTime')
+        console.log(Date.now() - state.storage.clearTime)
         if (auto) {
-          console.log(state.storage.clearTime, 'state.storage.clearTime')
+          if (!state.storage.clearTime) {
+            // 第一次清的时候 把原来的数据存入新的位置
+            console.log('第一次清的时候 把原来的数据存入新的位置')
+            dispatch('index/localRecent', state.storage.cache.renderCache.localRecent || [])
+            dispatch('index/localCollect', state.storage.cache.renderCache.localCollect || [])
+          }
           if (!state.storage.clearTime || Date.now() - state.storage.clearTime > 5 * 60 * 1000) {
             console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
             dispatch('setNativeStorage', {clearTime: Date.now()})
