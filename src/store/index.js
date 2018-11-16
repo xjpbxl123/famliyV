@@ -450,7 +450,7 @@ export default function createStore () {
         }
       },
       /**
-       * @desc   恢复出厂设置 清除所有缓存数据
+       * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch, state}) {
         let root = state.environments.HTTP_ROOT + 'apiStorage'
