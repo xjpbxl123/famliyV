@@ -258,14 +258,12 @@ export default function createStore () {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
           let userId = state.storage.userInfo.userId || '-1'
-          return nativeStorage.get(tableName, userId).then((param) => {
+          return nativeStorage.get(tableName, JSON.stringify(userId)).then((param) => {
             let cache = {}
-            cache['renderCache'] = param && param.value && Object.keys(
+            cache = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
             param.value) : param.value) : state.storage.cache.renderCache
-            commit(SET_STORAGE, {
-              cache
-            })
+            commit(LOGIN_OUT_CACHE, cache)
           })
         })
       },
