@@ -275,7 +275,7 @@ export default function createStore () {
         })
       },
       /**
-       * 多数据缓存
+       *  多数据缓存
        * @param {Function} dispatch
        * @param {Object} state
        * @param {object} data
