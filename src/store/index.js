@@ -420,7 +420,7 @@ export default function createStore () {
         console.log(state.storage.clearTime1, 'state.storage.clearTime1')
         if (auto) {
           if (!state.storage.clearTime1) {
-            // 第一次清的时候 把原来的数据存入新的位置
+            //   第一次清的时候 把原来的数据存入新的位置
             console.log('第一次清的时候 把原来的数据存入新的位置')
             let tableName = 'findFamily-' + root
             return nativeStorage.get(tableName, '-1').then((data) => {
