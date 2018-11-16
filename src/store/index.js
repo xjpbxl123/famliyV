@@ -414,7 +414,7 @@ export default function createStore () {
         console.log(state.storage.clearTime1, 'state.storage.clearTime1')
         console.log(Date.now() - state.storage.clearTime1)
         if (auto) {
-          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 5 * 60 * 1000) {
+          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 24 * 3600 * 1000) {
             if (!state.storage.clearTime1) {
               // 第一次清的时候 把原来的数据存入新的位置
               console.log('第一次清的时候 把原来的数据存入新的位置')
