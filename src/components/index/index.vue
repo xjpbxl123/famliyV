@@ -596,6 +596,7 @@
         }
       },
       isLogin (val) {
+        this.$store.dispatch('initCacheStorageWhenUserChange', {root: true})
         if (this.isPlaying) {
           this.$refs.player.pause()
           this.$refs.player.reset()

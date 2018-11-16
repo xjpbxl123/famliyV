@@ -254,6 +254,21 @@ export default function createStore () {
           })
         })
       },
+      initCacheStorageWhenUserChange ({dispatch, state, commit}, data) {
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          let userId = state.storage.userInfo.userId || '-1'
+          return nativeStorage.get(tableName, userId).then((param) => {
+            let cache = {}
+            cache['renderCache'] = param && param.value && Object.keys(
+            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
+            param.value) : param.value) : state.storage.cache.renderCache
+            commit(SET_STORAGE, {
+              cache
+            })
+          })
+        })
+      },
       /**
        * 多数据缓存
        * @param {Function} dispatch
@@ -387,7 +402,9 @@ export default function createStore () {
       logout ({dispatch, state}) {
         // 通知原生当前未登录
         modules.user.logOut()
-        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+        dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
+          return dispatch('setNativeStorage', {sessionId: ''})
+        })
       },
       /**
        * @desc 清除缓存
