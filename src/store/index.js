@@ -168,7 +168,8 @@ export default function createStore () {
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
+        let value = state.storage.cache.renderCache
+        return nativeStorage.set('findFamily-' + root, String(userId), {value: JSON.stringify(value)}).then((data) => {
         })
       }
     },
@@ -241,7 +242,7 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[9], JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[9], String(userId)).then(param => {
             let cache = {}
             cache['renderCache'] = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
@@ -421,7 +422,7 @@ export default function createStore () {
                 let tableName = 'findFamily-' + env.HTTP_ROOT
                 return nativeStorage.get(tableName, '-1').then((data) => {
                   let userData = ''
-                  if (typeof data.value === 'string') {
+                  if (data && typeof data.value === 'string') {
                     userData = JSON.parse(data.value)
                   }
                   console.log(userData)
@@ -434,14 +435,14 @@ export default function createStore () {
                   console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
                   dispatch('setNativeStorage', {clearTime1: Date.now()})
                   commit(CLEAR_CACHE)
-                  return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+                  return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
                 })
               })
             } else {
               console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
               dispatch('setNativeStorage', {clearTime1: Date.now()}).then(() => {
                 commit(CLEAR_CACHE)
-                return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+                return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
               })
             }
           }
@@ -451,7 +452,7 @@ export default function createStore () {
           dispatch('index/localRecent', [])
           dispatch('index/localCollect', [])
           dispatch('setNativeStorage', {clearTime1: Date.now()})
-          return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+          return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
         }
       },
       /**
