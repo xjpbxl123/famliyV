@@ -24,6 +24,27 @@ const LOGIN_OUT_CACHE = 'login_out_cache'
 const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
+const CLEAR_CACHE = 'CLEAR_CACHE'
+let initData = {
+  famousAuthor: {},
+  allArtists: {authors: []},
+  recentOpenList: [],
+  popularGenre: [],
+  hotBooksAll: {bookList: []},
+  recentBooksAll: {bookList: []},
+  collectList: [],
+  yearList: [],
+  scoreSetList: [],
+  scoreList: [],
+  musicList: [],
+  differList: [],
+  materialList: {
+    body: [], sumPage: 1
+  },
+  famousPlayCoursesBySet: {sum: 0, courseList: []},
+  bookInfo: [],
+  musicInfo: []
+}
 export default function createStore () {
   return new Vuex.Store({
     // strict: process.env.NODE_ENV === 'development',
@@ -38,6 +59,9 @@ export default function createStore () {
         sessionId: null, // 创建会话id,用于生成二维码或者登录之后获取用户信息
         pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
         pianoType: '', // 钢琴类型
+        localCollect: [], // 本地收藏列表
+        localRecent: [], // 本地最近打开列表
+        clearTime1: '',
         cache: {
           renderCache: {
             famousAuthor: {},
@@ -55,8 +79,6 @@ export default function createStore () {
             materialList: {
               body: [], sumPage: 1
             },
-            localCollect: [],
-            localRecent: [],
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
             musicInfo: []
@@ -111,12 +133,6 @@ export default function createStore () {
       yearList: state => {
         return state.storage.cache.renderCache.yearList
       },
-      localCollect: state => {
-        return state.storage.cache.renderCache.localCollect
-      },
-      localRecent: state => {
-        return state.storage.cache.renderCache.localRecent
-      },
       bookInfo: state => {
         return state.storage.cache.renderCache.bookInfo
       },
@@ -134,6 +150,9 @@ export default function createStore () {
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
       },
+      [CLEAR_CACHE] (state) {
+        state.storage.cache.renderCache = initData
+      },
       [LOGIN_OUT_CACHE] (state, data) {
         state.storage.cache.renderCache = data
       },
@@ -149,7 +168,8 @@ export default function createStore () {
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
         }
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: JSON.stringify(state.storage.cache.renderCache)}).then((data) => {
+        let value = state.storage.cache.renderCache
+        return nativeStorage.set('findFamily-' + root, String(userId), {value: JSON.stringify(value)}).then((data) => {
         })
       }
     },
@@ -167,7 +187,10 @@ export default function createStore () {
             nativeStorage.get(tableName, 'userInfo'),
             nativeStorage.get(tableName, 'sessionId'),
             nativeStorage.get(tableName, 'pianoInfo'),
-            nativeStorage.get(tableName, 'pianoType')
+            nativeStorage.get(tableName, 'pianoType'),
+            nativeStorage.get(tableName, 'localCollect'),
+            nativeStorage.get(tableName, 'localRecent'),
+            nativeStorage.get(tableName, 'clearTime1')
           ])
             .then(data => {
               commit(SET_STORAGE, {
@@ -177,7 +200,10 @@ export default function createStore () {
                 sessionId: data[3] && data[3].value ? data[3].value : null,
                 pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
                 pianoType: data[5] && data[5].value ? data[5].value : '',
-                isSynced: true
+                isSynced: true,
+                localCollect: data[6] && data[6].value ? data[6].value : [],
+                localRecent: data[7] && data[7].value ? data[7].value : [],
+                clearTime1: data[8] && data[8].value ? data[8].value : ''
               })
               return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
@@ -216,7 +242,7 @@ export default function createStore () {
       initCacheStorage ({dispatch, state, commit}, data) {
         return new Promise(resolve => {
           let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[6], JSON.stringify(userId)).then(param => {
+          nativeStorage.get(data[9], String(userId)).then(param => {
             let cache = {}
             cache['renderCache'] = param && param.value && Object.keys(
             param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
@@ -226,6 +252,19 @@ export default function createStore () {
               cache
             })
             resolve(cache)
+          })
+        })
+      },
+      initCacheStorageWhenUserChange ({dispatch, state, commit}, data) {
+        return getCurEnvs().then(env => {
+          let tableName = 'findFamily-' + env.HTTP_ROOT
+          let userId = state.storage.userInfo.userId || '-1'
+          return nativeStorage.get(tableName, String(userId)).then((param) => {
+            let cache = {}
+            cache = param && param.value && Object.keys(
+            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
+            param.value) : param.value) : state.storage.cache.renderCache
+            commit(LOGIN_OUT_CACHE, cache)
           })
         })
       },
@@ -362,15 +401,59 @@ export default function createStore () {
       logout ({dispatch, state}) {
         // 通知原生当前未登录
         modules.user.logOut()
-        return dispatch('setNativeStorage', {userInfo: {}, isLogin: false})
+        dispatch('setNativeStorage', {userInfo: {}, isLogin: false}).then(() => {
+          return dispatch('setNativeStorage', {sessionId: ''})
+        })
       },
       /**
        * @desc 清除缓存
        * */
-      clearCache ({state}) {
+      clearCache ({dispatch, state, commit}, auto) {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
-        return nativeStorage.set('findFamily-' + root, JSON.stringify(userId), {value: {}})
+        console.log(state.storage.clearTime1, 'state.storage.clearTime1')
+        console.log(Date.now() - state.storage.clearTime1)
+        if (auto) {
+          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 24 * 3600 * 1000) {
+            if (!state.storage.clearTime1) {
+              // 第一次清的时候 把原来的数据存入新的位置
+              console.log('第一次清的时候 把原来的数据存入新的位置')
+              return getCurEnvs().then(env => {
+                let tableName = 'findFamily-' + env.HTTP_ROOT
+                return nativeStorage.get(tableName, '-1').then((data) => {
+                  let userData = ''
+                  if (data && typeof data.value === 'string') {
+                    userData = JSON.parse(data.value)
+                  }
+                  console.log(userData)
+                  if (userData && userData.localRecent) {
+                    dispatch('index/localRecent', userData.localRecent || [])
+                  }
+                  if (userData && userData.localCollect) {
+                    dispatch('index/localCollect', userData.localCollect || [])
+                  }
+                  console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
+                  dispatch('setNativeStorage', {clearTime1: Date.now()})
+                  commit(CLEAR_CACHE)
+                  return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
+                })
+              })
+            } else {
+              console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
+              dispatch('setNativeStorage', {clearTime1: Date.now()}).then(() => {
+                commit(CLEAR_CACHE)
+                return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
+              })
+            }
+          }
+        } else {
+          // 收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
+          console.log('收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表')
+          dispatch('index/localRecent', [])
+          dispatch('index/localCollect', [])
+          dispatch('setNativeStorage', {clearTime1: Date.now()})
+          return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
+        }
       },
       /**
        * @desc 恢复出厂设置 清除所有缓存数据

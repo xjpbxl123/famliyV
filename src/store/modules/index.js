@@ -173,7 +173,7 @@ export default {
      * @desc 获取本地收藏列表
      * */
     localCollect ({dispatch}, file) {
-      return dispatch('setCacheToStorage', {localCollect: file}, {root: true})
+      return dispatch('setNativeStorage', {localCollect: file}, {root: true})
     },
     /**
      * @desc 获取本地最近打开
@@ -185,7 +185,7 @@ export default {
         localRecent = musicObj
       } else {
         // 存入对象
-        localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.cache.renderCache.localRecent)))
+        localRecent = [].concat(JSON.parse(JSON.stringify(this.state.storage.localRecent)))
         let flag = false
         let num = 0
         if (localRecent.length !== 0) {
@@ -202,7 +202,7 @@ export default {
         localRecent.unshift(musicObj)
         localRecent = localRecent.splice(0, 20)
       }
-      return dispatch('setCacheToStorage', {localRecent: localRecent}, {root: true}).then((data) => {
+      return dispatch('setNativeStorage', {localRecent: localRecent}, {root: true}).then((data) => {
         console.log(data, 'data')
       })
     },

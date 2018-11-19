@@ -33,7 +33,10 @@ if (isInFindClient) {
     if (!store.state.isSynced) {
       store.dispatch('initEnv').then(() => {
         store.dispatch('initialNativeStorage').then(() => {
-          next()
+          store.dispatch('clearCache', true).then(() => {
+            // 自动检查是否需要清缓存数据
+            next()
+          })
         })
       })
     } else {

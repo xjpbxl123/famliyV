@@ -568,6 +568,8 @@
           return storage.isLogin
         },
         userInfo: state => state.storage.userInfo,
+        localCollect: state => state.storage.localCollect,
+        localRecent: state => state.storage.localRecent,
         selectedIndex: state => state.index.selectedIndex,
         rightSelectedIndex: state => state.index.rightSelectedIndex,
         usedTime: state => state.index.usedTime,
@@ -576,7 +578,7 @@
           return state.storage.cache.renderCache.scoreList
         }
       }),
-      ...mapGetters(['recentOpenList', 'collectList', 'localCollect', 'localRecent', 'musicInfo', 'musicList']),
+      ...mapGetters(['recentOpenList', 'collectList', 'musicInfo', 'musicList']),
       namespace () {
         return this.showHelpBanner || this.closeScreen ? 'banner' : ''
       }
@@ -594,6 +596,7 @@
         }
       },
       isLogin (val) {
+        this.$store.dispatch('initCacheStorageWhenUserChange', {root: true})
         if (this.isPlaying) {
           this.$refs.player.pause()
           this.$refs.player.reset()
@@ -684,9 +687,10 @@
        * */
       clearCache () {
         modules.notification.regist('ClearCache', data => {
+          // 监听原生清缓存/恢复出厂设置的操作
           if (data.isClearCache) {
             // 清空缓存
-            this.$store.dispatch('clearCache')
+            this.$store.dispatch('clearCache', false)
           } else {
             // 恢复出厂设置
             this.$store.dispatch('clearCache').then(() => {
