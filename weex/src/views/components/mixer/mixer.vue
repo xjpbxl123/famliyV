@@ -2,7 +2,7 @@
   <div class="mixer">
     <div class="box">
       <image :src="back" class="back"></image>
-      <div class="vioceBox vioceBox1" :style="{left: left1}">
+      <div class="vioceBox vioceBox1" :style="{left: left1 + 'px'}">
         <text class="text1 unmute" v-if="!mute1" >总音量</text>
         <text class="text1 mute" v-else >总音量 </text>
         <text class="value unmute" v-if="!mute1">{{value1}}</text>
@@ -13,7 +13,7 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox2" :style="{left: left2}" v-if="pianoType === 'real'">
+      <div class="vioceBox vioceBox2" :style="{left: left2 + 'px'}" v-if="pianoType === 'real'">
         <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
         <text class="text1 mute" v-else >自动演奏 </text>
         <text class="value unmute" v-if="!mute2">{{value2}}</text>
@@ -24,7 +24,7 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox3" :style="{left: left3}">
+      <div class="vioceBox vioceBox3" :style="{left: left3 + 'px'}">
         <text class="text1 unmute" v-if="!mute3">电子音源</text>
         <text class="text1 mute" v-else >电子音源 </text>
         <text class="value unmute" v-if="!mute3">{{value3}}</text>
@@ -35,7 +35,7 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox4" :style="{left: left4}">
+      <div class="vioceBox vioceBox4" :style="{left: left4 + 'px'}">
         <text class="text1 unmute" v-if="!mute4" >音频</text>
         <text class="text1 mute" v-else >音频 </text>
         <text class="value unmute" v-if="!mute4">{{value4}}</text>
@@ -46,17 +46,17 @@
           <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
         </div>
       </div>
-      <div class="vioceBox vioceBox5" v-if="showAll" :style="{left: left5}">
+      <div class="vioceBox vioceBox5" v-if="showAll" :style="{left: left5 + 'px'}">
         <text class="text1 textA unmute" v-if="!mute5" >音频</text>
         <text class="text1 textA mute" v-else >音频</text>
         <text class="text2 unmute" v-if="!mute5" >(人声)</text>
         <text class="text2 mute" v-else >(人声) </text>
         <text class="value valueA unmute" v-if="!mute5">{{value5}}</text>
         <text class="value valueA mute" v-else>{{value5}} </text>
-        <image :src="bar" class="vioceBar">
+        <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
-          <image :src="slider" class="slider1" :style="{top: sliderTop5+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop5 + 'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox6" v-if="showAll" :style="{left: left6}">
@@ -66,7 +66,7 @@
         <text class="text2 mute" v-else >(配乐) </text>
         <text class="value valueA unmute" v-if="!mute6">{{value6}}</text>
         <text class="value valueA mute" v-else>{{value6}} </text>
-        <image :src="bar" class="vioceBar">
+        <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
           <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
@@ -258,10 +258,11 @@
         value2: 15,
         value3: 15,
         value4: 15,
-        value5: 15,
-        value6: 15,
+        value5: 100,
+        value6: 100,
         bar: require('./images/bar.png'),
         bar1: require('./images/bar1.png'),
+        bar3: require('./images/bar3.png'),
         slider: require('./images/slider.png'),
         back: require('./images/pic_background.png'),
         sliderTop1: 0,
@@ -285,8 +286,8 @@
         left2: 1490,
         left3: 1706,
         left4: 2008,
-        left5: 2326,
-        left6: 2542,
+        left5: 22223,
+        left6: 2439,
         notAutoSet: false,
         pianoType: 'real',
         toolbarHidden: false,
@@ -455,25 +456,25 @@
             break
           // 音频分音量（人声）
           case 73:
-            this.value5 = Math.max(this.value5 - 1, 1)
+            this.value5 = Math.max(this.value5 - 10, 0)
             break
           case 74:
             this.mute5 = !this.mute5
             this.mute4 = this.mute5 && this.mute6
             break
           case 75:
-            this.value5 = Math.min(this.value5 + 1, 15)
+            this.value5 = Math.min(this.value5 + 10, 100)
             break
           // 音频分音量（配乐）
           case 78:
-            this.value6 = Math.max(this.value6 - 1, 1)
+            this.value6 = Math.max(this.value6 - 10, 0)
             break
           case 79:
             this.mute6 = !this.mute6
             this.mute4 = this.mute5 && this.mute6
             break
           case 80:
-            this.value6 = Math.min(this.value6 + 1, 15)
+            this.value6 = Math.min(this.value6 + 10, 100)
             break
           case 85:
             // 重置
@@ -482,6 +483,8 @@
             this.value2 = 8
             this.value3 = 8
             this.value4 = 8
+            this.value5 = 80
+            this.value6 = 80
         }
       })
     },
@@ -553,10 +556,10 @@
         }
       },
       value5: function (val, oldval) {
-        this.sliderTop5 = 506 - val * 34
+        this.sliderTop5 = (10 - val / 10) * 46
       },
       value6: function (val, oldval) {
-        this.sliderTop6 = 506 - val * 34
+        this.sliderTop6 = (10 - val / 10) * 46
       },
       mute1: function (val, oldval) {
         find.sendMsgToWeb({
@@ -657,15 +660,15 @@
 }
 
 .vioceBox5 {
-  left: 2222px;
-  height: 672px;
-  top: 70px;
+  left: 2223px;
+  height: 680px;
+  top: 62px;
 }
 
 .vioceBox6 {
-  left: 2432px;
-  height: 672px;
-  top: 70px;
+  left: 2439px;
+  height: 680px;
+  top: 62px;
 }
 
 .vioceBar {
@@ -710,9 +713,28 @@
   line-height:51px;
   margin-bottom: 30px;
 }
-.valueA {
-  margin-bottom: 27px;
+
+.vioceBox5 .text1 {
+  margin-bottom: 32px;
 }
+
+.vioceBox6 .text1 {
+  margin-bottom: 32px;
+}
+
+.vioceBox5 .text2 {
+  margin-bottom: 32px;
+}
+
+.vioceBox6 .text2 {
+  margin-bottom: 16px;
+}
+
+.valueA {
+  margin-bottom: 26px;
+  margin-top: 4px;
+}
+
 .bar {
   position: absolute;
   left: 0px;
@@ -722,7 +744,7 @@
 }
 
 .barA {
-  bottom: 13px;
+  bottom: 12px;
 }
 
 .slider1 {
