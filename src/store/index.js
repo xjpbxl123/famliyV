@@ -440,7 +440,7 @@ export default function createStore () {
             })
           }
         } else {
-          //  收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
+          // 收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
           console.log('收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表')
           dispatch('index/localRecent', [])
           dispatch('index/localCollect', [])
