@@ -2,7 +2,7 @@
   <div class="myScore">
     <statusBar/>
     <find-wrap :title="title" :pagination="false">
-        <div class="logo iconfont icon-logo"> </div>
+        <div class="logo"> </div>
         <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect" :typeNum="1"/>
         <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 5" :localSourceIndex="uPanIndex" :setSelect="setSelect"  :typeNum="2"/>
         <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex" :setSelect="setSelect"/>
@@ -1714,7 +1714,11 @@
         position: absolute;
         top: 50%;
         left: 25%;
+        width: 268px;
+        height: 174px;
         color: rgba(255,255,255,0.6);
+        background: url('./images/logo.png') no-repeat;
+        background-size: cover;
         transform: translate(-50%,-50%)
     }
   }

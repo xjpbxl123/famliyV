@@ -10,15 +10,15 @@
     props: {
       beforeImage: {
         type: String,
-        default: require('../../../images/default.jpg')
+        default: require('../../../images/default.png')
       },
       src: {
         type: String,
-        default: require('../../../images/default.jpg')
+        default: require('../../../images/default.png')
       },
       errorImage: {
         type: String,
-        default: require('../../../images/default.jpg')
+        default: require('../../../images/default.png')
       },
       text: {
         type: String,
@@ -57,7 +57,7 @@
         }
         window.fp.modules.file.cacheUrl(src).then(data => {
           if (data.code === 0) {
-            this.url = data.url
+            this.url = data.url + 'm'
             this.showTitle = false
           } else {
             this.showTitle = true
@@ -84,6 +84,7 @@
       position: absolute;
       bottom: 0;
       left: 0;
+      z-index: 20;
       &.borderRadius {
         border-radius: 50%;
       }

@@ -19,7 +19,7 @@
     },
     data () {
       return {
-        logo: require('./images/default.jpg'),
+        logo: require('./images/default.png'),
         text: JSON.stringify(weex.config)
       }
     },

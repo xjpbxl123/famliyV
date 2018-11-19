@@ -14,7 +14,7 @@
             </span>
           </div>
         </div>
-        <div class="outBox">
+        <div class="outBox rotate1" :style="{right: rightValue+'px'}">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
             <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
               <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'recentOpen'}"></div>
@@ -94,6 +94,10 @@
         }
       },
       rightType (value, oldValue) {
+        this.rightValue = -608
+        setTimeout(() => {
+          this.rightValue = 0
+        }, 1000)
         console.log(value)
         if (value === 'recentOpen') {
           this.title = '最近打开'
@@ -110,7 +114,8 @@
         lateMinute: -1,
         dayData: '三',
         rightTop: 0,
-        title: ''
+        title: '',
+        rightValue: 0
       }
     },
     methods: {
@@ -198,6 +203,7 @@
   from {transform:rotate(0deg)}
   to {transform:rotate(360deg)}
 }
+
 .banner-rights {
   display: flex;
   flex: 1;
@@ -207,7 +213,7 @@
   width: 608px;
   height: 1040px;
   margin-top: 40px;
-  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 .banner-title {
   display: flex;
@@ -215,6 +221,7 @@
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
+  background-color: rgba(0, 0, 0, 0.1);
   & > div {
     display: flex;
   }
@@ -260,9 +267,19 @@
     margin-top: 36px;
   }
 }
+
 .outBox {
+  background-color: rgba(0, 0, 0, 0.1);
   height: 840px;
+  width: 100%;
   overflow: hidden;
+  position: absolute;
+  top: 122px;
+  right: 0;
+  transition: all 1s ease;
+  &.rotate1 {
+    animation: turn1 1s linear 0s alternate;
+  }
   .banner-list {
     align-items: center;
     .item-list {
@@ -332,5 +349,8 @@
     }
 
   }
+}
+@keyframes turn1 {
+
 }
 </style>

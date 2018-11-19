@@ -1,6 +1,7 @@
 <template>
   <div class="vidioPlay">
-    <h1 v-if="palyHidden" v-text="'正在下载中:'+progress+'%'"></h1>
+    <div class="backBox"></div>
+    <h1 v-if="palyHidden" v-text="'正在下载中...'+progress+'%'"></h1>
     <fh-player  ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
       <fh-video ref="video" :style="{width:3840,height:1080}">
@@ -46,13 +47,19 @@
 </template>
 <style lang="scss" scoped type=text/scss>
   .vidioPlay {
-    background: url(../video_bg.png) no-repeat !important;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
+    .backBox {
+      background: url('../images/video_bg.png') no-repeat !important;
+      background-size: cover;
+    }
     h1 {
       position: absolute;
-      top: 50%;
-      left: 32%;
-      font-size: 40px;
+      top: 524px;
+      left: 1007px;
+      font-size: 42px;
+      font-weight: 400;
+      color:rgba(51,51,51,1);
     }
   }
 </style>
