@@ -50,6 +50,8 @@
     width: 100%;
     height: 100%;
     .backBox {
+      width: 100%;
+      height: 100%;
       background: url('../images/video_bg.png') no-repeat !important;
       background-size: cover;
     }

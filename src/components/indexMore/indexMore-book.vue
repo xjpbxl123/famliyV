@@ -1,8 +1,7 @@
 <template>
   <div class="box">
-    <span>{{bookData.name}}</span>
     <div class="imgBox">
-      <findImg :src="bookData.coverSmall" ></findImg>
+      <findImg :src="bookData.coverSmall" :text="bookData.name"></findImg>
     </div>
   </div>
 </template>
@@ -53,15 +52,6 @@
       background: rgba(0,0,0,0.3);
       z-index: 100;
     }
-  }
-  span {
-    position: absolute;
-    top: 58%;
-    color: #fff;
-    font-size: 20px;
-    width: 80%;
-    text-align: center;
-    left: 10%;
   }
 }
 </style>

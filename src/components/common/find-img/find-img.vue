@@ -1,7 +1,7 @@
 <template>
   <div class="image" >
       <img :src="url" alt="Find" :class="{'borderRadius': borderRadius}" @error="error" >
-      <h1 v-show="showTitle">{{text}}</h1>
+      <span v-show="showTitle && text" :style="textStyle" class="bookName" :class="{addZindex: addZindex}">{{text}}</span>
   </div>
 </template>
 <script>
@@ -29,12 +29,16 @@
       },
       hasBorder: {
         type: Boolean
+      },
+      textStyle: {
+        type: Object
       }
     },
     data () {
       return {
         url: this.beforeImage || this.errorImage,
-        showTitle: true
+        showTitle: true,
+        addZindex: false
       }
     },
     watch: {
@@ -50,17 +54,20 @@
         this.url = this.errorImage || this.beforeImage
       },
       convertLocalImages (src) {
+        if (this.errorImage.indexOf('./static') !== -1) {
+          this.addZindex = true
+        }
         if (src.indexOf('./static') !== -1) {
           this.url = this.src
           this.showTitle = false
+          this.addZindex = true
           return
         }
         window.fp.modules.file.cacheUrl(src).then(data => {
           if (data.code === 0) {
-            this.url = data.url + 'm'
-            this.showTitle = false
+            this.url = data.url
+            this.addZindex = false
           } else {
-            this.showTitle = true
             this.url = this.errorImage
             console.log(data.desc)
           }
@@ -89,13 +96,17 @@
         border-radius: 50%;
       }
     }
-    h1 {
-      font-size: 70px;
-      color: #fff;
+   .bookName {
       position: absolute;
-      left: 50%;
-      transform:translateX(-50%);
-      top: 70%;
+      top: 58%;
+      color: #fff;
+      font-size: 20px;
+      width: 80%;
+      text-align: center;
+      left: 10%;
+      &.addZindex {
+        z-index: 30;
+      }
     }
   }
 </style>

@@ -4,8 +4,7 @@
         <ul>
           <li v-for="(item,index) of scoreSetList" :key="item.bookId" :class="{ active:index == scoreListIndex }" @click="setSelect(index)">
             <div class="imgBox">
-              <findImg :src="item.coverSmall" ></findImg>
-              <span class="bookName">{{item.name}}</span>
+              <findImg :src="item.coverSmall" :text="item.name"></findImg>
             </div>
             <findStar :starNum="item.starNum" :grade="item.grade" class="scrore-list-scroStar" :type="item.detail.type"></findStar>
           </li>
@@ -86,17 +85,6 @@
             position: relative;
             border-radius: 3px;
             overflow: hidden;
-            .bookName {
-              position: absolute;
-              top: 200px;
-              left: 0;
-              z-index: 10;
-              width: 100%;
-              text-align: center;
-              font-size: 24px;
-              font-weight: 400;
-              color:rgba(255,255,255,0.5);
-            }
             &::before {
               content: '';
               position: absolute;
