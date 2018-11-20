@@ -13,7 +13,7 @@
     data () {
       return {
         receiveMessage: '',
-        logo: require('../../images/default.jpg')
+        logo: require('../../images/default.png')
       }
     },
     mixins: [mixins],

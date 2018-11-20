@@ -7,7 +7,7 @@
 <script>
   export default {
     data () {
-      return {logo: require('../images/default.jpg')}
+      return {logo: require('../images/default.png')}
     }
   }
 </script>
