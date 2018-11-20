@@ -85,8 +85,7 @@ export default function createStore () {
             musicInfo: [],
             partnerVersion: {},
             localPartnerVersion: {},
-            isUpanInsert: false,
-            isMixerOpen: false
+            isUpanInsert: false
           }
         } // 数据本地缓存
       },
@@ -155,9 +154,6 @@ export default function createStore () {
       },
       localPartnerVersion: state => {
         return state.storage.cache.renderCache.localPartnerVersion
-      },
-      isMixerOpen: state => {
-        return state.storage.cache.renderCache.isMixerOpen
       }
     },
     mutations: {

@@ -99,12 +99,6 @@ export default {
       })
     },
     /**
-     * @desc 调音台是否打开
-     * */
-    isMixerOpen ({dispatch} = {}, data) {
-      return dispatch('setCacheToStorage', {isMixerOpen: data}, {root: true})
-    },
-    /**
      * @desc 获取用户数据模式是否激活
      * */
     getIsPracticeDataActive ({dispatch}) {

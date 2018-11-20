@@ -51,8 +51,8 @@
         <text class="text1 textA mute" v-else >音频</text>
         <text class="text2 unmute" v-if="!mute5" >(人声)</text>
         <text class="text2 mute" v-else >(人声) </text>
-        <text class="value valueA unmute" v-if="!mute5">{{value5}}</text>
-        <text class="value valueA mute" v-else>{{value5}} </text>
+        <text class="value valueA unmute" v-if="!mute5">{{value5}}%</text>
+        <text class="value valueA mute" v-else>{{value5}}% </text>
         <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
@@ -64,8 +64,8 @@
         <text class="text1 textA mute" v-else >音频</text>
         <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
         <text class="text2 mute" v-else >(配乐) </text>
-        <text class="value valueA unmute" v-if="!mute6">{{value6}}</text>
-        <text class="value valueA mute" v-else>{{value6}} </text>
+        <text class="value valueA unmute" v-if="!mute6">{{value6}}%</text>
+        <text class="value valueA mute" v-else>{{value6}}% </text>
         <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
