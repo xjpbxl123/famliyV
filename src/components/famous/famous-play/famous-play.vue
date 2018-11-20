@@ -68,7 +68,7 @@
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download, modules } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY97, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
   import toastMixin from '../../common/toast-mixin.js'
@@ -101,7 +101,7 @@
             text: '视频列表'
           },
           {
-            pianoKey: 58,
+            pianoKey: 97,
             icon: '0xe60d',
             id: 206,
             backgroundColor: '#6000',
@@ -246,7 +246,7 @@
       [KEY82] () {
         this.fastForward()
       },
-      [KEY58] () {
+      [KEY97] () {
         /**
          * @desc 打开调音台
          */
