@@ -33,7 +33,7 @@ http.interceptors.response.use(function (response) {
         return getCurEnvs().then(env => {
           let tableName = 'findFamily-' + env.HTTP_ROOT
           return nativeStorage.get(tableName, 'isLogin').then((isLogin) => {
-            if (code === 5 && isLogin.value) {
+            if (code === 5 && isLogin && isLogin.value) {
               // 执行注销操作
               let store = vue.prototype.$store
               return store.dispatch('logout', {root: true}).then(() => {

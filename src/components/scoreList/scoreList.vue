@@ -300,9 +300,10 @@
         isLogin (state) {
           let {storage} = state
           return storage.isLogin
-        }
+        },
+        localCollect: state => state.storage.localCollect
       }),
-      ...mapGetters(['localCollect']),
+      ...mapGetters([]),
       files () {
         return this.scoreList[this.scoreIndex] ? this.scoreList[this.scoreIndex].files : []
       },
