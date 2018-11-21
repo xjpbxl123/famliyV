@@ -42,6 +42,7 @@
         text="调音台"
         pianoKey="97"
         titlePosition="below"
+        :hidden="toolbarHidden"
         :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
       <slider ref="slider" :hidden="toolbarHidden || isPlay" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
         <titleitem text="-" id="710" pianoKey="73"/>
