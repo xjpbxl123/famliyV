@@ -18,7 +18,7 @@
     <fh-weex :style="weexStyle" ref="weex" />
     <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
-              :hidden="toolbarHidden"
+              :hidden="toolbarHidden || isPlay"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
@@ -27,16 +27,23 @@
               :style="{backgroundColor: '#6000',dotColor: '#fff'}"
               :icon="button.icon"/>
       <icon-item v-for="button in buttons"
-              :hidden="toolbarHidden"
-              :pianoKey="button.pianoKey"
-              :key="button.icon"
-              longClick="true"
-              :id="button.id"
-              :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
-              :text="button.text"
-              titlePosition='below'
-              :icon="button.icon"/>
-      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
+        :hidden="toolbarHidden || isPlay"
+        :pianoKey="button.pianoKey"
+        :key="button.icon"
+        longClick="true"
+        :id="button.id"
+        :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
+        :text="button.text"
+        titlePosition='below'
+        :icon="button.icon"/>
+      <icon-item id="899"
+        key="899"
+        icon="0xe60d"
+        text="调音台"
+        pianoKey="97"
+        titlePosition="below"
+        :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+      <slider ref="slider" :hidden="toolbarHidden || isPlay" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem :text="speedValue+'X'" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -99,13 +106,6 @@
             id: 205,
             backgroundColor: '#6000',
             text: '视频列表'
-          },
-          {
-            pianoKey: 97,
-            icon: '0xe60d',
-            id: 206,
-            backgroundColor: '#6000',
-            text: '调音台'
           }
         ],
         labelStyle: {
@@ -266,6 +266,10 @@
         this[method] && this[method](params)
       },
       [BACK_PRESSED] () {
+        if (this.toolbarHidden1) {
+          this.toolbarHidden1 = false
+          return
+        }
         if (this.isPlay) {
           // 如果在播放 暂停
           this.isPlay = false
@@ -323,9 +327,13 @@
         // 监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
           if (data && data.type === 1) {
-            console.log(data, 'volumeData')
-            self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.player && self.$refs.player.setVolume(0)
+            } else {
+              self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            }
           }
         })
       },

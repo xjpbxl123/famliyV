@@ -90,7 +90,7 @@
         if (!musicData || !musicData.files) {
           return
         }
-        if (musicData.grade !== undefined) {
+        if (typeof musicData.grade === 'number') {
           this.gradeName = gradeNameObj[musicData.grade]
         } else {
           this.gradeName = starNumObj[musicData.starNum]
