@@ -14,7 +14,7 @@
     "build:devFull": "npm run build:testFull",
     "build:test": "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
     "build:testFull": "npm run lint&&cross-env NODE_ENV=buildTest WEEX_ENV=production node ./build/build --fuller",
-    "build:weex": "npm run lint&&cross-env NODE_ENV=production node ./build/build --weex",
+    "build:weex": "npm run lint && cd weex && npm run build",
     "build": "npm run lint&&cross-env NODE_ENV=production node ./build/build",
     "build:full": "npm run lint&&cross-env NODE_ENV=production node ./build/build --fuller",
     "lint": "eslint  --fix --ext js,vue  src build --ignore-pattern !.eslintrc.js --rule no-debugger:error"
