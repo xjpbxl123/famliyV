@@ -1,18 +1,25 @@
 {
-  "presets": [
+  "presets": ["es2015", "stage-0"],
+  "plugins": [
+    "add-module-exports",
+    "transform-object-rest-spread",
+    "syntax-dynamic-import",
+    "transform-object-assign",
     [
-      "env",
-      {
-        "modules": false,
-        "targets": {
-          "browsers": [
-            "last 3 versions",
-            "not ie <=8"
-          ]
+      "component",
+      [
+        {
+          "libraryName": "weex-amui",
+          "libDir": "packages",
+          "style": false
+        },
+        {
+          "libraryName": "weex-ui",
+          "libDir": "packages",
+          "style": false
         }
-      }
-    ],
-    "stage-2",
-    "stage-3"
-  ]
+      ]
+    ]
+  ],
+  "comments": false
 }
