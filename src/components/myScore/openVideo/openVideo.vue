@@ -20,15 +20,22 @@
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
-            :hidden="toolbarHidden"
+            :hidden="toolbarHidden || isPlaying"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
             :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
+         <icon-item id="899"
+            key="899"
+            icon="0xe60d"
+            text="调音台"
+            pianoKey="97"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
             :key="index"
             :id="button.id"
             :icon="button.icon"
-            :hidden="toolbarHidden"
+            :hidden="toolbarHidden || isPlaying"
             :text="button.text"
             :pianoKey="button.pianoKey"
             titlePosition="below"
@@ -70,12 +77,6 @@
             id: 203
         }],
         textButtons: [{
-          pianoKey: 97,
-          icon: '0xe60d',
-          id: 204,
-          text: '调音台',
-          backgroundColor: '#4000'
-        }, {
           pianoKey: 42,
           icon: '0xe6e2',
           id: 205,
@@ -149,6 +150,10 @@
         this.toolbarHidden = hidden
       },
       [BACK_PRESSED] () {
+        if (this.toolbarHidden) {
+          this.toolbarHidden = false
+          return
+        }
         if (this.isPlaying) {
           this.$refs.video.pause()
           this.isPlaying = !this.isPlaying
@@ -164,7 +169,6 @@
           case 'play':
             this.$refs.video.play()
             this.isPlaying = !this.isPlaying
-            this.toolbarHidden = true
             break
           case 'changeScreen':
             // 切换屏幕
@@ -231,9 +235,11 @@
         // 监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
           if (data && data.type === 1) {
-            console.log(data, 'volumeData')
-            if (self.$refs.video) {
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.video.volume = 0
+            } else {
               self.$refs.video.volume = data.realValue
             }
           }
