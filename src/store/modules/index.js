@@ -270,11 +270,9 @@ export default {
      * */
     getMusicInfo ({dispatch} = {}, musicId) {
       dispatch('setCacheFromTable', 'musicInfo', {root: true})
-      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
-        if (!header.code) {
-          if (body) {
-            return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
-          }
+      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {musicInfo: res.body, id: musicId}, {root: true})
         }
       }).catch((error) => {
         return error

@@ -1,5 +1,5 @@
 <template>
-  <div class="banner-rights">
+  <div class="banner-rights"  :class="{'rotate1': rightValue}">
       <div class="banner-right">
         <div class="banner-title">
           <div class="banner-title-right">
@@ -14,7 +14,7 @@
             </span>
           </div>
         </div>
-        <div class="outBox rotate1" :style="{right: rightValue+'px'}">
+        <div class="outBox">
           <div class="banner-list" :style="{'margin-top':rightTop+'px'}" v-if="rightType === 'recentOpen'">
             <div class="item-list" v-for="(data,index) in recentOpenList" :key="index" :class="{active:(index === rightSelectedIndex)}" @click="setRightSelect(index)">
               <div class="item-logo iconfont icon-song" :class="{'play': isPlayingMusicId===data.musicId && isPlaying && isPlayingType === rightType,'icon-playing':isPlayingMusicId===data.musicId && isPlaying && isPlayingType === 'recentOpen'}"></div>
@@ -94,9 +94,10 @@
         }
       },
       rightType (value, oldValue) {
-        this.rightValue = -608
-        setTimeout(() => {
-          this.rightValue = 0
+        clearTimeout(this.timer)
+        this.rightValue = true
+        this.timer = setTimeout(() => {
+          this.rightValue = false
         }, 1000)
         console.log(value)
         if (value === 'recentOpen') {
@@ -115,7 +116,8 @@
         dayData: '三',
         rightTop: 0,
         title: '',
-        rightValue: 0
+        rightValue: false,
+        timer: null
       }
     },
     methods: {
@@ -182,6 +184,7 @@
     },
     destroyed () {
       clearInterval(this.timeId)
+      clearTimeout(this.timer)
       this.timeId = null
     }
   }
@@ -208,6 +211,11 @@
   display: flex;
   flex: 1;
   justify-content: flex-end;
+  position: relative;
+  top: 0;
+  &.rotate1 {
+    animation: turn1 1s linear 0s alternate;
+  }
 }
 .banner-right {
   width: 608px;
@@ -277,9 +285,6 @@
   top: 122px;
   right: 0;
   transition: all 1s ease;
-  &.rotate1 {
-    animation: turn1 1s linear 0s alternate;
-  }
   .banner-list {
     align-items: center;
     .item-list {
@@ -351,6 +356,8 @@
   }
 }
 @keyframes turn1 {
+  from {transform:rotateY(0deg)}
+  to {transform:rotateY(360deg)}
 
 }
 </style>
