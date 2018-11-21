@@ -196,6 +196,7 @@
       play () {
         this.$refs.audio.play().then(data => {
           console.log('播放完成', data)
+          this.isPlaying = false
           window.fp.uis.audio.reset()
           this.getCurrentTime()
           clearInterval(this.interval)
