@@ -56,7 +56,7 @@
         <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
-          <image :src="slider" class="slider1" :style="{top: sliderTop5 + 'px'}"></image>
+          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop5 + 'px'}"></image>
         </div>
       </div>
       <div class="vioceBox vioceBox6" v-if="showAll" :style="{left: left6}">
@@ -69,7 +69,7 @@
         <image :src="bar3" class="vioceBar">
         </image>
         <div class="bar barA">
-          <image :src="slider" class="slider1" :style="{top: sliderTop6+'px'}"></image>
+          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop6+'px'}"></image>
         </div>
       </div>
       <toolbar :hidden="toolbarHidden">
@@ -300,15 +300,19 @@
         this.show = show
         this.pianoType = pianoType
       },
-      allVolumeSize ({electronic, media, autoPlay, all}) {
+      allVolumeSize ({electronic, media, autoPlay, all, humanVolume, mediaAccompany}) {
         this.value1 = all.value
         this.value2 = autoPlay.value
         this.value3 = electronic.value
         this.value4 = media.value
+        this.value5 = humanVolume.value * 10
+        this.value6 = mediaAccompany.value * 10
         this.mute1 = all.mute
         this.mute2 = autoPlay.mute
         this.mute3 = electronic.mute
         this.mute4 = media.mute
+        this.mute5 = humanVolume.mute
+        this.mute6 = mediaAccompany.mute
       },
       location (data) {
         this.left1 = data[0] - 103
@@ -323,6 +327,8 @@
         // case MediaVolumeStep     音频音量      1
         // case AutoplayVolumeStep  自动演奏   2
         // case VolumeStep      总音量         3
+        // case mediaAccompany  配乐              4
+        // case humanVolume  人声              5
         this.notAutoSet = true
         this.reset = false
         switch (volumeData.type) {
@@ -331,12 +337,23 @@
             break
           case 1:
             this.value4 = volumeData.value
+            this.mute4 = volumeData.mute
             break
           case 2:
             this.value2 = volumeData.value
+            this.mute2 = volumeData.mute
             break
           case 3:
             this.value1 = volumeData.value
+            this.mute1 = volumeData.mute
+            break
+          case 4:
+            this.value6 = volumeData.value * 10
+            this.mute6 = volumeData.mute
+            break
+          case 5:
+            this.value5 = volumeData.value * 10
+            this.mute5 = volumeData.mute
             break
         }
       }
@@ -460,7 +477,6 @@
             break
           case 74:
             this.mute5 = !this.mute5
-            this.mute4 = this.mute5 && this.mute6
             break
           case 75:
             this.value5 = Math.min(this.value5 + 10, 100)
@@ -471,7 +487,6 @@
             break
           case 79:
             this.mute6 = !this.mute6
-            this.mute4 = this.mute5 && this.mute6
             break
           case 80:
             this.value6 = Math.min(this.value6 + 10, 100)
@@ -557,9 +572,33 @@
       },
       value5: function (val, oldval) {
         this.sliderTop5 = (10 - val / 10) * 46
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'humanVolume', value: val / 10}
+          })
+        }
       },
       value6: function (val, oldval) {
         this.sliderTop6 = (10 - val / 10) * 46
+        if (this.reset) {
+          return find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'resetAll'}
+          })
+        }
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'volumeSet', type: 'mediaAccompany', value: val / 10}
+          })
+        }
       },
       mute1: function (val, oldval) {
         find.sendMsgToWeb({
@@ -614,6 +653,10 @@
         }
       },
       mute5: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'humanVolume', value: val}
+        })
         if (!val) {
           // 放音
           this.buttons5[1].icon = '0xe603'
@@ -623,6 +666,10 @@
         }
       },
       mute6: function (val, oldval) {
+        find.sendMsgToWeb({
+          method: 'vioceControl',
+          params: {name: 'setMute', type: 'mediaAccompany', value: val}
+        })
         if (!val) {
           // 放音
           this.buttons6[1].icon = '0xe603'
@@ -752,6 +799,10 @@
   width: 72px;
   height: 84px;
   left:70px;
+}
+
+.slider2 {
+  left: 92px;
 }
 
 .mute {

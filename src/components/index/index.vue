@@ -90,7 +90,7 @@
             text="调音台"
             pianoKey="87"
             titlePosition="below"
-            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
+            :hidden="!logoutCover || peilianLoading"
             :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
@@ -173,6 +173,7 @@
         logoutCover: true,
         isOpeningScore: false,
         isDownloadingPeilian: false,
+        mixerIsOpen: false,
         userActionButtons: [
           {
             pianoKey: 30,
@@ -471,6 +472,7 @@
         this[method] && this[method](params)
       },
       [keys.KEY87] () {
+        this.mixerIsOpen = true
         console.log('打开调音台')
         this.openMixer()
       },
@@ -675,7 +677,6 @@
         }
       },
       isLogin (val) {
-        this.$store.dispatch('initCacheStorageWhenUserChange', {root: true})
         this.$store.dispatch('myScore/setCopyArr', [])
         if (this.isPlaying) {
           this.$refs.player.pause()
@@ -773,9 +774,7 @@
             this.$store.dispatch('clearCache', false)
           } else {
             // 恢复出厂设置
-            this.$store.dispatch('clearCache').then(() => {
-              this.$store.dispatch('restoreFactorySettings')
-            })
+            this.$store.dispatch('restoreFactorySettings')
           }
         })
       },
@@ -1612,7 +1611,7 @@
         modules.notification.regist('pageLifecycle', data => {
           // 打开原生界面
           console.log(data, 'pageLifecycle')
-          if (data.case === 'pause') {
+          if (data.case === 'pause' && !this.mixerIsOpen) {
             this.loading = false
             eventsHub.$emit('closeToast')
             this.isOpeningScore = true
@@ -1623,7 +1622,8 @@
             let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
             console.log(dd)
           }
-          if (data.case === 'resume') {
+          if (data.case === 'resume' && !this.mixerIsOpen) {
+            this.mixerIsOpen = false
             this.isOpeningScore = false
             this.hideOtherButtons = false
             this.canEnterModule = true
@@ -1653,18 +1653,18 @@
         // 监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
           if (data && data.type === 1) {
-            console.log(data)
-            self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.player && self.$refs.player.setVolume(0)
+            } else {
+              self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            }
           }
         })
-      },
-      clearCopyArr () {
-        this.$store.dispatch('myScore/setCopyArr', [])
       }
     },
     created () {
-      this.clearCopyArr()
       this.getPianoInfo()
       this.getPianoType()
       this.createSession()

@@ -8,7 +8,6 @@ volumeManager.setup = function () {
   console.log('volumeManager.setup()完成')
   volumeManager.isOpenWeex = false
   volumeManager.cbs = []
-  window.fp.modules.global.listenVolumeOrMuteDidChange()
   window.fp.modules.notification.regist('VolumeChange', function (data) {
     console.log(volumeManager.isOpenWeex, '调音台是否打开')
     if (volumeManager.isOpenWeex) {
@@ -77,7 +76,15 @@ volumeManager.registWeexNotif = function () {
     }
     switch (data.name) {
       case 'setMute':
-        window.fp.modules.volume.volumeMute(data.type, data.value)
+        window.fp.modules.volume.volumeMute(data.type, data.value).then(function (data) {
+          if (data.code && data.code === -1) {
+            console.warn('volumeMute 参数错误')
+            return
+          }
+          for (let fn in volumeManager.cbs) {
+            volumeManager.cbs[fn](data)
+          }
+        })
         break
       case 'volumeSet':
         if (data.type === 'resetAll') {

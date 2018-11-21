@@ -17,6 +17,7 @@ const ORDER_INDEX = 'ORDER_INDEX' /// 文件排序index
 const UPAN_SOURCE = 'UPAN_SOURCE' /// U盘数据
 const UPAN_ORDER_INDEX = 'UPAN_ORDER_INDEX'
 const UPAN_INDEX = 'UPAN_INDEX'
+const COPYARR = 'COPYARR'
 
 export default {
   namespaced: true,
@@ -37,7 +38,8 @@ export default {
     uPanIndex: 0,
     myPlayPath: '$userHistory',
     uPanSource: [],
-    uPanPath: '/Volumes'
+    uPanPath: '/Volumes',
+    copyArr: []
   },
   mutations: {
     [UPAN_SOURCE] (state, data) {
@@ -90,6 +92,9 @@ export default {
     },
     [UPAN_INDEX] (state, index) {
       state.uPanIndex = index
+    },
+    [COPYARR] (state, data) {
+      state.copyArr = data
     }
   },
   actions: {
@@ -102,13 +107,13 @@ export default {
     /**
      * @desc usb资源拷贝数组
      * */
-    setCopyArr ({dispatch, state}, data) {
+    setCopyArr ({commit, state}, data) {
       if (typeof data === 'string') {
-        let copyArr = this.state.storage.cache.renderCache.copyArr || []
+        let copyArr = state.copyArr || []
         copyArr.push(data)
-        return dispatch('setCacheToStorage', {copyArr: copyArr}, {root: true})
+        commit(COPYARR, copyArr)
       } else if (typeof data === 'object') {
-        return dispatch('setCacheToStorage', {copyArr: data}, {root: true})
+        commit(COPYARR, data)
       }
     },
     /**
@@ -291,7 +296,7 @@ export default {
         let orIndex = state.orderIndex
         if (type === 'Upan') {
           orIndex = state.uPanOrderIndex
-          let copyArr = this.state.storage.cache.renderCache['copyArr'] || []
+          let copyArr = state.copyArr || []
           console.log(copyArr, 'copyArr')
           console.log(state.uPanPath)
           // 拿到拷贝状态

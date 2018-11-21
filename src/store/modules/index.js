@@ -70,6 +70,7 @@ export default {
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      dispatch('setCacheFromTable', 'recentBooksAll', {root: true})
       return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
@@ -86,6 +87,7 @@ export default {
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      dispatch('setCacheFromTable', 'hotBooksAll', {root: true})
       return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
@@ -128,6 +130,7 @@ export default {
      * @desc 获取陪练版本数据
      * */
     getPartnerVersion ({dispatch}) {
+      dispatch('setCacheFromTable', 'partnerVersion', {root: true})
       return http.post('', {
         cmd: 'system.getApp',
         appType: 'testing',
@@ -144,6 +147,7 @@ export default {
      * @desc 获取本地陪练版本数据
      * */
     getLocalPartnerVersion ({dispatch}, url) {
+      dispatch('setCacheFromTable', 'localPartnerVersion', {root: true})
       return axios.get(url, {
       }).then(data => {
         let res = data.data
@@ -172,6 +176,7 @@ export default {
      * @desc 获取最近打开
      * */
     getRecentOpenList ({dispatch, commit}, {tagId = 0} = {}) {
+      dispatch('setCacheFromTable', 'recentOpenList', {root: true})
       return http.post('', {
         cmd: 'musicScore.getPracticeRecent',
         tagId
@@ -189,6 +194,7 @@ export default {
      * @desc 获取收藏列表
      * */
     getCollectList ({dispatch, commit}, {tagId = 0} = {}) {
+      dispatch('setCacheFromTable', 'collectList', {root: true})
       return http.post('', {
         cmd: 'musicScore.getPracticeMusic',
         tagId
@@ -263,6 +269,7 @@ export default {
      * @desc 获取曲子信息
      * */
     getMusicInfo ({dispatch} = {}, musicId) {
+      dispatch('setCacheFromTable', 'musicInfo', {root: true})
       return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
         if (!header.code) {
           if (body) {

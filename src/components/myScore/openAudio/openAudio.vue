@@ -233,9 +233,13 @@
         // 监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
           if (data && data.type === 1) {
-            console.log(data, 'volumeData')
-            self.$refs.audio && self.$refs.audio.setVolume(data.realValue)
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.audio && self.$refs.audio.setVolume(0)
+            } else {
+              self.$refs.audio && self.$refs.audio.setVolume(data.realValue)
+            }
           }
         })
       }

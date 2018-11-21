@@ -28,6 +28,7 @@ export default {
       commit(FAMOUS_SET_SELECT, num)
     },
     getAllArtistsToFamily ({dispatch}) {
+      dispatch('setCacheFromTable', 'allArtists', {root: true})
       return http.post('', {
         ...defaultData,
         cmd: 'artist.getAllArtistsToFamily'
@@ -40,6 +41,7 @@ export default {
       })
     },
     getCourseSetByArtistToFamily ({dispatch}, data) {
+      dispatch('setCacheFromTable', 'famousAuthor', {root: true})
       return http.post('', {
         ...defaultData,
         ...data,
@@ -53,6 +55,7 @@ export default {
       })
     },
     getCoursesBySet ({dispatch}, {courseSetID}) {
+      dispatch('setCacheFromTable', 'famousPlayCoursesBySet', {root: true})
       return http.post('', {
         cmd: 'artist.getCoursesBySet',
         'courseSetId': courseSetID - 0,
@@ -79,6 +82,7 @@ export default {
      * @returns {Promise<any[]>}
      */
     videoHasDownload ({dispatch}, {body, courseSetID}) {
+      dispatch('setCacheFromTable', 'famousPlayCoursesBySet', {root: true})
       let midiHighBitRateArr = []
       let videoHighBitRateArr = []
       let midPromise

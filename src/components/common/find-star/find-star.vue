@@ -1,12 +1,18 @@
 <template>
     <div class="star">
-        <div v-if="type === 2">
-          <div class="eachStar star-full iconfont icon-star-full" v-for="(num) in Math.floor((starNum+1)/2)" :key="num"></div>
-          <div class="eachStar star-half" v-if="starNum%2 === 0"></div>
-          <div v-if="starNum%2 === 0" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in 5 - Math.floor((starNum+1)/2)" :key="num+7"></div>
-          <div v-if="starNum%2 !== 0" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in 6 - Math.floor((starNum+1)/2)" :key="num+7"></div>
+        <div v-if="parseInt(type) === 2 && typeof grade === 'number'">
+          <div class="eachStar star-full iconfont icon-star-full" v-for="(num) in Math.floor((grade+1)/2)" :key="num"></div>
+          <div class="eachStar star-half" v-if="grade%2 === 0"></div>
+          <div  v-if="grade%2 === 0" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in Math.abs(5 - Math.floor((grade+1)/2))" :key="num+7"></div>
+          <div v-if="grade%2 !== 0 && parseInt(grade) !== 11" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in 6 - Math.floor((grade+1)/2)" :key="num+7"></div>
         </div>
-        <div v-else>
+        <!-- <div v-if="parseInt(type) === 2 && typeof grade !== 'number'">
+          <div class="eachStar star-full iconfont icon-star-full" v-for="(num) in Math.floor((grade+1)/2)" :key="num"></div>
+          <div class="eachStar star-half" v-if="grade%2 === 0"></div>
+          <div  v-if="grade%2 === 0" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in Math.abs(5 - Math.floor((grade+1)/2))" :key="num+7"></div>
+          <div v-if="grade%2 !== 0 && parseInt(grade) !== 11" class="eachStar star-empty iconfont icon-star-empty" v-for="(num) in 6 - Math.floor((grade+1)/2)" :key="num+7"></div>
+        </div> -->
+        <div v-if="parseInt(type) === 1">
           <div class="eachStar star-full yinfu iconfont icon-popmusic_LV" v-for="(num) in parseInt(starNum)" :key="num"></div>
           <div class="eachStar star-empty iconfont icon-popmusic_LV" v-for="(num) in parseInt(5-starNum)"
                  :key="num+7"></div>
@@ -54,11 +60,11 @@
         type: Number
       },
       type: {
-        type: Number
       }
     },
     data () {
-      return {}
+      return {
+      }
     },
     method: {},
     created () {

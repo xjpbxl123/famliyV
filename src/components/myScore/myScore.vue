@@ -452,6 +452,7 @@
           }
           return state.myScore.uPanPath
         },
+        copyArr: state => state.myScore.copyArr,
         orderIndex: state => state.myScore.orderIndex,
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
@@ -464,7 +465,7 @@
           return state.storage.cache.renderCache.musicList
         }
       }),
-      ...mapGetters(['collectList', 'recentOpenList', 'bookInfo', 'copyArr'])
+      ...mapGetters(['collectList', 'recentOpenList', 'bookInfo'])
 
     },
     watch: {
@@ -1686,7 +1687,6 @@
       this.getMyRecord()
       this.getMyPlay()
       this.setTitle()
-      console.log(this.copyArr)
     },
     mounted () {
       this.regist()

@@ -47,7 +47,8 @@
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
-
+      // 重启app清空数组
+      this.$store.dispatch('myScore/setCopyArr', [])
       // 监听U盘
       modules.notification.regist('UpanChange', data => {
         this.$store.dispatch('myScore/setCopyArr', [])

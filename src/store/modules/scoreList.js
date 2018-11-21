@@ -21,6 +21,7 @@ export default {
      * @desc 获取曲谱列表
      * */
     getScoreList ({dispatch, state}, {page = {'offset': 0, 'count': 500}, typeName, id}) {
+      dispatch('setCacheFromTable', 'scoreList', {root: true})
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
       if (typeName === 'other') {
@@ -140,6 +141,7 @@ export default {
     getMusicList ({dispatch}, {page = {'offset': 0, 'count': 500}, typeName, id}) {
       let cmd = 'musicScore.getMusicsByBook'
       let netObj = {page, bookId: id, cmd: cmd}
+      dispatch('setCacheFromTable', 'musicList', {root: true})
       return http.post('', {
         ...netObj
       }).then(res => {
