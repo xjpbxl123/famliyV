@@ -1,46 +1,32 @@
-// https://eslint.org/docs/user-guide/configuring
 {
-  "parserOptions": {
-    "parser": "babel-eslint"
-  },
-  "env": {
-    "browser": true
-  },
-  "globals": {
-    "weex": true
-  },
   "extends": [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
     "plugin:vue/essential",
-    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
     "standard"
   ],
-  // required to lint *.vue files
   "plugins": [
     "vue"
   ],
-  // add your custom rules here
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true
+
+  },
   "rules": {
-    "vue/no-parsing-error": [
-      2,
-      {
-        "x-invalid-end-tag": false
-      }
-    ],
-    // allow async-await
-    "generator-star-spacing": "off",
-    // allow debugger during development
     "no-debugger": "off",
+    "no-console": "off",
     "indent": "off",
-    "no-var": "error",
-    "vue/script-indent": [
-      "error",
-      2,
-      {
-        "baseIndent": 1,
-        "switchCase": 1
-      }
-    ]
+    "no-var": "error"
+  },
+  "globals": {
+    "window": true,
+    "Vue": true,
+    "weex": true
   }
 }

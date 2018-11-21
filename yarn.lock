@@ -2518,11 +2518,11 @@ eslint-plugin-standard@^3.0.1:
   version "3.1.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/eslint-plugin-standard/-/eslint-plugin-standard-3.1.0.tgz#2a9e21259ba4c47c02d53b2d0c9135d4b1022d47"
 
-eslint-plugin-vue@^4.2.2:
-  version "4.7.1"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/eslint-plugin-vue/-/eslint-plugin-vue-4.7.1.tgz#c829b9fc62582c1897b5a0b94afd44ecca511e63"
+eslint-plugin-vue@4.2.2:
+  version "4.2.2"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/eslint-plugin-vue/-/eslint-plugin-vue-4.2.2.tgz#63e55c61574af8ef983328ddd2688d6389a0214b"
   dependencies:
-    vue-eslint-parser "^2.0.3"
+    vue-eslint-parser "^2.0.1"
 
 eslint-scope@3.7.1:
   version "3.7.1"
@@ -7284,7 +7284,7 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vue-eslint-parser@^2.0.3:
+vue-eslint-parser@^2.0.1:
   version "2.0.3"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"
   dependencies:
