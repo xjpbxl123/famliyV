@@ -68,7 +68,7 @@ volumeManager.removeVolumeChange = function (fn) {
 /// 注册weex监听
 volumeManager.registWeexNotif = function () {
   window.fp.modules.notification.regist('receiveMsgFromWeex', function (data1) {
-    console.log(data1)
+    console.log(data1, 'weex监听结果')
     let data = data1.params
     if (data.close) {
       volumeManager.isOpenWeex = false

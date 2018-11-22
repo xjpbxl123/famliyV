@@ -282,7 +282,7 @@
         left4: 2008,
         left5: 2203,
         left6: 2419,
-        notAutoSet: false,
+        notAutoSet: true,
         pianoType: 'real',
         toolbarHidden: false,
         reset: false,
@@ -295,6 +295,8 @@
         this.pianoType = pianoType
       },
       allVolumeSize ({electronic, media, autoPlay, all, humanVolume, mediaAccompany}) {
+        // 初始化数据
+        this.notAutoSet = true
         this.value1 = all.value
         this.value2 = autoPlay.value
         this.value3 = electronic.value
@@ -317,37 +319,51 @@
         this.left6 = data[5] - 123
       },
       setVolumeData ({volumeData}) {
+        // 监听到的音量设置
         // case SpeakerVolumeStep    电子音源音量    0
         // case MediaVolumeStep     音频音量      1
         // case AutoplayVolumeStep  自动演奏   2
         // case VolumeStep      总音量         3
         // case mediaAccompany  配乐              4
         // case humanVolume  人声              5
-        this.notAutoSet = true
         this.reset = false
+        this.notAutoSet = true
         switch (volumeData.type) {
           case 0:
             this.value3 = volumeData.value
+            if (volumeData.mute !== undefined) {
+              this.mute3 = volumeData.mute
+            }
             break
           case 1:
             this.value4 = volumeData.value
-            this.mute4 = volumeData.mute
+            if (volumeData.mute !== undefined) {
+              this.mute4 = volumeData.mute
+            }
             break
           case 2:
             this.value2 = volumeData.value
-            this.mute2 = volumeData.mute
+            if (volumeData.mute !== undefined) {
+              this.mute2 = volumeData.mute
+            }
             break
           case 3:
             this.value1 = volumeData.value
-            this.mute1 = volumeData.mute
+            if (volumeData.mute !== undefined) {
+              this.mute1 = volumeData.mute
+            }
             break
           case 4:
             this.value6 = volumeData.value * 10
-            this.mute6 = volumeData.mute
+            if (volumeData.mute !== undefined) {
+              this.mute6 = volumeData.mute
+            }
             break
           case 5:
             this.value5 = volumeData.value * 10
-            this.mute5 = volumeData.mute
+            if (volumeData.mute !== undefined) {
+              this.mute5 = volumeData.mute
+            }
             break
         }
       }
@@ -595,10 +611,12 @@
         }
       },
       mute1: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'all', value: val}
-        })
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'all', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons1[1].icon = '0xe603'
@@ -608,10 +626,12 @@
         }
       },
       mute2: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'autoPlay', value: val}
-        })
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'autoPlay', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons2[1].icon = '0xe603'
@@ -621,10 +641,12 @@
         }
       },
       mute3: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'electronic', value: val}
-        })
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'electronic', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons3[1].icon = '0xe603'
@@ -634,10 +656,12 @@
         }
       },
       mute4: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'media', value: val}
-        })
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'media', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons4[1].icon = '0xe603'
@@ -647,10 +671,12 @@
         }
       },
       mute5: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'humanVolume', value: val}
-        })
+        if (!this.notAutoSet) {
+           find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'humanVolume', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons5[1].icon = '0xe603'
@@ -660,10 +686,12 @@
         }
       },
       mute6: function (val, oldval) {
-        find.sendMsgToWeb({
-          method: 'vioceControl',
-          params: {name: 'setMute', type: 'mediaAccompany', value: val}
-        })
+        if (!this.notAutoSet) {
+          find.sendMsgToWeb({
+            method: 'vioceControl',
+            params: {name: 'setMute', type: 'mediaAccompany', value: val}
+          })
+        }
         if (!val) {
           // 放音
           this.buttons6[1].icon = '0xe603'

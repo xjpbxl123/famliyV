@@ -475,6 +475,11 @@
         this[method] && this[method](params)
       },
       [keys.KEY87] () {
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
         this.mixerIsOpen = true
         console.log('打开调音台')
         this.openMixer()
@@ -1621,29 +1626,35 @@
         modules.notification.regist('pageLifecycle', data => {
           // 打开原生界面
           console.log(data, 'pageLifecycle')
-          if (data.case === 'pause' && !this.mixerIsOpen) {
-            this.loading = false
-            eventsHub.$emit('closeToast')
-            this.isOpeningScore = true
-            if (this.isPlaying) {
-              this.isPlaying = false
-              this.$refs.player.pause()
+          if (data.case === 'pause') {
+            console.log('打开原生界面')
+            if (!this.mixerIsOpen) {
+              this.loading = false
+              eventsHub.$emit('closeToast')
+              this.isOpeningScore = true
+              if (this.isPlaying) {
+                this.isPlaying = false
+                this.$refs.player.pause()
+              }
             }
             let dd = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss:S')
             console.log(dd)
           }
-          if (data.case === 'resume' && !this.mixerIsOpen) {
-            this.mixerIsOpen = false
-            this.isOpeningScore = false
-            this.hideOtherButtons = false
+          if (data.case === 'resume') {
+            console.log('关闭原生界面 释放模块锁定状态')
             this.canEnterModule = true
-            this.openMusicScore = false
-            // 退出原生界面的时候 做一次登陆验证
-            return this.$store.dispatch('getUserInfo').then(data => {
-              if (!data.userInfo.userId) {
-                modules.user.logOut()
-              }
-            })
+            if (!this.mixerIsOpen) {
+              this.isOpeningScore = false
+              this.hideOtherButtons = false
+              this.openMusicScore = false
+              // 退出原生界面的时候 做一次登陆验证
+              return this.$store.dispatch('getUserInfo').then(data => {
+                if (!data.userInfo.userId) {
+                  modules.user.logOut()
+                }
+              })
+            }
+            this.mixerIsOpen = false
           }
         })
       },
@@ -1663,7 +1674,6 @@
         // 监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
-          console.log(data, 'volumeData')
           if (data && data.type === 1) {
             if (data.mute !== undefined && data.mute === true) {
               self.$refs.player && self.$refs.player.setVolume(0)

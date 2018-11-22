@@ -1651,7 +1651,7 @@
        * @desc 退到首页的时候清空
        * */
       destroyedFunc () {
-        this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)
         this.$store.dispatch('myScore/setMyRecordIndex', 0)
         this.$store.dispatch('myScore/setMyPlayIndex', 0)
