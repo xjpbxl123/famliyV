@@ -5,7 +5,7 @@ const buildPlugins = require('./configs/plugin')()
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 
-const publicPath = isProd ? '/findWeb/family/' : 'dist/'
+const publicPath = isProd ? '/findWeb/familyClient/' : 'dist/'
 
 const loaders = {}
 const plugins = []
