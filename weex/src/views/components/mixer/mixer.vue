@@ -1,16 +1,15 @@
 <template>
   <div class="mixer">
     <div class="box">
-      <image :src="back" class="back"></image>
+      <image :src="back" class="back" />
       <div class="vioceBox vioceBox1" :style="{left: left1 + 'px'}">
         <text class="text1 unmute" v-if="!mute1" >总音量</text>
         <text class="text1 mute" v-else >总音量 </text>
         <text class="value unmute" v-if="!mute1">{{value1}}</text>
         <text class="value mute" v-else>{{value1}} </text>
-        <image :src="bar" class="vioceBar">
-        </image>
+        <image :src="bar" class="vioceBar"/>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox2" :style="{left: left2 + 'px'}" v-if="pianoType === 'real'">
@@ -18,10 +17,9 @@
         <text class="text1 mute" v-else >自动演奏 </text>
         <text class="value unmute" v-if="!mute2">{{value2}}</text>
         <text class="value mute" v-else>{{value2}} </text>
-        <image :src="bar1" class="vioceBar">
-        </image>
+        <image :src="bar1" class="vioceBar"/>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox3" :style="{left: left3 + 'px'}">
@@ -29,10 +27,9 @@
         <text class="text1 mute" v-else >电子音源 </text>
         <text class="value unmute" v-if="!mute3">{{value3}}</text>
         <text class="value mute" v-else>{{value3}} </text>
-        <image :src="bar" class="vioceBar">
-        </image>
+        <image :src="bar" class="vioceBar"/>
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox4" :style="{left: left4 + 'px'}">
@@ -40,10 +37,9 @@
         <text class="text1 mute" v-else >音频 </text>
         <text class="value unmute" v-if="!mute4">{{value4}}</text>
         <text class="value mute" v-else>{{value4}} </text>
-        <image :src="bar" class="vioceBar">
-        </image>
+        <image :src="bar" class="vioceBar" />
         <div class="bar">
-          <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}"></image>
+          <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox5" v-if="showAll" :style="{left: left5 + 'px'}">
@@ -53,10 +49,9 @@
         <text class="text2 mute" v-else >(人声) </text>
         <text class="value valueA unmute" v-if="!mute5">{{value5}}%</text>
         <text class="value valueA mute" v-else>{{value5}}% </text>
-        <image :src="bar3" class="vioceBar">
-        </image>
+        <image :src="bar3" class="vioceBar" />
         <div class="bar barA">
-          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop5 + 'px'}"></image>
+          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop5 + 'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox6" v-if="showAll" :style="{left: left6}">
@@ -66,10 +61,9 @@
         <text class="text2 mute" v-else >(配乐) </text>
         <text class="value valueA unmute" v-if="!mute6">{{value6}}%</text>
         <text class="value valueA mute" v-else>{{value6}}% </text>
-        <image :src="bar3" class="vioceBar">
-        </image>
+        <image :src="bar3" class="vioceBar"/>
         <div class="bar barA">
-          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop6+'px'}"></image>
+          <image :src="slider" class="slider1 slider2" :style="{top: sliderTop6+'px'}"/>
         </div>
       </div>
       <toolbar :hidden="toolbarHidden">

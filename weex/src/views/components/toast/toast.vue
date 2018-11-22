@@ -1,8 +1,7 @@
 <template>
     <div class="prompt">
       <div class="box">
-        <image :src="toastImg" v-if="!speedValue" style="height: 120px;width: 120px;position: absolute;top: 70px;left: 260px;" >
-        </image>
+        <image :src="toastImg" v-if="!speedValue" style="height: 120px;width: 120px;position: absolute;top: 70px;left: 260px;" />
          <text class="value"  v-if="speedValue && maxValue" >{{speedValue}}</text>
          <text class="value noBar" v-if="speedValue && !maxValue">{{speedValue+' X'}}</text>
           <div class="speedBar" v-if="maxValue">

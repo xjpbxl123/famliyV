@@ -214,7 +214,8 @@
   position: relative;
   top: 0;
   &.rotate1 {
-    animation: turn1 1s linear 0s alternate;
+    transform-origin: center;
+    animation: turn1 1s ease-in-out 0s;
   }
 }
 .banner-right {
@@ -356,8 +357,14 @@
   }
 }
 @keyframes turn1 {
-  from {transform:rotateY(0deg)}
-  to {transform:rotateY(360deg)}
+  from {
+    transform: rotateY(0deg);
+    transform-origin: center;
+  }
+  to {
+    transform: rotateY(360deg);
+    transform-origin: center;
+  }
 
 }
 </style>

@@ -2,7 +2,7 @@
   <div>
     <text class="message">Now, let's use Vue.js to build your Weex app.</text>
     <text>{{receiveMessage}}</text>
-    <image :src="logo" class="logo"></image>
+    <image :src="logo" class="logo" />
     <button @click="sendMessage">sendMessage</button>
   </div>
 </template>
