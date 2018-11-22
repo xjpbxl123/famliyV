@@ -13,7 +13,7 @@
     "build:dev": "npm run build:test",
     "build:devFull": "npm run build:testFull",
     "build:test": "npm run lint&&cross-env NODE_ENV=buildTest node ./build/build",
-    "build:testFull": "npm run lint&&cross-env NODE_ENV=buildTest WEEX_ENV=production node ./build/build --fuller",
+    "build:testFull": "npm run build:test && npm run build:weex",
     "build:weex": "npm run lint && cd weex && npm run build",
     "build": "npm run lint&&cross-env NODE_ENV=production node ./build/build",
     "build:full": "npm run build && npm run build:weex && mv weex/dist/weex dist",
