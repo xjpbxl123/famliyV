@@ -258,7 +258,7 @@
           {
             pianoKey: 75,
             text: '',
-            icon: '0xe610',
+            icon: '0xe762',
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 101

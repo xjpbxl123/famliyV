@@ -215,7 +215,7 @@
   top: 0;
   &.rotate1 {
     transform-origin: center;
-    animation: turn1 1s ease-in-out 0s;
+    animation: turn1 1s linear 0s 1;
   }
 }
 .banner-right {
@@ -356,15 +356,22 @@
 
   }
 }
-@keyframes turn1 {
-  from {
-    transform: rotateY(0deg);
-    transform-origin: center;
-  }
-  to {
-    transform: rotateY(360deg);
-    transform-origin: center;
-  }
 
+@keyframes turn1 {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    49.9% {
+        transform: rotateY(90deg);
+    }
+
+    50% {
+        transform: rotateY(-90deg);
+    }
+
+    100% {
+        transform: rotateY(0deg);
+    }
 }
 </style>
