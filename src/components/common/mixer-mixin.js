@@ -56,6 +56,7 @@ export default {
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         weexUrl = `${weexUrl}components/mixer/mixer.js`
+        console.log(weexUrl)
         window.fp.utils.volumeManager.openSoundMix({weexUrl: weexUrl, pianoType: this.pianoType, showAll: showAll})
         // volume.getAllVolumeSize().then(data1 => {
         //   console.log(data1, '音量信息')

@@ -49,7 +49,7 @@
         <text class="text2 mute" v-else >(人声) </text>
         <text class="value valueA unmute" v-if="!mute5">{{value5}}%</text>
         <text class="value valueA mute" v-else>{{value5}}% </text>
-        <image :src="bar3" class="vioceBar" />
+        <image :src="bar2" class="vioceBar" />
         <div class="bar barA">
           <image :src="slider" class="slider1 slider2" :style="{top: sliderTop5 + 'px'}" />
         </div>
@@ -61,7 +61,7 @@
         <text class="text2 mute" v-else >(配乐) </text>
         <text class="value valueA unmute" v-if="!mute6">{{value6}}%</text>
         <text class="value valueA mute" v-else>{{value6}}% </text>
-        <image :src="bar3" class="vioceBar"/>
+        <image :src="bar2" class="vioceBar"/>
         <div class="bar barA">
           <image :src="slider" class="slider1 slider2" :style="{top: sliderTop6+'px'}"/>
         </div>
@@ -256,7 +256,7 @@
         value6: 100,
         bar: require('./images/bar.png'),
         bar1: require('./images/bar1.png'),
-        bar3: require('./images/bar3.png'),
+        bar2: require('./images/bar2.png'),
         slider: require('./images/slider.png'),
         back: require('./images/pic_background.png'),
         sliderTop1: 0,
@@ -280,8 +280,8 @@
         left2: 1490,
         left3: 1706,
         left4: 2008,
-        left5: 22223,
-        left6: 2439,
+        left5: 2203,
+        left6: 2419,
         notAutoSet: false,
         pianoType: 'real',
         toolbarHidden: false,
@@ -313,8 +313,8 @@
         this.left2 = data[1] - 103
         this.left3 = data[2] - 103
         this.left4 = data[3] - 103
-        this.left5 = data[4] - 103
-        this.left6 = data[5] - 103
+        this.left5 = data[4] - 123
+        this.left6 = data[5] - 123
       },
       setVolumeData ({volumeData}) {
         // case SpeakerVolumeStep    电子音源音量    0
@@ -701,13 +701,13 @@
 }
 
 .vioceBox5 {
-  left: 2223px;
+  left: 2203px;
   height: 680px;
   top: 62px;
 }
 
 .vioceBox6 {
-  left: 2439px;
+  left: 2419px;
   height: 680px;
   top: 62px;
 }

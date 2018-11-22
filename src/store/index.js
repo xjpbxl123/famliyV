@@ -495,7 +495,7 @@ export default function createStore () {
        * */
       restoreFactorySettings ({dispatch, state}) {
         let root = state.environments.HTTP_ROOT + 'apiStorage'
-        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        let rootArr = ['https://api.etango.cn:13001/', 'https://api.ktunes.cn:13001/', 'https://api.findpiano.cn:13001/']
         rootArr.map((value) => {
           nativeStorage.clear('findFamily-' + value)
         })

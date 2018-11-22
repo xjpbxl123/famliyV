@@ -474,7 +474,7 @@
       [keys.KEY87] () {
         this.mixerIsOpen = true
         console.log('打开调音台')
-        this.openMixer({showAll: true})
+        this.openMixer()
       },
       [keys.KEY90] () {
         if (this.openMusicScore || this.loading) {
