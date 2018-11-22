@@ -2805,7 +2805,7 @@ decompress@^4.0.0, decompress@^4.2.0:
 
 deep-diff@1.0.1:
   version "1.0.1"
-  resolved "http://localhost:8888/repository/createapp-group/deep-diff/-/deep-diff-1.0.1.tgz#ac437a691e88baf4205b83ae1aa095a13c6c10ac"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.1.tgz#ac437a691e88baf4205b83ae1aa095a13c6c10ac"
 
 deep-equal@~1.0.1:
   version "1.0.1"
