@@ -67,7 +67,7 @@
         adminUrl: require('./images/admin.png'),
         interval: null,
         nickName: '',
-        logoUrl: require('./images/logo.jpg')
+        logoUrl: require('./images/find-logo.png')
       }
     },
     watch: {

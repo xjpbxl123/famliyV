@@ -219,7 +219,7 @@ export default function createStore () {
                 isLogin: data[1] && data[1].value ? data[1].value : false,
                 userInfo: data[2] && data[2].value ? data[2].value : {},
                 sessionId: data[3] && data[3].value ? data[3].value : null,
-                pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
+                pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/find-logo.png')},
                 pianoType: data[5] && data[5].value ? data[5].value : '',
                 isSynced: true,
                 localCollect: data[6] && data[6].value ? data[6].value : [],

@@ -3,16 +3,16 @@
     <statusBar/>
     <find-wrap :title="title" :pagination="false">
         <div class="logo"> </div>
-        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect" :typeNum="1"/>
-        <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 5" :localSourceIndex="uPanIndex" :setSelect="setSelect"  :typeNum="2"/>
-        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex" :setSelect="setSelect"/>
-        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex" :setSelect="setSelect"/>
-        <find-userMess v-show="myScoreTapIndex === 1"
+        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 1" :localSourceIndex="localSourceIndex" :setSelect="setSelect" :typeNum="1"/>
+        <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 0" :localSourceIndex="uPanIndex" :setSelect="setSelect"  :typeNum="2"/>
+        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 3" :listIndex="myRecordIndex" :setSelect="setSelect"/>
+        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 4" :listIndex="myPlayIndex" :setSelect="setSelect"/>
+        <find-userMess v-show="myScoreTapIndex === 2"
         :list="isLogin?collectList:localCollect"
         :rightTitle="`收藏时间`"
         :listIndex="myCollectIndex"
         :setSelect="setSelect"/>
-        <find-userMess v-show="myScoreTapIndex === 4"
+        <find-userMess v-show="myScoreTapIndex === 5"
         :rightTitle="`最近打开时间`"
         :list="isLogin?recentOpenList:localRecent"
         :listIndex="myRecentIndex"
@@ -151,28 +151,28 @@
         ],
         tapButton: [
           {
-            className: 'localSource key-39',
+            className: 'usb key-39',
+            text: 'USB存储'
+          },
+          {
+            className: 'localSource key-42',
             text: '本地资源'
           },
           {
-            className: 'myCollect key-42',
+            className: 'myCollect key-46',
             text: '我的收藏'
           },
           {
-            className: 'myRecord key-46',
+            className: 'myRecord key-49',
             text: '我的录音'
           },
           {
-            className: 'myPlay key-49',
+            className: 'myPlay key-54',
             text: '我的弹奏'
           },
           {
-            className: 'recentOpen key-54',
+            className: 'recentOpen key-58',
             text: '最近打开'
-          },
-          {
-            className: 'usb key-58',
-            text: 'USB存储'
           }
         ],
         controlButtons: [
@@ -266,12 +266,12 @@
           console.log('当前正在进行操作')
           return
         }
-        if (this.localSourcePath !== '$userUpload') {
-          this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
-          this.$store.dispatch('myScore/setLocalSourceIndex', 0)
-        }
-        this.getLocalSource()
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+        if (this.uPanPath !== '/Volumes') {
+          this.$store.dispatch('myScore/setUpanPath', '/Volumes')
+          this.$store.dispatch('myScore/setUpanIndex', 0)
+        }
+        this.getUpanList()
       },
       [keys.KEY42] () {
         if (this.isLoading) {
@@ -279,6 +279,11 @@
           console.log('当前正在进行操作')
           return
         }
+        if (this.localSourcePath !== '$userUpload') {
+          this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
+          this.$store.dispatch('myScore/setLocalSourceIndex', 0)
+        }
+        this.getLocalSource()
         this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
       },
       [keys.KEY46] () {
@@ -286,10 +291,6 @@
           // 当前正在进行操作
           console.log('当前正在进行操作')
           return
-        }
-        if (this.myRecordPath !== '$userRecord') {
-          this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
-          this.getMyRecord()
         }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
       },
@@ -299,11 +300,11 @@
           console.log('当前正在进行操作')
           return
         }
-        this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
-        if (this.myPlayPath !== '$userHistory') {
-          this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
-          this.getMyPlay()
+        if (this.myRecordPath !== '$userRecord') {
+          this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+          this.getMyRecord()
         }
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
       },
       [keys.KEY54] () {
         if (this.isLoading) {
@@ -312,6 +313,10 @@
           return
         }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        if (this.myPlayPath !== '$userHistory') {
+          this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
+          this.getMyPlay()
+        }
       },
       [keys.KEY58] () {
         if (this.isLoading) {
@@ -320,11 +325,6 @@
           return
         }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
-        if (this.uPanPath !== '/Volumes') {
-          this.$store.dispatch('myScore/setUpanPath', '/Volumes')
-          this.$store.dispatch('myScore/setUpanIndex', 0)
-        }
-        this.getUpanList()
       },
       [keys.KEY66] () {
         this.buttonActions('popUsb')
@@ -336,7 +336,7 @@
         this.buttonActions('delete')
       },
       [keys.KEY70] () {
-        if (this.myScoreTapIndex === 0 || this.myScoreTapIndex === 5) this.buttonActions('changeOrder')
+        if (this.myScoreTapIndex === 0 || this.myScoreTapIndex === 1) this.buttonActions('changeOrder')
       },
       [keys.KEY75] () {
         if (!this.deleteCover) {
@@ -403,24 +403,24 @@
     computed: {
       ...mapState({
         myScoreTapIndex: function (state) {
-          if (state.myScore.myScoreTapIndex === 4 || state.myScore.myScoreTapIndex === 5) {
+          if (state.myScore.myScoreTapIndex === 0 || state.myScore.myScoreTapIndex === 5) {
             this.controlButtons[this.controlButtons.length - 2].show = false
           } else {
             this.controlButtons[this.controlButtons.length - 2].show = true
           }
-          if (state.myScore.myScoreTapIndex === 5) {
+          if (state.myScore.myScoreTapIndex === 0) {
             this.copyButtonHidden = false
             this.usbButtonHidden = false
           } else {
             this.copyButtonHidden = true
             this.usbButtonHidden = true
           }
-          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
+          if (state.myScore.myScoreTapIndex === 2 || state.myScore.myScoreTapIndex === 5) {
             this.controlButtons[this.controlButtons.length - 1].show = true
           } else {
             this.controlButtons[this.controlButtons.length - 1].show = false
           }
-          if (state.myScore.myScoreTapIndex === 0 || state.myScore.myScoreTapIndex === 5) {
+          if (state.myScore.myScoreTapIndex === 0 || state.myScore.myScoreTapIndex === 1) {
             this.orderButtonHidden = false
           } else {
             this.orderButtonHidden = true
@@ -445,7 +445,7 @@
         myPlay: state => state.myScore.myPlay,
         myPlayPath: state => state.myScore.myPlayPath,
         uPanPath (state) {
-          if (this.myScoreTapIndex === 5 && state.myScore.uPanPath === '/Volumes') {
+          if (this.myScoreTapIndex === 0 && state.myScore.uPanPath === '/Volumes') {
             this.usbButtonHidden = false
           } else {
             this.usbButtonHidden = true
@@ -488,7 +488,7 @@
           if (item.name === this.dirName1) {
             flag = true
             this.$store.dispatch('myScore/setUpanIndex', index)
-            if (this.myScoreTapIndex === 5) {
+            if (this.myScoreTapIndex === 0) {
               if (item.type === 'dir') {
                 this.copyButtonHidden = true
               } else {
@@ -497,7 +497,7 @@
             }
           }
         })
-        if (!flag && this.myScoreTapIndex === 5 && value.length !== 0) {
+        if (!flag && this.myScoreTapIndex === 0 && value.length !== 0) {
           if (value[0].type === 'dir') {
             this.copyButtonHidden = true
           } else {
@@ -523,10 +523,10 @@
       },
       myScoreTapIndex (value, old) {
         if (value !== old) {
-          let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开', 'USB存储']
+          let title = ['USB存储', '本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
           this.title = title[value]
         }
-        if (value === 5) {
+        if (value === 0) {
           if (this.uPanSource.length === 0) {
             this.copyButtonHidden = true
             this.usbButtonHidden = true
@@ -562,11 +562,10 @@
               if (data.length !== 0) {
                 // 有U盘插入检测到数据 清空定时器
                 console.log('有U盘插入检测到数据 清空定时器')
-                if (this.myScoreTapIndex === 5) {
+                if (this.myScoreTapIndex === 0) {
                   this.usbButtonHidden = false
                 }
                 clearInterval(this.interval)
-                // this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
               }
             } else {
               if (data.length === 0) {
@@ -575,7 +574,6 @@
                 this.usbButtonHidden = true
                 this.copyButtonHidden = true
                 clearInterval(this.interval)
-                // this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
               }
             }
           })
@@ -610,32 +608,32 @@
       // 鼠标事件
       setSelect (index) {
         switch (this.myScoreTapIndex) {
-          case 0:
+          case 1:
             this.$store.dispatch('myScore/setLocalSourceIndex', index).then(() => {
               this.localSourceButtonAction('ok')
             })
             break
-          case 1:
+          case 2:
             this.$store.dispatch('myScore/setMyCollectIndex', index).then(() => {
               this.myCollectButtonAction('ok')
             })
             break
-          case 2:
+          case 3:
             this.$store.dispatch('myScore/setMyRecordIndex', index).then(() => {
               this.myRecordButtonAction('ok')
             })
             break
-          case 3:
+          case 4:
             this.$store.dispatch('myScore/setMyPlayIndex', index).then(() => {
               this.myPlayButtonAction('ok')
             })
             break
-          case 4:
+          case 5:
             this.$store.dispatch('myScore/setRecentIndex', index).then(() => {
               this.recentOpenButtonAction('ok')
             })
             break
-          case 5:
+          case 0:
             this.$store.dispatch('myScore/setUpanIndex', index).then(() => {
               this.uPanButtonAction('ok')
             })
@@ -819,7 +817,7 @@
               eventsHub.$emit('closeToast')
               return
             }
-            if (myScoreTapIndex === 0 && localSourcePath !== '$userUpload') {
+            if (myScoreTapIndex === 1 && localSourcePath !== '$userUpload') {
               let pathArr = localSourcePath.split('/')
               this.dirName = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -954,7 +952,7 @@
               eventsHub.$emit('closeToast')
               return
             }
-            if (myScoreTapIndex === 5 && uPanPath !== '/Volumes') {
+            if (myScoreTapIndex === 0 && uPanPath !== '/Volumes') {
               let pathArr = uPanPath.split('/')
               this.dirName1 = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -1285,7 +1283,7 @@
               eventsHub.$emit('closeToast')
               return
             }
-            if (myScoreTapIndex === 2 && myRecordPath !== '$userRecord') {
+            if (myScoreTapIndex === 3 && myRecordPath !== '$userRecord') {
               let pathArr = myRecordPath.split('/')
               this.myRecordDirName = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -1360,7 +1358,7 @@
               eventsHub.$emit('closeToast')
               return
             }
-            if (this.myScoreTapIndex === 3 && this.myPlayPath !== '$userHistory') {
+            if (this.myScoreTapIndex === 4 && this.myPlayPath !== '$userHistory') {
               let pathArr = myPlayPath.split('/')
               this.myPlayDirName = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -1502,22 +1500,22 @@
         let myScoreTapIndex = this.myScoreTapIndex
         switch (myScoreTapIndex) {
           case 0:
-            this.localSourceButtonAction(type)
+            this.uPanButtonAction(type)
             break
           case 1:
-            this.myCollectButtonAction(type)
+            this.localSourceButtonAction(type)
             break
           case 2:
-            this.myRecordButtonAction(type)
+            this.myCollectButtonAction(type)
             break
           case 3:
-            this.myPlayButtonAction(type)
+            this.myRecordButtonAction(type)
             break
           case 4:
-            this.recentOpenButtonAction(type)
+            this.myPlayButtonAction(type)
             break
           case 5:
-            this.uPanButtonAction(type)
+            this.recentOpenButtonAction(type)
             break
         }
       },
@@ -1646,7 +1644,7 @@
         })
       },
       setTitle () {
-        let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开', 'USB存储']
+        let title = ['USB存储', '本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
         this.title = title[this.myScoreTapIndex]
       },
       /**

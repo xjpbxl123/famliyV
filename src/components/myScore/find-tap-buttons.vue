@@ -59,26 +59,6 @@
     content: "USB存储";
     width: 182px;
     height: 100px;
-    left: -148px;
-    background: url("./images/btn_page_nor.png");
-    background-size: cover;
-    opacity: 0.8;
-    color: #fff;
-    font-size: 26px;
-    text-align: center;
-    line-height: 100px;
-  }
-  .usb {
-    .line {
-      transform: translateX(-15%);
-    }
-  }
-  .localSource::before {
-    position: absolute;
-    bottom: 5px;
-    content: "本地资源";
-    width: 182px;
-    height: 100px;
     left: -44px;
     background: url("./images/btn_page_nor.png");
     background-size: cover;
@@ -88,15 +68,11 @@
     text-align: center;
     line-height: 100px;
   }
-  .myCollect {
-    .line {
-      transform: translateX(105%);
-    }
-  }
-  .myCollect::before {
+
+  .localSource::before {
     position: absolute;
     bottom: 5px;
-    content: "我的收藏";
+    content: "本地资源";
     width: 182px;
     height: 100px;
     left: -26px;
@@ -108,15 +84,20 @@
     text-align: center;
     line-height: 100px;
   }
-  .myRecord {
+  .localSource {
+    .line {
+      transform: translateX(105%);
+    }
+  }
+  .myCollect {
     .line {
       transform: translateX(70%);
     }
   }
-  .myRecord::before {
+  .myCollect::before {
     position: absolute;
     bottom: 5px;
-    content: "我的录音";
+    content: "我的收藏";
     width: 182px;
     height: 100px;
     left: -55px;
@@ -128,15 +109,15 @@
     text-align: center;
     line-height: 100px;
   }
-  .myPlay {
+  .myRecord {
     .line {
       transform: translateX(86%);
     }
   }
-  .myPlay::before {
+  .myRecord::before {
     position: absolute;
     bottom: 5px;
-    content: "我的弹奏";
+    content: "我的录音";
     width: 182px;
     height: 100px;
     left: -44px;
@@ -148,9 +129,29 @@
     text-align: center;
     line-height: 100px;
   }
-  .recentOpen {
+  .myPlay {
     .line {
       transform: translateX(0);
+    }
+  }
+  .myPlay::before {
+    position: absolute;
+    bottom: 5px;
+    content: "我的弹奏";
+    width: 182px;
+    height: 100px;
+    left: -130px;
+    background: url("./images/btn_page_nor.png");
+    background-size: cover;
+    opacity: 0.8;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+    line-height: 100px;
+  }
+  .recentOpen {
+    .line {
+      transform: translateX(-15%);
     }
   }
   .recentOpen::before {
@@ -159,7 +160,7 @@
     content: "最近打开";
     width: 182px;
     height: 100px;
-    left: -130px;
+    left: -148px;
     background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;

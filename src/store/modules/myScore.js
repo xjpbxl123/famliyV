@@ -22,7 +22,7 @@ const COPYARR = 'COPYARR'
 export default {
   namespaced: true,
   state: {
-    myScoreTapIndex: 4,
+    myScoreTapIndex: 5,
     localSource: [],
     localSourceIndex: 0,
     localSourcePath: '$userUpload',
