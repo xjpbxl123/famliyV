@@ -164,6 +164,9 @@
         playerSource: {
           mid: {
             midiUrl: ''
+          },
+          options: {
+            countDownEnable: false
           }
         },
         isPlaying: false,
@@ -1499,7 +1502,14 @@
                 console.log(data, '下载完成--3')
                 if (data.path) {
                   console.log(data, '给播放器赋值--3')
-                  this.playerSource.mid.midiUrl = data.path
+                  this.playerSource = {
+                    mid: {
+                      midiUrl: data.path
+                    },
+                    options: {
+                      countDownEnable: false
+                    }
+                  }
                 } else {
                   this.loading = false
                   this.initPlayer()

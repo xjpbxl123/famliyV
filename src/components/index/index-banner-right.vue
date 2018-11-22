@@ -94,8 +94,8 @@
         }
       },
       rightType (value, oldValue) {
-        clearTimeout(this.timer)
         this.rightValue = true
+        clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.rightValue = false
         }, 1000)
@@ -223,6 +223,7 @@
   height: 1040px;
   margin-top: 40px;
   position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .banner-title {
   display: flex;
@@ -230,7 +231,6 @@
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 37px;
-  background-color: rgba(0, 0, 0, 0.1);
   & > div {
     display: flex;
   }
@@ -278,7 +278,6 @@
 }
 
 .outBox {
-  background-color: rgba(0, 0, 0, 0.1);
   height: 840px;
   width: 100%;
   overflow: hidden;
