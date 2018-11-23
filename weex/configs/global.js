@@ -1,4 +1,5 @@
 const fs = require('fs-extra')
+const path = require('path')
 const config = require('./config')
 const helper = require('./helper')
 
@@ -71,7 +72,35 @@ const getTemplateCode = (vueFilePath) => {
   return templateCode
 }
 
+const urlRelativeOption = type => {
+  return {
+    publicPath (file, entryfile) {
+      const isWeb = file.indexOf(`web/${type}/`) > -1
+      const isWeex = file.indexOf(`weex/${type}/`) > -1
+      const pos = entryfile.indexOf(config.templateDir + '/') + config.templateDir.length
+      let entryPath = entryfile.substr(pos)
+      // 删除文件名
+      const lastPos = entryPath.lastIndexOf('/')
+      entryPath = entryPath.substr(0, lastPos)
+
+      let entryTargetPath = ''
+      let urlFileEmitPath = ''
+
+      if (isWeb) {
+        entryTargetPath = helper.rootNode('dist/web/js' + entryPath)
+        urlFileEmitPath = helper.rootNode('dist/' + file)
+      }
+      if (isWeex) {
+        entryTargetPath = helper.rootNode('dist/weex/js' + entryPath)
+        urlFileEmitPath = helper.rootNode('dist/' + file)
+      }
+      return path.relative(entryTargetPath, urlFileEmitPath)
+    }
+  }
+}
+
 module.exports = {
   getGlobalCode,
-  getTemplateCode
+  getTemplateCode,
+  urlRelativeOption
 }
