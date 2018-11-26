@@ -1432,7 +1432,7 @@
         // 弹loading框
         if (this.isPlaying) {
           this.isPlaying = false
-          this.$refs.player.pause()
+          this.initPlayer()
         }
         this.loading = true
         console.log('loading开始--1')

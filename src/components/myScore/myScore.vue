@@ -477,6 +477,7 @@
         })
       },
       uPanSource (value) {
+        console.log(Date.now())
         this.canEnter = true
         if (this.uPanPath !== '/Volumes') {
           this.orderButtonHidden = false
@@ -1681,9 +1682,9 @@
       this.getUpanList()
       this.getRecentOpenList()
       this.getCollectList()
-      this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
+      this.getLocalSource()
       this.setTitle()
     },
     mounted () {

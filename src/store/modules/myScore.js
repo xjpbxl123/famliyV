@@ -169,6 +169,9 @@ export default {
      * */
     getLocalSource ({commit, state}, {path, type}) {
       console.log(path, 'path')
+      if (type === 'Upan') {
+        console.log(Date.now())
+      }
       let deleteArr = []
       return file.readFolderFile(path).then((res) => {
         if (res.length === 0) {

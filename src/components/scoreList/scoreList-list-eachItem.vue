@@ -8,7 +8,7 @@
         <span class="viewNumIcon iconfont icon-popularity"></span>
         <span class="viewNum">{{item.hotNum}}</span>
         <span class="musicName">{{item.name}}</span>
-        <span class="new">new</span>
+        <span class="new" v-if="item.lastUpdate && (Date.now() - item.lastUpdate) <= ( - 7 * 24 * 3600 * 1000)">new</span>
     </li>
 </template>
 <script type="text/javascript">

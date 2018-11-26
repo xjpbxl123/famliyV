@@ -38,7 +38,7 @@
           <span class="time" v-text="isActivation?usedTime.ratePlayMoment:'--'"></span>
         </div>
       </div>
-      <div class="noActive" v-if="!isActivation">*请在"设置 - 其他设置"中激活</div>
+      <div class="noActive">*请在"设置 - 其他设置"中激活</div>
     </div>
   </div>
 </template>

@@ -27,7 +27,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import timbreList from './timbreList'
   import {modules} from 'find-sdk'
-  import { LONG_KEY78, LONG_KEY80, KEY73, KEY75, KEY78, KEY80, KEY82, KEY85, KEY86, KEY87, BACK_PRESSED, PEDAL_PRESSED
+  import { LONG_KEY78, LONG_KEY80, KEY73, KEY75, KEY78, KEY80, KEY82, KEY85, KEY86, KEY87, BACK_PRESSED, PEDAL_PRESSED, KEY66
   } from 'vue-find'
   import { mapGetters } from 'vuex'
   export default {
@@ -845,6 +845,15 @@
             dotColor: '#fff',
             id: 15,
             hidden: false
+          },
+          {
+            pianoKey: 66,
+            text: '',
+            icon: '0xe660',
+            backgroundColor: '#4000',
+            dotColor: '#fff',
+            id: 16,
+            hidden: false
           }
         ]
       }
@@ -861,6 +870,9 @@
       /**
        * @desc 处理所有按键
        * */
+      [KEY66] () {
+        this.buttonActions('left')
+      },
       [KEY73] () {
         this.buttonActions('prevPage')
       },
@@ -1032,7 +1044,7 @@
             this.yidiaoValue = 0
             modules.volume.setKeyBoardOffset(0)
             break
-          case 'back':
+          case 'left':
             if (this.listIndex - 1 < 0) {
               return this.$router.back()
             }
@@ -1044,6 +1056,8 @@
             }
             this.listIndex = Math.max(this.listIndex - 1, 0)
             break
+          case 'back':
+            return this.$router.back()
         }
       },
       getKeyboardTimbre () {
