@@ -23,6 +23,7 @@ volumeManager.setup = function () {
 }
 // // 打开调音台
 volumeManager.openSoundMix = function (info, fn) {
+  volumeManager.registWeexNotif()
   window.fp.modules.volume.getAllVolumeSize().then(function (data1) {
     let weexUrl = info.weexUrl
     let pianoType = info.pianoType
@@ -41,8 +42,8 @@ volumeManager.openSoundMix = function (info, fn) {
           pianoType: pianoType, // real 真钢 electric 电钢
           showAll: showAll
         }).then(function (res) { // weex 创建成功回调
+          console.log('成功打开weex页面')
           volumeManager.isOpenWeex = true
-          volumeManager.registWeexNotif()
         })
       }
     })
@@ -68,7 +69,7 @@ volumeManager.removeVolumeChange = function (fn) {
 /// 注册weex监听
 volumeManager.registWeexNotif = function () {
   window.fp.modules.notification.regist('receiveMsgFromWeex', function (data1) {
-    console.log(data1, 'weex监听结果')
+    console.log(data1, '接收weex操作结果')
     let data = data1.params
     if (data.close) {
       volumeManager.isOpenWeex = false

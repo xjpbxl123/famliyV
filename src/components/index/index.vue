@@ -1430,6 +1430,10 @@
       },
       playMidi (musicId, musicList, musicIndex) {
         // 弹loading框
+        if (this.isPlaying) {
+          this.isPlaying = false
+          this.$refs.player.pause()
+        }
         this.loading = true
         console.log('loading开始--1')
         eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
