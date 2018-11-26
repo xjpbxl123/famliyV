@@ -166,9 +166,9 @@ export default {
      * */
     getPianoUsedTime ({commit}) {
       return getUsedTime().then(data => {
-        data.usedTime = `${Number.parseInt(data.openAppTime / 3600)}小时`
-        data.autoPlayerTime = `${Number.parseInt(data.autoPlayTime / 3600)}小时`
-        data.ratePlayMoment = `${Number.parseInt(data.scoringTime / 3600)}小时`
+        data.openAppTime = `${Number.parseInt(data.openAppTime / 3600)}小时`
+        data.autoPlayTime = `${Number.parseInt(data.autoPlayTime / 3600)}小时`
+        data.scoringTime = `${Number.parseInt(data.scoringTime / 3600)}小时`
         commit(PIANO_USED_TIME, data)
       })
     },

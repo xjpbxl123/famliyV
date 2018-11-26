@@ -21,21 +21,21 @@
             <i class="iconfont icon-period"></i>
             <span class="text">累计使用</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.usedTime:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.openAppTime:'--'"></span>
         </div>
         <div class="auto-play-time">
           <div>
             <i class="iconfont icon-auto-play"></i>
             <span class="text">自动弹奏时间</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.autoPlayerTime:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.autoPlayTime:'--'"></span>
         </div>
         <div class="rate-play-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">带评分弹奏</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.ratePlayMoment:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.scoringTime:'--'"></span>
         </div>
       </div>
       <div class="noActive">*请在"设置 - 其他设置"中激活</div>
