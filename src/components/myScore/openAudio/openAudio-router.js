@@ -3,5 +3,6 @@
  */
 export default {
   path: '/openAudio',
+  name: 'openAudio',
   component: () => import(/* webpackChunkName:"openAudio" */ './openAudio')
 }

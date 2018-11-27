@@ -354,7 +354,7 @@
         metronome: false,
         speed: 120,
         metre: '3',
-        toolbarHidden: false,
+        toolbarHidden: true,
         clickedMusicId: 0,
         clickeType: '',
         hideOtherButtons: false,
@@ -1703,6 +1703,7 @@
       this.registVloume()
     },
     mounted () {
+      this.toolbarHidden = false
       this.adjustPlayer()
     },
     beforeDestroy () {

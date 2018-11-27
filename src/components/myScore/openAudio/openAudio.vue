@@ -190,6 +190,7 @@
             this.openMixer()
             break
           case 'back':
+
             this.$router.back()
         }
       },

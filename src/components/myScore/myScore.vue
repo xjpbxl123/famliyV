@@ -89,7 +89,7 @@
   export default {
     data () {
       return {
-        toolbarHidden: false,
+        toolbarHidden: true,
         orderButtonText: '名称',
         usbButtonHidden: true,
         copyButtonHidden: true,
@@ -1688,6 +1688,7 @@
       this.setTitle()
     },
     mounted () {
+      this.toolbarHidden = false
       this.regist()
     },
     destroyed () {
