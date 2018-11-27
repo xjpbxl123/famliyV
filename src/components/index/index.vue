@@ -996,7 +996,11 @@
                     this.canEnterModule = true
                     // 做登录验证
                     if (this.isLogin) {
-                      return this.$store.dispatch('getUserInfo')
+                      return this.$store.dispatch('getUserInfo').then(data => {
+                        if (!data.userInfo.userId) {
+                          modules.user.logOut()
+                        }
+                      })
                     }
                   }
                 })
@@ -1432,7 +1436,7 @@
         // 弹loading框
         if (this.isPlaying) {
           this.isPlaying = false
-          this.initPlayer()
+          this.$refs.player.pause()
         }
         this.loading = true
         console.log('loading开始--1')
