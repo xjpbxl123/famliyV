@@ -1,10 +1,10 @@
 <template>
  <div class="timbreList">
-    <div class="listOne">
+    <div class="listOne" :class="{chosed: listIndex === 0}">
         <div class="title" v-text="title1"></div>
         <div class="box1">
             <ul>
-                <li v-for="(item,index) in list" :key="index"  :class="{active: index===listIndex1 && listIndex === 0}" @click="setSelect(index, 'list1')">
+                <li v-for="(item,index) in list" :key="index"  :class="{active: index===listIndex1 && listIndex === 0, unChosed: listIndex !== 0, chosedItem: index===listIndex1  && listIndex !== 0}" @click="setSelect(index, 'list1')">
                     <div class="item">
                         <span class="icon iconfont"  :class="item.iconName"></span>
                         <span class="name" v-text="item.name"></span>
@@ -18,7 +18,7 @@
             </ul>
         </div>
     </div>
-    <div class="listTwo" v-if="listIndex !== 2">
+    <div class="listTwo" v-if="listIndex !== 2" :class="{chosed: listIndex=== 1}">
         <div class="title">
             <span class="iconfont icon-arrow-back icon1"></span>
             <span class="title1" v-text="title1"></span>
@@ -45,7 +45,7 @@
             <div class="valueBox" v-text="yidiaoValue>0?'+'+yidiaoValue:yidiaoValue"></div>
         </div>
     </div>
-    <div class="listTwo" v-if="listIndex === 2">
+    <div class="listTwo" v-if="listIndex === 2" :class="{chosed: listIndex === 2}">
         <div class="title">
             <span class="iconfont icon-arrow-back icon1"></span>
             <span class="title1" v-text="title1">键盘设置</span>
@@ -188,9 +188,12 @@
             top: 85px;
             left: 850px;
             height: 900px;
-            background:linear-gradient(-90deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.3) 100%);
+            background:rgba(0,0,0,0.3);
             border-radius:12px 0px 0px 12px;
             padding-top: 56px;
+            &.chosed {
+                background: linear-gradient(-90deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.3) 100%) !important;
+            }
             .title {
                 width: 855px;
                 margin: 0 auto;
@@ -215,10 +218,16 @@
                     li {
                         width: 100%;
                         height: 78px;
-                        color: #fff;
+                        color: rgba(255,255,255,1);
                         box-sizing: border-box;
                         &.active {
                         background-image: -webkit-linear-gradient(left,rgba(255, 255, 255, 0),rgba(255,255,255,0.4),rgba(255,255,255,0));
+                        }
+                        &.unChosed {
+                            color: rgba(255,255,255,0.5);
+                        }
+                        &.chosedItem {
+                            color: rgba(255,255,255,1);
                         }
                         .item {
                             width: 855px;
@@ -235,7 +244,6 @@
                                 font-size: 30px;
                                 font-family: PingFangSC-Regular;
                                 font-weight: 400;
-                                color:rgba(255,255,255,1);
                                 margin-left: 20px;
                             }
                             .icon {
@@ -276,7 +284,6 @@
                                 font-size: 36px;
                                 font-family: PingFangSC-Semibold;
                                 font-weight: 600;
-                                color:rgba(255,255,255,1);
                             }
                         }
 
@@ -294,6 +301,9 @@
             background:rgba(0,0,0,0.3);
             border-radius:0px 12px 12px 0px;
             padding-top: 56px;
+            &.chosed {
+                background: linear-gradient(-90deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.5) 100%) !important;
+            }
             .title {
                 width: 855px;
                 margin: 0 auto;

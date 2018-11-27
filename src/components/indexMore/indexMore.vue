@@ -94,7 +94,7 @@
             id: 114
           }
         ],
-        toolbarHidden: true
+        toolbarHidden: false
       }
     },
     find: {
@@ -251,7 +251,6 @@
       }
     },
     mounted () {
-      this.toolbarHidden = false
       eventsHub.$emit('toast')
     },
     beforeDestroy () {
