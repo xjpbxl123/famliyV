@@ -3,5 +3,5 @@
  */
 export default {
   path: '/myScore',
-  component: () => import(/* webpackChunkName:"popular" */ './myScore')
+  component: () => import(/* webpackChunkName:"myScore" */ './myScore')
 }
