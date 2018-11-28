@@ -14,8 +14,8 @@
         <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" ></findImg>
         <span class="nick-name" v-text="nickName || ''"></span>
       </div>
-      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
-      <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
+      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar && isActivation" />
+      <div v-if="!isCalendar && isActivation" :class="{'noActiva': !isActivation}" class="userData">
         <div class="used-time">
           <div>
             <i class="iconfont icon-period"></i>
@@ -38,7 +38,11 @@
           <span class="time" v-text="isActivation?usedTime.scoringTime:'--'"></span>
         </div>
       </div>
-      <div class="noActive">*请在"设置 - 其他设置"中激活</div>
+      <div class="noActive" v-if="!isActivation">
+        <span class="iconfont icon-dailytasks"></span>
+        <p class="tip1">弹奏统计</p>
+        <p class="tip2">请在"设置 - 其他设置"中激活</p>
+      </div>
     </div>
   </div>
 </template>
@@ -158,14 +162,33 @@
   .user-status {
     padding-top: 110px;
     .noActive {
-      width: 100%;
-      font-size: 14px;
-      text-align: center;
-      font-family: MicrosoftYaHei;
-      color: hsla(0,0%,100%,.6);
-      position: absolute;
-      bottom: 100px;
-      left: 0;
+      width: 370px;
+      height: 146px;
+      background:rgba(0,0,0,0.18);
+      border-radius:12px;
+      text-align: left;
+      position: relative;
+      top: 100px;
+      left: 55px;
+      font-size: 24px;
+      font-family: PingFangSC-Regular;
+      font-weight: 400;
+      .tip1 {
+        color:rgba(255,255,255,1);
+        text-indent: 87px;
+        padding-top: 30px;
+      }
+      span {
+        position: absolute;
+        left: 32px;
+        top: 16px;
+        font-size: 48px;
+        color: #fff;
+      }
+      .tip2 {
+        color:rgba(233,211,142,1);
+        text-indent: 25px;
+      }
     }
   }
 

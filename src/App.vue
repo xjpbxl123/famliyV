@@ -83,6 +83,7 @@
       window.addEventListener('hashchange', () => {
         let currentPath = window.location.hash.slice(1)
         if (this.$route.path !== currentPath) {
+          console.log('处理vue-router路由跳转了但是页面没更新的问题')
           this.$router.push(currentPath)
         }
       }, false)
