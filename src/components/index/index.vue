@@ -148,6 +148,7 @@
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
   import mixerMixin from '../common/mixer-mixin.js'
+  import routerErrorMixin from '../common/routerError-mixin.js'
   export default {
     data () {
       return {
@@ -370,7 +371,7 @@
         openPeilian: false
       }
     },
-    mixins: [initData, mixerMixin],
+    mixins: [initData, mixerMixin, routerErrorMixin],
     find: {
       [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
@@ -832,7 +833,9 @@
         }
       },
       go (params) {
-        this.$router.push(params)
+        console.log('去h5模块')
+        console.log(this.$route.path)
+        return this.$router.push(params)
       },
       goBack () {
         if (this.peilianLoading) {

@@ -849,7 +849,7 @@
           {
             pianoKey: 66,
             text: '',
-            icon: '0xe660',
+            icon: '0xe60f',
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 16,

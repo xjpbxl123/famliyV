@@ -34,6 +34,7 @@
   import statusBar from '../common/find-status-bar/find-status-bar'
   import eventsHub from 'scripts/eventsHub'
   import {errorHandling} from '../../scripts/utils'
+  import routerErrorMixin from '../common/routerError-mixin.js'
   import {
     KEY70,
     KEY73,
@@ -97,6 +98,7 @@
         toolbarHidden: false
       }
     },
+    mixins: [routerErrorMixin],
     find: {
       [KEY70] () {
         this.buttonActions('changeData')

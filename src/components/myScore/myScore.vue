@@ -86,6 +86,7 @@
   import {modules} from 'find-sdk'
   import * as keys from 'vue-find'
   import eventsHub from 'scripts/eventsHub'
+  import routerErrorMixin from '../common/routerError-mixin.js'
   export default {
     data () {
       return {
@@ -256,6 +257,7 @@
         isLoading: false
       }
     },
+    mixins: [routerErrorMixin],
     find: {
       [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden
@@ -376,7 +378,10 @@
       [keys.KEY90] () {
         this.buttonActions('scoreList')
       },
-      [keys.BACK_PRESSED] () {
+      [keys.BACK_PRESSED]  () {
+        if (!this.canEnter) {
+          return
+        }
         this.buttonActions('back')
       },
       [keys.PEDAL_PRESSED] (key) {
@@ -867,6 +872,7 @@
               }
               this.canEnter = false
               if (data.type === 'dir') {
+                eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
                 let newPath = this.uPanPath + '/' + data.name
                 console.log(newPath)
                 this.usbButtonHidden = true
@@ -876,6 +882,7 @@
                   this.$nextTick(() => {
                     console.log('complete')
                     this.canEnter = true
+                    eventsHub.$emit('closeToast')
                   })
                 })
               } else {
@@ -1696,6 +1703,7 @@
     },
     destroyed () {
       modules.notification.remove('pageLifecycle')
+      eventsHub.$emit('closeToast')
     },
     components: {
       findWrap,
