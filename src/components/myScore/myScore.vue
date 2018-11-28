@@ -478,7 +478,6 @@
       },
       uPanSource (value) {
         console.log(Date.now())
-        this.canEnter = true
         if (this.uPanPath !== '/Volumes') {
           this.orderButtonHidden = false
         } else {
@@ -873,7 +872,12 @@
                 this.usbButtonHidden = true
                 this.$store.dispatch('myScore/setUpanIndex', 0)
                 this.$store.dispatch('myScore/setUpanPath', newPath)
-                this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'})
+                this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'}).then(data => {
+                  this.$nextTick(() => {
+                    console.log('complete')
+                    this.canEnter = true
+                  })
+                })
               } else {
                 console.log(data)
                 // 去打开文件
