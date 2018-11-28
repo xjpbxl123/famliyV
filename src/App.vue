@@ -80,9 +80,11 @@
         }
       })
       // 处理vue-router路由跳转了但是页面没更新的问题
-      window.addEventListener('hashchange', () => {
-        let currentPath = window.location.hash.slice(1)
-        if (this.$route.path !== currentPath) {
+      window.addEventListener('hashchange', (data) => {
+        let currentPath = window.location.href
+        console.log(currentPath, 'currentPath')
+        console.log(data.newURL, 'data.newURL')
+        if (data.newURL !== currentPath) {
           console.log('处理vue-router路由跳转了但是页面没更新的问题')
           this.$router.push(currentPath)
         }
