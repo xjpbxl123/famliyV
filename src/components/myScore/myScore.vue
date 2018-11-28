@@ -380,6 +380,7 @@
       },
       [keys.BACK_PRESSED]  () {
         if (!this.canEnter) {
+          console.log('return')
           return
         }
         this.buttonActions('back')
@@ -868,6 +869,7 @@
             let data = uPanSource[uPanIndex]
             if (data) {
               if (!this.canEnter) {
+                console.log('return')
                 return
               }
               this.canEnter = false
@@ -1478,6 +1480,11 @@
             this.$store.dispatch('myScore/setRecentIndex', myRecentIndex)
             break
           case 'ok':
+            if (!this.canEnter) {
+              console.log('return')
+              return
+            }
+            this.canEnter = false
             let data = recentList[myRecentIndex]
             if (data) {
               //  去播放曲谱
@@ -1663,7 +1670,7 @@
        * @desc 退到首页的时候清空
        * */
       destroyedFunc () {
-        this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
+        this.canEnter = false
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)
         this.$store.dispatch('myScore/setMyRecordIndex', 0)
         this.$store.dispatch('myScore/setMyPlayIndex', 0)
@@ -1672,6 +1679,7 @@
         this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
         this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
         this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
         clearInterval(this.interval)
       },
       regist () {
