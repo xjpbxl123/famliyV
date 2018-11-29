@@ -624,7 +624,8 @@
         }
       },
       [keys.BACK_PRESSED] () {
-        if (this.loading) {
+        if (this.loading || !this.canEnterModule) {
+          console.log('108rerurn')
           return
         }
         this.goBack()
@@ -835,6 +836,7 @@
       go (params) {
         console.log('去h5模块')
         console.log(this.$route.path)
+        console.log(params)
         return this.$router.push(params)
       },
       goBack () {
