@@ -17,7 +17,6 @@ import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
 import {modules, nativeStorage} from 'find-sdk'
 import {getCurEnvs} from '../scripts/utils'
-const SET_SYNCED = 'SET_SYNCED'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const INIT_ENV = 'INIT_ENV' // 初始化环境变量
 const LOGIN_OUT_CACHE = 'login_out_cache'
@@ -53,7 +52,6 @@ export default function createStore () {
   return new Vuex.Store({
     // strict: process.env.NODE_ENV === 'development',
     state: {
-      isSynced: false,
       environments: {},
       tableDataArr: [],
       storage: {
@@ -160,9 +158,6 @@ export default function createStore () {
     mutations: {
       [INIT_ENV] (state, env) {
         state.environments = env
-      },
-      [SET_SYNCED] (state) {
-        state.isSynced = true
       },
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
@@ -279,42 +274,6 @@ export default function createStore () {
           }
         })
       },
-      /**
-       * @desc 初始化缓存数据
-       * @param dispatch
-       * @param state
-       * @param commit
-       * @param data
-       */
-      initCacheStorage ({dispatch, state, commit}, data) {
-        return new Promise(resolve => {
-          let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[9], String(userId)).then(param => {
-            let cache = {}
-            cache['renderCache'] = param && param.value && Object.keys(
-            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
-            param.value) : param.value) : state.storage.cache.renderCache
-            commit(SET_SYNCED)
-            commit(SET_STORAGE, {
-              cache
-            })
-            resolve(cache)
-          })
-        })
-      },
-      // initCacheStorageWhenUserChange ({dispatch, state, commit}, data) {
-      //   return getCurEnvs().then(env => {
-      //     let tableName = 'findFamily-' + env.HTTP_ROOT
-      //     let userId = state.storage.userInfo.userId || '-1'
-      //     return nativeStorage.get(tableName, String(userId)).then((param) => {
-      //       let cache = {}
-      //       cache = param && param.value && Object.keys(
-      //       param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
-      //       param.value) : param.value) : state.storage.cache.renderCache
-      //       commit(LOGIN_OUT_CACHE, cache)
-      //     })
-      //   })
-      // },
       /**
        * 多数据缓存
        * @param {Function} dispatch

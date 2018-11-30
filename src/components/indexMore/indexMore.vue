@@ -235,22 +235,20 @@
       }
     },
     created () {
-      if (this.moreIndexTitle === '最近更新') {
-        return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
-          if (this.hasLoaded || (data && data.recentBooksAll)) {
-            eventsHub.$emit('closeToast')
-            return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
-              if (this.hasLoaded || (data && data.hotBooksAll)) {
-                eventsHub.$emit('closeToast')
-              } else {
-                errorHandling(data)
-              }
-            })
-          } else {
-            errorHandling(data)
-          }
-        })
-      }
+      return this.$store.dispatch({type: 'index/getRecentBooks'}).then((data) => {
+        if (this.hasLoaded || (data && data.recentBooksAll)) {
+          eventsHub.$emit('closeToast')
+          return this.$store.dispatch({type: 'index/getHotBooks'}).then((data) => {
+            if (this.hasLoaded || (data && data.hotBooksAll)) {
+              eventsHub.$emit('closeToast')
+            } else {
+              errorHandling(data)
+            }
+          })
+        } else {
+          errorHandling(data)
+        }
+      })
     },
     mounted () {
       eventsHub.$emit('toast')

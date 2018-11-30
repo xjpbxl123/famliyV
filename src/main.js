@@ -28,13 +28,28 @@ if (isInFindClient) {
   Vue.use(VueFind)
   const store = createStore()
   const router = new VueRouter({routes})
-  store.dispatch('initEnv').then(() => {
-    store.dispatch('initialNativeStorage').then(() => {
-      store.dispatch('clearCache', true).then(() => {
-        // 自动检查是否需要清缓存数据
+  /** 先让页面先初始化,再初始化缓存，最后进入路由 */
+  router.beforeEach((to, from, next) => {
+    if (!store.state.storage.isSynced) {
+      store.dispatch('initEnv').then(() => {
+        store.dispatch('initialNativeStorage').then(() => {
+          store.dispatch('clearCache', true).then(() => {
+            // 自动检查是否需要清缓存数据
+            next()
+          })
+        })
       })
-    })
+    } else {
+      next()
+    }
   })
+  // store.dispatch('initEnv').then(() => {
+  //   store.dispatch('initialNativeStorage').then(() => {
+  //     store.dispatch('clearCache', true).then(() => {
+  //       // 自动检查是否需要清缓存数据
+  //     })
+  //   })
+  // })
   Vue.prototype.$store = store
   vue = new Vue({
     el: '#app',
