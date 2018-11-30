@@ -230,7 +230,7 @@ export default function createStore () {
        * */
       setCacheFromTable ({commit, state}, dataName) {
         let flag = false
-        state.tableDataArr.forEach((value) => {
+        state.tableDataArr.map((value) => {
           if (value === dataName) {
             // 本次初始化已经从表中拿过数据
             flag = true

@@ -86,7 +86,6 @@
   import {modules} from 'find-sdk'
   import * as keys from 'vue-find'
   import eventsHub from 'scripts/eventsHub'
-  import routerErrorMixin from '../common/routerError-mixin.js'
   export default {
     data () {
       return {
@@ -257,7 +256,6 @@
         isLoading: false
       }
     },
-    mixins: [routerErrorMixin],
     find: {
       [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden

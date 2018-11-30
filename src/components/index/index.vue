@@ -148,7 +148,6 @@
   import {formatDate, errorHandling} from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
   import mixerMixin from '../common/mixer-mixin.js'
-  import routerErrorMixin from '../common/routerError-mixin.js'
   export default {
     data () {
       return {
@@ -371,7 +370,7 @@
         openPeilian: false
       }
     },
-    mixins: [initData, mixerMixin, routerErrorMixin],
+    mixins: [initData, mixerMixin],
     find: {
       [keys.TOOLBAR_PRESSED] ({hidden}) {
         this.toolbarHidden = hidden

@@ -21,15 +21,6 @@
         loadingInstance: null
       }
     },
-    // watch: {
-    // '$route': function (val) {
-    //   console.log(val.fullPath, window.location.hash.slice(1))
-    //   if (val.fullPath !== window.location.hash.slice(1)) {
-    //     console.log('处理vue-router路由跳转了但是页面没更新的问题')
-    //     this.$router.push(val.fullPath)
-    //   }
-    // }
-    // },
     computed: {
       ...mapState({
         isLogin (state) {
@@ -89,18 +80,6 @@
         }
       })
     }
-    // mounted () {
-    //   // 处理vue-router路由跳转了但是页面没更新的问题
-    //   window.addEventListener('hashchange', (data) => {
-    //     let currentPath = window.location.hash.slice(1)
-    //     console.log(currentPath, 'currentPath')
-    //     console.log(this.$route.path, 'data.newURL')
-    //     if (data.newURL !== currentPath) {
-    //       console.log('处理vue-router路由跳转了但是页面没更新的问题')
-    //       this.$router.push(currentPath)
-    //     }
-    //   }, false)
-    // }
   }
 </script>
 <style lang="scss">
