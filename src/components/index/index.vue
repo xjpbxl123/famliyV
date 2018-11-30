@@ -835,8 +835,6 @@
       },
       go (params) {
         console.log('去h5模块')
-        console.log(this.$route.path)
-        console.log(params)
         return this.$router.push(params)
       },
       goBack () {

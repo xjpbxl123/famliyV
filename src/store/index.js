@@ -209,7 +209,7 @@ export default function createStore () {
             nativeStorage.get(tableName, 'clearTime1')
           ])
             .then(data => {
-              commit(SET_STORAGE, {
+              return commit(SET_STORAGE, {
                 playCalendar: data[0] && data[0].value ? data[0].value : {},
                 isLogin: data[1] && data[1].value ? data[1].value : false,
                 userInfo: data[2] && data[2].value ? data[2].value : {},
