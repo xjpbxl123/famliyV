@@ -1446,6 +1446,7 @@
         let midiData = {url: '', md5: '', fsize: 0}
         let mp3Data = {url: '', md5: '', fsize: 0}
         this.hideOtherButtons = true
+        console.log('开始请求数据', musicId)
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
           console.log('列表请求返回--2')
           let musicInfo = this.musicInfo[musicId]

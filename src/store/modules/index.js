@@ -270,7 +270,9 @@ export default {
      * */
     getMusicInfo ({dispatch} = {}, musicId) {
       dispatch('setCacheFromTable', 'musicInfo', {root: true})
+      console.log('获取曲子信息', musicId)
       return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(res => {
+        console.log('获取曲子信息结果')
         if (res.header.code === 0) {
           return dispatch('setCacheToStorage', {musicInfo: res.body, id: musicId}, {root: true})
         }
