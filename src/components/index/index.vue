@@ -203,8 +203,8 @@
           {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
           {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
           {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}},
-          {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
-          {id: 10, pianoKey: 54, text: '游戏管理', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}}
+          // {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
+          {id: 9, pianoKey: 54, text: '游戏管理', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
         ],
         controlButtons: [
           {
@@ -443,16 +443,16 @@
         this.canEnterModule = false
         this.buttonActions('indexMore')
       },
-      [keys.KEY51] () {
-        // 名师课程
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        // return modules.nativeRouter.openArtistCourseView()
-        return this.go('/famous')
-      },
+      // [keys.KEY51] () {
+      //   // 名师课程
+      //   if (!this.canEnterModule) {
+      //     console.log('return')
+      //     return
+      //   }
+      //   this.canEnterModule = false
+      //   // return modules.nativeRouter.openArtistCourseView()
+      //   return this.go('/famous')
+      // },
       [keys.KEY54] () {
         return this.go('/game')
       },
