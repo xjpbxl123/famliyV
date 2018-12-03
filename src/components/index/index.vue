@@ -441,16 +441,16 @@
         this.canEnterModule = false
         this.buttonActions('indexMore')
       },
-      [keys.KEY51] () {
-        // 名师课程
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        // return modules.nativeRouter.openArtistCourseView()
-        return this.go('/famous')
-      },
+      // [keys.KEY51] () {
+      //   // 名师课程
+      //   if (!this.canEnterModule) {
+      //     console.log('return')
+      //     return
+      //   }
+      //   this.canEnterModule = false
+      //   // return modules.nativeRouter.openArtistCourseView()
+      //   return this.go('/famous')
+      // },
       [keys.KEY54] () {
         return this.go('/game')
       },
