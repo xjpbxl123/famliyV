@@ -84,6 +84,32 @@ export default {
       })
     },
     /**
+     * @desc 获取打地鼠版本信息
+     * */
+    getGameApp ({dispatch}, appName) {
+      dispatch('setCacheFromTable', appName, {root: true})
+      let appType = 'production'
+      if (process.env.NODE_ENV === 'development') {
+        appType = 'develop'
+      }
+      if (process.env.NODE_ENV === 'buildTest') {
+        appType = 'testing'
+      }
+      return http.post('', {
+        cmd: 'game.getGameApp',
+        appName: appName,
+        appType: appType
+      }).then(res => {
+        if (res.header.code === 0) {
+          let data = {}
+          data[appName] = res.body.app
+          return dispatch('setCacheToStorage', data, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
@@ -156,6 +182,26 @@ export default {
           let build = res.build
           let versionObj = {version, build}
           return dispatch('setCacheToStorage', {localPartnerVersion: versionObj}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
+     * @desc 获取本地游戏版本数据
+     * */
+    getLocalGameAppVersion ({dispatch}, url, appName) {
+      let appNameLocal = appName + 'Local'
+      dispatch('setCacheFromTable', appName, {root: true})
+      return axios.get(url, {
+      }).then(data => {
+        let res = data.data
+        if (res.version) {
+          let version = res.version
+          let build = res.build
+          let versionObj = {}
+          versionObj[appNameLocal] = {version, build}
+          return dispatch('setCacheToStorage', versionObj, {root: true})
         }
       }).catch((error) => {
         return error
