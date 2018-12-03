@@ -1127,7 +1127,62 @@
                   modules.user.logOut()
                   return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 }
-                return this.checkApp('findPartner')
+                this.peilianLoading = true
+                eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+                // 获取线上最新版本
+                return this.$store.dispatch('index/getPartnerVersion').then((data) => {
+                  this.downloadInfo = data.partnerVersion.url
+                  modules.file.pathComplement('$web/findPartner/package.json').then((res) => {
+                    if (res.path) {
+                      // 判断文件是否存在
+                      modules.file.fileExists(res.path).then((res1) => {
+                        if (!res1) {
+                          // 本地没有 判断网络问题
+                          if (!data.partnerVersion) {
+                            // 拉不到线上版本 提示网络问题
+                            console.log('本地没有且拉不到线上版本 提示网络问题')
+                            this.peilianLoading = false
+                            this.canEnterModule = true
+                            eventsHub.$emit('closeToast')
+                            errorHandling(data)
+                          } else {
+                            console.log('本地没有，拉到了线上版本 直接下载')
+                            // 拉到了线上版本 直接下载 显示取消按钮
+                            this.downloadPartner()
+                          }
+                        } else {
+                          // 本地有 判断网络问题
+                          return this.$store.dispatch('index/getLocalPartnerVersion', res.http).then((data1) => {
+                            // 读取本地JSON文件 拿到本地版本信息
+                            if (!data.partnerVersion) {
+                              // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
+                              console.log('本地有且拉不到线上版本 直接打开即可')
+                              this.openPartner()
+                            } else {
+                              if (!this.localPartnerVersion.version) {
+                                // 没有拿到本地版本 直接去下载
+                                return this.downloadPartner()
+                              }
+                              // 拉到了线上版本 做版本比较 判断是否需要更新
+                              console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
+                              let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
+                              if (isNeedUpdate) {
+                                // 需要更新 弹框提示 显示直接进入和更新按钮
+                                this.peilianButtons[0].show = false
+                                this.peilianButtons[1].show = true
+                                this.peilianButtons[2].show = true
+                                eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                              } else {
+                                // 不需要更新 直接打开即可
+                                this.openPartner()
+                              }
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                })
               })
             }
             break
@@ -1136,96 +1191,6 @@
             break
           default:
             console.log('108')
-        }
-      },
-      checkApp (appName) {
-        this.appLoading = true
-        eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
-        let path = '$web/' + appName + '/package.json'
-        if (appName !== 'findPartner') {
-          path = '$game/' + appName + '/version.json'
-        }
-        return this.$store.dispatch('index/getAppVersion', appName).then((data) => {
-          if (data[appName]) {
-            this.downloadInfo = data[appName].url
-            this.compel = data[appName].compel
-          }
-          modules.file.pathComplement(path).then((res) => {
-            if (res.path) {
-              // 判断文件是否存在
-              modules.file.fileExists(res.path).then((res1) => {
-                if (res1) {
-                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName}).then((data1) => {
-                    if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
-                      // 本地有 去判断线上版本
-                      console.log('本地有 去判断线上版本')
-                      console.log(data)
-                      if (data && data[appName] && data[appName].url) {
-                        // 有线上版本 比较版本 看是否需要更新
-                        let isNeedUpdate = this.contrastVersion(data[appName], data1[appName + 'Local'])
-                        console.log('有线上版本 比较版本 看是否需要更新', isNeedUpdate)
-                        if (isNeedUpdate) {
-                          // 需要更新 弹框提示 显示直接进入和更新按钮
-                          console.log('需要更新 弹框提示 显示直接进入和更新按钮')
-                          if (this.compel) {
-                            // 强制更新 不显示直接进入
-                            console.log('强制更新')
-                            this.gameButtons[1].show = false
-                          } else {
-                            this.gameButtons[1].show = true
-                          }
-                          this.gameButtons[0].show = false
-                          this.gameButtons[2].show = true
-                          eventsHub.$emit('toast', {text: '数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-                        } else {
-                          // 不需要更新 直接打开即可
-                          this.openApp(appName)
-                        }
-                      } else {
-                        // 没有线上版本 直接打开
-                        this.openApp(appName)
-                      }
-                    } else {
-                      // 本地文件访问不到 判断网络情况
-                      console.log('本地文件访问不到 判断网络情况')
-                      if (data[appName] && data[appName].url) {
-                        // 拉到了线上版本 去下载
-                        console.log('拉到了线上版本 去下载')
-                        this.downloadApp(appName)
-                      } else {
-                        // 拉不到线上版本 提示网络问题 显示重试按钮
-                        console.log('拉不到线上版本 提示网络问题')
-                        this.appLoading = false
-                        this.canEnterModule = true
-                        errorHandling(data)
-                      }
-                    }
-                  })
-                } else {
-                  // 本地没有 判断网络情况
-                  console.log('本地没有 判断网络情况')
-                  if (data[appName] && data[appName].url) {
-                    // 拉倒了线上版本 去下载
-                    console.log('拉倒了线上版本 去下载')
-                    this.downloadApp(appName)
-                  } else {
-                    // 拉不到线上版本 提示网络问题 显示重试按钮
-                    console.log('拉不到线上版本 提示网络问题')
-                    this.appLoading = false
-                    this.canEnterModule = true
-                    errorHandling(data)
-                  }
-                }
-              })
-            }
-          })
-        })
-      },
-      // 直接打开APP
-      openApp (appName) {
-        let path = '$game'
-        if (appName === 'findPartner') {
-          path = '$web'
         }
         this.appLoading = false
         this.canEnterModule = true
