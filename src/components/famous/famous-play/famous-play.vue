@@ -183,7 +183,8 @@
         canClick: true,
         canOpenVideoDirectory: false,
         timer: null,
-        speedValue: 1
+        speedValue: 1,
+        clickMixer: false
       }
     },
     watch: {
@@ -251,6 +252,7 @@
         /**
          * @desc 打开调音台
          */
+        this.clickMixer = true
         this.openMixer()
       },
       [KEY68] () {
@@ -309,6 +311,7 @@
     },
     mounted () {
       this.registVloume()
+      this.registPageLifecycle()
       let courseSetID = this.$route.query.courseSetID
       /**
        * @desc 根据courseSetID获取教程视频文件列表
@@ -334,6 +337,20 @@
               self.$refs.player && self.$refs.player.setVolume(0)
             } else {
               self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            }
+          }
+        })
+      },
+      registPageLifecycle () {
+        modules.notification.regist('pageLifecycle', data => {
+          console.log(data, 'pageLifecycle')
+          if (data.case === 'resume') {
+            // 调音台界面关闭 页面重新开始监听
+            if (this.clickMixer) {
+              this.clickMixer = false
+              modules.notification.regist('receiveMsgFromWeex', ({method, params}) => {
+                this[method] && this[method](params)
+              })
             }
           }
         })

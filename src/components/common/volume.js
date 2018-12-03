@@ -73,6 +73,7 @@ volumeManager.registWeexNotif = function () {
     let data = data1.params
     if (data.close) {
       volumeManager.isOpenWeex = false
+      window.fp.modules.notification.remove('receiveMsgFromWeex')
       return
     }
     switch (data.name) {
