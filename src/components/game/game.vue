@@ -18,7 +18,7 @@
             </ul>
         </div>
     </div>
-    <toolbar>
+    <toolbar :hidden="toolbarHidden">
         <icon-item v-for="(button,index) in controlButtons"
           :longClick="button.longClick"
           :key="index"
@@ -129,6 +129,10 @@
     },
     computed: {
       ...mapState({
+        isLogin (state) {
+          let {storage} = state
+          return storage.isLogin
+        },
         dadishu2: state => state.storage.cache.renderCache.dadishu2,
         dagu: state => state.storage.cache.renderCache.dagu,
         kingdom2: state => state.storage.cache.renderCache.kingdom2
@@ -171,22 +175,22 @@
             this.listIndex = Math.min(this.listIndex + 1, this.list.length - 1)
             break
           case 'ok':
-            switch (this.listIndex) {
-              case 0:
-                console.log(this.dadishu2)
-                break
-              case 1:
-                console.log(this.dagu)
-                break
-              case 2:
-                console.log(this.kingdom2)
-                break
-            }
+            this.openGame()
+            // switch (this.listIndex) {
+            //   case 0:
+            //     console.log(this.dadishu2)
+            //     break
+            //   case 1:
+            //     console.log(this.dagu)
+            //     break
+            //   case 2:
+            //     console.log(this.kingdom2)
+            //     break
+            // }
             break
         }
       },
       openGame () {
-        let appName = this.list[this.listIndex].appName
         // 做登录验证
         if (!this.isLogin) {
           return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
@@ -197,64 +201,65 @@
               modules.user.logOut()
               return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             }
-          })
-        }
-        this.opening = true
-        eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
-        // 获取线上最新版本
-        return this.$store.dispatch('index/getGameApp', appName).then((data) => {
-          this.downloadInfo = data.url
-          modules.file.pathComplement('$game/' + appName + '/package.json').then((res) => {
-            if (res.path) {
-              // 判断文件是否存在
-              modules.file.fileExists(res.path).then((res1) => {
-                if (!res1) {
-                  // 本地没有 判断网络问题
-                  if (!data.url) {
-                    // 拉不到线上版本 提示网络问题
-                    console.log('本地没有且拉不到线上版本 提示网络问题')
-                    this.peilianLoading = false
-                    this.canEnterModule = true
-                    eventsHub.$emit('closeToast')
-                    errorHandling(data)
-                  } else {
-                    console.log('本地没有，拉到了线上版本 直接下载')
-                    // 拉到了线上版本 直接下载 显示取消按钮
-                    this.downloadGame()
-                  }
-                } else {
-                  // 本地有 判断网络问题
-                  return this.$store.dispatch('index/getLocalGameAppVersion', res.http, appName).then((data1) => {
-                    // 读取本地JSON文件 拿到本地版本信息
-                    if (!data.partnerVersion) {
-                      // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
-                      console.log('本地有且拉不到线上版本 直接打开即可')
-                      this.openGame()
-                    } else {
-                      if (!this.localPartnerVersion.version) {
-                        // 没有拿到本地版本 直接去下载
-                        return this.downloadGame()
-                      }
-                      // 拉到了线上版本 做版本比较 判断是否需要更新
-                      console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
-                      let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
-                      if (isNeedUpdate) {
-                        // 需要更新 弹框提示 显示直接进入和更新按钮
-                        this.peilianButtons[0].show = false
-                        this.peilianButtons[1].show = true
-                        this.peilianButtons[2].show = true
-                        eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+            let appName = this.list[this.listIndex].appName
+            this.opening = true
+            eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+            // 获取线上最新版本
+            return this.$store.dispatch('index/getGameApp', appName).then((data) => {
+              this.downloadInfo = this[appName].url
+              modules.file.pathComplement('$game/' + appName + '/package.json').then((res) => {
+                if (res.path) {
+                  // 判断文件是否存在
+                  modules.file.fileExists(res.path).then((res1) => {
+                    if (!res1) {
+                      // 本地没有 判断网络问题
+                      if (!data.url) {
+                        // 拉不到线上版本 提示网络问题
+                        console.log('本地没有且拉不到线上版本 提示网络问题')
+                        this.peilianLoading = false
+                        this.canEnterModule = true
+                        eventsHub.$emit('closeToast')
+                        errorHandling(data)
                       } else {
-                        // 不需要更新 直接打开即可
-                        this.openGame()
+                        console.log('本地没有，拉到了线上版本 直接下载')
+                        // 拉到了线上版本 直接下载 显示取消按钮
+                        this.downloadGame()
                       }
+                    } else {
+                      // 本地有 判断网络问题
+                      return this.$store.dispatch('index/getLocalGameAppVersion', res.http, appName).then((data1) => {
+                        // 读取本地JSON文件 拿到本地版本信息
+                        if (!data.partnerVersion) {
+                          // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
+                          console.log('本地有且拉不到线上版本 直接打开即可')
+                          this.openGame()
+                        } else {
+                          if (!this.localPartnerVersion.version) {
+                            // 没有拿到本地版本 直接去下载
+                            return this.downloadGame()
+                          }
+                          // 拉到了线上版本 做版本比较 判断是否需要更新
+                          console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
+                          let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
+                          if (isNeedUpdate) {
+                            // 需要更新 弹框提示 显示直接进入和更新按钮
+                            this.peilianButtons[0].show = false
+                            this.peilianButtons[1].show = true
+                            this.peilianButtons[2].show = true
+                            eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                          } else {
+                            // 不需要更新 直接打开即可
+                            this.openGame()
+                          }
+                        }
+                      })
                     }
                   })
                 }
               })
-            }
+            })
           })
-        })
+        }
       },
       downloadPartner () {
         let appName = this.list[this.listIndex].appName
