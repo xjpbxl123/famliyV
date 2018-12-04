@@ -4,21 +4,15 @@
         <div class="title" v-text="title1"></div>
         <div class="box1">
             <ul>
-                <li v-for="(item,index) in list" :key="index"  @click="setSelect(index)" :class="{'active': index === listIndex}" >
-                    <div class="item">
-                        <span class="icon iconfont"  :class="item.iconName"></span>
-                        <span class="name" v-text="item.name"></span>
-                        <div class="img" v-if="item.imgUrl">
-                            <img :src="item.imgUrl" alt="">
-                        </div>
-                        <span class="yidiaoValue" v-if="item.value !== undefined" v-text="yidiaoValue>0?'+'+yidiaoValue:yidiaoValue"></span>
-                        <span class="iconfont icon-arrow-more arrow"></span>
-                    </div>
+                <li v-for="(item,index) in list" :key="index">
+                  <div class="item" @click="setSelect(index)" :class="{'active': index === listIndex, installed: item.status === 'installed'}"></div>
+                  <span class="name" v-text="item.text"></span>
+                  <span class="staus" v-text="item.statusText"></span>
                 </li>
             </ul>
         </div>
     </div>
-    <toolbar :hidden="toolbarHidden">
+    <toolbar :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
           :longClick="button.longClick"
           :key="index"
@@ -84,7 +78,7 @@
           {
             pianoKey: 78,
             text: '',
-            icon: '0xe63b',
+            icon: '0xe660',
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 11,
@@ -93,7 +87,7 @@
           {
             pianoKey: 80,
             text: '',
-            icon: '0xe650',
+            icon: '0xe65b',
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 12,
@@ -112,16 +106,22 @@
         title1: '',
         list: [
           {
+            name: '乐理练习',
+            text: '乐理练习',
+            statusText: ''
+          },
+          {
             name: '打地鼠',
-            appName: 'dadishu2'
+            appName: 'dadishu2',
+            text: '打地鼠-认音游戏',
+            statusText: ''
           },
           {
             name: '打鼓',
-            appName: 'dagu'
-          },
-          {
-            name: '音乐王国',
-            appName: 'kindom2'}
+            appName: 'dagu',
+            text: '我是鼓手-节奏游戏',
+            statusText: ''
+          }
         ],
         opening: false,
         isDownloading: false
@@ -134,7 +134,9 @@
           return storage.isLogin
         },
         dadishu2: state => state.storage.cache.renderCache.dadishu2,
+        dadishu2Local: state => state.storage.cache.renderCache.dadishu2,
         dagu: state => state.storage.cache.renderCache.dagu,
+        daguLocal: state => state.storage.cache.renderCache.dagu,
         kingdom2: state => state.storage.cache.renderCache.kingdom2
       })
     },
@@ -156,15 +158,41 @@
       }
     },
     created () {
-      this.getAppVersion()
+      this.getAppLocalVersion()
     },
     methods: {
       setSelect () {
       },
-      getAppVersion () {
-        this.$store.dispatch('index/getGameApp', 'dadishu2')
-        this.$store.dispatch('index/getGameApp', 'dagu')
-        this.$store.dispatch('index/getGameApp', 'kingdom2')
+      getAppLocalVersion () {
+        // 初始化app状态
+        let appArr = ['dadishu2', 'dagu']
+        for (const value of appArr) {
+          modules.file.pathComplement('$game/' + value + '/version.json').then((res) => {
+            if (res.path) {
+              modules.file.fileExists(res.path).then((res1) => {
+                if (res1) {
+                  this.$store.dispatch('index/getLocalAppVersion', res.http, value).then((data) => {
+                    if (value === 'dadishu2') {
+                      this.list[1].status = 'installed'
+                    }
+                    if (value === 'dagu') {
+                      this.list[2].status = 'installed'
+                    }
+                  })
+                } else {
+                  if (value === 'dadishu2') {
+                    this.list[1].status = 'unInstall'
+                    this.list[1].statusText = '未安装'
+                  }
+                  if (value === 'dagu') {
+                    this.list[2].status = 'unInstall'
+                    this.list[2].statusText = '未安装'
+                  }
+                }
+              })
+            }
+          })
+        }
       },
       buttonActions (type) {
         switch (type) {
@@ -175,6 +203,9 @@
             this.listIndex = Math.min(this.listIndex + 1, this.list.length - 1)
             break
           case 'ok':
+            if (this.listIndex === 0) {
+              return modules.nativeRouter.openAppsView()
+            }
             this.openGame()
             // switch (this.listIndex) {
             //   case 0:
@@ -213,7 +244,7 @@
                   modules.file.fileExists(res.path).then((res1) => {
                     if (!res1) {
                       // 本地没有 判断网络问题
-                      if (!data.url) {
+                      if (!data[appName].url) {
                         // 拉不到线上版本 提示网络问题
                         console.log('本地没有且拉不到线上版本 提示网络问题')
                         this.peilianLoading = false
@@ -261,7 +292,7 @@
           })
         }
       },
-      downloadPartner () {
+      downloadGame () {
         let appName = this.list[this.listIndex].appName
         this.isDownloading = true
         let downloadInfo = this.downloadInfo
@@ -274,7 +305,7 @@
         modules.file.pathComplement('$downLoadHtmls').then((result) => {
           console.log(result)
           localPath = result.path
-          return modules.file.pathComplement('$web/' + appName)
+          return modules.file.pathComplement('$game/' + appName)
         }).then((result) => {
           targetPath = result.path
           downloadInfo.localPath = localPath
@@ -316,100 +347,97 @@
         height: 100%;
         position: relative;
         .list {
-            width: 1070px;
-            position: absolute;
-            top: 85px;
-            left: 850px;
-            height: 900px;
-            background:rgba(0,0,0,0.3);
-            border-radius:12px 0px 0px 12px;
-            padding-top: 56px;
-            .title {
-                width: 855px;
-                margin: 0 auto;
-                text-align: center;
-                font-size: 36px;
-                font-family: PingFangSC-Semibold;
-                font-weight: 600;
-                color:rgba(255,255,255,1);
-                border-bottom: 1px solid rgba(255,255,255,0.5);
-                padding-bottom: 20px;
-            }
             .box1 {
                 position: relative;
-                width: 100%;
-                height: 702px;
-                overflow: hidden;
                 ul {
-                    width: 100%;
                     position: absolute;
-                    left: 0;
-                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    top: 358px;
                     li {
-                        width: 100%;
-                        height: 78px;
+                        width: 200px;
+                        height: 300px;
                         color: rgba(255,255,255,1);
-                        &.active {
-                        background-image: -webkit-linear-gradient(left,rgba(255, 255, 255, 0),rgba(255,255,255,0.4),rgba(255,255,255,0));
-                        }
+                        margin-right: 230px;
+                        position: relative;
                         .item {
-                            width: 855px;
+                          width: 100%;
+                          height: 200px;
+                          position: absolute;
+                          border-radius: 60px;
+                          top: 0;
+                          left: 0;
+                          &::before {
+                            content: '';
+                            width: 100%;
                             height: 100%;
-                            position: relative;
-                            line-height: 78px;
-                            margin: 0 auto;
-                            text-indent: 20px;
-                            border-width: 0;
-                            border-bottom-width: 1px;
-                            border-bottom-style: solid;
-                            border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.5),rgba(255,255,255,0)) 30 30;
-                            .name {
-                                font-size: 30px;
-                                font-family: PingFangSC-Regular;
-                                font-weight: 400;
-                                margin-left: 20px;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            border-radius: 60px;
+                            background-color: rgba(0,0,0,0.3);
+                          }
+                          &.active {
+                            border: 4px solid #00ff90;
+                            box-shadow: 0 0 20px 0 #00ff90;
+                            transform: scale(1.2);
+                            &::before {
+                              background-color: rgba(0,0,0,0);
                             }
-                            .icon {
-                                font-size: 30px;
-                            }
-                            .img {
-                                width: 50px;
-                                height: 50px;
-                                background:rgba(255,255,255,1);
-                                border-radius: 6px;
-                                float: right;
-                                margin-right: 84px;
-                                margin-top: 12px;
-                                background-size: cover;
-                                position: relative;
-                                img {
-                                    width: 88%;
-                                    height: 88%;
-                                    position: absolute;
-                                    left: 6%;
-                                    top: 6%;
-                                }
-                            }
-                            .arrow {
-                                position: absolute;
-                                top: 0;
-                                right: 48px;
-                                font-size: 30px;
-                            }
-                            .yidiaoValue {
-                                float: right;
-                                width: 50px;
-                                height: 100%;
-                                margin-right: 100px;
-                                text-align: center;
-                                display: block;
-                                line-height: 78px;
-                                font-size: 36px;
-                                font-family: PingFangSC-Semibold;
-                                font-weight: 600;
-                            }
+                          }
                         }
+                        &:nth-child(1) {
+                          .item {
+                            background: url('./images/01.png') no-repeat;
+                            background-size: cover;
+                          }
 
+                        }
+                        &:nth-child(2) {
+                          .item {
+                            background: url('./images/02-s.png') no-repeat;
+                            background-size: cover;
+                            &.installed {
+                              background: url('./images/02.png') no-repeat;
+                              background-size: cover;
+                            }
+                          }
+                        }
+                        &:nth-child(3) {
+                          .item {
+                            background: url('./images/03-s.png') no-repeat;
+                            background-size: cover;
+                            &.installed {
+                              background: url('./images/03.png') no-repeat;
+                              background-size: cover;
+                            }
+                          }
+                        }
+                        &:last-child {
+                          margin-right: 0;
+                        }
+                        .name {
+                          position: absolute;
+                          width: 150%;
+                          bottom: 20px;
+                          left: 50%;
+                          text-align: center;
+                          transform: translateX(-50%);
+                          font-size: 32px;
+                          font-family: PingFangSC-Regular;
+                          font-weight: bold;
+                          color:rgba(255,255,255,1);
+                        }
+                        .staus {
+                          position: absolute;
+                          bottom: -30px;
+                          left: 50%;
+                          transform: translateX(-50%);
+                          font-size: 32px;
+                          font-family: PingFangSC-Regular;
+                          font-weight: bold;
+                          color:rgba(255,226,111,1)
+                        }
                     }
                 }
             }
