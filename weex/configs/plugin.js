@@ -73,6 +73,9 @@ const loaders = {
   },
   vue: {
     exclude: []
+  },
+  babel: {
+    exclude: []
   }
 }
 

@@ -2803,10 +2803,6 @@ decompress@^4.0.0, decompress@^4.2.0:
     pify "^2.3.0"
     strip-dirs "^2.0.0"
 
-deep-diff@1.0.1:
-  version "1.0.1"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-diff/-/deep-diff-1.0.1.tgz#ac437a691e88baf4205b83ae1aa095a13c6c10ac"
-
 deep-equal@~1.0.1:
   version "1.0.1"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
@@ -3987,9 +3983,9 @@ find-parent-dir@~0.3.0:
   version "0.3.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-parent-dir/-/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
-find-toolbar@^1.2.3:
-  version "1.2.3"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.3.tgz#e8c9124620bce15e6225c87fd7b0318238cd0fe6"
+find-toolbar@^1.2.5:
+  version "1.2.5"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.5.tgz#bad9cbc433cba9f4377006f0d3a1c2da5401ca0e"
 
 find-up@^1.0.0:
   version "1.1.2"
