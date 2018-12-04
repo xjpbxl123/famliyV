@@ -27,7 +27,8 @@
         },
         textStyle: {
           fontSize: '70px',
-          top: '70%'
+          top: '61%',
+          left: '22%'
         }
       }
     },

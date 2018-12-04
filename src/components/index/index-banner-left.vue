@@ -190,6 +190,11 @@
         text-indent: 25px;
       }
     }
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto;
+    }
   }
 
   .avatar {
@@ -203,7 +208,8 @@
 
   .scan,
   .nick-name {
-    display: inline-block;
+    display: block;
+    height: 26px;
     margin-top: 20px;
     font-size: 26px;
     color: #fff;
