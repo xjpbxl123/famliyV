@@ -11,6 +11,8 @@
                 </li>
             </ul>
         </div>
+        <div class="outer"></div>
+        <div class="pie"></div>
     </div>
     <toolbar :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
@@ -347,101 +349,132 @@
         height: 100%;
         position: relative;
         .list {
-            .box1 {
-                position: relative;
-                ul {
-                    position: absolute;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    top: 358px;
-                    li {
-                        width: 200px;
-                        height: 300px;
-                        color: rgba(255,255,255,1);
-                        margin-right: 230px;
-                        position: relative;
-                        .item {
+          .box1 {
+              position: relative;
+              ul {
+                  position: absolute;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  top: 358px;
+                  li {
+                      width: 200px;
+                      height: 300px;
+                      color: rgba(255,255,255,1);
+                      margin-right: 230px;
+                      position: relative;
+                      .item {
+                        width: 100%;
+                        height: 200px;
+                        position: absolute;
+                        border-radius: 60px;
+                        top: 0;
+                        left: 0;
+                        &::before {
+                          content: '';
                           width: 100%;
-                          height: 200px;
+                          height: 100%;
                           position: absolute;
-                          border-radius: 60px;
                           top: 0;
                           left: 0;
+                          border-radius: 60px;
+                          background-color: rgba(0,0,0,0.3);
+                        }
+                        &.active {
+                          border: 4px solid #00ff90;
+                          box-shadow: 0 0 20px 0 #00ff90;
+                          transform: scale(1.2);
                           &::before {
-                            content: '';
-                            width: 100%;
-                            height: 100%;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            border-radius: 60px;
-                            background-color: rgba(0,0,0,0.3);
-                          }
-                          &.active {
-                            border: 4px solid #00ff90;
-                            box-shadow: 0 0 20px 0 #00ff90;
-                            transform: scale(1.2);
-                            &::before {
-                              background-color: rgba(0,0,0,0);
-                            }
+                            background-color: rgba(0,0,0,0);
                           }
                         }
-                        &:nth-child(1) {
-                          .item {
-                            background: url('./images/01.png') no-repeat;
-                            background-size: cover;
-                          }
+                      }
+                      &:nth-child(1) {
+                        .item {
+                          background: url('./images/01.png') no-repeat;
+                          background-size: cover;
+                        }
 
-                        }
-                        &:nth-child(2) {
-                          .item {
-                            background: url('./images/02-s.png') no-repeat;
+                      }
+                      &:nth-child(2) {
+                        .item {
+                          background: url('./images/02-s.png') no-repeat;
+                          background-size: cover;
+                          &.installed {
+                            background: url('./images/02.png') no-repeat;
                             background-size: cover;
-                            &.installed {
-                              background: url('./images/02.png') no-repeat;
-                              background-size: cover;
-                            }
                           }
                         }
-                        &:nth-child(3) {
-                          .item {
-                            background: url('./images/03-s.png') no-repeat;
+                      }
+                      &:nth-child(3) {
+                        .item {
+                          background: url('./images/03-s.png') no-repeat;
+                          background-size: cover;
+                          &.installed {
+                            background: url('./images/03.png') no-repeat;
                             background-size: cover;
-                            &.installed {
-                              background: url('./images/03.png') no-repeat;
-                              background-size: cover;
-                            }
                           }
                         }
-                        &:last-child {
-                          margin-right: 0;
-                        }
-                        .name {
-                          position: absolute;
-                          width: 150%;
-                          bottom: 20px;
-                          left: 50%;
-                          text-align: center;
-                          transform: translateX(-50%);
-                          font-size: 32px;
-                          font-family: PingFangSC-Regular;
-                          font-weight: bold;
-                          color:rgba(255,255,255,1);
-                        }
-                        .staus {
-                          position: absolute;
-                          bottom: -30px;
-                          left: 50%;
-                          transform: translateX(-50%);
-                          font-size: 32px;
-                          font-family: PingFangSC-Regular;
-                          font-weight: bold;
-                          color:rgba(255,226,111,1)
-                        }
-                    }
-                }
-            }
+                      }
+                      &:last-child {
+                        margin-right: 0;
+                      }
+                      .name {
+                        position: absolute;
+                        width: 150%;
+                        bottom: 20px;
+                        left: 50%;
+                        text-align: center;
+                        transform: translateX(-50%);
+                        font-size: 32px;
+                        font-family: PingFangSC-Regular;
+                        font-weight: bold;
+                        color:rgba(255,255,255,1);
+                      }
+                      .staus {
+                        position: absolute;
+                        bottom: -30px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        font-size: 32px;
+                        font-family: PingFangSC-Regular;
+                        font-weight: bold;
+                        color:rgba(255,226,111,1)
+                      }
+                  }
+              }
+          }
+        .outer{
+          position: absolute;
+          width: 200px;
+          height: 200px;
+          transform: rotate(10deg);
+          clip: rect(0px,100px,200px,0px);/* 这个clip属性用来绘制半圆，在clip的rect范围内的内容显示出来，使用clip属性，元素必须是absolute的 */
+          border-radius: 100px;
+          background-color: yellow;
+        }
 
+        .pie{
+          position: absolute;
+          width: 200px;
+          height: 200px;
+          left: 300px;
+          transform: rotate(10deg);
+          clip: rect(0px,100px,200px,0px);
+          border-radius: 100px;
+          background-color: yellow;
+          }
+        }
+        /**动画*/
+        @-webkit-keyframes an1{
+              0% {transform: rotate(0deg);}
+              50%{transform: rotate(90deg);}
+              100%{transform: rotate(0deg);}
+        }
+
+        @-webkit-keyframes an2{
+              0% {transform: rotate(0deg);}
+              50%{transform: rotate(-90deg);}
+              100%{transform: rotate(0deg);}
         }
     }
 
