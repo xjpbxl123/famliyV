@@ -14,6 +14,8 @@
                 </li>
             </ul>
         </div>
+        <div class="outer"></div>
+        <div class="pie"></div>
     </div>
     <toolbar :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
