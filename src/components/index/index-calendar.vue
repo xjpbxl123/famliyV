@@ -15,7 +15,7 @@
           <span></span>
         </li>
         <li v-for="(date,index) in calendarData" :key="date.text" >
-          <span v-text="date.date" :class="{'practiced': calendarData[index].practiced}"></span>
+          <span v-text="date.date" :class="{'practiced': calendarData[index].practiced && isActivation}"></span>
         </li>
       </ul>
     </div>

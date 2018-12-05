@@ -14,31 +14,35 @@
         <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" ></findImg>
         <span class="nick-name" v-text="nickName || ''"></span>
       </div>
-      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
-      <div v-if="!isCalendar" :class="{'noActiva': !isActivation}" class="userData">
+      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar && isActivation" />
+      <div v-if="!isCalendar && isActivation" :class="{'noActiva': !isActivation}" class="userData">
         <div class="used-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">累计使用</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.usedTime:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.openAppTime:'--'"></span>
         </div>
         <div class="auto-play-time">
           <div>
             <i class="iconfont icon-auto-play"></i>
             <span class="text">自动弹奏时间</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.autoPlayerTime:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.autoPlayTime:'--'"></span>
         </div>
         <div class="rate-play-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">带评分弹奏</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.ratePlayMoment:'--'"></span>
+          <span class="time" v-text="isActivation?usedTime.scoringTime:'--'"></span>
         </div>
       </div>
-      <div class="noActive" v-if="!isActivation">*请在"设置 - 其他设置"中激活</div>
+      <div class="noActive" v-if="!isActivation">
+        <span class="iconfont icon-dailytasks"></span>
+        <p class="tip1">弹奏统计</p>
+        <p class="tip2">请在"设置 - 其他设置"中激活</p>
+      </div>
     </div>
   </div>
 </template>
@@ -67,7 +71,7 @@
         adminUrl: require('./images/admin.png'),
         interval: null,
         nickName: '',
-        logoUrl: require('./images/logo.jpg')
+        logoUrl: require('./images/find-logo.png')
       }
     },
     watch: {
@@ -158,14 +162,38 @@
   .user-status {
     padding-top: 110px;
     .noActive {
-      width: 100%;
-      font-size: 14px;
-      text-align: center;
-      font-family: MicrosoftYaHei;
-      color: hsla(0,0%,100%,.6);
-      position: absolute;
-      bottom: 100px;
-      left: 0;
+      width: 370px;
+      height: 146px;
+      background:rgba(0,0,0,0.18);
+      border-radius:12px;
+      text-align: left;
+      position: relative;
+      top: 100px;
+      left: 55px;
+      font-size: 24px;
+      font-family: PingFangSC-Regular;
+      font-weight: 400;
+      .tip1 {
+        color:rgba(255,255,255,1);
+        text-indent: 87px;
+        padding-top: 30px;
+      }
+      span {
+        position: absolute;
+        left: 32px;
+        top: 16px;
+        font-size: 48px;
+        color: #fff;
+      }
+      .tip2 {
+        color:rgba(233,211,142,1);
+        text-indent: 25px;
+      }
+    }
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto;
     }
   }
 
@@ -180,7 +208,8 @@
 
   .scan,
   .nick-name {
-    display: inline-block;
+    display: block;
+    height: 26px;
     margin-top: 20px;
     font-size: 26px;
     color: #fff;

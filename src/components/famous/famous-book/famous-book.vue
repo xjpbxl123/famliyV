@@ -9,7 +9,7 @@
         :key="button.icon"
         :longClick="button.longClick"
         :id="button.id"
-        :style="{backgroundColor:'#3000',dotColor:'#fff'}"
+        :style="{backgroundColor:'#4000',dotColor:'#fff'}"
         :icon="button.icon"/>
     </toolbar>
   </div>

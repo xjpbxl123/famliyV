@@ -16,19 +16,26 @@
         <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
-    <toolbar :darkBgHidden="true">
+    <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
             :key="button.id"
-            :hidden="toolbarHidden"
+            :hidden="toolbarHidden || isPlaying"
             :icon="button.icon"
             :pianoKey="button.pianoKey"
-            :style="{backgroundColor:'#3000',dotColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
+         <icon-item id="899"
+            key="899"
+            icon="0xe60d"
+            text="调音台"
+            pianoKey="97"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <icon-item v-for="(button,index) in textButtons"
             :key="index"
             :id="button.id"
             :icon="button.icon"
-            :hidden="toolbarHidden"
+            :hidden="toolbarHidden || isPlaying"
             :text="button.text"
             :pianoKey="button.pianoKey"
             titlePosition="below"
@@ -37,7 +44,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42, PEDAL_PRESSED, receiveMsgFromWeex } from 'vue-find'
+  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42, PEDAL_PRESSED, receiveMsgFromWeex, TOOLBAR_PRESSED } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
   import {timeFilter} from '../../../scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
@@ -70,17 +77,11 @@
             id: 203
         }],
         textButtons: [{
-          pianoKey: 97,
-          icon: '0xe60d',
-          id: 204,
-          text: '调音台',
-          backgroundColor: '#3000'
-        }, {
           pianoKey: 42,
           icon: '0xe6e2',
           id: 205,
           text: '全屏',
-          backgroundColor: '#3000'
+          backgroundColor: '#4000'
         }],
         currentTime: '0',
         totalTime: '0',
@@ -111,13 +112,6 @@
           //   this.textButtons[1].text = '右半屏'
           //   break
         }
-      },
-      isPlaying (val) {
-        if (val) {
-          this.controlButtons[1].icon = '0xe673'
-        } else {
-          this.controlButtons[1].icon = '0xe680'
-        }
       }
     },
     find: {
@@ -128,7 +122,7 @@
         this.buttonActions('fastBackward')
       },
       [KEY56] () {
-        this.buttonActions('playOrPause')
+        this.buttonActions('play')
       },
       [KEY58] () {
         this.buttonActions('fastForward')
@@ -152,15 +146,28 @@
             return this.buttonActions('fastForward')
         }
       },
+      [TOOLBAR_PRESSED] ({hidden}) {
+        this.toolbarHidden = hidden
+      },
       [BACK_PRESSED] () {
-        this.buttonActions('back')
+        if (this.toolbarHidden) {
+          this.toolbarHidden = false
+          return
+        }
+        if (this.isPlaying) {
+          this.$refs.video.pause()
+          this.isPlaying = !this.isPlaying
+          this.toolbarHidden = false
+        } else {
+          this.buttonActions('back')
+        }
       }
     },
     methods: {
       buttonActions (type) {
         switch (type) {
-          case 'playOrPause':
-            this.isPlaying ? this.$refs.video.pause() : this.$refs.video.play()
+          case 'play':
+            this.$refs.video.play()
             this.isPlaying = !this.isPlaying
             break
           case 'changeScreen':
@@ -212,6 +219,7 @@
         self.currentTime = parseInt(self.$refs.video.currentTime)
         if (self.currentTime === self.totalTime) {
           this.isPlaying = false
+          this.toolbarHidden = false
         }
       },
       _durationTime: function () {
@@ -222,9 +230,24 @@
         this.fileName = fileName || ''
         let nameArr = fileName.split('.')
         this.videoName = nameArr[0].split('_')[0].split('#~')[0] || ''
+      },
+      registVloume () {
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
+          if (data && data.type === 1) {
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.video.volume = 0
+            } else {
+              self.$refs.video.volume = data.realValue
+            }
+          }
+        })
       }
     },
     mounted () {
+      this.registVloume()
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.videoUrl = this.$route.query.url

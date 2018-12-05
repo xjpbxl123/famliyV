@@ -2,55 +2,32 @@
   <div class="VideolDirectory">
     <div class="VideolDirectory-header">
       <div class="video-img">
-        <image class="video-img-header" style="width:40px;height:30px" :src="logo"></image>
+        <image class="video-img-header" style="width:40px;height:30px" :src="logo" />
       </div>
       <text class="video-text fwhite" >曲谱列表</text>
       <text class="video-mun fwhite">{{`共${videoList.sum || 0}个`}}</text>
     </div>
     <div class="contentBox">
-      <!-- <list class="video-list" :style="{marginTop: rightTop+'px'}">
-        <cell class="video-cell" v-for="(item,index) in videoList.courseList" :key="index"
-              :style="index==select && styleObject">
-          <div class="video-cell-image">
-            <div class="video-cell-image-pic">
-              <image :src="linkImg" style="height: 75px;width: 100px;"></image>
-            </div>
-            <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress">
-              <text class="progress">下载中</text>
-              <text class="progress">{{`${item.progress}%`}}</text>
-            </div>
-            <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-            v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
-            <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-            v-if="!item.progress && (!item.midiDownload || !item.videoDownload)"></image>
-          </div>
-          <div class="video-cell-desc">
-            <text class="video-cell-desc-title">{{item.courseSetName}}</text>
-            <text class="video-cell-desc-art">{{item.courseName}}</text>
-          </div>
-          <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
-        </cell>
-      </list> -->
       <scroller class="video-list">
           <div class="video-cell" v-for="(item, index) in videoList.courseList" :ref="'item'+index" :key="index"  :style="index==select && styleObject">
             <div class="video-cell-image">
               <div class="video-cell-image-pic">
-                <image :src="linkImg" style="height: 75px;width: 100px;"></image>
+                <image :src="linkImg" style="height: 75px;width: 100px;" />
               </div>
               <div style="position: absolute;top: 17px;left: 30px;" v-if="item.progress !== undefiend">
                 <text class="progress">下载中</text>
                 <text class="progress">{{`${item.progress}%`}}</text>
               </div>
               <image :src="playImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-              v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex"></image>
+              v-if="item.midiDownload && item.videoDownload && !item.progress && index === playIndex" />
               <image :src="downloadImg" style="height: 40px;width: 40px;position: absolute;top: 17px;left: 30px;"
-              v-if="!item.progress && item.progress === undefined && (!item.midiDownload || !item.videoDownload)"></image>
+              v-if="!item.progress && item.progress === undefined && (!item.midiDownload || !item.videoDownload)" />
             </div>
             <div class="video-cell-desc">
               <text class="video-cell-desc-title">{{item.courseSetName}}</text>
               <text class="video-cell-desc-art">{{item.courseName}}</text>
             </div>
-            <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;"></image>
+            <image :src="lineImg" style="height: 1px; width: 674px;position: absolute;bottom: 0;left: 17px;" />
           </div>
     </scroller>
     </div>
@@ -223,10 +200,6 @@
   .contentBox {
     height: 854px;
     background-color: rgba(255,255,255,0.4);
-  }
-
-  .video-list {
-
   }
 
   .video-cell {

@@ -1,24 +1,24 @@
 <template>
   <div class="myScore">
     <statusBar/>
-    <find-wrap :title="title" :pagination=false>
-        <div class="logo iconfont icon-logo"> </div>
-        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 0" :localSourceIndex="localSourceIndex" :setSelect="setSelect"/>
-        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 2" :listIndex="myRecordIndex" :setSelect="setSelect"/>
-        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 3" :listIndex="myPlayIndex" :setSelect="setSelect"/>
-        <find-userMess v-show="myScoreTapIndex === 1"
+    <find-wrap :title="title" :pagination="false">
+        <div class="logo"> </div>
+        <find-localSource :localSource="localSource" v-show="myScoreTapIndex === 1" :localSourceIndex="localSourceIndex" :setSelect="setSelect" :typeNum="1"/>
+        <find-localSource :localSource="uPanSource" v-show="myScoreTapIndex === 0" :localSourceIndex="uPanIndex" :setSelect="setSelect"  :typeNum="2"/>
+        <find-localMid :list="myRecord" v-show="myScoreTapIndex === 3" :listIndex="myRecordIndex" :setSelect="setSelect"/>
+        <find-localMid :list="myPlay" v-show="myScoreTapIndex === 4" :listIndex="myPlayIndex" :setSelect="setSelect"/>
+        <find-userMess v-show="myScoreTapIndex === 2"
         :list="isLogin?collectList:localCollect"
         :rightTitle="`收藏时间`"
         :listIndex="myCollectIndex"
         :setSelect="setSelect"/>
-        <find-userMess v-show="myScoreTapIndex === 4"
+        <find-userMess v-show="myScoreTapIndex === 5"
         :rightTitle="`最近打开时间`"
         :list="isLogin?recentOpenList:localRecent"
         :listIndex="myRecentIndex"
         :setSelect="setSelect"/>
     </find-wrap>
-    <findPrompt ref="prompt" :icon="promptInfo.icon" :text="promptInfo.text" :delay="promptInfo.delay" :width="promptInfo.width" :height="promptInfo.height" :allExit="true"></findPrompt>
-    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"  :setTapSelect="setTapSelect"/>
+    <find-tap-buttons :myScoreTapIndex="myScoreTapIndex"  :setTapSelect="setTapSelect" :tapButton="tapButton"/>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button) in controlButtons"
             :id="button.id"
@@ -35,7 +35,23 @@
             pianoKey="70"
             :hidden="orderButtonHidden || !deleteCover"
             titlePosition="below"
-            :style="{backgroundColor:'#3000',textColor: '#fff'}"/>
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+          <icon-item id="889"
+            key="889"
+            icon="0xe76a"
+            text="推出USB"
+            pianoKey="66"
+            :hidden="usbButtonHidden"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+          <icon-item id="890"
+            key="890"
+            icon="0xe769"
+            text="拷至本地"
+            pianoKey="85"
+            :hidden="copyButtonHidden"
+            titlePosition="below"
+            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <title-item v-for="(button) in tapButtons"
             :id="button.id"
             :key="button.id"
@@ -68,13 +84,15 @@
   import findUserMess from './find-userMess'
   import statusBar from '../common/find-status-bar/find-status-bar'
   import {modules} from 'find-sdk'
-  import findPrompt from '../common/find-prompt/find-prompt'
   import * as keys from 'vue-find'
+  import eventsHub from 'scripts/eventsHub'
   export default {
     data () {
       return {
         toolbarHidden: false,
         orderButtonText: '名称',
+        usbButtonHidden: true,
+        copyButtonHidden: true,
         tapButtons: [
           {
             pianoKey: 39,
@@ -120,6 +138,41 @@
             activeColor: '#FF7E1B',
             id: 4,
             show: true
+          },
+          {
+            pianoKey: 58,
+            text: '',
+            icon: '',
+            dotColor: '#fff',
+            activeColor: '#FF7E1B',
+            id: 5,
+            show: true
+          }
+        ],
+        tapButton: [
+          {
+            className: 'usb key-39',
+            text: 'USB存储'
+          },
+          {
+            className: 'localSource key-42',
+            text: '本地资源'
+          },
+          {
+            className: 'myCollect key-46',
+            text: '我的收藏'
+          },
+          {
+            className: 'myRecord key-49',
+            text: '我的录音'
+          },
+          {
+            className: 'myPlay key-54',
+            text: '我的弹奏'
+          },
+          {
+            className: 'recentOpen key-58',
+            text: '最近打开'
           }
         ],
         controlButtons: [
@@ -127,9 +180,9 @@
             pianoKey: 78,
             text: '',
             icon: '0xe63b',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
-            id: 5,
+            id: 50,
             show: true,
             longClick: true
           },
@@ -137,7 +190,7 @@
             pianoKey: 80,
             text: '',
             icon: '0xe650',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 6,
             show: true,
@@ -147,7 +200,7 @@
             pianoKey: 82,
             text: '',
             icon: '0xe69a',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 7,
             show: true
@@ -156,7 +209,7 @@
             pianoKey: 85,
             text: '',
             icon: '0xe642',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 8,
             show: true
@@ -165,10 +218,10 @@
             pianoKey: 90,
             text: '',
             icon: '0xe63d',
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             dotColor: '#fff',
             id: 9,
-            show: false
+            show: true
           }
         ],
         logoutButtons: [
@@ -177,7 +230,7 @@
             text: '取消',
             icon: '0xe60a',
             id: 288,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           },
           {
@@ -185,22 +238,22 @@
             text: '删除',
             icon: '0xe642',
             id: 289,
-            backgroundColor: '#3000',
+            backgroundColor: '#4000',
             show: true
           }
         ],
         deleteCover: true,
         title: '最近打开',
         dirName: '',
+        dirName1: '',
         myRecordDirName: '',
         myPlayDirName: '',
-        promptInfo: {
-          text: '确认删除吗？',
-          icon: 'icon-sync-info',
-          delay: 1000,
-          width: 640,
-          height: 360
-        }
+        interval: null,
+        canEnter: true,
+        isReplace: false,
+        exitArr: [],
+        fileIndex: 0,
+        isLoading: false
       }
     },
     find: {
@@ -208,30 +261,102 @@
         this.toolbarHidden = hidden
       },
       [keys.KEY39] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 0)
+        if (this.uPanPath !== '/Volumes') {
+          this.$store.dispatch('myScore/setUpanPath', '/Volumes')
+          this.$store.dispatch('myScore/setUpanIndex', 0)
+        }
+        this.getUpanList()
       },
       [keys.KEY42] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
+        if (this.localSourcePath !== '$userUpload') {
+          this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
+          this.$store.dispatch('myScore/setLocalSourceIndex', 0)
+        }
+        this.getLocalSource()
         this.$store.dispatch('myScore/setMyScoreTapIndex', 1)
       },
       [keys.KEY46] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 2)
       },
       [keys.KEY49] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
+        if (this.myRecordPath !== '$userRecord') {
+          this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+          this.getMyRecord()
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 3)
       },
       [keys.KEY54] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        if (this.myPlayPath !== '$userHistory') {
+          this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
+          this.getMyPlay()
+        }
+      },
+      [keys.KEY58] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
+      },
+      [keys.KEY66] () {
+        this.buttonActions('popUsb')
+      },
+      [keys.KEY85] () {
+        if (!this.copyButtonHidden) {
+          return this.buttonActions('copyFile')
+        }
+        this.buttonActions('delete')
       },
       [keys.KEY70] () {
-        if (this.myRecordIndex === 0) this.buttonActions('changeOrder')
+        if (this.myScoreTapIndex === 0 || this.myScoreTapIndex === 1) this.buttonActions('changeOrder')
       },
       [keys.KEY75] () {
-        if (!this.deleteCover) this.buttonActions('delete')
+        if (!this.deleteCover) {
+          if (this.isReplace) {
+            this.buttonActions('copyFile')
+          } else {
+            this.buttonActions('delete')
+          }
+        }
       },
       [keys.KEY78] () {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         if (!this.deleteCover) {
           this.deleteCover = !this.deleteCover
-          this.$refs.prompt.hidePrompt()
+          this.isReplace = false
+          eventsHub.$emit('closeToast')
         } else {
           this.buttonActions('up')
         }
@@ -248,16 +373,22 @@
       [keys.KEY82] () {
         this.buttonActions('ok')
       },
-      [keys.KEY85] () {
-        this.buttonActions('delete')
-      },
       [keys.KEY90] () {
         this.buttonActions('scoreList')
       },
-      [keys.BACK_PRESSED] () {
+      [keys.BACK_PRESSED]  () {
+        if (!this.canEnter) {
+          console.log('return')
+          return
+        }
         this.buttonActions('back')
       },
       [keys.PEDAL_PRESSED] (key) {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         switch (key.id) {
           case 116:
             // 踏板1号键
@@ -276,13 +407,28 @@
     computed: {
       ...mapState({
         myScoreTapIndex: function (state) {
-          state.myScore.myScoreTapIndex === 4 ? this.controlButtons[this.controlButtons.length - 2].show = false : this.controlButtons[this.controlButtons.length - 2].show = true
-          if (state.myScore.myScoreTapIndex === 1 || state.myScore.myScoreTapIndex === 4) {
+          if (state.myScore.myScoreTapIndex === 0 || state.myScore.myScoreTapIndex === 5) {
+            this.controlButtons[this.controlButtons.length - 2].show = false
+          } else {
+            this.controlButtons[this.controlButtons.length - 2].show = true
+          }
+          if (state.myScore.myScoreTapIndex === 0) {
+            this.copyButtonHidden = false
+            this.usbButtonHidden = false
+          } else {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
+          }
+          if (state.myScore.myScoreTapIndex === 2 || state.myScore.myScoreTapIndex === 5) {
             this.controlButtons[this.controlButtons.length - 1].show = true
           } else {
             this.controlButtons[this.controlButtons.length - 1].show = false
           }
-          state.myScore.myScoreTapIndex === 0 ? this.orderButtonHidden = false : this.orderButtonHidden = true
+          if (state.myScore.myScoreTapIndex === 0 || state.myScore.myScoreTapIndex === 1) {
+            this.orderButtonHidden = false
+          } else {
+            this.orderButtonHidden = true
+          }
           return state.myScore.myScoreTapIndex
         },
         localCollect: state => state.storage.localCollect,
@@ -290,15 +436,31 @@
         localSourceIndex: state => state.myScore.localSourceIndex,
         localSourcePath: state => state.myScore.localSourcePath,
         localSource: state => state.myScore.localSource,
+        uPanIndex: state => state.myScore.uPanIndex,
+        uPanOrderIndex: state => state.myScore.uPanOrderIndex,
+        uPanSource (state) {
+          console.log(state.myScore.uPanSource, 'state.myScore.uPanSource')
+          return state.myScore.uPanSource
+        },
         myRecordIndex: state => state.myScore.myRecordIndex,
         myRecord: state => state.myScore.myRecord,
         myRecordPath: state => state.myScore.myRecordPath,
         myPlayIndex: state => state.myScore.myPlayIndex,
         myPlay: state => state.myScore.myPlay,
         myPlayPath: state => state.myScore.myPlayPath,
+        uPanPath (state) {
+          if (this.myScoreTapIndex === 0 && state.myScore.uPanPath === '/Volumes') {
+            this.usbButtonHidden = false
+          } else {
+            this.usbButtonHidden = true
+          }
+          return state.myScore.uPanPath
+        },
+        copyArr: state => state.myScore.copyArr,
         orderIndex: state => state.myScore.orderIndex,
         myCollectIndex: state => state.myScore.myCollectIndex,
         myRecentIndex: state => state.myScore.myRecentIndex,
+        isUpanInsert: state => state.storage.cache.renderCache.isUpanInsert,
         isLogin (state) {
           let {storage} = state
           return storage.isLogin
@@ -318,6 +480,37 @@
           }
         })
       },
+      uPanSource (value) {
+        console.log(Date.now())
+        if (this.uPanPath !== '/Volumes') {
+          this.orderButtonHidden = false
+        } else {
+          this.orderButtonHidden = true
+        }
+        let flag = false
+        value.forEach((item, index) => {
+          if (item.name === this.dirName1) {
+            flag = true
+            this.$store.dispatch('myScore/setUpanIndex', index)
+            if (this.myScoreTapIndex === 0) {
+              if (item.type === 'dir') {
+                this.copyButtonHidden = true
+              } else {
+                this.copyButtonHidden = false
+              }
+            }
+          }
+        })
+        if (!flag && this.myScoreTapIndex === 0 && value.length !== 0) {
+          if (value[0].type === 'dir') {
+            this.copyButtonHidden = true
+          } else {
+            this.copyButtonHidden = false
+          }
+        } else {
+          this.copyButtonHidden = true
+        }
+      },
       myRecord (value) {
         value.forEach((item, index) => {
           if (item.name === this.myRecordDirName) {
@@ -334,15 +527,77 @@
       },
       myScoreTapIndex (value, old) {
         if (value !== old) {
-          let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
+          let title = ['USB存储', '本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
           this.title = title[value]
+        }
+        if (value === 0) {
+          if (this.uPanSource.length === 0) {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
+            return
+          }
+          if (this.uPanSource[this.uPanIndex] && this.uPanSource[this.uPanIndex].type === 'dir') {
+            this.copyButtonHidden = true
+          } else {
+            this.copyButtonHidden = false
+          }
         }
       },
       orderIndex (value) {
         let orderName = ['名称', '时间', '类型']
         this.orderButtonText = orderName[value]
         this.getLocalSource()
+        this.dirName = ''
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)
+      },
+      uPanOrderIndex (value) {
+        let orderName = ['名称', '时间', '类型']
+        this.orderButtonText = orderName[value]
+        this.getUpanList()
+        this.dirName1 = ''
+        this.$store.dispatch('myScore/setUpanIndex', 0)
+      },
+      isUpanInsert (value) {
+        console.log('拿数据')
+        this.interval = setInterval(() => {
+          this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
+            console.log(data)
+            if (value) {
+              if (data.length !== 0) {
+                // 有U盘插入检测到数据 清空定时器
+                console.log('有U盘插入检测到数据 清空定时器')
+                if (this.myScoreTapIndex === 0) {
+                  this.usbButtonHidden = false
+                }
+                clearInterval(this.interval)
+              }
+            } else {
+              if (data.length === 0) {
+                // 有U盘弹出 清空定时器
+                console.log('有U盘弹出 清空定时器')
+                this.usbButtonHidden = true
+                this.copyButtonHidden = true
+                clearInterval(this.interval)
+              }
+            }
+          })
+        }, 300)
+      },
+      uPanIndex (value) {
+        if (this.uPanSource[value].type === 'dir') {
+          this.copyButtonHidden = true
+        } else {
+          this.copyButtonHidden = false
+        }
+      },
+      isReplace (value) {
+        if (value) {
+          this.copyButtonHidden = true
+          this.logoutButtons[1].text = '替换'
+        } else {
+          this.copyButtonHidden = false
+          this.logoutButtons[1].text = '删除'
+        }
       }
     },
     methods: {
@@ -357,29 +612,34 @@
       // 鼠标事件
       setSelect (index) {
         switch (this.myScoreTapIndex) {
-          case 0:
+          case 1:
             this.$store.dispatch('myScore/setLocalSourceIndex', index).then(() => {
               this.localSourceButtonAction('ok')
             })
             break
-          case 1:
+          case 2:
             this.$store.dispatch('myScore/setMyCollectIndex', index).then(() => {
               this.myCollectButtonAction('ok')
             })
             break
-          case 2:
+          case 3:
             this.$store.dispatch('myScore/setMyRecordIndex', index).then(() => {
               this.myRecordButtonAction('ok')
             })
             break
-          case 3:
+          case 4:
             this.$store.dispatch('myScore/setMyPlayIndex', index).then(() => {
               this.myPlayButtonAction('ok')
             })
             break
-          case 4:
+          case 5:
             this.$store.dispatch('myScore/setRecentIndex', index).then(() => {
               this.recentOpenButtonAction('ok')
+            })
+            break
+          case 0:
+            this.$store.dispatch('myScore/setUpanIndex', index).then(() => {
+              this.uPanButtonAction('ok')
             })
             break
         }
@@ -396,8 +656,16 @@
           this.$store.dispatch({type: 'index/getCollectList'})
         }
       },
+      getUpanList () {
+        return this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
+          if (data.length === 0) {
+            this.copyButtonHidden = true
+            this.usbButtonHidden = true
+          }
+        })
+      },
       getLocalSource () {
-        return this.$store.dispatch('myScore/getLocalSource', this.localSourcePath)
+        return this.$store.dispatch('myScore/getLocalSource', {path: this.localSourcePath})
       },
       getMyRecord () {
         return this.$store.dispatch('myScore/getMyRecord', this.myRecordPath)
@@ -434,7 +702,7 @@
                 console.log(newPath)
                 this.$store.dispatch('myScore/setLocalSourceIndex', 0)
                 this.$store.dispatch('myScore/setLocalSourcePath', newPath)
-                this.$store.dispatch('myScore/getLocalSource', newPath)
+                this.$store.dispatch('myScore/getLocalSource', {path: newPath})
               } else {
                 console.log(data)
                 // 去打开文件
@@ -447,7 +715,8 @@
                     if (!res.path) {
                       return
                     }
-                    modules.nativeRouter.openPDFFile({'path': res.path})
+                    this.$router.push({path: '/openPdf', query: {url: res.path}})
+                    // modules.nativeRouter.openPDFFile({'path': res.path})
                   })
                 } else if (data.typeName === 'song' || data.typeName === 'xml') {
                   // 合成曲谱播放
@@ -493,7 +762,12 @@
                   this.playMidi(this.localSourcePath + '/' + data.name)
                   break
                 } else if (data.typeName === 'mp3') {
-                  this.$router.push({path: '/openAudio', query: {url: data.http, fileName: data.name}})
+                  modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
+                  })
                 } else if (data.typeName === 'video') {
                   this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
                 }
@@ -507,18 +781,35 @@
             }
             if (this.deleteCover) {
               this.deleteCover = !this.deleteCover
-              this.$refs.prompt.showPrompt()
+              eventsHub.$emit('toast', {text: '确认删除吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
             } else {
-              modules.file.removeFile(this.localSourcePath + '/' + data1.name).then(res => {
-                if (res) {
-                  this.deleteCover = !this.deleteCover
-                  this.$refs.prompt.hidePrompt()
-                  this.getLocalSource()
-                  if (this.localSourceIndex - 1 >= 0) {
-                    this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+              if (data1.filesName && data1.filesName.length > 1) {
+                // 删除合成曲谱
+                data1.filesName.forEach((value, index) => {
+                  modules.file.removeFile(this.localSourcePath + '/' + value).then(data => {
+                    if (index === data1.filesName.length - 1) {
+                      this.deleteCover = !this.deleteCover
+                      eventsHub.$emit('closeToast')
+                      this.getLocalSource()
+                      if (this.localSourceIndex - 1 >= 0) {
+                        this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+                      }
+                    }
+                  })
+                })
+              } else {
+                // 删除单个文件
+                modules.file.removeFile(this.localSourcePath + '/' + data1.name).then(res => {
+                  if (res) {
+                    this.deleteCover = !this.deleteCover
+                    eventsHub.$emit('closeToast')
+                    this.getLocalSource()
+                    if (this.localSourceIndex - 1 >= 0) {
+                      this.$store.dispatch('myScore/setLocalSourceIndex', localSourceIndex - 1)
+                    }
                   }
-                }
-              })
+                })
+              }
             }
             break
           case 'back':
@@ -526,15 +817,16 @@
             if (!this.deleteCover) {
               // 选择框弹出
               this.deleteCover = true
-              this.$refs.prompt.hidePrompt()
+              this.isReplace = false
+              eventsHub.$emit('closeToast')
               return
             }
-            if (myScoreTapIndex === 0 && localSourcePath !== '$userUpload') {
+            if (myScoreTapIndex === 1 && localSourcePath !== '$userUpload') {
               let pathArr = localSourcePath.split('/')
               this.dirName = pathArr.pop()
               let newPath = pathArr.join('/')
               this.$store.dispatch('myScore/setLocalSourcePath', newPath)
-              this.$store.dispatch('myScore/getLocalSource', newPath)
+              this.$store.dispatch('myScore/getLocalSource', {path: newPath})
             } else {
               this.$router.back()
               this.destroyedFunc()
@@ -548,6 +840,338 @@
             this.$store.dispatch('myScore/setOrderIndex', orderIndex)
             break
         }
+      },
+      /**
+       * @desc USB资源
+       * */
+      uPanButtonAction (type) {
+        let uPanIndex = this.uPanIndex
+        let uPanPath = this.uPanPath
+        let uPanSource = this.uPanSource
+        let length = uPanSource.length
+        let myScoreTapIndex = this.myScoreTapIndex
+        switch (type) {
+          case 'up':
+            uPanIndex--
+            uPanIndex = Math.max(uPanIndex, 0)
+            this.$store.dispatch('myScore/setUpanIndex', uPanIndex)
+            break
+          case 'down':
+            uPanIndex++
+            uPanIndex = Math.min(uPanIndex, length - 1)
+            uPanIndex = Math.max(uPanIndex, 0)
+            this.$store.dispatch('myScore/setUpanIndex', uPanIndex)
+            break
+          case 'ok':
+            console.log(this.canEnter)
+            let data = uPanSource[uPanIndex]
+            if (data) {
+              if (!this.canEnter) {
+                console.log('return')
+                return
+              }
+              this.canEnter = false
+              if (data.type === 'dir') {
+                eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+                let newPath = this.uPanPath + '/' + data.name
+                console.log(newPath)
+                this.usbButtonHidden = true
+                this.$store.dispatch('myScore/setUpanIndex', 0)
+                this.$store.dispatch('myScore/setUpanPath', newPath)
+                this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'}).then(data => {
+                  this.$nextTick(() => {
+                    console.log('complete')
+                    this.canEnter = true
+                    eventsHub.$emit('closeToast')
+                  })
+                })
+              } else {
+                console.log(data)
+                // 去打开文件
+                if (data.typeName === 'picture') {
+                  // 图片
+                  this.$router.push({path: '/openImg', query: {url: data.http}})
+                } else if (data.typeName === 'pdf') {
+                  // pdf
+                  modules.file.pathComplement(this.uPanPath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    modules.nativeRouter.openPDFFile({'path': res.path})
+                  })
+                } else if (data.typeName === 'song' || data.typeName === 'xml') {
+                  // 合成曲谱播放
+                  let scoreObj = {}
+                  let houzhuiArr = []
+                  let houzhui = ''
+                  let eachName = ''
+                  let type = {
+                    mid: 'midiPath',
+                    mp4: 'videoPath',
+                    mp3: 'mp3Path',
+                    xml: 'xmlPath'
+                  }
+                  if (data.typeName === 'xml') {
+                    return this.playXml(this.uPanPath + '/' + data.name, data.name)
+                  }
+                  modules.file.pathComplement(this.uPanPath).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    data.filesName.forEach((item, index) => {
+                      houzhuiArr = item.split('.')
+                      houzhui = houzhuiArr[houzhuiArr.length - 1]
+                      eachName = houzhuiArr[0]
+                      if (eachName.indexOf('_video_4k') !== -1) {
+                        // 4k视频
+                        scoreObj.videoPath4k = res.path + '/' + item
+                      } else if (eachName.indexOf('_sp') !== -1) {
+                        // videoMidi
+                        scoreObj.videoMidiPath = res.path + '/' + item
+                      } else {
+                        let name = type[houzhui]
+                        if (name) {
+                          scoreObj[name] = res.path + '/' + item
+                        }
+                      }
+                    })
+                    console.log(scoreObj)
+                    modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
+                  })
+                } else if (data.typeName === 'midi') {
+                  // midi
+                  this.playMidi(this.uPanPath + '/' + data.name)
+                  break
+                } else if (data.typeName === 'mp3') {
+                  modules.file.pathComplement(this.uPanPath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
+                  })
+                } else if (data.typeName === 'video') {
+                  this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
+                }
+              }
+            }
+            break
+          case 'back':
+            if (this.toolbarHidden) this.toolbarHidden = false
+            if (!this.deleteCover) {
+              // 选择框弹出
+              this.deleteCover = true
+              this.isReplace = false
+              eventsHub.$emit('closeToast')
+              return
+            }
+            if (myScoreTapIndex === 0 && uPanPath !== '/Volumes') {
+              let pathArr = uPanPath.split('/')
+              this.dirName1 = pathArr.pop()
+              let newPath = pathArr.join('/')
+              if (newPath === '/Volumes') {
+                this.usbButtonHidden = false
+              }
+              this.$store.dispatch('myScore/setUpanPath', newPath)
+              this.$store.dispatch('myScore/getLocalSource', {path: newPath, type: 'Upan'})
+            } else {
+              this.$router.back()
+              this.destroyedFunc()
+            }
+            break
+          case 'changeOrder':
+            let uPanOrderIndex = this.uPanOrderIndex + 1
+            if (uPanOrderIndex > 2) {
+              uPanOrderIndex = 0
+            }
+            this.$store.dispatch('myScore/setUpanOrderIndex', uPanOrderIndex)
+            break
+          case 'popUsb':
+            // 弹出U盘
+            let usbName = ''
+            if (uPanSource.length > 0) {
+              if (uPanPath === '/Volumes') {
+                usbName = uPanSource[uPanIndex].name
+              } else {
+                let nameArr = uPanPath.split('/')
+                usbName = nameArr[2]
+              }
+              console.log(usbName)
+              modules.file.umountUpan(usbName).then(data => {
+                console.log(data, 'usb弹出结果')
+                if (data) {
+                  this.copyButtonHidden = true
+                  this.usbButtonHidden = true
+                  this.interval = setInterval(() => {
+                    this.$store.dispatch('myScore/getLocalSource', {path: this.uPanPath, type: 'Upan'}).then((data) => {
+                      console.log(data)
+                      if (data.length === 0) {
+                        // 有U盘弹出 清空定时器
+                        console.log('有U盘弹出 清空定时器')
+                        modules.nativeRouter.alert('移除成功', 2, 3)
+                        clearInterval(this.interval)
+                      }
+                    })
+                  }, 300)
+                } else {
+                  modules.nativeRouter.alert('移除失败', 2, 3)
+                }
+              })
+            }
+            break
+          case 'copyFile':
+            if (this.uPanPath === '/Volumes') {
+              return
+            }
+            let data2 = uPanSource[uPanIndex]
+            if (data2.filesName && data2.filesName.length > 1) {
+              // 合成曲谱
+              if (this.isReplace) {
+                // 替换 先删除 再拷贝
+                this.isLoading = true
+                eventsHub.$emit('toast', {text: '替换中', icon: 'icon-loading', iconLoading: true, allExit: true})
+                this.removeFile(this.exitArr, () => {
+                  console.log('删除成功')
+                  this.copyFile(data2.filesName, () => {
+                    console.log('替换成功')
+                    this.deleteCover = !this.deleteCover
+                    this.isReplace = false
+                    this.isLoading = false
+                    this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + data2.name)
+                    this.getUpanList()
+                    eventsHub.$emit('toast', {text: '替换成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  })
+                })
+              } else {
+                // 判断是否有同名文件
+                this.exitArr = []
+                this.fileExit(data2.filesName, (data) => {
+                  if (data) {
+                    console.log(this.exitArr)
+                    eventsHub.$emit('toast', {text: '确认替换吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                    this.isReplace = true
+                    this.deleteCover = !this.deleteCover
+                  } else {
+                    this.isLoading = true
+                    this.isReplace = false
+                    eventsHub.$emit('toast', {text: '拷贝中', icon: 'icon-loading', iconLoading: true, allExit: true})
+                    this.copyFile(data2.filesName, (data) => {
+                      console.log('拷贝成功')
+                      this.isLoading = false
+                      eventsHub.$emit('closeToast')
+                      this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + data2.name)
+                      this.getUpanList()
+                      eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                    })
+                  }
+                })
+              }
+            } else {
+              // 单个文件 判断本地资源是否有这个文件 有则提示替换
+              if (this.isReplace) {
+                // 确认替换 先删除本地资源里对应的文件
+                this.replaceFile(data2.name)
+              } else {
+                modules.file.fileExists('$userUpload/' + data2.name).then((res1) => {
+                  if (res1) {
+                    this.isReplace = true
+                    this.deleteCover = !this.deleteCover
+                    eventsHub.$emit('toast', {text: '确认替换吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                  } else {
+                    this.isLoading = true
+                    this.isReplace = false
+                    eventsHub.$emit('toast', {text: '拷贝中', icon: 'icon-loading', iconLoading: true, allExit: true})
+                    modules.file.copyFile(this.uPanPath + '/' + data2.name, '$userUpload/' + data2.name).then(data => {
+                      console.log(data, '文件复制结果')
+                      if (data) {
+                        this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + data2.name)
+                        eventsHub.$emit('toast', {text: '拷贝成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                        this.getUpanList()
+                      } else {
+                        eventsHub.$emit('toast', {text: '拷贝失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                      }
+                      this.isLoading = false
+                    })
+                  }
+                })
+              }
+            }
+            break
+        }
+      },
+      removeFile (exitArr, callback) {
+        // 删除文件
+        console.log('time')
+        if (this.fileIndex <= exitArr.length - 1) {
+          modules.file.removeFile(exitArr[this.fileIndex]).then(res => {
+            console.log(exitArr[this.fileIndex], 'removeFilePath')
+            if (res) {
+              this.fileIndex = this.fileIndex + 1
+              this.removeFile(exitArr, callback)
+            }
+          })
+        } else {
+          this.fileIndex = 0
+          return callback()
+        }
+      },
+      fileExit (filesName, callback) {
+        // 判断文件是否存在
+        if (this.fileIndex <= filesName.length - 1) {
+          modules.file.fileExists('$userUpload/' + filesName[this.fileIndex]).then(res => {
+            console.log(filesName[this.fileIndex], 'fileEixt')
+            if (res) {
+              this.exitArr.push('$userUpload/' + filesName[this.fileIndex])
+            }
+            this.fileIndex = this.fileIndex + 1
+            this.fileExit(filesName, callback)
+          })
+        } else {
+          this.fileIndex = 0
+          let flag = false
+          if (this.exitArr.length > 0) {
+            flag = true
+          }
+          return callback(flag)
+        }
+      },
+      copyFile (filesName, callback) {
+        // 复制文件
+        if (this.fileIndex <= filesName.length - 1) {
+          modules.file.copyFile(this.uPanPath + '/' + filesName[this.fileIndex], '$userUpload/' + filesName[this.fileIndex]).then(res => {
+            console.log(filesName[this.fileIndex], 'copyFile')
+            this.fileIndex = this.fileIndex + 1
+            this.copyFile(filesName, callback)
+          })
+        } else {
+          this.fileIndex = 0
+          return callback()
+        }
+      },
+      replaceFile (fileName) {
+        // 替换单个文件 先删除 后拷贝
+        this.isLoading = true
+        eventsHub.$emit('toast', {text: '替换中', icon: 'icon-loading', iconLoading: true, allExit: true})
+        modules.file.removeFile('$userUpload/' + fileName).then(res => {
+          if (res) {
+            modules.file.copyFile(this.uPanPath + '/' + fileName, '$userUpload/' + fileName).then(data => {
+              console.log(data, '文件复制结果')
+              this.deleteCover = !this.deleteCover
+              eventsHub.$emit('closeToast')
+              if (data) {
+                this.$store.dispatch('myScore/setCopyArr', this.uPanPath + '/' + fileName)
+                eventsHub.$emit('toast', {text: '替换成功', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                this.getUpanList()
+              } else {
+                eventsHub.$emit('toast', {text: '替换失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+              }
+              this.isLoading = false
+              this.isReplace = false
+            })
+          } else {
+            this.isLoading = false
+            eventsHub.$emit('closeToast')
+          }
+        })
       },
       /**
        * @desc 我的录音
@@ -578,8 +1202,50 @@
                 this.$store.dispatch('myScore/setMyRecordIndex', 0)
               })
             } else {
-              //  去播放midi
-              this.playMidi(this.myRecordPath + '/' + data.name)
+              //  去打开文件
+              if (data.icon === 'icon-xml') {
+                return this.playXml(this.myRecordPath + '/' + data.name, data.name)
+              }
+              if (data.icon === 'icon-midi') {
+                return this.playMidi(this.myRecordPath + '/' + data.name)
+              }
+              if (data.icon === 'icon-song' || data.icon === 'icon-xml') {
+                // 合成曲谱播放
+                let scoreObj = {}
+                let houzhuiArr = []
+                let houzhui = ''
+                let eachName = ''
+                let type = {
+                  mid: 'midiPath',
+                  mp4: 'videoPath',
+                  mp3: 'mp3Path',
+                  xml: 'xmlPath'
+                }
+                if (data.typeName === 'xml') {
+                  return this.playXml(this.myRecordPath + '/' + data.name, data.name)
+                }
+                modules.file.pathComplement(this.myRecordPath).then((res) => {
+                  if (!res.path) {
+                    return
+                  }
+                  data.filesName.forEach((item, index) => {
+                    houzhuiArr = item.split('.')
+                    houzhui = houzhuiArr[houzhuiArr.length - 1]
+                    eachName = houzhuiArr[0]
+                    if (eachName.indexOf('_sp') !== -1) {
+                      // videoMidi
+                      scoreObj.videoMidiPath = res.path + '/' + item
+                    } else {
+                      let name = type[houzhui]
+                      if (name) {
+                        scoreObj[name] = res.path + '/' + item
+                      }
+                    }
+                  })
+                  console.log(scoreObj)
+                  modules.nativeRouter.openMidiPlayer({isLocal: true, 'localDic': scoreObj})
+                })
+              }
             }
             break
           case 'delete':
@@ -589,29 +1255,47 @@
             }
             if (this.deleteCover) {
               this.deleteCover = !this.deleteCover
-              this.$refs.prompt.showPrompt()
+              eventsHub.$emit('toast', {text: '确认删除吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
             } else {
-              modules.file.removeFile(this.myRecordPath + '/' + data1.name).then(res => {
-                if (res) {
-                  this.deleteCover = !this.deleteCover
-                  this.$refs.prompt.hidePrompt()
-                  this.getMyRecord()
-                  if (this.myRecordIndex - 1 >= 0) {
-                    this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+              if (data1.filesName && data1.filesName.length > 1) {
+                // 删除合成曲谱
+                data1.filesName.forEach((value, index) => {
+                  modules.file.removeFile(this.myRecordPath + '/' + value).then(data => {
+                    if (index === data1.filesName.length - 1) {
+                      this.deleteCover = !this.deleteCover
+                      eventsHub.$emit('closeToast')
+                      this.getMyRecord()
+                      if (this.myRecordIndex - 1 >= 0) {
+                        this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+                      }
+                    }
+                  })
+                })
+              } else {
+                // 删除单个文件
+                modules.file.removeFile(this.myRecordPath + '/' + data1.name).then(res => {
+                  if (res) {
+                    this.deleteCover = !this.deleteCover
+                    eventsHub.$emit('closeToast')
+                    this.getMyRecord()
+                    if (this.myRecordIndex - 1 >= 0) {
+                      this.$store.dispatch('myScore/setMyRecordIndex', myRecordIndex - 1)
+                    }
                   }
-                }
-              })
+                })
+              }
             }
             break
           case 'back':
             if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
+              this.isReplace = false
               this.deleteCover = true
-              this.$refs.prompt.hidePrompt()
+              eventsHub.$emit('closeToast')
               return
             }
-            if (myScoreTapIndex === 2 && myRecordPath !== '$userRecord') {
+            if (myScoreTapIndex === 3 && myRecordPath !== '$userRecord') {
               let pathArr = myRecordPath.split('/')
               this.myRecordDirName = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -663,12 +1347,12 @@
             }
             if (this.deleteCover) {
               this.deleteCover = !this.deleteCover
-              this.$refs.prompt.showPrompt()
+              eventsHub.$emit('toast', {text: '确认删除吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
             } else {
               modules.file.removeFile(this.myPlayPath + '/' + data1.name).then(res => {
                 if (res) {
                   this.deleteCover = !this.deleteCover
-                  this.$refs.prompt.hidePrompt()
+                  eventsHub.$emit('closeToast')
                   this.getMyPlay()
                   if (this.myPlayIndex - 1 >= 0) {
                     this.$store.dispatch('myScore/setMyPlayIndex', myPlayIndex - 1)
@@ -681,11 +1365,12 @@
             if (this.toolbarHidden) this.toolbarHidden = false
             if (!this.deleteCover) {
               // 选择框弹出
+              this.isReplace = false
               this.deleteCover = true
-              this.$refs.prompt.hidePrompt()
+              eventsHub.$emit('closeToast')
               return
             }
-            if (this.myScoreTapIndex === 3 && this.myPlayPath !== '$userHistory') {
+            if (this.myScoreTapIndex === 4 && this.myPlayPath !== '$userHistory') {
               let pathArr = myPlayPath.split('/')
               this.myPlayDirName = pathArr.pop()
               let newPath = pathArr.join('/')
@@ -793,6 +1478,11 @@
             this.$store.dispatch('myScore/setRecentIndex', myRecentIndex)
             break
           case 'ok':
+            if (!this.canEnter) {
+              console.log('return')
+              return
+            }
+            this.canEnter = false
             let data = recentList[myRecentIndex]
             if (data) {
               //  去播放曲谱
@@ -819,21 +1509,29 @@
        * @desc 按钮组件按钮事件
        * */
       buttonActions (type) {
+        if (this.isLoading) {
+          // 当前正在进行操作
+          console.log('当前正在进行操作')
+          return
+        }
         let myScoreTapIndex = this.myScoreTapIndex
         switch (myScoreTapIndex) {
           case 0:
-            this.localSourceButtonAction(type)
+            this.uPanButtonAction(type)
             break
           case 1:
-            this.myCollectButtonAction(type)
+            this.localSourceButtonAction(type)
             break
           case 2:
-            this.myRecordButtonAction(type)
+            this.myCollectButtonAction(type)
             break
           case 3:
-            this.myPlayButtonAction(type)
+            this.myRecordButtonAction(type)
             break
           case 4:
+            this.myPlayButtonAction(type)
+            break
+          case 5:
             this.recentOpenButtonAction(type)
             break
         }
@@ -963,14 +1661,14 @@
         })
       },
       setTitle () {
-        let title = ['本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
+        let title = ['USB存储', '本地资源', '我的收藏', '我的录音', '我的弹奏', '最近打开']
         this.title = title[this.myScoreTapIndex]
       },
       /**
        * @desc 退到首页的时候清空
        * */
       destroyedFunc () {
-        this.$store.dispatch('myScore/setMyScoreTapIndex', 4)
+        this.canEnter = false
         this.$store.dispatch('myScore/setLocalSourceIndex', 0)
         this.$store.dispatch('myScore/setMyRecordIndex', 0)
         this.$store.dispatch('myScore/setMyPlayIndex', 0)
@@ -979,16 +1677,39 @@
         this.$store.dispatch('myScore/setLocalSourcePath', '$userUpload')
         this.$store.dispatch('myScore/setMyPlayPath', '$userHistory')
         this.$store.dispatch('myScore/setMyRecordPath', '$userRecord')
+        this.$store.dispatch('myScore/setMyScoreTapIndex', 5)
+        clearInterval(this.interval)
+      },
+      regist () {
+        modules.notification.regist('pageLifecycle', data => {
+          console.log('registData')
+          // 打开原生界面
+          if (data.case === 'pause') {
+            console.log('打开原生界面')
+            this.canEnter = false
+          }
+          if (data.case === 'resume') {
+            console.log('退出原生界面')
+            this.canEnter = true
+          }
+        })
       }
-
     },
     created () {
+      this.getUpanList()
       this.getRecentOpenList()
       this.getCollectList()
-      this.getLocalSource()
       this.getMyRecord()
       this.getMyPlay()
+      this.getLocalSource()
       this.setTitle()
+    },
+    mounted () {
+      this.regist()
+    },
+    destroyed () {
+      modules.notification.remove('pageLifecycle')
+      eventsHub.$emit('closeToast')
     },
     components: {
       findWrap,
@@ -996,8 +1717,7 @@
       findTapButtons,
       findLocalMid,
       findUserMess,
-      statusBar,
-      findPrompt
+      statusBar
     }
   }
 </script>
@@ -1006,19 +1726,16 @@
     width: 100%;
     height: 100%;
     position: relative;
-    .find-prompt {
-      width: 750px;
-      height: 450px;
-      position: absolute;
-      top: 500px;
-      left: 2043px;
-    }
     .logo {
         font-size: 360px;
         position: absolute;
         top: 50%;
         left: 25%;
+        width: 268px;
+        height: 174px;
         color: rgba(255,255,255,0.6);
+        background: url('./images/logo.png') no-repeat;
+        background-size: cover;
         transform: translate(-50%,-50%)
     }
   }

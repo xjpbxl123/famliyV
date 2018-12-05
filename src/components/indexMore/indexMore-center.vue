@@ -1,12 +1,10 @@
 <template>
   <div class="box">
+    <contentLine :name="title"/>
     <div class="box-left">
-      <contentLine :name="title"/>
       <div class="book-content">
-        <div :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index" @click="setSelect(index)">
+        <div class="boxContent" :class="{'margin-none':(index===9)}" v-for="(data,index) in books.bookList" :key="index" @click="setSelect(index)">
           <contentBook :bookData="data" :class="{active:(index===selectedIndex)}"/>
-          <findStar :starNum="data.starNum"/>
-          <div class="slip-line"></div>
           <div class="date" v-if="title==='最近更新'">{{ data.time | format}}</div>
           <div class="date" v-if="title==='热门曲谱'">
             <span class="viewIcon iconfont icon-popularity"></span>
@@ -73,26 +71,26 @@
 <style lang="scss" scoped type=text/scss>
   .box {
     display: flex;
-    div {
+    .box-left {
       display: flex;
       &.box-left,
       &.box-right {
         height: 80%;
         width: 3480;
         display: flex;
-        margin-left: 220px;
-        padding-top: 23px;
+        margin-left: 398px;
+        padding-top: 187px;
         flex-direction: column;
         .book-content {
-          margin-top: 45px;
           height: 100%;
           display: flex;
           flex-wrap: wrap;
-          & > div {
-            margin-right: 118px;
+          & .boxContent {
+            margin-right: 60px;
             display: flex;
             flex-direction: column;
-            margin-bottom: 16px;
+            margin-bottom: 39px;
+            position: relative;
             .star {
               display: flex;
               justify-content: center;
@@ -104,7 +102,9 @@
               font-weight: 900;
               text-align: center;
               display: inline-block;
-              margin-top: 10px;
+              width: 100%;
+              position: absolute;
+              bottom: 13px;
             }
             .viewIcon {
               font-size: 24px;
@@ -113,17 +113,7 @@
             }
           }
           .margin-none {
-            margin-right: 0;
-          .date {
-            font-size: 22px;
-            color: #fff;
-            font-weight: 900;
-            text-align: center;
-            display: inline-block;
-            span:nth-child(1) {
-              font-size: 24px;
-            }
-          }
+            margin-right: 120px;
           }
         }
       }
@@ -161,22 +151,8 @@
   }
 
   .active {
-    box-shadow: 0px 0px 60px 10px rgba(255, 255, 255, .5);
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  }
-
-  .active::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    transform: translate3d(0,0,0);
-    animation: shadowRepeat 1s ease 0s infinite alternate;
-    box-shadow: 0 0 100px 12px rgba(255, 255, 255, 1);
-    opacity:1;
-    will-change: opacity;
+    border: 6px solid#00ff90;
+    box-shadow: 0px 3px 40px 0px #00ff90;
   }
   @keyframes shadowRepeat {
     0% {
@@ -184,6 +160,15 @@
     }
     100% {
       opacity: 1;
+    }
+  }
+</style>
+<style lang="scss" type=text/scss>
+  .active {
+    .imgBox {
+      &::before {
+        background: rgba(0,0,0,0) !important;
+      }
     }
   }
 </style>

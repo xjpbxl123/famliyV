@@ -3,6 +3,7 @@
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
+        <!-- <span class="tips" v-if="index === 2">限时免费</span> -->
         <div class="icon"></div>
         <div class="bottom" v-if="selectedIndex !== index"></div>
         <div class="wave" v-else>
@@ -61,7 +62,6 @@
         height: 660px;
         float: left;
         position: relative;
-        transition: all 0.4s linear;
         border-radius: 10px;
         &.active {
           transform: scale(1.15);
@@ -143,12 +143,22 @@
           background-size: cover;
           .img {
             position: absolute;
-            background: url('./images/popular_img.png') no-repeat;
+            background: url('./images/pig01.png') no-repeat;
             background-size: cover;
-            width: 195px;
-            height: 525px;
-            right: -20px;
-            top: 67px;
+            width: 450px;
+            height: 564px;
+            left: 0;
+            bottom: 0;
+          }
+          &.active {
+            .img {
+              background: url('./images/pig02.png') no-repeat;
+              background-size: cover;
+              width: 580px;
+              height: 652px;
+              left: -90px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
@@ -179,13 +189,23 @@
           margin-right: 207px;
           .img {
             position: absolute;
-            background: url('./images/material_img.png') no-repeat;
+            background: url('./images/duck01.png') no-repeat;
             background-size: cover;
-            width: 386px;
-            height: 351px;
-            left: 91px;
-            top: 15px;
+            width: 477px;
+            height: 660px;
+            left: 0;
+            top: 0;
             z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/duck02.png') no-repeat;
+              background-size: cover;
+              width: 584px;
+              height: 660px;
+              left: -90px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {
@@ -219,14 +239,39 @@
             background: url('./images/famous_icon.png') no-repeat;
             background-size: cover;
           }
+          .tips {
+            width: 178px;
+            height: 66px;
+            position: absolute;
+            top: 28px;
+            right: -13px;
+            font-size: 30px;
+            line-height: 66px;
+            font-weight: 400;
+            color:rgba(255,254,254,1);
+            background: url('./images/tips_s.png') no-repeat;
+            background-size: cover;
+            text-indent: 40px;
+          }
           .img {
             position: absolute;
-            background: url('./images/famous_img.png') no-repeat;
+            background: url('./images/deer01.png') no-repeat;
             background-size: cover;
-            width: 100%;
-            height: 100%;
-            left: -50px;
-            top: 0;
+            width: 231px;
+            height: 583px;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/deer02.png') no-repeat;
+              background-size: cover;
+              width: 448px;
+              height: 668px;
+              left: -84px;
+              bottom: 72px;
+            }
           }
           .wave {
             .wave1 {
@@ -243,7 +288,7 @@
             width:450px;
           }
           &::before {
-            background: url('./images/famous_bottom.png') no-repeat;
+            background: url('./images/deer_bottom.png') no-repeat;
             background-size: cover;
           }
         }
@@ -253,13 +298,23 @@
           margin-right: 0;
           .img {
             position: absolute;
-            background: url('./images/kindom_img.png') no-repeat;
+            background: url('./images/mouse01.png') no-repeat;
             background-size: cover;
-            width: 534px;
-            height: 580px;
-            left: -30px;
-            top: -20px;
+            width: 362px;
+            height: 463px;
+            right: 0;
+            bottom: 0;
             z-index: 100;
+          }
+          &.active {
+            .img {
+              background: url('./images/mouse02.png') no-repeat;
+              background-size: cover;
+              width: 433px;
+              height: 634px;
+              left: 63px;
+              bottom: 0;
+            }
           }
           .wave {
             .wave1 {

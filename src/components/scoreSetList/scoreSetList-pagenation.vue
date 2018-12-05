@@ -36,7 +36,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 40px;
+    right: 300px;
     li {
       width: 10px;
       height: 10px;

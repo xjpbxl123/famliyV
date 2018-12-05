@@ -1,7 +1,7 @@
 <template>
   <li class="famous-item" :class="index == select && 'active'" @click="setFamousSetSelect(index)"
       :style="{height:`${famousItemStyle.height}%`,width:`${famousItemStyle.width}px`}">
-    <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage" :text="famous.name"/>
+    <find-img class='image' :src="famous.cover" :beforeImage="cover.beforeImage" :errorImage="cover.beforeImage" :text="famous.name" :textStyle="textStyle"/>
   </li>
 </template>
 <script>
@@ -24,6 +24,9 @@
         },
         cover: {
           beforeImage: require('./default.png')
+        },
+        textStyle: {
+          color: 'rgba(0,0,0,0)'
         }
       }
     },

@@ -1,13 +1,13 @@
 <template>
   <div>
     <text class="message">Now, let's use Vue.js to build your Weex app.</text>
-    <image :src="logo" class="logo"></image>
+    <image :src="logo" class="logo" />
   </div>
 </template>
 <script>
   export default {
     data () {
-      return {logo: require('../images/default.jpg')}
+      return {logo: require('../images/default.png')}
     }
   }
 </script>

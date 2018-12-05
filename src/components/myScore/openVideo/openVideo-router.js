@@ -3,5 +3,6 @@
  */
 export default {
   path: '/openVideo',
+  name: 'openVideo',
   component: () => import(/* webpackChunkName:"openVideo" */ './openVideo')
 }

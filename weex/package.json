@@ -1,6 +1,6 @@
 {
   "name": "easy-weex",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "weex native and web build boilerplate",
   "scripts": {
     "build": "cross-env NODE_ENV=production easy build prod",
@@ -9,9 +9,8 @@
     "fix": "eslint --fix ."
   },
   "dependencies": {
-    "deep-diff": "1.0.1",
     "extend": "^3.0.0",
-    "find-toolbar": "^1.2.3",
+    "find-toolbar": "^1.2.5",
     "flyio": "^0.6.2",
     "lodash": "^4.17.4",
     "url-parse": "^1.4.0",
@@ -33,10 +32,12 @@
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^1.0.0",
     "cross-env": "^5.2.0",
+    "easywebpack": "https://github.com/snice/easywebpack.git#3.10.5",
     "easywebpack-cli": "^3.12.0",
     "easywebpack-weex": "https://github.com/snice/easywebpack-weex.git",
     "eslint": "^3.18.0",
     "eslint-config-eslint": "^5.0.1",
+    "eslint-loader": "^2.1.1",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-vue": "4.2.2",
     "html-webpack-plugin": "^3.2.0",

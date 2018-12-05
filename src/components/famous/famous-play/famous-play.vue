@@ -1,6 +1,7 @@
 <template>
   <div class="vidioPlay">
-    <h1 v-if="palyHidden" v-text="'正在下载中:'+progress+'%'"></h1>
+    <div class="backBox"></div>
+    <h1 v-if="palyHidden" v-text="'正在下载中...'+progress+'%'"></h1>
     <fh-player  ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
       <fh-video ref="video" :style="{width:3840,height:1080}">
@@ -17,7 +18,7 @@
     <fh-weex :style="weexStyle" ref="weex" />
     <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
-              :hidden="toolbarHidden"
+              :hidden="toolbarHidden || isPlay"
               :pianoKey="button.pianoKey"
               :key="button.icon"
               longClick="true"
@@ -26,16 +27,24 @@
               :style="{backgroundColor: '#6000',dotColor: '#fff'}"
               :icon="button.icon"/>
       <icon-item v-for="button in buttons"
-              :hidden="toolbarHidden"
-              :pianoKey="button.pianoKey"
-              :key="button.icon"
-              longClick="true"
-              :id="button.id"
-              :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
-              :text="button.text"
-              titlePosition='below'
-              :icon="button.icon"/>
-      <slider ref="slider" :hidden="toolbarHidden" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
+        :hidden="toolbarHidden || isPlay"
+        :pianoKey="button.pianoKey"
+        :key="button.icon"
+        longClick="true"
+        :id="button.id"
+        :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
+        :text="button.text"
+        titlePosition='below'
+        :icon="button.icon"/>
+      <icon-item id="899"
+        key="899"
+        icon="0xe60d"
+        text="调音台"
+        pianoKey="97"
+        titlePosition="below"
+        :hidden="toolbarHidden"
+        :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+      <slider ref="slider" :hidden="toolbarHidden || isPlay" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem :text="speedValue+'X'" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -46,20 +55,28 @@
 </template>
 <style lang="scss" scoped type=text/scss>
   .vidioPlay {
-    background: url(../video_bg.png) no-repeat !important;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
+    .backBox {
+      width: 100%;
+      height: 100%;
+      background: url('../images/video_bg.png') no-repeat !important;
+      background-size: cover;
+    }
     h1 {
       position: absolute;
-      top: 50%;
-      left: 32%;
-      font-size: 40px;
+      top: 524px;
+      left: 1007px;
+      font-size: 42px;
+      font-weight: 400;
+      color:rgba(51,51,51,1);
     }
   }
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download, modules } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY58, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
+  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY97, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
   import {getCurEnvs} from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
   import toastMixin from '../../common/toast-mixin.js'
@@ -90,13 +107,6 @@
             id: 205,
             backgroundColor: '#6000',
             text: '视频列表'
-          },
-          {
-            pianoKey: 58,
-            icon: '0xe60d',
-            id: 206,
-            backgroundColor: '#6000',
-            text: '调音台'
           }
         ],
         labelStyle: {
@@ -173,7 +183,8 @@
         canClick: true,
         canOpenVideoDirectory: false,
         timer: null,
-        speedValue: 1
+        speedValue: 1,
+        clickMixer: false
       }
     },
     watch: {
@@ -237,10 +248,11 @@
       [KEY82] () {
         this.fastForward()
       },
-      [KEY58] () {
+      [KEY97] () {
         /**
          * @desc 打开调音台
          */
+        this.clickMixer = true
         this.openMixer()
       },
       [KEY68] () {
@@ -257,6 +269,10 @@
         this[method] && this[method](params)
       },
       [BACK_PRESSED] () {
+        if (this.toolbarHidden1) {
+          this.toolbarHidden1 = false
+          return
+        }
         if (this.isPlay) {
           // 如果在播放 暂停
           this.isPlay = false
@@ -294,6 +310,8 @@
       }
     },
     mounted () {
+      this.registVloume()
+      this.registPageLifecycle()
       let courseSetID = this.$route.query.courseSetID
       /**
        * @desc 根据courseSetID获取教程视频文件列表
@@ -309,6 +327,34 @@
       })
     },
     methods: {
+      registVloume () {
+        // 监听音量设置
+        let self = this
+        window.fp.utils.volumeManager.registVolumeChange((data) => {
+          console.log(data, 'volumeData')
+          if (data && data.type === 1) {
+            if (data.mute !== undefined && data.mute === true) {
+              self.$refs.player && self.$refs.player.setVolume(0)
+            } else {
+              self.$refs.player && self.$refs.player.setVolume(data.realValue)
+            }
+          }
+        })
+      },
+      registPageLifecycle () {
+        modules.notification.regist('pageLifecycle', data => {
+          console.log(data, 'pageLifecycle')
+          if (data.case === 'resume') {
+            // 调音台界面关闭 页面重新开始监听
+            if (this.clickMixer) {
+              this.clickMixer = false
+              modules.notification.regist('receiveMsgFromWeex', ({method, params}) => {
+                this[method] && this[method](params)
+              })
+            }
+          }
+        })
+      },
       fastForward () {
         /**
          * @desc 视频快进

@@ -15,7 +15,6 @@
     position: relative;
     border: 6px solid rgba(255,255,255,0.28);
     border-radius:16px;
-    transition: all 0.4s linear;
 
     &.active{
       border:6px solid #00FF90;

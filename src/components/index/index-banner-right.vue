@@ -1,5 +1,5 @@
 <template>
-  <div class="banner-rights">
+  <div class="banner-rights"  :class="{'rotate1': rightValue}">
       <div class="banner-right">
         <div class="banner-title">
           <div class="banner-title-right">
@@ -94,6 +94,11 @@
         }
       },
       rightType (value, oldValue) {
+        this.rightValue = true
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.rightValue = false
+        }, 1000)
         console.log(value)
         if (value === 'recentOpen') {
           this.title = '最近打开'
@@ -110,7 +115,9 @@
         lateMinute: -1,
         dayData: '三',
         rightTop: 0,
-        title: ''
+        title: '',
+        rightValue: false,
+        timer: null
       }
     },
     methods: {
@@ -177,6 +184,7 @@
     },
     destroyed () {
       clearInterval(this.timeId)
+      clearTimeout(this.timer)
       this.timeId = null
     }
   }
@@ -198,15 +206,23 @@
   from {transform:rotate(0deg)}
   to {transform:rotate(360deg)}
 }
+
 .banner-rights {
   display: flex;
   flex: 1;
   justify-content: flex-end;
+  position: relative;
+  top: 0;
+  &.rotate1 {
+    transform-origin: center;
+    animation: turn1 1s linear 0s 1;
+  }
 }
 .banner-right {
   width: 608px;
   height: 1040px;
   margin-top: 40px;
+  position: relative;
   background-color: rgba(0, 0, 0, 0.1);
 }
 .banner-title {
@@ -260,9 +276,15 @@
     margin-top: 36px;
   }
 }
+
 .outBox {
   height: 840px;
+  width: 100%;
   overflow: hidden;
+  position: absolute;
+  top: 122px;
+  right: 0;
+  transition: all 1s ease;
   .banner-list {
     align-items: center;
     .item-list {
@@ -332,5 +354,23 @@
     }
 
   }
+}
+
+@keyframes turn1 {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    49.9% {
+        transform: rotateY(90deg);
+    }
+
+    50% {
+        transform: rotateY(-90deg);
+    }
+
+    100% {
+        transform: rotateY(0deg);
+    }
 }
 </style>

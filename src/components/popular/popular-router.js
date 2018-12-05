@@ -3,5 +3,6 @@
  */
 export default {
   path: '/popular',
+  name: 'popular',
   component: () => import(/* webpackChunkName:"popular" */ './popular')
 }

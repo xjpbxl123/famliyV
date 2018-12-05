@@ -9,6 +9,7 @@ export default {
      * @desc 获取教材系列列表
      * */
     getAllBookSets ({dispatch, commit} = {}) {
+      dispatch('setCacheFromTable', 'materialList', {root: true})
       return http.post('', {cmd: 'musicScore.getAllBookSets'}).then(({body, header}) => {
         if (!header.code) {
           let sumPage = Math.ceil(body.length / 8)

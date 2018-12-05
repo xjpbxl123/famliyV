@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div>
-      <h1 class="logo"></h1>
+      <div class="logo iconfont icon-logo" ></div>
       <div class="account" :class="{active:accountActive}">
         <i class="iconfont icon-username"></i>
         <input type="text" placeholder="用户名" title="账号" v-model="account" @focus="setFocus('account')"  autofocus="autofocus" v-focus>
@@ -77,10 +77,10 @@
 
 <style lang="scss" scoped>
 .logo {
-  width: 100px;
-  height: 65px;
-  background: transparent url("./pic-logo-signin.png") no-repeat center;
-  margin: 34px auto 0;
+  color: rgba(9, 75, 168, 0.7);
+  font-size: 100px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .login {

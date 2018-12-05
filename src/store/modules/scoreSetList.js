@@ -22,6 +22,7 @@ export default {
       commit('scoreListPageIndex', num)
     },
     getScoreSetList ({dispatch, commit, state} = {}, data) {
+      dispatch('setCacheFromTable', 'scoreSetList', {root: true})
       let setId = data.setId
       return http.post('', {
         cmd: 'musicScore.getBooksByTag',

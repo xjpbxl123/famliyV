@@ -12,15 +12,25 @@
   import { modules } from 'find-sdk'
   import eventsHub from './scripts/eventsHub'
   import toast from './components/common/toast/toast.js'
+  import { mapState } from 'vuex'
   export default {
     name: 'app',
     data () {
       return {
         backgroundUrl: '',
-        loadingInstance: null
+        loadingInstance: null,
+        noClose: false
       }
     },
+    computed: {
+      ...mapState({
+        isLogin (state) {
+          return state.storage.isLogin
+        }
+      })
+    },
     created () {
+      console.log(this.state)
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
@@ -38,17 +48,43 @@
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
       })
-
+      // 重启app清空数组
+      this.$store.dispatch('myScore/setCopyArr', [])
+      // 监听U盘
+      modules.notification.regist('UpanChange', data => {
+        this.$store.dispatch('myScore/setCopyArr', [])
+        this.$store.dispatch('index/setUpanInsert', data.isInsert)
+        if (data.isInsert) {
+          if (window.location.href.indexOf('myScore') !== -1) {
+            // 当前在我的曲谱页面
+            modules.nativeRouter.alert('加载完毕', 2, 3)
+          } else {
+            modules.nativeRouter.alert('加载完毕,请在我的资源中打开', 2, 3)
+          }
+        } else {
+          this.$store.dispatch('myScore/setUpanIndex', 0)
+          this.$store.dispatch('myScore/setUpanPath', '/Volumes')
+          this.$store.dispatch('myScore/setCopyArr', [])
+          modules.nativeRouter.alert('移除成功', 2, 3)
+        }
+      })
       // 提示框
       eventsHub.$on('toast', (params) => {
         let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
         params = Object.assign({}, defaultParams, params)
-        eventsHub.$emit('closeToast')
+        this.noClose = params.noClose /* 防止快速切页面的时候打开弹框被关掉 */
+        if (this.loadingInstance) eventsHub.$emit('closeToast')
         this.loadingInstance = toast(params)
       })
-      eventsHub.$on('closeToast', () => {
-        if (this.loadingInstance) {
-          this.loadingInstance.close()
+      eventsHub.$on('closeToast', (flag) => {
+        if (flag) {
+          // 强制关闭
+          this.noClose = false
+          if (this.loadingInstance) this.loadingInstance.close()
+        } else {
+          if (this.loadingInstance && !this.noClose) {
+            this.loadingInstance.close()
+          }
         }
       })
     }

@@ -43,6 +43,7 @@ export default {
      * @desc 获取难度列表
      * */
     getDiffer ({dispatch, commit}, {tagId = 1, page = {'offset': 0, 'count': 100}} = {}) {
+      dispatch('setCacheFromTable', 'differList', {root: true})
       return http.post('', {
         cmd: 'musicScore.getLevels',
         page,
@@ -98,6 +99,7 @@ export default {
       })
     },
     getStyles ({dispatch}, page = {'offset': 0, 'count': 100}) {
+      dispatch('setCacheFromTable', 'popularGenre', {root: true})
       return http.post('', {
         cmd: 'musicScore.getStyles',
         page
@@ -113,6 +115,7 @@ export default {
       })
     },
     getCenturys ({dispatch, commit}) {
+      dispatch('setCacheFromTable', 'yearList', {root: true})
       http.post('', {
         cmd: 'musicScore.getCenturys',
         page: {

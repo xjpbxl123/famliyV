@@ -1,12 +1,10 @@
 import Fly from 'flyio/dist/npm/weex'
-export const setViewport = (width = 750) => {
+export const setViewport = vpObj => {
   if (weex.config.env.platform === 'Web') {
     return
   }
   const meta = weex.requireModule('meta')
-  meta.setViewport({
-    width
-  })
+  meta.setViewport(vpObj)
 }
 export const setParams = () => {
   if (weex.config.env.platform !== 'Web') {

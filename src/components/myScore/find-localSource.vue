@@ -4,6 +4,7 @@
         <div class="contentBox">
             <ul :style="{'marginTop':rightTop+'px'}">
                 <li  v-for="(item,index) in localSource"  :key="index" :class="{active: localSourceIndex == index}" @click="setSelect(index)">
+                    <span class="iconfont icon-sync-complete copyed" v-if="typeNum===2 && item.copyed">已拷贝</span>
                     <span class="typeIcon iconfont" :class="'icon-'+item.typeName"></span>
                     <span class="name" v-text="item.name"></span>
                 </li>
@@ -25,6 +26,9 @@
       },
       setSelect: {
         type: Function
+      },
+      typeNum: {
+        type: Number
       }
     },
     data () {
@@ -115,6 +119,20 @@
                         height: 100%;
                         line-height: 120px;
                         color: #fff;
+                    }
+                    .copyed {
+                      float: right;
+                      color: #fff;
+                      font-size: 30px;
+                      font-family: PingFangSC-Regular;
+                      font-weight: 400;
+                      line-height: 120px;
+                      margin-right: 50px;
+                      position: relative;
+                      &::before {
+                        position: absolute;
+                        left: -40px;
+                      }
                     }
                 }
             }

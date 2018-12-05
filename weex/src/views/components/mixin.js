@@ -4,7 +4,7 @@
 const globalEvent = weex.requireModule('globalEvent')
 export default {
   created () {
-    globalEvent.addEventListener('receiveMsgFromWeb', ({ method, params }) => {
+    globalEvent.addEventListener('receiveMsgFromWeb', ({method, params}) => {
       this[method](params)
     })
   },

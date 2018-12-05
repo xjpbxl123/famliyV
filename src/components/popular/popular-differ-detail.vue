@@ -2,9 +2,6 @@
    <div class="differDetail" v-if="differList.length !== 0">
       <div class="starBox">
         <img :src="differList[popularIndex].starImg" alt="" class="starImg">
-        <!-- <span class="differLever">LV.{{popularIndex+1}}</span>
-        <div class="star-full" v-for="(num) in parseInt(popularIndex+1)" :key="num"></div>
-        <div class="star-empty" v-for="(num) in parseInt(4-popularIndex)" :key="num+7"></div> -->
       </div>
       <div class="text text1">{{differList[popularIndex]&&differList[popularIndex].desc}}</div>
       <div class="text">本次难度包括：</div>
@@ -67,8 +64,8 @@
       padding-bottom: 45px;
       margin-top: 165px;
       .starImg {
-        width: 401px;
-        height: 97px;
+        width: 418px;
+        height: 80px;
       }
       div {
         width:31px;

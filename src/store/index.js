@@ -17,7 +17,6 @@ import myScore from './modules/myScore'
 import softwareUpdate from './modules/softwareUpdate'
 import {modules, nativeStorage} from 'find-sdk'
 import {getCurEnvs} from '../scripts/utils'
-const SET_SYNCED = 'SET_SYNCED'
 const SET_STORAGE = 'SET_STORAGE' // 设置native data
 const INIT_ENV = 'INIT_ENV' // 初始化环境变量
 const LOGIN_OUT_CACHE = 'login_out_cache'
@@ -25,6 +24,7 @@ const SET_SELECT = 'set_select'
 const DEL_SELECT = 'del_select'
 const SET_CACHE_STORAGE = 'SET_CACHE_STORAGE'
 const CLEAR_CACHE = 'CLEAR_CACHE'
+const SETCACHEFROMTABLE = 'SETCACHEFROMTABLE'
 let initData = {
   famousAuthor: {},
   allArtists: {authors: []},
@@ -43,14 +43,17 @@ let initData = {
   },
   famousPlayCoursesBySet: {sum: 0, courseList: []},
   bookInfo: [],
-  musicInfo: []
+  musicInfo: [],
+  partnerVersion: {},
+  localPartnerVersion: {},
+  isUpanInsert: false
 }
 export default function createStore () {
   return new Vuex.Store({
     // strict: process.env.NODE_ENV === 'development',
     state: {
-      isSynced: false,
       environments: {},
+      tableDataArr: [],
       storage: {
         isSynced: false, // 数据是否同步完成,注意: 所有涉及到nativeStorage的操作,都应该基于这个标志来判断是否完成
         playCalendar: {}, // 练琴日期
@@ -81,7 +84,10 @@ export default function createStore () {
             },
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
-            musicInfo: []
+            musicInfo: [],
+            partnerVersion: {},
+            localPartnerVersion: {},
+            isUpanInsert: false
           }
         } // 数据本地缓存
       },
@@ -138,14 +144,20 @@ export default function createStore () {
       },
       musicInfo: state => {
         return state.storage.cache.renderCache.musicInfo
+      },
+      isUpanInsert: state => {
+        return state.storage.cache.renderCache.isUpanInsert
+      },
+      partnerVersion: state => {
+        return state.storage.cache.renderCache.partnerVersion
+      },
+      localPartnerVersion: state => {
+        return state.storage.cache.renderCache.localPartnerVersion
       }
     },
     mutations: {
       [INIT_ENV] (state, env) {
         state.environments = env
-      },
-      [SET_SYNCED] (state) {
-        state.isSynced = true
       },
       [SET_STORAGE] (state, data) {
         state.storage = Object.assign({}, state.storage, data)
@@ -163,14 +175,18 @@ export default function createStore () {
         state[key] = 0
       },
       [SET_CACHE_STORAGE] (state, data) {
-        let root = state.environments.HTTP_ROOT
+        let root = state.environments.HTTP_ROOT + 'apiStorage'
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         for (let [key, value] of Object.entries(data)) {
           state.storage.cache.renderCache[key] = value
+          return nativeStorage.set('findFamily-' + root, String(userId) + '-' + key, value).then((data) => {
+          })
         }
-        let value = state.storage.cache.renderCache
-        return nativeStorage.set('findFamily-' + root, String(userId), {value: JSON.stringify(value)}).then((data) => {
-        })
+      },
+      [SETCACHEFROMTABLE] (state, data) {
+        for (let [key, value] of Object.entries(data)) {
+          state.storage.cache.renderCache[key] = value
+        }
       }
     },
     actions: {
@@ -193,20 +209,46 @@ export default function createStore () {
             nativeStorage.get(tableName, 'clearTime1')
           ])
             .then(data => {
-              commit(SET_STORAGE, {
+              return commit(SET_STORAGE, {
                 playCalendar: data[0] && data[0].value ? data[0].value : {},
                 isLogin: data[1] && data[1].value ? data[1].value : false,
                 userInfo: data[2] && data[2].value ? data[2].value : {},
                 sessionId: data[3] && data[3].value ? data[3].value : null,
-                pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/logo.jpg')},
+                pianoInfo: data[4] && data[4].value ? data[4].value : {orn: 'family', pic: require('../components/index/images/find-logo.png')},
                 pianoType: data[5] && data[5].value ? data[5].value : '',
                 isSynced: true,
                 localCollect: data[6] && data[6].value ? data[6].value : [],
                 localRecent: data[7] && data[7].value ? data[7].value : [],
                 clearTime1: data[8] && data[8].value ? data[8].value : ''
               })
-              return dispatch('initCacheStorage', [...data, ...[tableName]])
+              // return dispatch('initCacheStorage', [...data, ...[tableName]])
             })
+        })
+      },
+      /**
+       * @desc 请求前从表中初始化数据
+       * */
+      setCacheFromTable ({commit, state}, dataName) {
+        let flag = false
+        state.tableDataArr.map((value) => {
+          if (value === dataName) {
+            // 本次初始化已经从表中拿过数据
+            flag = true
+          }
+        })
+        if (flag) {
+          console.log(dataName, '本次初始化已经从表中拿过数据')
+          return
+        }
+        state.tableDataArr.push(dataName)
+        let root = state.environments.HTTP_ROOT + 'apiStorage'
+        let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
+        return nativeStorage.get('findFamily-' + root, String(userId) + '-' + dataName).then((data) => {
+          if (data) {
+            let commitData = {}
+            commitData[dataName] = data
+            commit(SETCACHEFROMTABLE, commitData)
+          }
         })
       },
       /**
@@ -230,42 +272,6 @@ export default function createStore () {
             })
             commit(SET_STORAGE, data)
           }
-        })
-      },
-      /**
-       * @desc 初始化缓存数据
-       * @param dispatch
-       * @param state
-       * @param commit
-       * @param data
-       */
-      initCacheStorage ({dispatch, state, commit}, data) {
-        return new Promise(resolve => {
-          let userId = data[2] && data[2].value && data[2].value.userId ? data[2].value.userId : -1
-          nativeStorage.get(data[9], String(userId)).then(param => {
-            let cache = {}
-            cache['renderCache'] = param && param.value && Object.keys(
-            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
-            param.value) : param.value) : state.storage.cache.renderCache
-            commit(SET_SYNCED)
-            commit(SET_STORAGE, {
-              cache
-            })
-            resolve(cache)
-          })
-        })
-      },
-      initCacheStorageWhenUserChange ({dispatch, state, commit}, data) {
-        return getCurEnvs().then(env => {
-          let tableName = 'findFamily-' + env.HTTP_ROOT
-          let userId = state.storage.userInfo.userId || '-1'
-          return nativeStorage.get(tableName, String(userId)).then((param) => {
-            let cache = {}
-            cache = param && param.value && Object.keys(
-            param.value).length > 0 ? (typeof param.value === 'string' ? JSON.parse(
-            param.value) : param.value) : state.storage.cache.renderCache
-            commit(LOGIN_OUT_CACHE, cache)
-          })
         })
       },
       /**
@@ -412,57 +418,47 @@ export default function createStore () {
         let root = state.environments.HTTP_ROOT
         let userId = state.storage.isLogin && state.storage.userInfo.userId ? state.storage.userInfo.userId : -1
         console.log(state.storage.clearTime1, 'state.storage.clearTime1')
-        console.log(Date.now() - state.storage.clearTime1)
         if (auto) {
-          if (!state.storage.clearTime1 || Date.now() - state.storage.clearTime1 > 24 * 3600 * 1000) {
-            if (!state.storage.clearTime1) {
-              // 第一次清的时候 把原来的数据存入新的位置
-              console.log('第一次清的时候 把原来的数据存入新的位置')
-              return getCurEnvs().then(env => {
-                let tableName = 'findFamily-' + env.HTTP_ROOT
-                return nativeStorage.get(tableName, '-1').then((data) => {
-                  let userData = ''
-                  if (data && typeof data.value === 'string') {
-                    userData = JSON.parse(data.value)
-                  }
-                  console.log(userData)
-                  if (userData && userData.localRecent) {
-                    dispatch('index/localRecent', userData.localRecent || [])
-                  }
-                  if (userData && userData.localCollect) {
-                    dispatch('index/localCollect', userData.localCollect || [])
-                  }
-                  console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
-                  dispatch('setNativeStorage', {clearTime1: Date.now()})
-                  commit(CLEAR_CACHE)
-                  return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
-                })
-              })
-            } else {
+          if (!state.storage.clearTime1) {
+            // 第一次清的时候 把原来的数据存入新的位置
+            console.log('第一次清的时候 把原来的数据存入新的位置')
+            let tableName = 'findFamily-' + root
+            return nativeStorage.get(tableName, '-1').then((data) => {
+              let userData = ''
+              if (data && typeof data.value === 'string') {
+                userData = JSON.parse(data.value)
+              }
+              console.log(userData)
+              if (userData && userData.localRecent) {
+                dispatch('index/localRecent', userData.localRecent || [])
+              }
+              if (userData && userData.localCollect) {
+                dispatch('index/localCollect', userData.localCollect || [])
+              }
               console.log('拿不到上次清缓存的时间或者上次清缓存的时间距离现在超过了24小时 清除缓存')
-              dispatch('setNativeStorage', {clearTime1: Date.now()}).then(() => {
-                commit(CLEAR_CACHE)
-                return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
-              })
-            }
+              dispatch('setNativeStorage', {clearTime1: Date.now()})
+              commit(CLEAR_CACHE)
+              return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
+            })
           }
         } else {
           // 收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表
           console.log('收到原生发送的清除缓存的通知 清除本地收藏和最近打开列表')
           dispatch('index/localRecent', [])
           dispatch('index/localCollect', [])
-          dispatch('setNativeStorage', {clearTime1: Date.now()})
-          return nativeStorage.set('findFamily-' + root, String(userId), {value: {}})
+          nativeStorage.clear('findFamily-' + root + 'apiStorage')
         }
       },
       /**
        * @desc 恢复出厂设置 清除所有缓存数据
        * */
       restoreFactorySettings ({dispatch, state}) {
-        let rootArr = ['http://api.etango.cn:3001/', 'http://api.ktunes.cn:3001/', 'http://api.findpiano.cn:3001/']
+        let root = state.environments.HTTP_ROOT + 'apiStorage'
+        let rootArr = ['https://api.etango.cn:13001/', 'https://api.ktunes.cn:13001/', 'https://api.findpiano.cn:13001/']
         rootArr.map((value) => {
           nativeStorage.clear('findFamily-' + value)
         })
+        nativeStorage.clear('findFamily-' + root)
       },
       /**
        * @desc 用户注销时的数据映射view

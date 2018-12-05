@@ -4,11 +4,11 @@
         <span class="price free" v-else-if="item.isFree">免费</span>
         <span class="price hasBought" v-else-if="item&&item.have&&item.have.base">已购买</span>
         <span class="price buy" v-else>{{item.payment}}</span>
-        <span class="video iconfont icon-with-video" v-if="item.hasVideo"></span>
+        <span class="video iconfont icon-video" v-if="item.hasVideo"></span>
         <span class="viewNumIcon iconfont icon-popularity"></span>
         <span class="viewNum">{{item.hotNum}}</span>
         <span class="musicName">{{item.name}}</span>
-        <span class="new">new</span>
+        <span class="new" v-if="item.lastUpdate && (Date.now() - item.lastUpdate) <= (7 * 24 * 3600 * 1000)">new</span>
     </li>
 </template>
 <script type="text/javascript">
@@ -57,7 +57,7 @@
       transition: all 0.2s ease;
       box-sizing: border-box;
       display: block;
-      border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,0)) 30 30;
+      border-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.5),rgba(255,255,255,0)) 30 30;
       &.active {
         background-image: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,0.2),rgba(255,255,255,0.3));
       }
@@ -80,7 +80,7 @@
           }
       }
       .video {
-          font-size: 42px;
+          font-size: 32px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);

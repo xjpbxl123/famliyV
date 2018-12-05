@@ -5,7 +5,7 @@
        {{book.name}}
      </span>
    </div>
-    <findImg :src="imgUrl" class="cover"></findImg>
+    <findImg :src="imgUrl" class="cover" :text="book.name"></findImg>
     <div class="attribute">
       <ul>
         <li>
@@ -40,16 +40,14 @@
           <span>
             种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:
           </span>
-          <span>
-            {{book.type}}
-          </span>
+          <span v-text="book.detail.type === 1 ? '流行&经典': '古典陪练'"></span>
         </li>
         <li>
-          <i class="iconfont icon-difficulty-level"></i>
+          <i class="iconfont icon-star-empty"></i>
           <span>
             难易级别:
           </span>
-          <findStar :starNum="book.starNum" class="scrore-list-scroStar"></findStar>
+          <findStar :starNum="book.starNum" :grade="book.grade" :type="book.detail.type" class="scrore-list-scroStar"></findStar>
         </li>
         <li>
           <i class="iconfont icon-update-time"></i>
@@ -70,12 +68,6 @@
           </span>
         </li>
       </ul>
-    </div>
-    <div class="musicLabels">
-      <i class="iconfont icon-label"></i>
-      <span>
-        曲谱标签：{{book.tagNames}}
-      </span>
     </div>
     <div class="introduce">
       {{book.desc}}
@@ -112,7 +104,8 @@
       }
     },
     methods: {},
-    created () {},
+    created () {
+    },
     components: {
       findImg,
       findStar
@@ -138,8 +131,8 @@
     }
   }
   .cover {
-    width: 295px;
-    height: 358px;
+    width: 264px;
+    height: 340px;
     position: absolute;
     top: 190px;
     left: 100px;
@@ -149,7 +142,7 @@
     height: 358px;
     font-size: 24px;
     position: absolute;
-    right: 0;
+    right: 30px;
     top: 190px;
     font-weight: 700;
     li {
@@ -168,29 +161,20 @@
       }
     }
   }
-  .musicLabels {
-    font-size: 24px;
-    position: absolute;
-    left: 100px;
-    top: 580px;
-    .iconfont {
-      font-size: 24px;
-    }
-  }
+
   .introduce {
     text-indent: 2em;
     position: absolute;
-    top: 650px;
+    top: 603px;
     width: 800px;
     left: 50%;
     font-size: 24px;
     transform: translateX(-50%);
     line-height: 42px;
-
-    height: 250px;
+    height: 380px;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 9;
     -webkit-box-orient: vertical;
     display: -webkit-box;
   }

@@ -1,6 +1,6 @@
 <template>
     <div class="bottom" >
-        <button class="eachButton" v-for="(item,index) in tapButtons" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)" >
+        <button class="eachButton" v-for="(item,index) in tapButton" :class="[item.className,{'active': myScoreTapIndex === index}]" :key="index" @click="setTapSelect(index)">
             <span class="line" v-show="myScoreTapIndex === index"></span>
         </button>
     </div>
@@ -15,32 +15,13 @@
       },
       setTapSelect: {
         type: Function
+      },
+      tapButton: {
+        type: Array
       }
     },
     data () {
       return {
-        tapButtons: [
-          {
-            className: 'localSource key-39',
-            text: '本地资源'
-          },
-          {
-            className: 'myCollect key-42',
-            text: '我的收藏'
-          },
-          {
-            className: 'myRecord key-46',
-            text: '我的录音'
-          },
-          {
-            className: 'myPlay key-49',
-            text: '我的弹奏'
-          },
-          {
-            className: 'recentOpen key-54',
-            text: '最近打开'
-          }
-        ]
       }
     },
     methods: {},
@@ -72,10 +53,10 @@
     transform: translateX(86%);
     bottom: 36px;
   }
-  .localSource::before {
+  .usb::before {
     position: absolute;
     bottom: 5px;
-    content: "本地资源";
+    content: "USB存储";
     width: 182px;
     height: 100px;
     left: -44px;
@@ -87,15 +68,11 @@
     text-align: center;
     line-height: 100px;
   }
-  .myCollect {
-    .line {
-      transform: translateX(100%);
-    }
-  }
-  .myCollect::before {
+
+  .localSource::before {
     position: absolute;
     bottom: 5px;
-    content: "我的收藏";
+    content: "本地资源";
     width: 182px;
     height: 100px;
     left: -26px;
@@ -107,15 +84,20 @@
     text-align: center;
     line-height: 100px;
   }
-  .myRecord {
+  .localSource {
+    .line {
+      transform: translateX(105%);
+    }
+  }
+  .myCollect {
     .line {
       transform: translateX(70%);
     }
   }
-  .myRecord::before {
+  .myCollect::before {
     position: absolute;
     bottom: 5px;
-    content: "我的录音";
+    content: "我的收藏";
     width: 182px;
     height: 100px;
     left: -55px;
@@ -127,15 +109,15 @@
     text-align: center;
     line-height: 100px;
   }
-  .myPlay {
+  .myRecord {
     .line {
-      transform: translateX(80%);
+      transform: translateX(86%);
     }
   }
-  .myPlay::before {
+  .myRecord::before {
     position: absolute;
     bottom: 5px;
-    content: "我的弹奏";
+    content: "我的录音";
     width: 182px;
     height: 100px;
     left: -44px;
@@ -147,9 +129,29 @@
     text-align: center;
     line-height: 100px;
   }
+  .myPlay {
+    .line {
+      transform: translateX(0);
+    }
+  }
+  .myPlay::before {
+    position: absolute;
+    bottom: 5px;
+    content: "我的弹奏";
+    width: 182px;
+    height: 100px;
+    left: -130px;
+    background: url("./images/btn_page_nor.png");
+    background-size: cover;
+    opacity: 0.8;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+    line-height: 100px;
+  }
   .recentOpen {
     .line {
-      transform: translateX(-8%);
+      transform: translateX(-15%);
     }
   }
   .recentOpen::before {
@@ -158,7 +160,7 @@
     content: "最近打开";
     width: 182px;
     height: 100px;
-    left: -130px;
+    left: -148px;
     background: url("./images/btn_page_nor.png");
     background-size: cover;
     opacity: 0.8;

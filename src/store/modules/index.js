@@ -1,4 +1,5 @@
 import http from '../../scripts/http'
+import axios from 'axios'
 import { getUsedTime, modules } from 'find-sdk'
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
 const PIANO_USED_TIME = 'PIANO_USED_TIME' /// 钢琴使用时间
@@ -19,7 +20,6 @@ export default {
     rightType: 'recentOpen',
     moreIndex: 0,
     moreIndexTitle: '最近更新'
-
   },
   mutations: {
     [SELECTED_INDEX] (state, index) {
@@ -70,6 +70,7 @@ export default {
      * @desc 获取最近更新
      * */
     getRecentBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      dispatch('setCacheFromTable', 'recentBooksAll', {root: true})
       return http.post('', {
         cmd: 'musicScore.getRecentBooks',
         tagId,
@@ -86,6 +87,7 @@ export default {
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
+      dispatch('setCacheFromTable', 'hotBooksAll', {root: true})
       return http.post('', {
         cmd: 'musicScore.getHottestBooks',
         tagId,
@@ -125,13 +127,48 @@ export default {
       })
     },
     /**
+     * @desc 获取陪练版本数据
+     * */
+    getPartnerVersion ({dispatch}) {
+      dispatch('setCacheFromTable', 'partnerVersion', {root: true})
+      return http.post('', {
+        cmd: 'system.getApp',
+        appType: 'testing',
+        appName: 'findPartner'
+      }).then(res => {
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {partnerVersion: res.body.app}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
+     * @desc 获取本地陪练版本数据
+     * */
+    getLocalPartnerVersion ({dispatch}, url) {
+      dispatch('setCacheFromTable', 'localPartnerVersion', {root: true})
+      return axios.get(url, {
+      }).then(data => {
+        let res = data.data
+        if (res.version) {
+          let version = res.version
+          let build = res.build
+          let versionObj = {version, build}
+          return dispatch('setCacheToStorage', {localPartnerVersion: versionObj}, {root: true})
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
      * @desc 钢琴使用时间
      * */
     getPianoUsedTime ({commit}) {
       return getUsedTime().then(data => {
-        data.usedTime = `${Number.parseInt(data.openAppTime / 3600)}小时`
-        data.autoPlayerTime = `${Number.parseInt(data.autoPlayTime / 3600)}小时`
-        data.ratePlayMoment = `${Number.parseInt(data.scoringTime / 3600)}小时`
+        data.openAppTime = `${Number.parseInt(data.openAppTime / 3600)}小时`
+        data.autoPlayTime = `${Number.parseInt(data.autoPlayTime / 3600)}小时`
+        data.scoringTime = `${Number.parseInt(data.scoringTime / 3600)}小时`
         commit(PIANO_USED_TIME, data)
       })
     },
@@ -139,6 +176,7 @@ export default {
      * @desc 获取最近打开
      * */
     getRecentOpenList ({dispatch, commit}, {tagId = 0} = {}) {
+      dispatch('setCacheFromTable', 'recentOpenList', {root: true})
       return http.post('', {
         cmd: 'musicScore.getPracticeRecent',
         tagId
@@ -156,6 +194,7 @@ export default {
      * @desc 获取收藏列表
      * */
     getCollectList ({dispatch, commit}, {tagId = 0} = {}) {
+      dispatch('setCacheFromTable', 'collectList', {root: true})
       return http.post('', {
         cmd: 'musicScore.getPracticeMusic',
         tagId
@@ -230,15 +269,22 @@ export default {
      * @desc 获取曲子信息
      * */
     getMusicInfo ({dispatch} = {}, musicId) {
-      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(({body, header}) => {
-        if (!header.code) {
-          if (body) {
-            return dispatch('setCacheToStorage', {musicInfo: body, id: musicId}, {root: true})
-          }
+      dispatch('setCacheFromTable', 'musicInfo', {root: true})
+      console.log('获取曲子信息', musicId)
+      return http.post('', {cmd: 'musicScore.getMusicInfo', musicId}).then(res => {
+        console.log('获取曲子信息结果')
+        if (res.header.code === 0) {
+          return dispatch('setCacheToStorage', {musicInfo: res.body, id: musicId}, {root: true})
         }
       }).catch((error) => {
         return error
       })
+    },
+    /**
+     * @desc U盘插入
+     * */
+    setUpanInsert ({dispatch} = {}, data) {
+      return dispatch('setCacheToStorage', {isUpanInsert: data}, {root: true})
     }
   }
 }

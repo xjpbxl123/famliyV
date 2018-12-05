@@ -28,6 +28,10 @@
           if (env.HTTP_ROOT.indexOf('ktunes') !== -1) {
             url = 'https://spapi.ktunes.cn'
           }
+          if (env.HTTP_ROOT.indexOf('etango') !== -1) {
+            url = 'https://spapi.etango.cn'
+          }
+
           /// 获取Ip地址
           global.getLocalIpAddress().then((value) => {
             let ip = !value ? '' : value
