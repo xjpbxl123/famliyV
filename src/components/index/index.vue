@@ -894,7 +894,7 @@
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
                   this.logoutCover = !this.logoutCover
-                  eventsHub.$emit('closeToast')
+                  eventsHub.$emit('closeToast', true)
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
