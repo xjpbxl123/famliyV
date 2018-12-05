@@ -514,7 +514,7 @@
           return this.openPartner()
         }
         if (!this.logoutCover) {
-          eventsHub.$emit('closeToast')
+          eventsHub.$emit('closeToast', true)
           this.logoutCover = !this.logoutCover
         } else {
           this.buttonActions('left')
@@ -861,7 +861,7 @@
           return
         }
         if (!this.logoutCover) {
-          eventsHub.$emit('closeToast')
+          eventsHub.$emit('closeToast', true)
           this.logoutCover = true
           this.toolbarHidden = false
           return
@@ -888,7 +888,7 @@
             } else {
               // 弹出提示框
               if (this.logoutCover) {
-                eventsHub.$emit('toast', {text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                eventsHub.$emit('toast', {text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true, noClose: true})
                 this.logoutCover = !this.logoutCover
               } else {
                 this.$store.dispatch('logout', {root: true}).then(() => {
@@ -1714,7 +1714,7 @@
     destroyed () {
       clearInterval(window.interval)
       this.removeRegist()
-      eventsHub.$emit('closeToast')
+      eventsHub.$emit('closeToast', true)
     },
     components: {
       BannerLeft,

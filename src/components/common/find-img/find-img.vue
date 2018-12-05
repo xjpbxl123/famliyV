@@ -65,8 +65,9 @@
         }
         window.fp.modules.file.cacheUrl(src).then(data => {
           if (data.code === 0) {
-            this.url = data.url
             this.addZindex = false
+            this.showTitle = false
+            this.url = data.url
           } else {
             this.url = this.errorImage
             console.log(data.desc)

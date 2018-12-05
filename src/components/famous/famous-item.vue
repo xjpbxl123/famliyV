@@ -26,9 +26,7 @@
           beforeImage: require('./default.png')
         },
         textStyle: {
-          fontSize: '70px',
-          top: '61%',
-          left: '22%'
+          color: 'rgba(0,0,0,0)'
         }
       }
     },

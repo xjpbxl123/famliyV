@@ -18,7 +18,8 @@
     data () {
       return {
         backgroundUrl: '',
-        loadingInstance: null
+        loadingInstance: null,
+        noClose: false
       }
     },
     computed: {
@@ -71,12 +72,19 @@
       eventsHub.$on('toast', (params) => {
         let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
         params = Object.assign({}, defaultParams, params)
+        this.noClose = params.noClose /* 防止快速切页面的时候打开弹框被关掉 */
         if (this.loadingInstance) eventsHub.$emit('closeToast')
         this.loadingInstance = toast(params)
       })
-      eventsHub.$on('closeToast', () => {
-        if (this.loadingInstance) {
-          this.loadingInstance.close()
+      eventsHub.$on('closeToast', (flag) => {
+        if (flag) {
+          // 强制关闭
+          this.noClose = false
+          if (this.loadingInstance) this.loadingInstance.close()
+        } else {
+          if (this.loadingInstance && !this.noClose) {
+            this.loadingInstance.close()
+          }
         }
       })
     }
