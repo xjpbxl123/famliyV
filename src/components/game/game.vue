@@ -5,14 +5,15 @@
         <div class="box1">
             <ul>
                 <li v-for="(item,index) in list" :key="index">
-                  <div class="item" @click="setSelect(index)" :class="{'active': index === listIndex, installed: item.status === 'installed'}"></div>
+                  <div class="item" @click="setSelect(index)" :class="{'active': index === listIndex, 'installed': item.status === 'installed'}">
+                    <img :src="item.status === 'installed'?item.imgUrl1:item.imgUrl2" alt="">
+                    <canvas :id="'canvas'+index" width="300" height="300" v-show="index === listIndex && isDownloading"></canvas>
+                  </div>
                   <span class="name" v-text="item.text"></span>
-                  <span class="staus" v-text="item.statusText"></span>
+                  <span class="staus" v-text="item.statusText" v-if="item.status == 'unInstall'"></span>
                 </li>
             </ul>
         </div>
-        <div class="outer"></div>
-        <div class="pie"></div>
     </div>
     <toolbar :darkBgHidden="true">
         <icon-item v-for="(button,index) in controlButtons"
@@ -22,19 +23,18 @@
           :icon="button.icon"
           :pianoKey="button.pianoKey"
           :selected="button.selected"
-          :hidden="opening"
+          :hidden="isDownloading || chooseUpdate"
           :checkable="button.checkable"
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
         <icon-item v-for="(button,index) in gameButtons"
-            :hidden="!opening || button.hidden"
+            :hidden="button.hidden || gameButtonsHidden"
             :key="index"
             :id="button.id"
             :icon="button.icon"
             :text="button.text"
             :pianoKey="button.pianoKey"
             titlePosition="below"
-            v-if="button.show"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
     </toolbar>
  </div>
@@ -57,7 +57,7 @@
             icon: '0xe60a',
             id: 388,
             backgroundColor: '#2fff',
-            show: false
+            hidden: true
           },
           {
             pianoKey: 78,
@@ -65,7 +65,7 @@
             icon: '0xe60a',
             id: 389,
             backgroundColor: '#2fff',
-            show: false
+            hidden: true
           },
           {
             pianoKey: 80,
@@ -73,7 +73,7 @@
             icon: '0xe651',
             id: 390,
             backgroundColor: '#2fff',
-            show: false
+            hidden: true
           }
         ],
         controlButtons: [
@@ -108,25 +108,46 @@
         title1: '',
         list: [
           {
-            name: '乐理练习',
             text: '乐理练习',
-            statusText: ''
+            statusText: '',
+            status: 'installed',
+            imgUrl1: require('./images/01.png')
           },
           {
-            name: '打地鼠',
             appName: 'dadishu2',
             text: '打地鼠-认音游戏',
-            statusText: ''
+            statusText: '',
+            status: 'unInstall',
+            imgUrl1: require('./images/02.png'),
+            imgUrl2: require('./images/02-s.png')
           },
           {
-            name: '打鼓',
             appName: 'dagu',
             text: '我是鼓手-节奏游戏',
-            statusText: ''
+            statusText: '',
+            status: 'unInstall',
+            imgUrl1: require('./images/03.png'),
+            imgUrl2: require('./images/03-s.png')
           }
         ],
-        opening: false,
-        isDownloading: false
+        isDownloading: false,
+        c: null,
+        ctx: null,
+        progress: 0,
+        compel: 0,
+        chooseUpdate: false,
+        gameButtonsHidden: true
+      }
+    },
+    watch: {
+      progress: function (val) {
+        if (val === 0.00) {
+          this.drawCircle(0)
+        }
+        if (val === 1.00) {
+          this.drawCircle(1)
+        }
+        this.drawCircle(val)
       }
     },
     computed: {
@@ -134,66 +155,96 @@
         isLogin (state) {
           let {storage} = state
           return storage.isLogin
-        },
-        dadishu2: state => state.storage.cache.renderCache.dadishu2,
-        dadishu2Local: state => state.storage.cache.renderCache.dadishu2,
-        dagu: state => state.storage.cache.renderCache.dagu,
-        daguLocal: state => state.storage.cache.renderCache.dagu,
-        kingdom2: state => state.storage.cache.renderCache.kingdom2
+        }
       })
     },
     find: {
+      [keys.KEY75] () {
+        // 取消下载
+        this.buttonActions('cancelDownload')
+      },
       [keys.KEY78] () {
-        this.buttonActions('up')
+        if (this.chooseUpdate) {
+          // 直接打开
+          eventsHub.$emit('closeToast')
+          this.chooseUpdate = false
+          this.gameButtonsHidden = true
+          this.openApp()
+        } else {
+          this.buttonActions('up')
+        }
       },
       [keys.LONG_KEY78] () {
+        if (this.chooseUpdate) {
+          return
+        }
         this.buttonActions('up')
       },
       [keys.KEY80] () {
-        this.buttonActions('down')
+        if (this.chooseUpdate) {
+          // 更新
+          this.downloadApp()
+        } else {
+          this.buttonActions('down')
+        }
       },
       [keys.LONG_KEY80] () {
         this.buttonActions('down')
       },
       [keys.KEY82] () {
         this.buttonActions('ok')
+      },
+      [keys.BACK_PRESSED] () {
+        if (this.chooseUpdate) {
+          eventsHub.$emit('closeToast')
+          this.chooseUpdate = false
+          this.gameButtonsHidden = true
+          return
+        }
+        if (this.isDownloading && !this.compel) {
+          return this.canceldownload()
+        }
+        this.$router.back()
       }
     },
     created () {
       this.getAppLocalVersion()
     },
+    mounted () {
+    },
     methods: {
-      setSelect () {
+      setSelect (index) {
+        if (!this.chooseUpdate && !this.isDownloading) {
+          this.listIndex = index
+          this.buttonActions('ok')
+        }
       },
       getAppLocalVersion () {
         // 初始化app状态
-        let appArr = ['dadishu2', 'dagu']
-        for (const value of appArr) {
-          modules.file.pathComplement('$game/' + value + '/version.json').then((res) => {
-            if (res.path) {
-              modules.file.fileExists(res.path).then((res1) => {
-                if (res1) {
-                  this.$store.dispatch('index/getLocalAppVersion', res.http, value).then((data) => {
-                    if (value === 'dadishu2') {
-                      this.list[1].status = 'installed'
-                    }
-                    if (value === 'dagu') {
-                      this.list[2].status = 'installed'
-                    }
-                  })
-                } else {
-                  if (value === 'dadishu2') {
-                    this.list[1].status = 'unInstall'
-                    this.list[1].statusText = '未安装'
+        for (const [index, value] of this.list.entries()) {
+          if (index > 0) {
+            modules.file.pathComplement('$game/' + value.appName + '/version.json').then((res) => {
+              if (res.path) {
+                modules.file.fileExists(res.path).then((res1) => {
+                  if (res1) {
+                    this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: value.appName}).then((data) => {
+                      console.log(data)
+                      if (data && data[value.appName + 'Local'] && data[value.appName + 'Local'].version) {
+                        this.list[index].status = 'installed'
+                        this.list[index].statusText = ''
+                      } else {
+                        this.list[index].status = 'unInstall'
+                        this.list[index].statusText = '未安装'
+                      }
+                    })
+                  } else {
+                    this.list[index].status = 'unInstall'
+                    this.list[index].statusText = '未安装'
                   }
-                  if (value === 'dagu') {
-                    this.list[2].status = 'unInstall'
-                    this.list[2].statusText = '未安装'
-                  }
-                }
-              })
-            }
-          })
+                })
+              }
+            })
+          }
         }
       },
       buttonActions (type) {
@@ -204,106 +255,172 @@
           case 'down':
             this.listIndex = Math.min(this.listIndex + 1, this.list.length - 1)
             break
+          case 'cancelDownload':
+            if (this.isDownloading && !this.compel) {
+              // 如果正在下载并且不是强制更新则暂停下载
+              this.canceldownload()
+            }
+            break
           case 'ok':
             if (this.listIndex === 0) {
               return modules.nativeRouter.openAppsView()
             }
-            this.openGame()
-            // switch (this.listIndex) {
-            //   case 0:
-            //     console.log(this.dadishu2)
-            //     break
-            //   case 1:
-            //     console.log(this.dagu)
-            //     break
-            //   case 2:
-            //     console.log(this.kingdom2)
-            //     break
-            // }
+            this.open()
             break
         }
       },
-      openGame () {
-        // 做登录验证
-        if (!this.isLogin) {
-          return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-        }
-        if (this.isLogin) {
-          this.$store.dispatch('getUserInfo').then(data => {
-            if (!data.userInfo.userId) {
-              modules.user.logOut()
-              return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
-            }
-            let appName = this.list[this.listIndex].appName
-            this.opening = true
-            eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
-            // 获取线上最新版本
-            return this.$store.dispatch('index/getGameApp', appName).then((data) => {
-              this.downloadInfo = this[appName].url
-              modules.file.pathComplement('$game/' + appName + '/package.json').then((res) => {
-                if (res.path) {
-                  // 判断文件是否存在
-                  modules.file.fileExists(res.path).then((res1) => {
-                    if (!res1) {
-                      // 本地没有 判断网络问题
-                      if (!data[appName].url) {
-                        // 拉不到线上版本 提示网络问题
-                        console.log('本地没有且拉不到线上版本 提示网络问题')
-                        this.peilianLoading = false
-                        this.canEnterModule = true
-                        eventsHub.$emit('closeToast')
-                        errorHandling(data)
+      open () {
+        let appName = this.list[this.listIndex].appName
+        // 获取线上最新版本
+        return this.$store.dispatch('index/getAppVersion', appName).then((data) => {
+          if (data[appName]) {
+            this.downloadInfo = data[appName].url
+            this.compel = data[appName].compel
+          }
+          modules.file.pathComplement('$game/' + appName + '/version.json').then((res) => {
+            if (res.path) {
+              // 判断文件是否存在
+              modules.file.fileExists(res.path).then((res1) => {
+                if (res1) {
+                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName}).then((data1) => {
+                    if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
+                      // 本地有 去判断线上版本
+                      console.log('本地有 去判断线上版本')
+                      if (data && data[appName] && data[appName].url) {
+                        // 有线上版本 比较版本 看是否需要更新
+                        let isNeedUpdate = this.contrastVersion(data[appName], data1[appName + 'Local'])
+                        console.log('有线上版本 比较版本 看是否需要更新', isNeedUpdate)
+                        if (isNeedUpdate) {
+                          // 需要更新 弹框提示 显示直接进入和更新按钮
+                          console.log('需要更新 弹框提示 显示直接进入和更新按钮')
+                          this.chooseUpdate = true
+                          this.gameButtonsHidden = false
+                          if (this.compel) {
+                            // 强制更新 不显示直接进入
+                            console.log('强制更新')
+                            this.gameButtons[1].hidden = true
+                          } else {
+                            this.gameButtons[1].hidden = false
+                          }
+                          this.gameButtons[0].hidden = true
+                          this.gameButtons[2].hidden = false
+                          eventsHub.$emit('toast', {text: '数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                        } else {
+                          // 不需要更新 直接打开即可
+                          this.openApp()
+                        }
                       } else {
-                        console.log('本地没有，拉到了线上版本 直接下载')
-                        // 拉到了线上版本 直接下载 显示取消按钮
-                        this.downloadGame()
+                        // 没有线上版本 直接打开
+                        this.openApp()
                       }
                     } else {
-                      // 本地有 判断网络问题
-                      return this.$store.dispatch('index/getLocalGameAppVersion', res.http, appName).then((data1) => {
-                        // 读取本地JSON文件 拿到本地版本信息
-                        if (!data.partnerVersion) {
-                          // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
-                          console.log('本地有且拉不到线上版本 直接打开即可')
-                          this.openGame()
-                        } else {
-                          if (!this.localPartnerVersion.version) {
-                            // 没有拿到本地版本 直接去下载
-                            return this.downloadGame()
-                          }
-                          // 拉到了线上版本 做版本比较 判断是否需要更新
-                          console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
-                          let isNeedUpdate = this.contrastVersion(this.partnerVersion, this.localPartnerVersion)
-                          if (isNeedUpdate) {
-                            // 需要更新 弹框提示 显示直接进入和更新按钮
-                            this.peilianButtons[0].show = false
-                            this.peilianButtons[1].show = true
-                            this.peilianButtons[2].show = true
-                            eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-                          } else {
-                            // 不需要更新 直接打开即可
-                            this.openGame()
-                          }
-                        }
-                      })
+                      // 本地文件访问不到 判断网络情况
+                      console.log('本地文件访问不到 判断网络情况')
+                      if (data[appName] && data[appName].url) {
+                        // 拉到了线上版本 去下载
+                        console.log('拉到了线上版本 去下载')
+                        this.downloadApp()
+                      } else {
+                        // 拉不到线上版本 提示网络问题 显示重试按钮
+                        console.log('拉不到线上版本 提示网络问题')
+                        errorHandling(data)
+                      }
                     }
                   })
+                } else {
+                  // 本地没有 判断网络情况
+                  console.log('本地没有 判断网络情况')
+                  if (data[appName] && data[appName].url) {
+                    // 拉倒了线上版本 去下载
+                    console.log('拉倒了线上版本 去下载')
+                    this.downloadApp()
+                  } else {
+                    // 拉不到线上版本 提示网络问题 显示重试按钮
+                    console.log('拉不到线上版本 提示网络问题')
+                    errorHandling(data)
+                  }
                 }
               })
-            })
+            }
           })
+        })
+      },
+      canceldownload () {
+        let downloadInfo = this.downloadInfo
+        download.abort({
+          url: downloadInfo.url,
+          md5: downloadInfo.md5,
+          fsize: downloadInfo.fsize,
+          localPath: downloadInfo.localPath
+        }).then(res => {
+          console.log(res, '中断下载')
+          this.isDownloading = false
+          this.chooseUpdate = false
+          this.gameButtonsHidden = true
+          this.list[this.listIndex].statusText = '未安装'
+          eventsHub.$emit('closeToast')
+        })
+      },
+      contrastVersion (serverVersionInfo, localVersionInfo) {
+        // 先比较版本号再比较build号
+        let serverVersion = serverVersionInfo.version
+        let localVersion = localVersionInfo.version
+        let serverBuild = serverVersionInfo.build
+        let localBuild = localVersionInfo.build
+        console.log(serverVersion, serverBuild)
+        console.log(localVersion, localBuild)
+        let serverVersionArr = serverVersion.split('.')
+        let serverVersion1 = [serverVersionArr[0], serverVersionArr[1]].join('.')
+        let serverVersion2 = serverVersionArr[2]
+
+        let localVersionArr = localVersion.split('.')
+        let localVersion1 = [localVersionArr[0], localVersionArr[1]].join('.')
+        let localVersion2 = localVersionArr[2]
+
+        if (serverVersion1 > localVersion1) { // 需要更新
+          console.log('需要更新')
+          return true
+        } else if (serverVersion1 === localVersion1) { // 继续对比
+          if (serverVersion2 > localVersion2) { // 需要更新
+            console.log('需要更新')
+            return true
+          } else if (serverVersion2 === localVersion2) { // 继续对比
+            if (serverBuild > localBuild) { // 需要更新
+              console.log('需要更新')
+              return true
+            } else { // 不需要更新
+              return false
+            }
+          } else if (serverVersion2 < localVersion2) { // 不需要更新
+            return false
+          }
+        } else if (serverVersion1 < localVersion1) { // 不需要更新
+          return false
         }
       },
-      downloadGame () {
+      downloadApp () {
+        this.isDownloading = true
+        this.list[this.listIndex].statusText = '下载中'
+        eventsHub.$emit('closeToast')
+        let self = this
+        this.c = document.getElementById('canvas' + this.listIndex)
+        this.ctx = this.c.getContext('2d')// 图画绘制对象
+        this.ctx.fillStyle = '#000'
+        this.ctx.strokeStyle = '#000'
+        this.ctx.beginPath()
+        this.ctx.moveTo(150, 150)
+        this.drawCircle(1)
         let appName = this.list[this.listIndex].appName
         this.isDownloading = true
         let downloadInfo = this.downloadInfo
         let localPath, targetPath
-        let self = this
-        // 只显示取消按钮
-        self.gameButtons[0].show = true
-        self.gameButtons[1].show = false
-        self.gameButtons[2].show = false
+        this.gameButtonsHidden = false
+        if (!this.compel) {
+          // 非强制更新时  显示取消按钮
+          self.gameButtons[0].hidden = false
+          self.gameButtons[1].hidden = true
+          self.gameButtons[2].hidden = true
+        }
         modules.file.pathComplement('$downLoadHtmls').then((result) => {
           console.log(result)
           localPath = result.path
@@ -318,7 +435,7 @@
             fsize: downloadInfo.fsize,
             localPath: localPath
           }).progress(progress => {
-            eventsHub.$emit('toast', {text: '下载中 ' + parseInt(progress.progress * 100) + '%', iconLoading: false, icon: 'icon-updating', allExit: true})
+            this.progress = (progress.progress).toFixed(2)
           }).then(res => {
             console.log(res)
             if (res.path) {
@@ -327,15 +444,29 @@
                   console.log('解压失败' + data.desc)
                 } else {
                   console.log('解压成功 直接打开')
-                  self.openNow()
+                  self.isDownloading = false
+                  self.chooseUpdate = false
+                  self.gameButtonsHidden = true
+                  self.list[self.listIndex].status = 'installed'
+                  self.openApp()
                 }
               })
             }
           })
         })
       },
-      openNow () {
-        console.log('打开游戏')
+      openApp () {
+        modules.nativeRouter.openWebView('$game/' + this.list[this.listIndex].appName + '/index.html').then((data) => {
+          console.log(data, '打开游戏模块')
+        })
+      },
+      drawCircle (data) {
+        this.ctx.beginPath()
+        this.ctx.clearRect(0, 0, 300, 300)
+        this.ctx.moveTo(150, 150)
+        this.ctx.arc(150, 150, 150, -0.5 * Math.PI, data * (2 * Math.PI) - Math.PI / 2, true)
+        this.ctx.closePath()
+        this.ctx.fill()
       }
     },
     components: {
@@ -369,6 +500,17 @@
                         border-radius: 60px;
                         top: 0;
                         left: 0;
+                        overflow: hidden;
+                        img {
+                          width: 100%;
+                          height: 100%;
+                        }
+                        canvas {
+                          position: absolute;
+                          left: -25%;
+                          top:  -25%;
+                          opacity: 0.6;
+                        }
                         &::before {
                           content: '';
                           width: 100%;
@@ -385,33 +527,6 @@
                           transform: scale(1.2);
                           &::before {
                             background-color: rgba(0,0,0,0);
-                          }
-                        }
-                      }
-                      &:nth-child(1) {
-                        .item {
-                          background: url('./images/01.png') no-repeat;
-                          background-size: cover;
-                        }
-
-                      }
-                      &:nth-child(2) {
-                        .item {
-                          background: url('./images/02-s.png') no-repeat;
-                          background-size: cover;
-                          &.installed {
-                            background: url('./images/02.png') no-repeat;
-                            background-size: cover;
-                          }
-                        }
-                      }
-                      &:nth-child(3) {
-                        .item {
-                          background: url('./images/03-s.png') no-repeat;
-                          background-size: cover;
-                          &.installed {
-                            background: url('./images/03.png') no-repeat;
-                            background-size: cover;
                           }
                         }
                       }
@@ -443,38 +558,6 @@
                   }
               }
           }
-        .outer{
-          position: absolute;
-          width: 200px;
-          height: 200px;
-          transform: rotate(10deg);
-          clip: rect(0px,100px,200px,0px);/* 这个clip属性用来绘制半圆，在clip的rect范围内的内容显示出来，使用clip属性，元素必须是absolute的 */
-          border-radius: 100px;
-          background-color: yellow;
-        }
-
-        .pie{
-          position: absolute;
-          width: 200px;
-          height: 200px;
-          left: 300px;
-          transform: rotate(10deg);
-          clip: rect(0px,100px,200px,0px);
-          border-radius: 100px;
-          background-color: yellow;
-          }
-        }
-        /**动画*/
-        @-webkit-keyframes an1{
-              0% {transform: rotate(0deg);}
-              50%{transform: rotate(90deg);}
-              100%{transform: rotate(0deg);}
-        }
-
-        @-webkit-keyframes an2{
-              0% {transform: rotate(0deg);}
-              50%{transform: rotate(-90deg);}
-              100%{transform: rotate(0deg);}
         }
     }
 
