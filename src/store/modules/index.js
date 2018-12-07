@@ -89,11 +89,11 @@ export default {
     getAppVersion ({dispatch}, appName) {
       dispatch('setCacheFromTable', appName, {root: true})
       let appType = 'production'
-      if (process.env.NODE_ENV === 'development') {
-        appType = 'develop'
-      }
-      if (process.env.NODE_ENV === 'buildTest') {
+      if (this.state.environments.HTTP_ROOT.indexOf('ktunes') !== -1) {
         appType = 'testing'
+      }
+      if (this.state.environments.HTTP_ROOT.indexOf('etango') !== -1) {
+        appType = 'develop'
       }
       let cmd = 'game.getGameApp'
       if (appName === 'findPartner') {
@@ -176,23 +176,6 @@ export default {
         })
       })
     },
-    /**
-     * @desc 获取陪练版本数据
-     * */
-    // getPartnerVersion ({dispatch}) {
-    //   dispatch('setCacheFromTable', 'partnerVersion', {root: true})
-    //   return http.post('', {
-    //     cmd: 'system.getApp',
-    //     appType: 'testing',
-    //     appName: 'findPartner'
-    //   }).then(res => {
-    //     if (res.header.code === 0) {
-    //       return dispatch('setCacheToStorage', {partnerVersion: res.body.app}, {root: true})
-    //     }
-    //   }).catch((error) => {
-    //     return error
-    //   })
-    // },
     /**
      * @desc 钢琴使用时间
      * */
