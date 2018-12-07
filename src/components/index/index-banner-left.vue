@@ -98,7 +98,7 @@
             clearInterval(this.interval)
             this.interval = setInterval(() => {
               this.getUserInfo().then(res => {
-                if (res.userInfo.userId) {
+                if (res.userInfo && res.userInfo.userId) {
                   clearInterval(this.interval)
                 }
               })

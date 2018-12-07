@@ -342,6 +342,8 @@ export default function createStore () {
             })
           }
           return {userInfo: body, isLogin: false}
+        }).catch((error) => {
+          return error
         })
       },
       /**

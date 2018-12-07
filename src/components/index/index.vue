@@ -996,26 +996,14 @@
                 }
                 if (this.isLogin) {
                   return this.$store.dispatch({type: 'getUserInfo'}).then((data) => {
-                    if (!data.userInfo.userId) {
+                    if (!data.userInfo && !data.message) {
+                      // 请求不到用户信息 并且不是网络情况
                       modules.user.logOut()
                       return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                     }
                     return this.checkApp('kingdom2')
                   })
                 }
-                // return modules.game.openKingdom().then((data) => {
-                //   if (!data) {
-                //     this.canEnterModule = true
-                //     // 做登录验证
-                //     if (this.isLogin) {
-                //       return this.$store.dispatch('getUserInfo').then(data => {
-                //         if (!data.userInfo.userId) {
-                //           modules.user.logOut()
-                //         }
-                //       })
-                //     }
-                //   }
-                // })
             }
             break
           case 'right-up':
@@ -1134,13 +1122,13 @@
               return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
             }
             if (this.isLogin) {
-              this.$store.dispatch('getUserInfo').then(data => {
-                if (!data.userInfo.userId) {
+              return this.$store.dispatch({type: 'getUserInfo'}).then((data) => {
+                if (!data.userInfo && !data.message) {
                   modules.user.logOut()
                   return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 }
+                return this.checkApp('findPartner')
               })
-              this.checkApp('findPartner')
             }
             break
           case 'canceldownload':
@@ -1706,7 +1694,7 @@
               this.openMusicScore = false
               // 退出原生界面的时候 做一次登陆验证
               return this.$store.dispatch('getUserInfo').then(data => {
-                if (!data.userInfo.userId) {
+                if (!data.userInfo && !data.message) {
                   modules.user.logOut()
                 }
               })
