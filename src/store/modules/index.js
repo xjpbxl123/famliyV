@@ -99,10 +99,6 @@ export default {
       if (appName === 'findPartner') {
         cmd = 'system.getApp'
       }
-      let cmd = 'game.getGameApp'
-      if (appName === 'findPartner') {
-        cmd = 'system.getApp'
-      }
       return http.post('', {
         cmd: cmd,
         appName: appName,
@@ -180,23 +176,6 @@ export default {
         })
       })
     },
-    /**
-     * @desc 获取陪练版本数据
-     * */
-    // getPartnerVersion ({dispatch}) {
-    //   dispatch('setCacheFromTable', 'partnerVersion', {root: true})
-    //   return http.post('', {
-    //     cmd: 'system.getApp',
-    //     appType: 'testing',
-    //     appName: 'findPartner'
-    //   }).then(res => {
-    //     if (res.header.code === 0) {
-    //       return dispatch('setCacheToStorage', {partnerVersion: res.body.app}, {root: true})
-    //     }
-    //   }).catch((error) => {
-    //     return error
-    //   })
-    // },
     /**
      * @desc 钢琴使用时间
      * */
