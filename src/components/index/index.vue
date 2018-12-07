@@ -42,7 +42,7 @@
     </fh-player>
     <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
         <icon-item v-for="(button,index) in userActionButtons"
-            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
+            :hidden="hideOtherButtons || !logoutCover || appLoading"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -52,7 +52,7 @@
             :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
 
         <text-icon-item v-for="(button) in bigBUtton"
-            :hidden="hideOtherButtons || !logoutCover || peilianLoading"
+            :hidden="hideOtherButtons || !logoutCover || appLoading"
             :key="button.id"
             :id="button.id"
             :text="button.text"
@@ -60,7 +60,7 @@
             :positionPixels="button.positionPixels"
             :style="button.style"
             :icon="button.icon"/>
-        <group id="501" :hidden="hideOtherButtons || !logoutCover || peilianLoading">
+        <group id="501" :hidden="hideOtherButtons || !logoutCover || appLoading">
           <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
                     :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
           <icon-item id="401" pianoKey="67" text="" icon="0xe601"
@@ -79,7 +79,7 @@
           :icon="button.icon"
           :pianoKey="button.pianoKey"
           :selected="button.selected"
-          :hidden="button.hidden || hideOtherButtons || !logoutCover || peilianLoading"
+          :hidden="button.hidden || hideOtherButtons || !logoutCover || appLoading"
           :checkable="button.checkable"
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
@@ -90,7 +90,7 @@
             text="调音台"
             pianoKey="87"
             titlePosition="below"
-            :hidden="!logoutCover || peilianLoading"
+            :hidden="!logoutCover || appLoading"
             :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
         <icon-item v-for="(button,index) in playButtons"
           :longClick="button.longClick"
@@ -99,7 +99,7 @@
           :icon="button.icon"
           :pianoKey="button.pianoKey"
           :selected="button.selected"
-          :hidden="button.hidden || !logoutCover || peilianLoading"
+          :hidden="button.hidden || !logoutCover || appLoading"
           :checkable="button.checkable"
           :checked="button.checked"
           :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: '#fff'}"/>
@@ -112,7 +112,7 @@
           :style="{backgroundColor:'#4000',textColor: '#fff',dotColor: '#fff'}"/>
 
          <icon-item v-for="(button,index) in logoutButtons"
-            :hidden="logoutCover || peilianLoading"
+            :hidden="logoutCover || appLoading"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -121,8 +121,8 @@
             titlePosition="below"
             v-if="button.show"
             :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
-         <icon-item v-for="(button,index) in peilianButtons"
-            :hidden="!peilianLoading || !button.show"
+         <icon-item v-for="(button,index) in gameButtons"
+            :hidden="!appLoading || !button.show"
             :key="index"
             :id="button.id"
             :icon="button.icon"
@@ -161,6 +161,7 @@
         playerHidden: false,
         enterPlay: false,
         openMusicScore: false,
+        compel: false,
         playerSource: {
           mid: {
             midiUrl: ''
@@ -172,7 +173,7 @@
         isPlaying: false,
         isPlayingMusicId: 0,
         interval: null,
-        peilianLoading: false,
+        appLoading: false,
         logoutCover: true,
         isOpeningScore: false,
         isDownloadingPeilian: false,
@@ -202,8 +203,8 @@
           {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
           {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
           {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}},
-          // {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
-          {id: 9, pianoKey: 54, text: '游戏管理', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
+          {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
+          {id: 10, pianoKey: 54, text: '游戏管理', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#FB9664,#F4462F', dotColor: '#F4462F'}}
         ],
         controlButtons: [
           {
@@ -326,7 +327,7 @@
             show: true
           }
         ],
-        peilianButtons: [
+        gameButtons: [
           {
             pianoKey: 75,
             text: '取消',
@@ -442,16 +443,16 @@
         this.canEnterModule = false
         this.buttonActions('indexMore')
       },
-      // [keys.KEY51] () {
-      //   // 名师课程
-      //   if (!this.canEnterModule) {
-      //     console.log('return')
-      //     return
-      //   }
-      //   this.canEnterModule = false
-      //   // return modules.nativeRouter.openArtistCourseView()
-      //   return this.go('/famous')
-      // },
+      [keys.KEY51] () {
+        // 名师课程
+        if (!this.canEnterModule) {
+          console.log('return')
+          return
+        }
+        this.canEnterModule = false
+        // return modules.nativeRouter.openArtistCourseView()
+        return this.go('/famous')
+      },
       [keys.KEY54] () {
         return this.go('/game')
       },
@@ -502,7 +503,7 @@
         }
       },
       [keys.KEY75] () {
-        if (this.peilianLoading) {
+        if (this.appLoading) {
           return this.buttonActions('canceldownload')
         }
         if (!this.logoutCover) {
@@ -512,10 +513,14 @@
         }
       },
       [keys.KEY78] () {
-        if (this.peilianLoading) {
+        if (this.appLoading) {
           // 直接进入
           console.log('直接进入')
-          return this.openPartner()
+          if (this.selectedIndex === 2) {
+            return this.openApp('findPartner')
+          } else if (this.selectedIndex === 3) {
+            return this.openApp('kingdom2')
+          }
         }
         if (!this.logoutCover) {
           eventsHub.$emit('closeToast', true)
@@ -528,10 +533,13 @@
         this.buttonActions('left')
       },
       [keys.KEY80] () {
-        if (this.peilianLoading) {
+        if (this.appLoading) {
           // 去下载
-          this.downloadPartner()
-          return
+          if (this.selectedIndex === 2) {
+            return this.downloadApp('findPartner')
+          } else if (this.selectedIndex === 3) {
+            return this.downloadApp('kingdom2')
+          }
         }
         this.buttonActions('right')
       },
@@ -795,10 +803,10 @@
        * @desc 书籍列表鼠标选中
        * */
       setCenterSelect (index) {
-        // if (this.peilianLoading) {
-        //   // 正在打开陪练
-        //   return
-        // }
+        if (this.appLoading) {
+          // 正在打开陪练
+          return
+        }
         this.$store.dispatch('index/setSelected', index).then(() => {
           this.buttonActions('ok')
         })
@@ -807,7 +815,7 @@
        * @desc 右侧列表鼠标选中
        * */
       setRightSelect (index) {
-        if (this.loading || this.peilianLoading) {
+        if (this.loading || this.appLoading) {
           // loading过程中不可点
           return
         }
@@ -841,9 +849,9 @@
         return this.$router.push(params)
       },
       goBack () {
-        if (this.peilianLoading) {
+        if (this.appLoading) {
           // 打开了陪练项目 关闭即可
-          this.peilianLoading = !this.peilianLoading
+          this.appLoading = !this.appLoading
           eventsHub.$emit('closeToast')
           if (this.isDownloadingPeilian) {
             // 如果在下载 停止下载
@@ -913,20 +921,6 @@
             return false
           case 'skill':
             return modules.nativeRouter.openAppsView()
-          case 'game':
-            return modules.game.openKingdom().then((data) => {
-              if (!data) {
-                this.canEnterModule = true
-                // 做登录验证
-                if (this.isLogin) {
-                  return this.$store.dispatch('getUserInfo').then(data => {
-                    if (!data.userInfo.userId) {
-                      modules.user.logOut()
-                    }
-                  })
-                }
-              }
-            })
           case 'playRecord':
             return modules.nativeRouter.openMidiRecordView()
           case 'shutdown':
@@ -993,23 +987,35 @@
               case 1:
                 return this.go('/material')
               case 2:
-                // return this.buttonActions('peilian')
                 // return modules.nativeRouter.openArtistCourseView()
-                return this.go('/famous')
+                // return this.go('/famous')
+                return this.buttonActions('peilian')
               case 3:
-                return modules.game.openKingdom().then((data) => {
-                  if (!data) {
-                    this.canEnterModule = true
-                    //     做登录验证
-                    if (this.isLogin) {
-                      return this.$store.dispatch('getUserInfo').then(data => {
-                        if (!data.userInfo.userId) {
-                          modules.user.logOut()
-                        }
-                      })
+                if (!this.isLogin) {
+                  return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                }
+                if (this.isLogin) {
+                  return this.$store.dispatch({type: 'getUserInfo'}).then((data) => {
+                    if (!data.userInfo.userId) {
+                      modules.user.logOut()
+                      return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                     }
-                  }
-                })
+                    return this.checkApp('kingdom2')
+                  })
+                }
+                // return modules.game.openKingdom().then((data) => {
+                //   if (!data) {
+                //     this.canEnterModule = true
+                //     // 做登录验证
+                //     if (this.isLogin) {
+                //       return this.$store.dispatch('getUserInfo').then(data => {
+                //         if (!data.userInfo.userId) {
+                //           modules.user.logOut()
+                //         }
+                //       })
+                //     }
+                //   }
+                // })
             }
             break
           case 'right-up':
@@ -1133,63 +1139,8 @@
                   modules.user.logOut()
                   return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 }
-                this.peilianLoading = true
-                eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
-                // 获取线上最新版本
-                return this.$store.dispatch('index/getAppVersion', 'partner').then((data) => {
-                  this.downloadInfo = data.partner.url
-                  modules.file.pathComplement('$web/findPartner/package.json').then((res) => {
-                    if (res.path) {
-                      // 判断文件是否存在
-                      modules.file.fileExists(res.path).then((res1) => {
-                        if (!res1) {
-                          // 本地没有 判断网络问题
-                          if (!data.partner) {
-                            // 拉不到线上版本 提示网络问题
-                            console.log('本地没有且拉不到线上版本 提示网络问题')
-                            this.peilianLoading = false
-                            this.canEnterModule = true
-                            eventsHub.$emit('closeToast')
-                            errorHandling(data)
-                          } else {
-                            console.log('本地没有，拉到了线上版本 直接下载')
-                            // 拉到了线上版本 直接下载 显示取消按钮
-                            this.downloadPartner()
-                          }
-                        } else {
-                          // 本地有 判断网络问题
-                          return this.$store.dispatch('index/getLocalAppVersion', res.http, 'parner').then((data1) => {
-                            // 读取本地JSON文件 拿到本地版本信息
-                            if (!data.partner) {
-                              // 拉不到线上版本或者没拿到本地版本信息 直接打开即可
-                              console.log('本地有且拉不到线上版本 直接打开即可')
-                              this.openPartner()
-                            } else {
-                              if (!this.parnerLocal.version) {
-                                // 没有拿到本地版本 直接去下载
-                                return this.downloadPartner()
-                              }
-                              // 拉到了线上版本 做版本比较 判断是否需要更新
-                              console.log('本地有且拉到了线上版本 做版本比较 判断是否需要更新')
-                              let isNeedUpdate = this.contrastVersion(this.partner, this.parnterLocal)
-                              if (isNeedUpdate) {
-                                // 需要更新 弹框提示 显示直接进入和更新按钮
-                                this.peilianButtons[0].show = false
-                                this.peilianButtons[1].show = true
-                                this.peilianButtons[2].show = true
-                                eventsHub.$emit('toast', {text: '陪练数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
-                              } else {
-                                // 不需要更新 直接打开即可
-                                this.openPartner()
-                              }
-                            }
-                          })
-                        }
-                      })
-                    }
-                  })
-                })
               })
+              this.checkApp('findPartner')
             }
             break
           case 'canceldownload':
@@ -1199,14 +1150,100 @@
             console.log('108')
         }
       },
-      // 直接打开陪练
-      openPartner () {
-        this.peilianLoading = false
+      checkApp (appName) {
+        this.appLoading = true
+        eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+        let path = '$web/' + appName + '/package.json'
+        if (appName !== 'findPartner') {
+          path = '$game/' + appName + '/version.json'
+        }
+        return this.$store.dispatch('index/getAppVersion', appName).then((data) => {
+          if (data[appName]) {
+            this.downloadInfo = data[appName].url
+            this.compel = data[appName].compel
+          }
+          modules.file.pathComplement(path).then((res) => {
+            if (res.path) {
+              // 判断文件是否存在
+              modules.file.fileExists(res.path).then((res1) => {
+                if (res1) {
+                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName}).then((data1) => {
+                    if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
+                      // 本地有 去判断线上版本
+                      console.log('本地有 去判断线上版本')
+                      console.log(data)
+                      if (data && data[appName] && data[appName].url) {
+                        // 有线上版本 比较版本 看是否需要更新
+                        let isNeedUpdate = this.contrastVersion(data[appName], data1[appName + 'Local'])
+                        console.log('有线上版本 比较版本 看是否需要更新', isNeedUpdate)
+                        if (isNeedUpdate) {
+                          // 需要更新 弹框提示 显示直接进入和更新按钮
+                          console.log('需要更新 弹框提示 显示直接进入和更新按钮')
+                          if (this.compel) {
+                            // 强制更新 不显示直接进入
+                            console.log('强制更新')
+                            this.gameButtons[1].show = false
+                          } else {
+                            this.gameButtons[1].show = true
+                          }
+                          this.gameButtons[0].show = false
+                          this.gameButtons[2].show = true
+                          eventsHub.$emit('toast', {text: '数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                        } else {
+                          // 不需要更新 直接打开即可
+                          this.openApp(appName)
+                        }
+                      } else {
+                        // 没有线上版本 直接打开
+                        this.openApp(appName)
+                      }
+                    } else {
+                      // 本地文件访问不到 判断网络情况
+                      console.log('本地文件访问不到 判断网络情况')
+                      if (data[appName] && data[appName].url) {
+                        // 拉到了线上版本 去下载
+                        console.log('拉到了线上版本 去下载')
+                        this.downloadApp(appName)
+                      } else {
+                        // 拉不到线上版本 提示网络问题 显示重试按钮
+                        console.log('拉不到线上版本 提示网络问题')
+                        this.appLoading = false
+                        this.canEnterModule = true
+                        errorHandling(data)
+                      }
+                    }
+                  })
+                } else {
+                  // 本地没有 判断网络情况
+                  console.log('本地没有 判断网络情况')
+                  if (data[appName] && data[appName].url) {
+                    // 拉倒了线上版本 去下载
+                    console.log('拉倒了线上版本 去下载')
+                    this.downloadApp(appName)
+                  } else {
+                    // 拉不到线上版本 提示网络问题 显示重试按钮
+                    console.log('拉不到线上版本 提示网络问题')
+                    this.appLoading = false
+                    this.canEnterModule = true
+                    errorHandling(data)
+                  }
+                }
+              })
+            }
+          })
+        })
+      },
+      // 直接打开APP
+      openApp (appName) {
+        let path = '$game'
+        if (appName === 'findPartner') {
+          path = '$web'
+        }
+        this.appLoading = false
         this.canEnterModule = true
         eventsHub.$emit('closeToast')
-        modules.nativeRouter.openWebView('$web/findPartner/index.html').then((data) => {
-          // alert(data)
-          console.log(data, '打开陪练模块')
+        modules.nativeRouter.openWebView(path + '/' + appName + '/index.html').then((data) => {
+          console.log(data, '打开' + appName)
         })
       },
       // 加入最近打开
@@ -1230,19 +1267,23 @@
           this.$store.dispatch('index/setRightSelect', 0)
         }
       },
-      downloadPartner () {
+      downloadApp (appName) {
+        let path = '$game'
+        if (appName === 'findPartner') {
+          path = '$web'
+        }
         this.isDownloadingPeilian = true
         let downloadInfo = this.downloadInfo
         let localPath, targetPath
         let self = this
         // 只显示取消按钮
-        self.peilianButtons[0].show = true
-        self.peilianButtons[1].show = false
-        self.peilianButtons[2].show = false
+        self.gameButtons[0].show = true
+        self.gameButtons[1].show = false
+        self.gameButtons[2].show = false
         modules.file.pathComplement('$downLoadHtmls').then((result) => {
           console.log(result)
           localPath = result.path
-          return modules.file.pathComplement('$web/findPartner')
+          return modules.file.pathComplement(path + '/' + appName)
         }).then((result) => {
           targetPath = result.path
           downloadInfo.localPath = localPath
@@ -1262,7 +1303,7 @@
                   console.log('解压失败' + data.desc)
                 } else {
                   console.log('解压成功 直接打开')
-                  self.openPartner()
+                  self.openApp(appName)
                 }
               })
             }
@@ -1278,7 +1319,7 @@
           localPath: downloadInfo.localPath
         }).then(res => {
           console.log(res)
-          this.peilianLoading = false
+          this.appLoading = false
           this.canEnterModule = true
           eventsHub.$emit('closeToast')
         })

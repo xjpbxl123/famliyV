@@ -95,15 +95,19 @@ export default {
       if (process.env.NODE_ENV === 'buildTest') {
         appType = 'testing'
       }
+      let cmd = 'game.getGameApp'
+      if (appName === 'findPartner') {
+        cmd = 'system.getApp'
+      }
       return http.post('', {
-        cmd: 'game.getGameApp',
+        cmd: cmd,
         appName: appName,
         appType: appType
       }).then(res => {
         if (res.header.code === 0) {
           let data = {}
           data[appName] = res.body.app
-          return dispatch('setCacheToStorage', data, {root: true})
+          return data
         }
       }).catch((error) => {
         return error
@@ -112,7 +116,7 @@ export default {
     /**
      * @desc 获取本地app版本数据
      * */
-    getLocalAppVersion ({dispatch}, url, appName) {
+    getLocalAppVersion ({dispatch}, {url, appName}) {
       let appNameLocal = appName + 'Local'
       dispatch('setCacheFromTable', appNameLocal, {root: true})
       return axios.get(url, {
@@ -123,7 +127,7 @@ export default {
           let build = res.build
           let versionObj = {}
           versionObj[appNameLocal] = {version, build}
-          return dispatch('setCacheToStorage', versionObj, {root: true})
+          return versionObj
         }
       }).catch((error) => {
         return error
