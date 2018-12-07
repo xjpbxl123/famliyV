@@ -99,6 +99,10 @@ export default {
       if (appName === 'findPartner') {
         cmd = 'system.getApp'
       }
+      let cmd = 'game.getGameApp'
+      if (appName === 'findPartner') {
+        cmd = 'system.getApp'
+      }
       return http.post('', {
         cmd: cmd,
         appName: appName,
