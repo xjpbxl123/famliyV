@@ -179,7 +179,7 @@
         })
       },
       /**
-       * @desc 按钮组件按钮事件
+       * @desc   按钮组件按钮事件
        * */
       buttonActions (type) {
         let indexx = this.moreIndex

@@ -2,6 +2,7 @@
  * Created by Tommy on 2018/5/23 .
  * */
 import { mapState } from 'vuex'
+import { modules } from 'find-sdk'
 import {getCurEnvs} from 'scripts/utils'
 export default {
   data () {
@@ -24,6 +25,12 @@ export default {
         weexUrl = `${weexUrl}components/mixer/mixer.js`
         window.fp.utils.volumeManager.openSoundMix({weexUrl: weexUrl, pianoType: this.pianoType, showAll: showAll})
       })
+    },
+    closeMixer (data) {
+      if (data.close) {
+        console.log('停止监听')
+        modules.notification.remove('VolumeChange')
+      }
     }
   }
 }

@@ -115,9 +115,12 @@
       weexPlayIndex ({playIndex}) {
         this.playIndex = playIndex
       },
+      weexPlayIndex ({playIndex}) {
+        this.playIndex = playIndex
+      },
       weexProgress ({progress, index}) {
         this.progress = progress
-        // this.videoList.courseList[index].progress = progress < 100 ? progress : false
+        //   this.videoList.courseList[index].progress = progress < 100 ? progress : false
         this.$set(this.videoList.courseList[index], 'progress', progress < 100 ? progress : false)
       },
       controlButton ({show}) {

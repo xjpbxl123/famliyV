@@ -63,8 +63,10 @@
         float: left;
         position: relative;
         border-radius: 10px;
+        overflow: hidden;
         &.active {
           transform: scale(1.15);
+          overflow: visible;
           .bottom {
             width: 100% !important;
             opacity: 0.8;

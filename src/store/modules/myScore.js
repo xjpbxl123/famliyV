@@ -182,7 +182,7 @@ export default {
           }
           return []
         }
-        // 第一步 剔除掉不支持的文件 并加上文件格式属性
+        //   第一步 剔除掉不支持的文件 并加上文件格式属性
         res.forEach((value, index) => {
           if (value.type === 'dir') {
             value.typeName = 'open-now'
@@ -313,7 +313,7 @@ export default {
         }
         switch (orIndex) {
           case 0:
-            // 名称排序
+            //  名称排序
             res.sort((a, b) => { return a.name > b.name })
             if (type === 'Upan') {
               commit(UPAN_SOURCE, res)
@@ -419,7 +419,7 @@ export default {
             res.splice(data - index, 1)
           }
         })
-        // 第二步 合并多曲谱
+        //   第二步 合并多曲谱
         let deleteIndex = []
         res.forEach((item, index) => {
           let nameArr = item.name.split('.')

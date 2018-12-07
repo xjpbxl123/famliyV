@@ -257,7 +257,7 @@
       },
       [KEY68] () {
         /**
-         * @desc 打开视频列表
+         * @desc   打开视频列表
          */
         if (!this.canClick || !this.canOpenVideoDirectory) {
           return
@@ -320,10 +320,8 @@
       getCurEnvs().then(env => {
         let weexUrl = env.WEEX_URL
         this.$refs.weex.openUrl(`${weexUrl}components/videoDirectory/videoDirectory.js`, {}).then((res1) => {
-          console.log(res1, 'videoDirectory')
           this.canOpenVideoDirectory = res1.result
         })
-        console.log(`${weexUrl}components/videoDirectory/videoDirectory.js`)
       })
     },
     methods: {
@@ -412,7 +410,7 @@
           this.errorHandling({speedValue: 0.5, desc: '速度调节 (原速1X)'})
           return
         }
-        // let newRate = newBpm / this.orgBpm
+        //  let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newSpeed)
         this.speedValue = newSpeed
         this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})

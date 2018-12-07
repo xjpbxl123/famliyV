@@ -63,7 +63,7 @@ export default function createStore () {
         pianoInfo: {orn: 'family', pic: ''}, // 钢琴orn/logo
         pianoType: '', // 钢琴类型
         localCollect: [], // 本地收藏列表
-        localRecent: [], // 本地最近打开列表
+        localRecent: [], //   本地最近打开列表
         clearTime1: '',
         cache: {
           renderCache: {
@@ -89,7 +89,7 @@ export default function createStore () {
             localPartnerVersion: {},
             isUpanInsert: false
           }
-        } // 数据本地缓存
+        } //   数据本地缓存
       },
       materialSelect: 0,
       popularGenreSelect: 0
@@ -275,7 +275,7 @@ export default function createStore () {
         })
       },
       /**
-       * 多数据缓存
+       *   多数据缓存
        * @param {Function} dispatch
        * @param {Object} state
        * @param {object} data
@@ -412,7 +412,7 @@ export default function createStore () {
         })
       },
       /**
-       * @desc 清除缓存
+       * @desc   清除缓存
        * */
       clearCache ({dispatch, state, commit}, auto) {
         let root = state.environments.HTTP_ROOT
@@ -420,7 +420,7 @@ export default function createStore () {
         console.log(state.storage.clearTime1, 'state.storage.clearTime1')
         if (auto) {
           if (!state.storage.clearTime1) {
-            // 第一次清的时候 把原来的数据存入新的位置
+            //   第一次清的时候 把原来的数据存入新的位置
             console.log('第一次清的时候 把原来的数据存入新的位置')
             let tableName = 'findFamily-' + root
             return nativeStorage.get(tableName, '-1').then((data) => {
@@ -461,7 +461,7 @@ export default function createStore () {
         nativeStorage.clear('findFamily-' + root)
       },
       /**
-       * @desc 用户注销时的数据映射view
+       * @desc   用户注销时的数据映射view
        * */
       logoutCache ({dispatch, commit, state}) {
         let root = state.environments.HTTP_ROOT
@@ -501,7 +501,7 @@ export default function createStore () {
       }
     },
     modules: {
-      // Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
+      //  Import from modules folder, Visit https://vuex.vuejs.org/en/modules.html for more information.
       index,
       login,
       home,

@@ -32,7 +32,7 @@ if (isInFindClient) {
     store.dispatch('initEnv').then(() => {
       store.dispatch('initialNativeStorage').then(() => {
         store.dispatch('clearCache', true).then(() => {
-          // 自动检查是否需要清缓存数据
+          //   自动检查是否需要清缓存数据
           Vue.prototype.$store = store
           vue = new Vue({
             el: '#app',

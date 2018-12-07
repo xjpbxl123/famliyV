@@ -202,7 +202,7 @@
           {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
           {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
           {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}}
-          // {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
+          //  {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
         ],
         controlButtons: [
           {
@@ -384,7 +384,7 @@
       },
       [keys.KEY27] () {
         if (+new Date() - this.skipTime <= 5000) {
-          // 5秒之内不做处理
+          //   5秒之内不做处理
           console.log('return')
           return
         }
@@ -894,7 +894,7 @@
                 this.$store.dispatch('logout', {root: true}).then(() => {
                   this.createSession()
                   this.logoutCover = !this.logoutCover
-                  eventsHub.$emit('closeToast')
+                  eventsHub.$emit('closeToast', true)
                   this.$store.dispatch('index/setRightSelect', 0)
                 })
               }
@@ -996,7 +996,7 @@
                 return modules.game.openKingdom().then((data) => {
                   if (!data) {
                     this.canEnterModule = true
-                    // 做登录验证
+                    //     做登录验证
                     if (this.isLogin) {
                       return this.$store.dispatch('getUserInfo').then(data => {
                         if (!data.userInfo.userId) {
@@ -1117,7 +1117,7 @@
             modules.device.turnOnScreen(!bool)
             break
           case 'peilian':
-            // 陪练
+            //   陪练
             console.log('陪练')
             // 做登录验证
             if (!this.isLogin) {
@@ -1605,7 +1605,7 @@
         // this.playSet()
         this.$refs.player.play().then(() => {
           if (this.loading) {
-            // 如果正在loading 不自动切
+            //  如果正在loading 不自动切
             return
           }
           this.isPlaying = false
@@ -1682,7 +1682,7 @@
         return this.$store.dispatch('getPianoType', {root: true})
       },
       registVloume () {
-        // 监听音量设置
+        //   监听音量设置
         let self = this
         window.fp.utils.volumeManager.registVolumeChange((data) => {
           if (data && data.type === 1) {
