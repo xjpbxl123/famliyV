@@ -1114,8 +1114,8 @@
                   modules.user.logOut()
                   return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
                 }
+                return this.checkApp('findPartner')
               })
-              this.checkApp('findPartner')
             }
             break
           case 'canceldownload':
