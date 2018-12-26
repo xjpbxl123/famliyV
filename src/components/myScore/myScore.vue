@@ -711,12 +711,12 @@
                   this.$router.push({path: '/openImg', query: {url: data.http}})
                 } else if (data.typeName === 'pdf') {
                   // pdf
+                  // use native openPDFFile
                   modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
                     if (!res.path) {
                       return
                     }
-                    this.$router.push({path: '/openPdf', query: {url: res.path}})
-                    // modules.nativeRouter.openPDFFile({'path': res.path})
+                    modules.nativeRouter.openPDFFile({'path': res.path})
                   })
                 } else if (data.typeName === 'song' || data.typeName === 'xml') {
                   // 合成曲谱播放
