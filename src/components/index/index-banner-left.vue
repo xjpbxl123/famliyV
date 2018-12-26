@@ -14,35 +14,35 @@
         <findImg class="avatar" :src="userInfo.imageUrl" :beforeImage="adminUrl" :errorImage="adminUrl" :borderRadius= "true" ></findImg>
         <span class="nick-name" v-text="nickName || ''"></span>
       </div>
-      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar && isActivation" />
-      <div v-if="!isCalendar && isActivation" :class="{'noActiva': !isActivation}" class="userData">
+      <calendar :setCalendarData="setCalendarData" :isActivation="isActivation" v-if="isCalendar" />
+      <div v-if="!isCalendar" :class="{'noActiva': false}" class="userData">
         <div class="used-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">累计使用</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.openAppTime:'--'"></span>
+          <span class="time" v-text="usedTime.openAppTime?usedTime.openAppTime:'--'"></span>
         </div>
         <div class="auto-play-time">
           <div>
             <i class="iconfont icon-auto-play"></i>
             <span class="text">自动弹奏时间</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.autoPlayTime:'--'"></span>
+          <span class="time" v-text="usedTime.autoPlayTime?usedTime.autoPlayTime:'--'"></span>
         </div>
         <div class="rate-play-time">
           <div>
             <i class="iconfont icon-period"></i>
             <span class="text">带评分弹奏</span>
           </div>
-          <span class="time" v-text="isActivation?usedTime.scoringTime:'--'"></span>
+          <span class="time" v-text="usedTime.scoringTime?usedTime.scoringTime:'--'"></span>
         </div>
       </div>
-      <div class="noActive" v-if="!isActivation">
-        <span class="iconfont icon-dailytasks"></span>
-        <p class="tip1">弹奏统计</p>
-        <p class="tip2">请在"设置 - 其他设置"中激活</p>
-      </div>
+      <!--<div class="noActive" v-if="!isActivation">-->
+        <!--<span class="iconfont icon-dailytasks"></span>-->
+        <!--<p class="tip1">弹奏统计</p>-->
+        <!--<p class="tip2">请在"设置 - 其他设置"中激活</p>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
