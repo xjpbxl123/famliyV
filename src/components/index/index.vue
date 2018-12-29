@@ -355,7 +355,8 @@
         ],
         metronome: false,
         speed: 120,
-        metre: '3',
+        metre: '0',
+        metres: ['0', '2', '3', '4', '6'],
         toolbarHidden: false,
         clickedMusicId: 0,
         clickeType: '',
@@ -379,9 +380,6 @@
         if (hidden && this.metronome) {
           return
         }
-        this.buttonActions('closeMetro')
-      },
-      [keys.KEY22] () {
         this.buttonActions('closeMetro')
       },
       [keys.KEY27] () {
@@ -728,9 +726,8 @@
        * @desc 获取节拍器状态
        * */
       getMetronomeStatus () {
-        modules.metronome.getCurrentTempo().then((data) => {
-          this.speed = data.tempoSpeed
-          this.metre = data.metre
+        modules.metronome.isRunning().then((res) => {
+          this.metronome = res
         })
       },
       /**
@@ -933,40 +930,30 @@
             console.log('close')
             if (this.metronome) {
               this.toolbarHidden = false
-              modules.metronome.stop(true)
+              modules.metronome.stop()
               this.metronome = false
             }
             break
           case 'openMetro':
             if (!this.metronome) {
               this.toolbarHidden = true
-              modules.metronome.start(true)
+              modules.metronome.start(this.speed, parseInt(this.metre, 10))
               this.metronome = true
             }
             break
           case 'speedDown':
-            modules.metronome.changeTempoSpeed(false).then(() => {
-              this.getMetronomeStatus()
-            })
+            this.speed = this.speed > 40 ? ((this.speed - 10) > 40 ? this.speed - 10 : 40) : 40
             break
           case 'speedUp':
-            modules.metronome.changeTempoSpeed(true).then(() => {
-              this.getMetronomeStatus()
-            })
+            this.speed = this.speed < 300 ? ((this.speed + 10) < 300 ? this.speed + 10 : 300) : 300
             break
           case 'speedRecover':
             // 恢复节拍器数值到120
-            let time = Math.abs(this.speed - 120) / 10
-            for (let i = 0; i < time; i++) {
-              modules.metronome.changeTempoSpeed(this.speed < 120).then(() => {
-              })
-            }
-            this.getMetronomeStatus()
+            this.speed = 120
             break
           case 'metroTip':
-            modules.metronome.changeTempo().then(() => {
-              this.getMetronomeStatus()
-            })
+            const currentIndex = this.metres.indexOf(this.metre)
+            this.metre = currentIndex >= (this.metres.length - 1) ? this.metres[0] : this.metres[currentIndex + 1]
             break
           case 'left':
             this.$store.dispatch('index/setSelected', Math.max(activeIndex - 1, 0))
