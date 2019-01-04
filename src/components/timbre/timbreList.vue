@@ -159,11 +159,14 @@
             height = 0
           }
           this.rightTop = height
-        } else if (value - oldValue === 9) {
+        } else if (value - oldValue === ((this.list[0].items.length - 1 - oldValue) < 9 ? (this.list[0].items.length - 1 - oldValue) : 9)) {
+          let step = this.list[0].items.length - 1 - oldValue
+          step = step < 9 ? step + (9 - step) : 9
+          // step = step < 9 ? step : 9
           // nextPage
-          let height = parseInt(this.rightTop) - 78 * 9
-          if (this.list[this.listIndex1].items.length - value < 9) {
-            height = (this.list[this.listIndex1].items.length - 9) * 78 * -1
+          let height = parseInt(this.rightTop) - 78 * step
+          if (this.list[this.listIndex1].items.length - value < step) {
+            height = (this.list[this.listIndex1].items.length - step) * 78 * -1
           }
           this.rightTop = height
         }
