@@ -273,31 +273,6 @@
 <style lang="scss" scoped>
 .scoreSetList {
   color: #fff;
-  ul.listBox {
-    position: absolute;
-    top: 180px;
-    left: 200px;
-
-    li {
-      color: #fff;
-      font-size: 40px;
-      width: 248px;
-      height: 340px;
-      box-sizing: border-box;
-      margin-right: 102px;
-      margin-bottom: 40px;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-
-      & .active {
-        border:4px solid #ff7e1b;
-        box-shadow: 0 0 20px 6px #ff7e1b;
-      }
-    }
-  }
 }
 h1 {
   font-size: 60px;

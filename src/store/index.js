@@ -44,8 +44,6 @@ let initData = {
   famousPlayCoursesBySet: {sum: 0, courseList: []},
   bookInfo: [],
   musicInfo: [],
-  partnerVersion: {},
-  localPartnerVersion: {},
   isUpanInsert: false
 }
 export default function createStore () {
@@ -85,8 +83,6 @@ export default function createStore () {
             famousPlayCoursesBySet: {sum: 0, courseList: []},
             bookInfo: [],
             musicInfo: [],
-            partnerVersion: {},
-            localPartnerVersion: {},
             isUpanInsert: false
           }
         } //   数据本地缓存
@@ -346,6 +342,8 @@ export default function createStore () {
             })
           }
           return {userInfo: body, isLogin: false}
+        }).catch((error) => {
+          return error
         })
       },
       /**

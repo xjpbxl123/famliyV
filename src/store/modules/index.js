@@ -84,6 +84,56 @@ export default {
       })
     },
     /**
+     * @desc 获取最新app版本信息
+     * */
+    getAppVersion ({dispatch}, appName) {
+      dispatch('setCacheFromTable', appName, {root: true})
+      let appType = 'production'
+      if (this.state.environments.HTTP_ROOT.indexOf('ktunes') !== -1) {
+        appType = 'testing'
+      }
+      if (this.state.environments.HTTP_ROOT.indexOf('etango') !== -1) {
+        appType = 'develop'
+      }
+      let cmd = 'game.getGameApp'
+      if (appName === 'findPartner') {
+        cmd = 'system.getApp'
+      }
+      return http.post('', {
+        cmd: cmd,
+        appName: appName,
+        appType: appType
+      }).then(res => {
+        if (res.header.code === 0) {
+          let data = {}
+          data[appName] = res.body.app
+          return data
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
+     * @desc 获取本地app版本数据
+     * */
+    getLocalAppVersion ({dispatch}, {url, appName}) {
+      let appNameLocal = appName + 'Local'
+      dispatch('setCacheFromTable', appNameLocal, {root: true})
+      return axios.get(url, {
+      }).then(data => {
+        let res = data.data
+        if (res.version) {
+          let version = res.version
+          let build = res.build
+          let versionObj = {}
+          versionObj[appNameLocal] = {version, build}
+          return versionObj
+        }
+      }).catch((error) => {
+        return error
+      })
+    },
+    /**
      * @desc 获取热门更新
      * */
     getHotBooks ({dispatch}, {tagId = 1, page = {'offset': 0, 'count': 20}} = {}) {
@@ -124,41 +174,6 @@ export default {
         return dispatch('setNativeStorage', {isActivation: data.isActivation}, {root: true}).then(() => {
           return dispatch('setNativeStorage', {isCalendar: data.isCalendar}, {root: true})
         })
-      })
-    },
-    /**
-     * @desc 获取陪练版本数据
-     * */
-    getPartnerVersion ({dispatch}) {
-      dispatch('setCacheFromTable', 'partnerVersion', {root: true})
-      return http.post('', {
-        cmd: 'system.getApp',
-        appType: 'testing',
-        appName: 'findPartner'
-      }).then(res => {
-        if (res.header.code === 0) {
-          return dispatch('setCacheToStorage', {partnerVersion: res.body.app}, {root: true})
-        }
-      }).catch((error) => {
-        return error
-      })
-    },
-    /**
-     * @desc 获取本地陪练版本数据
-     * */
-    getLocalPartnerVersion ({dispatch}, url) {
-      dispatch('setCacheFromTable', 'localPartnerVersion', {root: true})
-      return axios.get(url, {
-      }).then(data => {
-        let res = data.data
-        if (res.version) {
-          let version = res.version
-          let build = res.build
-          let versionObj = {version, build}
-          return dispatch('setCacheToStorage', {localPartnerVersion: versionObj}, {root: true})
-        }
-      }).catch((error) => {
-        return error
       })
     },
     /**

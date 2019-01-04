@@ -853,7 +853,7 @@
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 16,
-            hidden: false
+            hidden: true
           }
         ]
       }
@@ -904,7 +904,11 @@
         this.buttonActions('down')
       },
       [BACK_PRESSED] () {
-        this.buttonActions('back')
+        // this.buttonActions('back')
+        /**
+         * @desc 需求改动，返回键逐步返回
+         */
+        this.buttonActions('left')
       },
       [PEDAL_PRESSED] (key) {
         switch (key.id) {
@@ -918,7 +922,8 @@
             this.buttonActions('ok')
             break
           case 119:
-            this.buttonActions('back')
+            // this.buttonActions('back')
+            this.buttonActions('left')
         }
       }
     },
