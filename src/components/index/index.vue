@@ -1423,6 +1423,10 @@
             this.openMusicScore = false
             errorHandling(data)
           }
+        }).catch((err) => {
+          console.log('POST Error', err)
+          this.loading = false
+          eventsHub.$emit('toast', {text: '获取曲谱列表失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
         })
       },
       getRightData () {
