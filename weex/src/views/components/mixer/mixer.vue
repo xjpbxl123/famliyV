@@ -3,64 +3,50 @@
     <div class="box">
       <image :src="back" class="back" />
       <div class="vioceBox vioceBox1" :style="{left: left1 + 'px'}">
-        <text class="text1 unmute" v-if="!mute1" >总音量</text>
-        <text class="text1 mute" v-else >总音量 </text>
-        <text class="value unmute" v-if="!mute1">{{value1}}</text>
-        <text class="value mute" v-else>{{value1}} </text>
+        <text class="text1"  :style="{color: mute1 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute1 ? '啊' : '总音量 '}}</text>
+        <text class="value" :style="{color: mute1 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute1 ? value1 : value1 + ' '}}</text>
         <image :src="bar" class="vioceBar"/>
         <div class="bar">
           <image :src="slider" class="slider1" :style="{top: sliderTop1+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox2" :style="{left: left2 + 'px'}" v-if="pianoType === 'real'">
-        <text class="text1 unmute" v-if="!mute2" >自动演奏</text>
-        <text class="text1 mute" v-else >自动演奏 </text>
-        <text class="value unmute" v-if="!mute2">{{value2}}</text>
-        <text class="value mute" v-else>{{value2}} </text>
+        <text class='text1' :style="{color: mute2 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute2 ? '自动演奏' : '自动演奏 '}}</text>
+        <text class='value' :style="{color: mute2 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute2 ? value2 : value2 + ' '}}</text>
         <image :src="bar1" class="vioceBar"/>
         <div class="bar">
           <image :src="slider" class="slider1" :style="{top: sliderTop2+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox3" :style="{left: left3 + 'px'}">
-        <text class="text1 unmute" v-if="!mute3">电子音源</text>
-        <text class="text1 mute" v-else >电子音源 </text>
-        <text class="value unmute" v-if="!mute3">{{value3}}</text>
-        <text class="value mute" v-else>{{value3}} </text>
+        <text class="text1" :style="{color: mute3 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute3 ? '电子音源' : '电子音源 '}}</text>
+        <text class="value" :style="{color: mute3 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute3 ? value3 : value3 + ' '}}</text>
         <image :src="bar" class="vioceBar"/>
         <div class="bar">
           <image :src="slider" class="slider1" :style="{top: sliderTop3+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox4" :style="{left: left4 + 'px'}">
-        <text class="text1 unmute" v-if="!mute4" >音频</text>
-        <text class="text1 mute" v-else >音频 </text>
-        <text class="value unmute" v-if="!mute4">{{value4}}</text>
-        <text class="value mute" v-else>{{value4}} </text>
+        <text class="text1" :style="{color: mute4 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute4 ? '音频' : '音频 '}}</text>
+        <text class="value unmute" :style="{color: mute4 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute4 ? value4 : value4 + ' '}}</text>
         <image :src="bar" class="vioceBar" />
         <div class="bar">
           <image :src="slider" class="slider1" :style="{top: sliderTop4+'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox5" v-if="showAll" :style="{left: left5 + 'px'}">
-        <text class="text1 textA unmute" v-if="!mute5" >音频</text>
-        <text class="text1 textA mute" v-else >音频</text>
-        <text class="text2 unmute" v-if="!mute5" >(人声)</text>
-        <text class="text2 mute" v-else >(人声) </text>
-        <text class="value valueA unmute" v-if="!mute5">{{value5}}%</text>
-        <text class="value valueA mute" v-else>{{value5}}% </text>
+        <text class="text1 textA" :style="{color: mute5 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute5 ? '音频' : '音频 '}} </text>
+        <text class="text2" :style="{color: mute5 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute5 ? '(人声)' : '(人声) '}}</text>
+        <text class="value valueA" :style="{color: mute5 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute5 ? value5 + '%' : value5 + '% '}}</text>
         <image :src="bar2" class="vioceBar" />
         <div class="bar barA">
           <image :src="slider" class="slider1 slider2" :style="{top: sliderTop5 + 'px'}" />
         </div>
       </div>
       <div class="vioceBox vioceBox6" v-if="showAll" :style="{left: left6}">
-        <text class="text1 textA unmute" v-if="!mute6" >音频</text>
-        <text class="text1 textA mute" v-else >音频</text>
-        <text class="text2 unmute" v-if="!mute6" >(配乐)</text>
-        <text class="text2 mute" v-else >(配乐) </text>
-        <text class="value valueA unmute" v-if="!mute6">{{value6}}%</text>
-        <text class="value valueA mute" v-else>{{value6}}% </text>
+        <text class="text1 textA" :style="{color: mute6 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute6 ? '音频' : '音频 '}} </text>
+        <text class="text2" :style="{color: mute6 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute6 ? '(配乐)' : '(配乐) '}}</text>
+        <text class="value valueA" :style="{color: mute6 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute6 ? value6 + '%' : value6 + '% '}}</text>
         <image :src="bar2" class="vioceBar"/>
         <div class="bar barA">
           <image :src="slider" class="slider1 slider2" :style="{top: sliderTop6+'px'}"/>
@@ -71,7 +57,6 @@
           <icon-item v-for="button in buttons1"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -80,7 +65,6 @@
           <icon-item v-for="button in buttons2"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -89,7 +73,6 @@
           <icon-item v-for="button in buttons3"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -98,7 +81,6 @@
           <icon-item v-for="button in buttons4"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -107,7 +89,6 @@
           <icon-item v-for="button in buttons5"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -116,7 +97,6 @@
           <icon-item v-for="button in buttons6"
                   :pianoKey="button.pianoKey"
                   :key="button.id"
-                  longClick="true"
                   :id="button.id"
                   :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
                   :icon="button.icon"/>
@@ -124,7 +104,6 @@
         <icon-item
                   pianoKey="85"
                   key="100"
-                  longClick="true"
                   id="100"
                   :style="{color:'#fff',backgroundColor:'#6000',textColor: '#fff',fontSize: '14'}"
                   titlePosition='below'
@@ -138,6 +117,7 @@
 <script>
   import * as toolbar from 'find-toolbar'
   import mixins from '../mixin.js'
+  import {throttle} from 'lodash'
   const globalEvent = weex.requireModule('globalEvent')
   const find = weex.requireModule('find')
   export default {
@@ -145,6 +125,7 @@
     mixins: [mixins],
     data () {
       return {
+        mute2Name: '自动演奏',
         show: false,
         buttons1: [
           {
@@ -256,7 +237,7 @@
         value6: 100,
         bar: require('./images/bar.png'),
         bar1: require('./images/bar1.png'),
-        bar2: require('./images/bar2.png'),
+        bar2: require('./images/bar3.png'),
         slider: require('./images/slider.png'),
         back: require('./images/pic_background.png'),
         sliderTop1: 0,
@@ -310,7 +291,7 @@
         this.mute5 = humanVolume.mute
         this.mute6 = mediaAccompany.mute
       },
-      location (data) {
+      setLocation (data) {
         this.left1 = data[0] - 103
         this.left2 = data[1] - 103
         this.left3 = data[2] - 103
@@ -330,53 +311,89 @@
         this.notAutoSet = true
         this.reset = false
         switch (volumeData.type) {
-          case 0:
+          case 'electronic':
             this.value3 = volumeData.value
             if (volumeData.mute !== undefined) {
               this.mute3 = volumeData.mute
             }
             break
-          case 1:
+          case 'media':
             this.value4 = volumeData.value
             if (volumeData.mute !== undefined) {
               this.mute4 = volumeData.mute
             }
             break
-          case 2:
+          case 'autoPlay':
             this.value2 = volumeData.value
             if (volumeData.mute !== undefined) {
               this.mute2 = volumeData.mute
             }
             break
-          case 3:
+          case 'all':
             this.value1 = volumeData.value
             if (volumeData.mute !== undefined) {
               this.mute1 = volumeData.mute
             }
             break
-          case 4:
+          case 'mediaAccompany':
             this.value6 = volumeData.value * 10
             if (volumeData.mute !== undefined) {
               this.mute6 = volumeData.mute
             }
             break
-          case 5:
+          case 'humanVolume':
             this.value5 = volumeData.value * 10
             if (volumeData.mute !== undefined) {
               this.mute5 = volumeData.mute
             }
             break
         }
+      },
+      volumeWheel (data) {
+        find.debug('weexvolumeWheel to web' + data)
+        find.sendMsgToWeb({
+          method: 'volumeWheelChange',
+          params: data
+        })
+      },
+      allVolumeChange (n) {
+        let val = this.value1
+        if (n > 0) {
+          this.value1 = Math.min(this.value1 + 1, 15)
+          if (val + 1 > 15) {
+            return
+          }
+        } else {
+          this.value1 = Math.max(this.value1 - 1, 1)
+          if (val - 1 < 1) {
+            return
+          }
+        }
+        if (this.offset1 > 0) {
+          this.value2 = Math.max(this.value1 - this.offset1, 1)
+        } else {
+          this.value2 = Math.min(this.value1 - this.offset1, 15)
+        }
+        if (this.offset2 > 0) {
+          this.value3 = Math.max(this.value1 - this.offset2, 1)
+        } else {
+          this.value3 = Math.min(this.value1 - this.offset2, 15)
+        }
+        if (this.offset3 > 0) {
+          this.value4 = Math.max(this.value1 - this.offset3, 1)
+        } else {
+          this.value4 = Math.min(this.value1 - this.offset3, 15)
+        }
       }
     },
     computed: {
     },
     created () {
-      this.location(weex.config.location)
+      this.setLocation(weex.config.location)
       this.allVolumeSize(weex.config.volumeValue)
       this.pianoType = weex.config.pianoType || ''
       this.showAll = weex.config.showAll
-      globalEvent.addEventListener('pianoKeyPressed', (arg) => {
+      globalEvent.addEventListener('pianoKeyPressed', throttle((arg) => {
         find.debug(JSON.stringify(arg))
         if (arg.type === 'backPressed') {
           if (this.toolbarHidden) {
@@ -397,57 +414,21 @@
         this.notAutoSet = false
         this.reset = false
         let keyEvent = arg.data.keys[0]
-        let val = this.value1
         switch (keyEvent) {
           // 总音量
           case 49:
-            this.value1 = Math.max(this.value1 - 1, 1)
-            if (val - 1 < 1) {
-              return
-            }
-            if (this.offset1 > 0) {
-              this.value2 = Math.max(this.value1 - this.offset1, 1)
-            } else {
-              this.value2 = Math.min(this.value1 - this.offset1, 15)
-            }
-            if (this.offset2 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
-            } else {
-              this.value3 = Math.min(this.value1 - this.offset2, 15)
-            }
-            if (this.offset3 > 0) {
-              this.value4 = Math.max(this.value1 - this.offset3, 1)
-            } else {
-              this.value4 = Math.min(this.value1 - this.offset3, 15)
-            }
-
+            this.allVolumeChange(-1)
             break
           case 50:
             this.mute1 = !this.mute1
             this.mute2 = this.mute1
             this.mute3 = this.mute1
             this.mute4 = this.mute1
+            this.mute5 = this.mute1
+            this.mute6 = this.mute1
             break
           case 51:
-            this.value1 = Math.min(this.value1 + 1, 15)
-            if (val + 1 > 15) {
-              return
-            }
-            if (this.offset1 > 0) {
-              this.value2 = Math.max(this.value1 - this.offset1, 1)
-            } else {
-              this.value2 = Math.min(this.value1 - this.offset1, 15)
-            }
-            if (this.offset2 > 0) {
-              this.value3 = Math.max(this.value1 - this.offset2, 1)
-            } else {
-              this.value3 = Math.min(this.value1 - this.offset2, 15)
-            }
-            if (this.offset3 > 0) {
-              this.value4 = Math.max(this.value1 - this.offset3, 1)
-            } else {
-              this.value4 = Math.min(this.value1 - this.offset3, 15)
-            }
+            this.allVolumeChange(1)
             break
           // 自动演奏音量
           case 56:
@@ -476,7 +457,7 @@
             this.value4 = Math.max(this.value4 - 1, 1)
             break
           case 69:
-            this.mute4 = !this.mute4
+            this.mute4 = this.mute5 = this.mute6 = !this.mute4
             this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 70:
@@ -488,6 +469,8 @@
             break
           case 74:
             this.mute5 = !this.mute5
+            this.mute4 = this.mute5 && this.mute6
+            this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 75:
             this.value5 = Math.min(this.value5 + 10, 100)
@@ -498,32 +481,58 @@
             break
           case 79:
             this.mute6 = !this.mute6
+            this.mute4 = this.mute5 && this.mute6
+            this.mute1 = this.mute2 && this.mute3 && this.mute4
             break
           case 80:
             this.value6 = Math.min(this.value6 + 10, 100)
             break
           case 85:
             // 重置
-            this.reset = true
+            this.mute1 = this.mute2 = this.mute3 = this.mute4 = this.mute5 = this.mute6 = false
             this.value1 = 8
             this.value2 = 8
             this.value3 = 8
             this.value4 = 8
             this.value5 = 80
             this.value6 = 80
+            find.sendMsgToWeb({
+              method: 'vioceControl',
+              params: {name: 'volumeSet', type: 'resetAll'}
+            })
+            break
+        }
+      }, 200))
+      globalEvent.addEventListener('volumeWheel', (data) => {
+        this.notAutoSet = false
+        let type = data.type
+        let diffValue = data.value
+        if (type === 'all') {
+          this.allVolumeChange(diffValue)
+        }
+        if (type === 'electronic') {
+          diffValue > 0 ? this.value3 = Math.min(this.value3 + diffValue, 15) : this.value3 = Math.max(this.value3 + diffValue, 1)
+        }
+        if (type === 'media') {
+          diffValue > 0 ? this.value4 = Math.max(this.value4 + diffValue, 1) : this.value4 = Math.max(this.value4 + diffValue, 1)
         }
       })
+    },
+    destroyed () {
+      /// 注意:必须remove
+      globalEvent.removeEventListener('receiveMsgFromWeb')
     },
     components: {
       ...toolbar
     },
     watch: {
       value1: function (val, oldval) {
+        console.log('weex value1 change' + val)
         this.sliderTop1 = 506 - val * 34
         if (this.reset) {
           return find.sendMsgToWeb({
             method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
+            params: {name: 'volumeSet', type: 'resetAll', showAlert: false}
           })
         }
         if (!this.notAutoSet) {
@@ -550,6 +559,7 @@
         }
       },
       value3: function (val, oldval) {
+        console.warn('electronic val watch', this.reset, !this.notAutoSet)
         this.offset2 = this.value1 - val
         this.sliderTop3 = 506 - val * 34
         if (this.reset) {
@@ -566,6 +576,7 @@
         }
       },
       value4: function (val, oldval) {
+        console.log('weex value4 change' + val)
         this.offset3 = this.value1 - val
         this.sliderTop4 = 506 - val * 34
         if (this.reset) {
@@ -713,6 +724,8 @@
 }
 
 .box {
+  width: 3840px;
+  height: 800px;
   top: 280px;
   left: 0;
 }

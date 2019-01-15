@@ -24,6 +24,7 @@ volumeManager.setup = function () {
 // // 打开调音台
 volumeManager.openSoundMix = function (info, fn) {
   volumeManager.registWeexNotif()
+  console.log(window.fp.modules.volume)
   window.fp.modules.volume.getAllVolumeSize().then(function (data1) {
     let weexUrl = info.weexUrl
     let pianoType = info.pianoType
