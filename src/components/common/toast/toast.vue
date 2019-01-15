@@ -5,7 +5,7 @@
              <i :class="['iconfont',icon]" ></i>
          </div>
          <div class="prompt-text">
-             {{text}}
+           <span v-html="text"></span>
          </div>
      </div>
  </div>

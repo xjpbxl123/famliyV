@@ -984,6 +984,12 @@
             if (this.metronome) {
               this.toolbarHidden = false
               modules.metronome.stop()
+              eventsHub.$emit('toast', {
+                text: '节拍器已关闭',
+                icon: 'icon-sync-complete',
+                iconLoading: false,
+                allExit: false
+              })
               this.metronome = false
             }
             break
@@ -991,6 +997,13 @@
             if (!this.metronome) {
               this.toolbarHidden = true
               modules.metronome.start(this.speed, parseInt(this.metre, 10))
+              eventsHub.$emit('toast', {
+                text: '<p>左侧双踏板调速</p><p>最两侧白琴键退出</p>',
+                icon: 'icon-sync-info',
+                iconLoading: false,
+                allExit: false,
+                duration: 2000
+              })
               this.metronome = true
             }
             break
