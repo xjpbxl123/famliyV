@@ -26,6 +26,7 @@
         :setRightSelect="setRightSelect"
         :isPlayingMusicId="isPlayingMusicId"
         :isPlayingType="isPlayingType"/>
+      <NewYearModal v-if="useThemeTexture === 'SpringFestival2019'"/>
     </div>
     <find-cover :activeNamespace="namespace">
       <banner-help
@@ -38,100 +39,101 @@
       />
     </find-cover>
     <fh-player ref="player" :source="playerSource" :hidden="playerHidden" :style="{width:0,height:0}"
-        @initComplete="playerInitComplete">
+               @initComplete="playerInitComplete">
     </fh-player>
-    <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
-        <icon-item v-for="(button,index) in userActionButtons"
-            :hidden="hideOtherButtons || !logoutCover || appLoading"
-            :key="index"
-            :id="button.id"
-            :icon="button.icon"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            titlePosition="below"
-            :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
+    <toolbar :hidden="toolbarHidden || enableOpeningAnimation" :darkBgHidden="true">
+      <icon-item v-for="(button,index) in userActionButtons"
+                 :hidden="hideOtherButtons || !logoutCover || appLoading"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :text="button.text"
+                 :pianoKey="button.pianoKey"
+                 titlePosition="below"
+                 :style="{backgroundColor:'#0000',color: '#fff',textColor: '#fff'}"/>
 
-        <text-icon-item v-for="(button) in bigBUtton"
-            :hidden="hideOtherButtons || !logoutCover || appLoading"
-            :key="button.id"
-            :id="button.id"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            :positionPixels="button.positionPixels"
-            :style="button.style"
-            :icon="button.icon"/>
-        <group id="501" :hidden="hideOtherButtons || !logoutCover || appLoading">
-          <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
-                    :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
-          <icon-item id="401" pianoKey="67" text="" icon="0xe601"
-                    :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
-          <icon-item id="402" pianoKey="68" titlePosition="in" :text="speed"
-                    :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
-          <icon-item id="403" pianoKey="69" text="" icon="0xe605"
-                    :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
-          <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre+'拍'"
-                    :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
-        </group>
-        <icon-item v-for="(button,index) in controlButtons"
-          :longClick="button.longClick"
-          :key="index"
-          :id="button.id"
-          :icon="button.icon"
-          :pianoKey="button.pianoKey"
-          :selected="button.selected"
-          :hidden="button.hidden || hideOtherButtons || !logoutCover || appLoading"
-          :checkable="button.checkable"
-          :checked="button.checked"
-          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
+      <text-icon-item v-for="(button) in bigBUtton"
+                      :hidden="hideOtherButtons || !logoutCover || appLoading"
+                      :key="button.id"
+                      :id="button.id"
+                      :text="button.text"
+                      :pianoKey="button.pianoKey"
+                      :positionPixels="button.positionPixels"
+                      :style="button.style"
+                      :icon="button.icon"/>
+      <group id="501" :hidden="hideOtherButtons || !logoutCover || appLoading">
+        <icon-item id="400" pianoKey="66" titlePosition="below" icon="0xe62b"
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',textColor:'#fff',dotColor: '#52931E'}"/>
+        <icon-item id="401" pianoKey="67" text="" icon="0xe601"
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
+        <icon-item id="402" pianoKey="68" titlePosition="in" :text="speed"
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
+        <icon-item id="403" pianoKey="69" text="" icon="0xe605"
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff'}"/>
+        <icon-item id="404" pianoKey="70" titlePosition="in" :text="metre+'拍'"
+                   :style="{color:'#fff',backgroundColor:'#8AC93E,#52931E',dotColor: '#52931E',textColor:'#fff',fontSize:18}"/>
+      </group>
+      <icon-item v-for="(button,index) in controlButtons"
+                 :longClick="button.longClick"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :pianoKey="button.pianoKey"
+                 :selected="button.selected"
+                 :hidden="button.hidden || hideOtherButtons || !logoutCover || appLoading"
+                 :checkable="button.checkable"
+                 :checked="button.checked"
+                 :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: button.dotColor}"/>
 
-        <icon-item id="899"
-            key="899"
-            icon="0xe60d"
-            text="调音台"
-            pianoKey="87"
-            titlePosition="below"
-            :hidden="!logoutCover || appLoading"
-            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
-        <icon-item v-for="(button,index) in playButtons"
-          :longClick="button.longClick"
-          :key="index"
-          :id="button.id"
-          :icon="button.icon"
-          :pianoKey="button.pianoKey"
-          :selected="button.selected"
-          :hidden="button.hidden || !logoutCover || appLoading"
-          :checkable="button.checkable"
-          :checked="button.checked"
-          :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: '#fff'}"/>
-        <icon-item
-          key="201"
-          id="201"
-          icon="0xe625"
-          pianoKey="90"
-          :hidden="!hideOtherButtons || !logoutCover"
-          :style="{backgroundColor:'#4000',textColor: '#fff',dotColor: '#fff'}"/>
+      <icon-item id="899"
+                 key="899"
+                 icon="0xe60d"
+                 text="调音台"
+                 pianoKey="87"
+                 titlePosition="below"
+                 :hidden="!logoutCover || appLoading"
+                 :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+      <icon-item v-for="(button,index) in playButtons"
+                 :longClick="button.longClick"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :pianoKey="button.pianoKey"
+                 :selected="button.selected"
+                 :hidden="button.hidden || !logoutCover || appLoading"
+                 :checkable="button.checkable"
+                 :checked="button.checked"
+                 :style="{backgroundColor:button.backgroundColor,textColor: '#fff',dotColor: '#fff'}"/>
+      <icon-item
+        key="201"
+        id="201"
+        icon="0xe625"
+        pianoKey="90"
+        :hidden="!hideOtherButtons || !logoutCover"
+        :style="{backgroundColor:'#4000',textColor: '#fff',dotColor: '#fff'}"/>
 
-         <icon-item v-for="(button,index) in logoutButtons"
-            :hidden="logoutCover || appLoading"
-            :key="index"
-            :id="button.id"
-            :icon="button.icon"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            titlePosition="below"
-            v-if="button.show"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
-         <icon-item v-for="(button,index) in gameButtons"
-            :hidden="!appLoading || !button.show"
-            :key="index"
-            :id="button.id"
-            :icon="button.icon"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            titlePosition="below"
-            v-if="button.show"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
+      <icon-item v-for="(button,index) in logoutButtons"
+                 :hidden="logoutCover || appLoading"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :text="button.text"
+                 :pianoKey="button.pianoKey"
+                 titlePosition="below"
+                 v-if="button.show"
+                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
+      <icon-item v-for="(button,index) in gameButtons"
+                 :hidden="!appLoading || !button.show"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :text="button.text"
+                 :pianoKey="button.pianoKey"
+                 titlePosition="below"
+                 v-if="button.show"
+                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
     </toolbar>
+    <WellcomeModal v-if="enableOpeningAnimation"/>
   </div>
 </template>
 <script type="text/javascript">
@@ -143,14 +145,18 @@
   import contentCenter from './index-content-center'
   import bannerRight from './index-banner-right'
   import statusBar from '../common/find-status-bar/find-status-bar'
+  import WellcomeModal from './index-wellcome'
+  import NewYearModal from './index-new-year-modal'
   import { modules, download } from 'find-sdk'
   import initData from './initData.js'
-  import {formatDate, errorHandling} from '../../scripts/utils'
+  import { formatDate, errorHandling } from '../../scripts/utils'
   import eventsHub from 'scripts/eventsHub'
   import mixerMixin from '../common/mixer-mixin.js'
+
   export default {
     data () {
       return {
+        enableOpeningAnimation: false,
         helpIndex: 0, /// 当前是第几个帮助图片
         showHelpBanner: false,
         closeScreen: false,
@@ -199,12 +205,47 @@
           }
         ],
         bigBUtton: [
-          {id: 7, pianoKey: 39, text: '我的资源', icon: '0xe763', positionPixels: -10, style: {backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256'}},
-          {id: 8, pianoKey: 42, text: '弹奏录制', icon: '0xe615', positionPixels: 0, style: {backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45'}},
-          {id: 6, pianoKey: 46, text: '乐理&技巧', icon: '0xe71e', positionPixels: -40, style: {backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119'}},
-          {id: 5, pianoKey: 49, text: '最新&最热', icon: '0xe761', positionPixels: -40, style: {backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED'}},
+          {
+            id: 7,
+            pianoKey: 39,
+            text: '我的资源',
+            icon: '0xe763',
+            positionPixels: -10,
+            style: { backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256' }
+          },
+          {
+            id: 8,
+            pianoKey: 42,
+            text: '弹奏录制',
+            icon: '0xe615',
+            positionPixels: 0,
+            style: { backgroundColor: '#D84575,#8E2F45', dotColor: '#8E2F45' }
+          },
+          {
+            id: 6,
+            pianoKey: 46,
+            text: '乐理&技巧',
+            icon: '0xe71e',
+            positionPixels: -40,
+            style: { backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119' }
+          },
+          {
+            id: 5,
+            pianoKey: 49,
+            text: '最新&最热',
+            icon: '0xe761',
+            positionPixels: -40,
+            style: { backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED' }
+          },
           // {id: 9, pianoKey: 51, text: '名师课程', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1'}},
-          {id: 9, pianoKey: 54, text: '游戏管理', icon: '0xe69d', positionPixels: 0, style: {backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC'}}
+          {
+            id: 9,
+            pianoKey: 54,
+            text: '游戏管理',
+            icon: '0xe69d',
+            positionPixels: 0,
+            style: { backgroundColor: '#5F89FC,#4E59E1', dotColor: '#5F89FC' }
+          }
         ],
         controlButtons: [
           {
@@ -375,7 +416,7 @@
     },
     mixins: [initData, mixerMixin],
     find: {
-      [keys.TOOLBAR_PRESSED] ({hidden}) {
+      [keys.TOOLBAR_PRESSED] ({ hidden }) {
         this.toolbarHidden = hidden
         if (hidden && this.metronome) {
           return
@@ -474,7 +515,7 @@
         // 节拍器换拍子
         this.buttonActions('metroTip')
       },
-      [keys.receiveMsgFromWeex] ({method, params}) {
+      [keys.receiveMsgFromWeex] ({ method, params }) {
         this[method] && this[method](params)
       },
       [keys.KEY87] () {
@@ -634,9 +675,14 @@
       },
       [keys.BACK_PRESSED] () {
         if (this.loading || !this.canEnterModule) {
-          console.log('108rerurn')
+          console.log('108')
           return
         }
+        modules.storage.set('FindFamily', 'OpeningAnimation', {
+          enableOpeningAnimation: false
+        }).then(() => {
+          this.enableOpeningAnimation = false
+        })
         this.goBack()
       },
       banner: {
@@ -659,7 +705,7 @@
         pianoInfo: state => state.storage.pianoInfo,
         pianoType: state => state.storage.pianoType,
         isLogin (state) {
-          let {storage} = state
+          let { storage } = state
           if (storage.isLogin) {
             this.userActionButtons[1].text = '注销'
           }
@@ -676,7 +722,8 @@
           return state.storage.cache.renderCache.scoreList
         },
         partner: state => state.storage.cache.renderCache.partner,
-        parnerLocal: state => state.storage.cache.renderCache.parnerLocal
+        parnerLocal: state => state.storage.cache.renderCache.parnerLocal,
+        useThemeTexture: state => state.index.useThemeTexture
       }),
       ...mapGetters(['recentOpenList', 'collectList', 'musicInfo', 'musicList']),
       namespace () {
@@ -897,10 +944,16 @@
             } else {
               // 弹出提示框
               if (this.logoutCover) {
-                eventsHub.$emit('toast', {text: '确认注销吗？', icon: 'icon-sync-info', iconLoading: false, allExit: true, noClose: true})
+                eventsHub.$emit('toast', {
+                  text: '确认注销吗？',
+                  icon: 'icon-sync-info',
+                  iconLoading: false,
+                  allExit: true,
+                  noClose: true
+                })
                 this.logoutCover = !this.logoutCover
               } else {
-                this.$store.dispatch('logout', {root: true}).then(() => {
+                this.$store.dispatch('logout', { root: true }).then(() => {
                   this.createSession()
                   this.logoutCover = !this.logoutCover
                   eventsHub.$emit('closeToast', true)
@@ -987,14 +1040,24 @@
                 return this.buttonActions('peilian')
               case 3:
                 if (!this.isLogin) {
-                  return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  return eventsHub.$emit('toast', {
+                    text: '请登录后进行操作',
+                    icon: 'icon-sync-info',
+                    iconLoading: false,
+                    allExit: false
+                  })
                 }
                 if (this.isLogin) {
-                  return this.$store.dispatch({type: 'getUserInfo'}).then((data) => {
+                  return this.$store.dispatch({ type: 'getUserInfo' }).then((data) => {
                     if (!data.userInfo && !data.message) {
                       // 请求不到用户信息 并且不是网络情况
                       modules.user.logOut()
-                      return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                      return eventsHub.$emit('toast', {
+                        text: '请登录后进行操作',
+                        icon: 'icon-sync-info',
+                        iconLoading: false,
+                        allExit: false
+                      })
                     }
                     return this.checkApp('kingdom2')
                   })
@@ -1032,7 +1095,7 @@
             if (this.isPlaying && musicObj.musicId === this.isPlayingMusicId && this.isPlayingType === this.rightType) {
               // 播放中 不操作 仅弹框
               this.loading = false
-              eventsHub.$emit('toast', {text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+              eventsHub.$emit('toast', { text: '正在播放当前曲谱', icon: 'icon-sync-info', iconLoading: false, allExit: false })
               return
             }
             if (this.enterPlay) {
@@ -1114,13 +1177,23 @@
             console.log('陪练')
             // 做登录验证
             if (!this.isLogin) {
-              return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+              return eventsHub.$emit('toast', {
+                text: '请登录后进行操作',
+                icon: 'icon-sync-info',
+                iconLoading: false,
+                allExit: false
+              })
             }
             if (this.isLogin) {
-              return this.$store.dispatch({type: 'getUserInfo'}).then((data) => {
+              return this.$store.dispatch({ type: 'getUserInfo' }).then((data) => {
                 if (!data.userInfo && !data.message) {
                   modules.user.logOut()
-                  return eventsHub.$emit('toast', {text: '请登录后进行操作', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  return eventsHub.$emit('toast', {
+                    text: '请登录后进行操作',
+                    icon: 'icon-sync-info',
+                    iconLoading: false,
+                    allExit: false
+                  })
                 }
                 return this.checkApp('findPartner')
               })
@@ -1135,7 +1208,7 @@
       },
       checkApp (appName) {
         this.appLoading = true
-        eventsHub.$emit('toast', {text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true})
+        eventsHub.$emit('toast', { text: '正在加载', iconLoading: true, icon: 'icon-loading', allExit: true })
         let path = '$web/' + appName + '/package.json'
         if (appName !== 'findPartner') {
           path = '$game/' + appName + '/version.json'
@@ -1150,7 +1223,10 @@
               // 判断文件是否存在
               modules.file.fileExists(res.path).then((res1) => {
                 if (res1) {
-                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName}).then((data1) => {
+                  return this.$store.dispatch('index/getLocalAppVersion', {
+                    url: res.http,
+                    appName: appName
+                  }).then((data1) => {
                     if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
                       // 本地有 去判断线上版本
                       console.log('本地有 去判断线上版本')
@@ -1171,7 +1247,12 @@
                           }
                           this.gameButtons[0].show = false
                           this.gameButtons[2].show = true
-                          eventsHub.$emit('toast', {text: '数据包有更新,是否更新后进入?', icon: 'icon-sync-info', iconLoading: false, allExit: true})
+                          eventsHub.$emit('toast', {
+                            text: '数据包有更新,是否更新后进入?',
+                            icon: 'icon-sync-info',
+                            iconLoading: false,
+                            allExit: true
+                          })
                         } else {
                           // 不需要更新 直接打开即可
                           this.openApp(appName)
@@ -1277,7 +1358,12 @@
             fsize: downloadInfo.fsize,
             localPath: localPath
           }).progress(progress => {
-            eventsHub.$emit('toast', {text: '下载中 ' + parseInt(progress.progress * 100) + '%', iconLoading: false, icon: 'icon-updating', allExit: true})
+            eventsHub.$emit('toast', {
+              text: '下载中 ' + parseInt(progress.progress * 100) + '%',
+              iconLoading: false,
+              icon: 'icon-updating',
+              allExit: true
+            })
           }).then(res => {
             console.log(res)
             if (res.path) {
@@ -1348,7 +1434,7 @@
       player (musicObj, tick) {
         this.loading = true
         console.log('loading开始--1')
-        eventsHub.$emit('toast', {text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true})
+        eventsHub.$emit('toast', { text: '正在加载曲谱', icon: 'icon-loading', iconLoading: true, allExit: true })
         let musicId = parseInt(musicObj.musicId)
         let bookId = parseInt(musicObj.bookId)
         let musicIds = []
@@ -1371,7 +1457,7 @@
             styleId = 7
             break
         }
-        this.$store.dispatch({type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId}).then((data) => {
+        this.$store.dispatch({ type: 'scoreList/getMusicList', typeName: 'musicScore', id: bookId }).then((data) => {
           console.log('曲谱列表请求回来--2')
           let list = this.musicList[bookId]
           if (list) {
@@ -1384,8 +1470,8 @@
               eachMusic.styleName = data.files[0].styleName
               eachMusic.curMusicId = data.files[0].musicId
               eachMusic.styleId = data.files[0].styleId
-              let {bookName, musicId, name: musicName} = data
-              Object.assign(eachMusic, {bookName, musicId, musicName, musicOrigin: 'bookList'})
+              let { bookName, musicId, name: musicName } = data
+              Object.assign(eachMusic, { bookName, musicId, musicName, musicOrigin: 'bookList' })
               data.files.forEach((item) => {
                 if (styleId === item.styleId) {
                   eachMusic.curMusicId = item.musicId
@@ -1393,14 +1479,14 @@
                   id = item.musicId
                   eachMusic.styleName = item.styleName
                 }
-                musicVersions.push({musicId: item.musicId, version: item.styleName || ''})
+                musicVersions.push({ musicId: item.musicId, version: item.styleName || '' })
               })
               musicIds.push(parseInt(id))
               eachMusic.musicVersions = musicVersions
               allMusics.push(eachMusic)
             })
-            console.log({musicId, musicIds, allMusics, tick}, 'scoreData')
-            modules.nativeRouter.openMidiPlayQueue({musicId, musicIds, allMusics, tick}).then((data) => {
+            console.log({ musicId, musicIds, allMusics, tick }, 'scoreData')
+            modules.nativeRouter.openMidiPlayQueue({ musicId, musicIds, allMusics, tick }).then((data) => {
               this.loading = false
               console.log('loading结束')
               eventsHub.$emit('closeToast')
@@ -1415,7 +1501,7 @@
               } else {
                 // 打开失败
                 console.log('打开失败')
-                eventsHub.$emit('toast', {text: '打开曲谱失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                eventsHub.$emit('toast', { text: '打开曲谱失败', icon: 'icon-sync-info', iconLoading: false, allExit: false })
                 this.isOpeningScore = false
                 this.hideOtherButtons = false
                 this.canEnterModule = true
@@ -1434,7 +1520,7 @@
         }).catch((err) => {
           console.log('POST Error', err)
           this.loading = false
-          eventsHub.$emit('toast', {text: '获取曲谱列表失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+          eventsHub.$emit('toast', { text: '获取曲谱列表失败', icon: 'icon-sync-info', iconLoading: false, allExit: false })
         })
       },
       getRightData () {
@@ -1454,7 +1540,7 @@
           this.clickeType = this.rightType
           this.clickedIndex = rightActiveIndex
         }
-        return {musicObj: musicObj, list: list1}
+        return { musicObj: musicObj, list: list1 }
       },
       playLoop (musicList, musicIndex) {
         if (this.autoPlay && musicIndex + 1 <= musicList.length - 1) {
@@ -1475,9 +1561,9 @@
         }
         this.loading = true
         console.log('loading开始--1')
-        eventsHub.$emit('toast', {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true})
-        let midiData = {url: '', md5: '', fsize: 0}
-        let mp3Data = {url: '', md5: '', fsize: 0}
+        eventsHub.$emit('toast', { text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true })
+        let midiData = { url: '', md5: '', fsize: 0 }
+        let mp3Data = { url: '', md5: '', fsize: 0 }
         this.hideOtherButtons = true
         console.log('开始请求数据', musicId)
         this.$store.dispatch('index/getMusicInfo', musicId).then((data) => {
@@ -1503,7 +1589,12 @@
                 if (!value.mMid.url) {
                   this.loading = false
                   this.initPlayer()
-                  eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {
+                    text: '获取曲谱信息失败',
+                    icon: 'icon-sync-info',
+                    iconLoading: false,
+                    allExit: false
+                  })
                   this.hideOtherButtons = false
                   // 当前是自动播放则继续播放下一首
                   this.playLoop(musicList, musicIndex)
@@ -1524,7 +1615,7 @@
             console.log('找不到曲谱')
             this.loading = false
             this.initPlayer()
-            eventsHub.$emit('toast', {text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            eventsHub.$emit('toast', { text: '获取曲谱信息失败', icon: 'icon-sync-info', iconLoading: false, allExit: false })
             this.hideOtherButtons = false
             // 当前是自动播放则继续播放下一首
             this.playLoop(musicList, musicIndex)
@@ -1546,7 +1637,7 @@
             if (!res.path) {
               // 本地没有 去下载
               console.log('本地没有 去下载')
-              let downloadObj = {...exixtObj, fsize: midiData.fsize}
+              let downloadObj = { ...exixtObj, fsize: midiData.fsize }
               download.downloadFile(downloadObj).then((data) => {
                 console.log(data, '下载完成--3')
                 if (data.path) {
@@ -1563,7 +1654,12 @@
                   this.loading = false
                   this.initPlayer()
                   this.hideOtherButtons = false
-                  eventsHub.$emit('toast', {text: '曲谱信息下载失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+                  eventsHub.$emit('toast', {
+                    text: '曲谱信息下载失败',
+                    icon: 'icon-sync-info',
+                    iconLoading: false,
+                    allExit: false
+                  })
                   // 当前是自动播放则继续播放下一首
                   this.playLoop(musicList, musicIndex)
                 }
@@ -1611,7 +1707,7 @@
         console.log(data, '播放器加载成功')
         if (!data.result) {
           if (this.loading) {
-            eventsHub.$emit('toast', {text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false})
+            eventsHub.$emit('toast', { text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false })
             this.loading = false
             this.hideOtherButtons = false
           }
@@ -1709,10 +1805,10 @@
         modules.notification.remove('checkPedalMute')
       },
       getPianoInfo () {
-        return this.$store.dispatch('getPianoInfo', {root: true})
+        return this.$store.dispatch('getPianoInfo', { root: true })
       },
       getPianoType () {
-        return this.$store.dispatch('getPianoType', {root: true})
+        return this.$store.dispatch('getPianoType', { root: true })
       },
       registVloume () {
         //   监听音量设置
@@ -1727,6 +1823,29 @@
           }
         })
       }
+    },
+    beforeCreate () {
+      /**
+       * 读取native本地用户是否为首次登录
+       */
+      // debug setting enableOpeningAnimation true
+      // modules.storage.set('FindFamily', 'OpeningAnimation', {
+      //   enableOpeningAnimation: true
+      // }).then(() => {
+      //   this.enableOpeningAnimation = true
+      // })
+      // production
+      modules.storage.get('FindFamily', 'OpeningAnimation').then((data) => {
+        if (data && data.enableOpeningAnimation !== undefined) {
+          this.enableOpeningAnimation = data.enableOpeningAnimation
+        } else {
+          modules.storage.set('FindFamily', 'OpeningAnimation', {
+            enableOpeningAnimation: true
+          }).then(() => {
+            this.enableOpeningAnimation = true
+          })
+        }
+      })
     },
     created () {
       this.getPianoInfo()
@@ -1755,7 +1874,9 @@
       contentCenter,
       bannerRight,
       bannerHelp,
-      statusBar
+      statusBar,
+      WellcomeModal,
+      NewYearModal
     }
   }
 </script>
@@ -1763,12 +1884,13 @@
   .banner-wrapper {
     height: 100%;
 
-  .banner-content {
-    display: flex;
-    height: 100%;
-  }
+    .banner-content {
+      display: flex;
+      height: 100%;
+    }
 
   }
+
   .button-banner {
     padding: 0 20px;
   }

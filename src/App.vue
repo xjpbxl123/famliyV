@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}" >
+    <div class="backImg" :style="{background:'url('+backgroundUrl+') 0 0 /cover no-repeat'}">
     </div>
     <router-view></router-view>
     <!-- <transition name="fade"> -->
@@ -13,8 +13,10 @@
   import eventsHub from './scripts/eventsHub'
   import toast from './components/common/toast/toast.js'
   import { mapState } from 'vuex'
+
   export default {
     name: 'app',
+
     data () {
       return {
         backgroundUrl: '',
@@ -29,12 +31,22 @@
         }
       })
     },
+    methods: {
+      setThemeTexture (url) {
+        if (url.match('SpringFestival2019')) {
+          this.$store.dispatch('index/setThemeTexture', 'SpringFestival2019')
+        }
+        // debug
+        // this.$store.dispatch('index/setThemeTexture', 'SpringFestival2019')
+      }
+    },
     created () {
       console.log(this.state)
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
           this.backgroundUrl = data
+          this.setThemeTexture(data)
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
@@ -44,6 +56,7 @@
       modules.notification.regist('SetBackgroundImage', data => {
         if (data.backGroundImageName) {
           this.backgroundUrl = data.backGroundImageName
+          this.setThemeTexture(data.backGroundImageName)
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
@@ -70,7 +83,7 @@
       })
       // 提示框
       eventsHub.$on('toast', (params) => {
-        let defaultParams = {text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true}
+        let defaultParams = { text: '正在加载', icon: 'icon-loading', iconLoading: true, allExit: true }
         params = Object.assign({}, defaultParams, params)
         this.noClose = params.noClose /* 防止快速切页面的时候打开弹框被关掉 */
         if (this.loadingInstance) eventsHub.$emit('closeToast')
