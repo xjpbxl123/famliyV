@@ -943,9 +943,17 @@
             break
           case 'speedDown':
             this.speed = this.speed > 40 ? ((this.speed - 10) > 40 ? this.speed - 10 : 40) : 40
+            if (this.metronome) {
+              modules.metronome.stop()
+              modules.metronome.start(this.speed, parseInt(this.metre, 10))
+            }
             break
           case 'speedUp':
             this.speed = this.speed < 300 ? ((this.speed + 10) < 300 ? this.speed + 10 : 300) : 300
+            if (this.metronome) {
+              modules.metronome.stop()
+              modules.metronome.start(this.speed, parseInt(this.metre, 10))
+            }
             break
           case 'speedRecover':
             // 恢复节拍器数值到120
