@@ -35,6 +35,8 @@
       setThemeTexture (url) {
         if (url.match('SpringFestival2019')) {
           this.$store.dispatch('index/setThemeTexture', 'SpringFestival2019')
+        } else {
+          this.$store.dispatch('index/setThemeTexture', 'default')
         }
         // debug
         // this.$store.dispatch('index/setThemeTexture', 'SpringFestival2019')
