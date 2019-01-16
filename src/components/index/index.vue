@@ -1843,7 +1843,7 @@
          */
         modules.storage.get('FindFamily', 'OpeningAnimation').then((data) => {
           if (data && data.enableOpeningAnimation !== undefined) {
-            this.enableOpeningAnimation = data.enableOpeningAnimation || true
+            this.enableOpeningAnimation = data.enableOpeningAnimation
             this.toolbarHidden = this.toolbarHidden || this.enableOpeningAnimation
           } else {
             modules.storage.set('FindFamily', 'OpeningAnimation', {
