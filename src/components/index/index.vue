@@ -41,7 +41,7 @@
     <fh-player ref="player" :source="playerSource" :hidden="playerHidden" :style="{width:0,height:0}"
                @initComplete="playerInitComplete">
     </fh-player>
-    <toolbar :hidden="toolbarHidden || enableOpeningAnimation" :darkBgHidden="true">
+    <toolbar :hidden="toolbarHidden" :darkBgHidden="true">
       <icon-item v-for="(button,index) in userActionButtons"
                  :hidden="hideOtherButtons || !logoutCover || appLoading"
                  :key="index"
@@ -682,6 +682,7 @@
           enableOpeningAnimation: false
         }).then(() => {
           this.enableOpeningAnimation = false
+          this.toolbarHidden = false
         })
         this.goBack()
       },
@@ -1835,30 +1836,25 @@
             }
           }
         })
+      },
+      checkEnableOpeningAnimation () {
+        /**
+         * 读取native本地用户是否为首次登录
+         */
+        modules.storage.get('FindFamily', 'OpeningAnimation').then((data) => {
+          if (data && data.enableOpeningAnimation !== undefined) {
+            this.enableOpeningAnimation = data.enableOpeningAnimation || true
+            this.toolbarHidden = this.toolbarHidden || this.enableOpeningAnimation
+          } else {
+            modules.storage.set('FindFamily', 'OpeningAnimation', {
+              enableOpeningAnimation: true
+            }).then(() => {
+              this.enableOpeningAnimation = true
+              this.toolbarHidden = true
+            })
+          }
+        })
       }
-    },
-    beforeCreate () {
-      /**
-       * 读取native本地用户是否为首次登录
-       */
-      // debug setting enableOpeningAnimation true
-      // modules.storage.set('FindFamily', 'OpeningAnimation', {
-      //   enableOpeningAnimation: true
-      // }).then(() => {
-      //   this.enableOpeningAnimation = true
-      // })
-      // production
-      modules.storage.get('FindFamily', 'OpeningAnimation').then((data) => {
-        if (data && data.enableOpeningAnimation !== undefined) {
-          this.enableOpeningAnimation = data.enableOpeningAnimation
-        } else {
-          modules.storage.set('FindFamily', 'OpeningAnimation', {
-            enableOpeningAnimation: true
-          }).then(() => {
-            this.enableOpeningAnimation = true
-          })
-        }
-      })
     },
     created () {
       this.getPianoInfo()
@@ -1869,9 +1865,18 @@
       this.clearCache()
       this.checkPedalMute()
       this.registVloume()
+      this.checkEnableOpeningAnimation()
     },
     mounted () {
       this.adjustPlayer()
+      setTimeout(() => {
+        modules.storage.set('FindFamily', 'OpeningAnimation', {
+          enableOpeningAnimation: false
+        }).then(() => {
+          this.enableOpeningAnimation = false
+          this.toolbarHidden = false
+        })
+      }, 7000)
     },
     beforeDestroy () {
       this.toolbarHidden = true
