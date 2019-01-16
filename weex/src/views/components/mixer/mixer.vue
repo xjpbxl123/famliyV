@@ -290,6 +290,9 @@
         this.mute4 = media.mute
         this.mute5 = humanVolume.mute
         this.mute6 = mediaAccompany.mute
+        this.offset1 = autoPlay.offsetValue
+        this.offset2 = electronic.offsetValue
+        this.offset3 = media.offsetValue
       },
       setLocation (data) {
         this.left1 = data[0] - 103
