@@ -33,7 +33,7 @@
     },
     methods: {
       setThemeTexture (url) {
-        if (url.match('SpringFestival2019')) {
+        if (url && url.match('SpringFestival2019')) {
           this.$store.dispatch('index/setThemeTexture', 'SpringFestival2019')
         } else {
           this.$store.dispatch('index/setThemeTexture', 'default')
@@ -43,25 +43,24 @@
       }
     },
     created () {
-      console.log(this.state)
       // 获取原生背景图片
       modules.global.httpBackgroundImage().then(data => {
         if (data) {
           this.backgroundUrl = data
-          this.setThemeTexture(data)
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
+        this.setThemeTexture(this.backgroundUrl)
       })
 
       // 监听背景设置
       modules.notification.regist('SetBackgroundImage', data => {
-        if (data.backGroundImageName) {
+        if (data && data.backGroundImageName) {
           this.backgroundUrl = data.backGroundImageName
-          this.setThemeTexture(data.backGroundImageName)
         } else {
           this.backgroundUrl = require('./images/DefaultWallpaper.png')
         }
+        this.setThemeTexture(this.backgroundUrl)
       })
       // 重启app清空数组
       this.$store.dispatch('myScore/setCopyArr', [])
