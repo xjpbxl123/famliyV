@@ -16,7 +16,7 @@
   }
 </script>
 <style lang="scss" scoped>
-  $zIndex: 99999;
+  $zIndex: 9;
   .new-year-modal {
     width: 100%;
     height: 100%;
@@ -44,12 +44,12 @@
       background-size: contain;
       animation: run 1.8s ease-in-out infinite alternate;
       transform-origin: 112px 0;
-      transform: rotate(12deg);
+      transform: rotate(4deg);
     }
     .right-lights {
       position: absolute;
       z-index: $zIndex;
-      right: -70px;
+      right: -150px;
       top: -18px;
       width: 1370px;
       height: 324px;
@@ -58,10 +58,10 @@
     }
     @keyframes run {
       0% {
-        transform: rotate(18deg);
+        transform: rotate(4deg);
       }
       100% {
-        transform: rotate(-18deg);
+        transform: rotate(-4deg);
       }
     }
     .calendar-bg {
@@ -72,7 +72,8 @@
       width: 470px;
       height: 100%;
       background: url("./images/new_year/calendar_bg.png") no-repeat;
-      background-size: contain;
+      background-size: 70%;
+      background-position: center 524px;
     }
   }
 </style>
