@@ -2907,16 +2907,21 @@ find-parent-dir@^0.3.0:
   version "0.3.0"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-parent-dir/-/find-parent-dir-0.3.0.tgz#33c44b429ab2b2f0646299c5f9f718f376ff8d54"
 
-find-sdk@^1.3.2:
-  version "1.3.2"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-sdk/-/find-sdk-1.3.2.tgz#d913fc2f14d14d3fa81c7c30977d6c26a1cb27f5"
-  integrity sha512-YfS/FxTuTi0tBJ7AmfAUzzc73OWTUwF1pFUFj91SWsnSofOyQv8jDXyxhXXLjcqIlQqApxnL85kVFCZTBDnf9Q==
+find-sdk@^1.3.3:
+  version "1.3.3"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-sdk/-/find-sdk-1.3.3.tgz#2af57763745d2cb4e1319929163b6ccbc1fd2d37"
+  integrity sha512-EcVJDY+VT0Wt4dCAGiouQWMpr6n0jMkxeqXvGdKrCb29myeL/oDHmuFFvzEUNncx0foUQBRM0n/xUO+/sHulFg==
   dependencies:
     lodash "^4.17.10"
 
 find-toolbar@^1.2.3:
   version "1.2.3"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.3.tgz#e8c9124620bce15e6225c87fd7b0318238cd0fe6"
+
+find-toolbar@^1.2.6:
+  version "1.2.6"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/find-toolbar/-/find-toolbar-1.2.6.tgz#272f03d1e79aa6141c26e6a5892f113c8cc1293f"
+  integrity sha512-YaxjdQVszrcePiMdQAHD+XWpGpeV5403MOBpHDZfE54QMk2D/eMZ++rgtwdEeSZ0QPpMov06Rox/BIT8mjVPuQ==
 
 find-up@^1.0.0:
   version "1.1.2"
@@ -4167,6 +4172,11 @@ lodash.clonedeep@^4.3.2:
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+
+lodash.differencewith@^4.5.0:
+  version "4.5.0"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/lodash.differencewith/-/lodash.differencewith-4.5.0.tgz#bafafbc918b55154e179176a00bb0aefaac854b7"
+  integrity sha1-uvr7yRi1UVTheRdqALsK76rIVLc=
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -7207,15 +7217,6 @@ vue-eslint-parser@^2.0.1:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-find-hybrid@^1.1.3:
-  version "1.3.9"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.3.9.tgz#32c14b5627367c79e13f85cfa50ad79c952bdf69"
-  dependencies:
-    deep-diff "^1.0.1"
-    find-toolbar "^1.2.3"
-    lodash "^4.17.10"
-    vue "^2.5.2"
-
 vue-find-hybrid@^1.2.9:
   version "1.3.8"
   resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.3.8.tgz#22ab7a1c8aca41ff2ffdc2dabe2cb097e4c018e3"
@@ -7223,6 +7224,15 @@ vue-find-hybrid@^1.2.9:
     deep-diff "^1.0.1"
     find-toolbar "^1.2.3"
     lodash "^4.17.10"
+    vue "^2.5.2"
+
+vue-find-hybrid@^1.6.5:
+  version "1.6.5"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.6.5.tgz#1d01ffb5a3017b03c0e06998ba1b1627b7e7f497"
+  integrity sha1-HQH/taMBewPA4GmYuhsWJ7fn9Jc=
+  dependencies:
+    find-toolbar "^1.2.6"
+    lodash.differencewith "^4.5.0"
     vue "^2.5.2"
 
 vue-find@^1.3.3:

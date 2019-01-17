@@ -234,16 +234,36 @@
       registVloume () {
         // 监听音量设置
         let self = this
-        window.fp.utils.volumeManager.registVolumeChange((data) => {
-          console.log(data, 'volumeData')
-          if (data && data.type === 1) {
-            if (data.mute !== undefined && data.mute === true) {
-              self.$refs.video.volume = 0
-            } else {
-              self.$refs.video.volume = data.realValue
+        // 监听方法 volumeWatcher
+        this.$volume.volumeWatcher((data) => {
+          switch (data.type) {
+            case 'media': {
+              self.$refs.player.setVolume(data.realValue ? data.realValue / 100 : 0)
+              break
+            }
+            case 'autoPlay': {
+              self.$refs.player.setAutoPlayOn(!data.mute)
+              break
+            }
+            case 'electronic': {
+              self.$refs.player.setElectronicOn(!data.mute)
+              break
+            }
+            default: {
+              console.log('no data.type')
             }
           }
         })
+        // window.fp.utils.volumeManager.registVolumeChange((data) => {
+        //   console.log(data, 'volumeData')
+        //   if (data && data.type === 1) {
+        //     if (data.mute !== undefined && data.mute === true) {
+        //       self.$refs.video.volume = 0
+        //     } else {
+        //       self.$refs.video.volume = data.realValue
+        //     }
+        //   }
+        // })
       }
     },
     mounted () {
