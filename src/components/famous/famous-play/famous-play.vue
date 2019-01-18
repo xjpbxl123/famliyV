@@ -2,7 +2,7 @@
   <div class="vidioPlay">
     <div class="backBox"></div>
     <h1 v-if="palyHidden" v-text="'正在下载中...'+progress+'%'"></h1>
-    <fh-player  ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
+    <fh-player ref="player" :source="playerSource" :hidden="palyHidden" :style="{width:3840,height:1080}"
                @initComplete="playerInitComplete">
       <fh-video ref="video" :style="{width:3840,height:1080}">
       </fh-video>
@@ -15,36 +15,38 @@
       <fh-label :style="totalTime">
       </fh-label>
     </fh-div>
-    <fh-weex :style="weexStyle" ref="weex" />
+    <fh-weex :style="weexStyle" ref="weex"/>
     <toolbar :hidden="toolbarHidden1">
       <icon-item v-for="button in videoButton"
-              :hidden="toolbarHidden || isPlay"
-              :pianoKey="button.pianoKey"
-              :key="button.icon"
-              longClick="true"
-              :id="button.id"
-              :gradient="true"
-              :style="{backgroundColor: '#6000',dotColor: '#fff'}"
-              :icon="button.icon"/>
+                 :hidden="toolbarHidden || isPlay"
+                 :pianoKey="button.pianoKey"
+                 :key="button.icon"
+                 longClick="true"
+                 :id="button.id"
+                 :gradient="true"
+                 :style="{backgroundColor: '#6000',dotColor: '#fff'}"
+                 :icon="button.icon"/>
       <icon-item v-for="button in buttons"
-        :hidden="toolbarHidden || isPlay"
-        :pianoKey="button.pianoKey"
-        :key="button.icon"
-        longClick="true"
-        :id="button.id"
-        :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
-        :text="button.text"
-        titlePosition='below'
-        :icon="button.icon"/>
+                 :hidden="toolbarHidden || isPlay"
+                 :pianoKey="button.pianoKey"
+                 :key="button.icon"
+                 longClick="true"
+                 :id="button.id"
+                 :style="{backgroundColor: button.backgroundColor,textColor: '#fff',fontSize:'14'}"
+                 :text="button.text"
+                 titlePosition='below'
+                 :icon="button.icon"/>
       <icon-item id="899"
-        key="899"
-        icon="0xe60d"
-        text="调音台"
-        pianoKey="97"
-        titlePosition="below"
-        :hidden="toolbarHidden"
-        :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
-      <slider ref="slider" :hidden="toolbarHidden || isPlay" id="701" :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue" :min="0.5" :max="1.5">
+                 key="899"
+                 icon="0xe60d"
+                 text="调音台"
+                 pianoKey="97"
+                 titlePosition="below"
+                 :hidden="toolbarHidden"
+                 :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+      <slider ref="slider" :hidden="toolbarHidden || isPlay" id="701"
+              :style="{backgroundColor:'#7000', borderColor: '#52931E', barColor: '#52931E'}" :value="speedValue"
+              :min="0.5" :max="1.5">
         <titleitem text="-" id="710" pianoKey="73"/>
         <titleitem :text="speedValue+'X'" id="712" pianoKey="74" :style="{fontSize:'14'}"/>
         <titleitem text="+" id="714" pianoKey="75"/>
@@ -57,29 +59,46 @@
   .vidioPlay {
     width: 100%;
     height: 100%;
+
     .backBox {
       width: 100%;
       height: 100%;
       background: url('../images/video_bg.png') no-repeat !important;
       background-size: cover;
     }
+
     h1 {
       position: absolute;
       top: 524px;
       left: 1007px;
       font-size: 42px;
       font-weight: 400;
-      color:rgba(51,51,51,1);
+      color: rgba(51, 51, 51, 1);
     }
   }
 </style>
 <script type="es6">
   import { mapState, mapGetters } from 'vuex'
   import { download, modules } from 'find-sdk'
-  import { KEY80, KEY78, KEY82, KEY66, KEY68, KEY73, KEY74, KEY97, KEY75, receiveMsgFromWeex, BACK_PRESSED, PEDAL_PRESSED, TOOLBAR_PRESSED } from 'vue-find'
-  import {getCurEnvs} from 'scripts/utils'
+  import {
+    KEY80,
+    KEY78,
+    KEY82,
+    KEY66,
+    KEY68,
+    KEY73,
+    KEY74,
+    KEY97,
+    KEY75,
+    receiveMsgFromWeex,
+    BACK_PRESSED,
+    PEDAL_PRESSED,
+    TOOLBAR_PRESSED
+  } from 'vue-find'
+  import { getCurEnvs } from 'scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
   import toastMixin from '../../common/toast-mixin.js'
+
   export default {
     data () {
       return {
@@ -194,7 +213,7 @@
     },
     mixins: [mixerMixin, toastMixin],
     find: {
-      [TOOLBAR_PRESSED] ({hidden}) {
+      [TOOLBAR_PRESSED] ({ hidden }) {
         this.toolbarHidden1 = hidden
       },
       [KEY66] () {
@@ -209,19 +228,19 @@
         if (!course) {
           return
         }
-        let {courseSetName, courseName} = course
+        let { courseSetName, courseName } = course
         let authorName = this.$route.query.authorName
         if (!course.correlationMusic[0]) {
           // 没有练习 提示用户
-          return this.errorHandling({desc: '此课程暂无练习'})
+          return this.errorHandling({ desc: '此课程暂无练习' })
         }
         let id = course.correlationMusic[0].bookId
         let coverSmall = course.correlationMusic[0].coverSmall
-        Object.assign(scoreData, {courseSetName, courseName, id, coverSmall, authorName})
+        Object.assign(scoreData, { courseSetName, courseName, id, coverSmall, authorName })
         console.log(scoreData)
         this.$router.push({
           path: '/scoreList',
-          query: {famous: JSON.stringify(scoreData)}
+          query: { famous: JSON.stringify(scoreData) }
         })
       },
       [KEY80] () {
@@ -237,7 +256,7 @@
         this.$refs.player.setRate(1)
         // this.curBpm = this.orgBpm
         this.speedValue = 1
-        this.errorHandling({speedValue: 1, desc: '速度调节 (原速1X)'})
+        this.errorHandling({ speedValue: 1, desc: '速度调节 (原速1X)' })
       },
       [KEY75] () {
         this.addRate()
@@ -265,7 +284,7 @@
         this.toolbarHidden = true
         this.showWeex()
       },
-      [receiveMsgFromWeex] ({method, params}) {
+      [receiveMsgFromWeex] ({ method, params }) {
         this[method] && this[method](params)
       },
       [BACK_PRESSED] () {
@@ -332,7 +351,7 @@
         this.$volume.volumeWatcher((data) => {
           switch (data.type) {
             case 'media': {
-              self.$refs.player.setVolume(data.realValue ? data.realValue / 100 : 0)
+              self.$refs.player.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
               break
             }
             case 'autoPlay': {
@@ -366,7 +385,7 @@
             // 调音台界面关闭 页面重新开始监听
             if (this.clickMixer) {
               this.clickMixer = false
-              modules.notification.regist('receiveMsgFromWeex', ({method, params}) => {
+              modules.notification.regist('receiveMsgFromWeex', ({ method, params }) => {
                 this[method] && this[method](params)
               })
             }
@@ -413,13 +432,13 @@
          */
         let newSpeed = this.speedValue + 0.25
         if (newSpeed > 1.5) {
-          this.errorHandling({speedValue: 1.5, desc: '速度调节 (原速1X)'})
+          this.errorHandling({ speedValue: 1.5, desc: '速度调节 (原速1X)' })
           return
         }
         // let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newSpeed)
         this.speedValue = newSpeed
-        this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})
+        this.errorHandling({ speedValue: newSpeed, desc: '速度调节 (原速1X)' })
       },
       delRate () {
         /**
@@ -427,13 +446,13 @@
          */
         let newSpeed = this.speedValue - 0.25
         if (newSpeed < 0.5) {
-          this.errorHandling({speedValue: 0.5, desc: '速度调节 (原速1X)'})
+          this.errorHandling({ speedValue: 0.5, desc: '速度调节 (原速1X)' })
           return
         }
         //  let newRate = newBpm / this.orgBpm
         this.$refs.player.setRate(newSpeed)
         this.speedValue = newSpeed
-        this.errorHandling({speedValue: newSpeed, desc: '速度调节 (原速1X)'})
+        this.errorHandling({ speedValue: newSpeed, desc: '速度调节 (原速1X)' })
       },
       errorHandling (data) {
         console.log(data, 'errorData')
@@ -457,7 +476,7 @@
           default:
             errorText = data.desc || data.message || ''
         }
-        this.showToast({text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue})
+        this.showToast({ text: errorText, imgName: 'syncInfo', speedValue: data.speedValue, maxValue: data.maxValue })
       },
       initData () {
         if (this.famousPlayCoursesBySet.courseList.length > 0 && this.palyHidden && this.weexHidden) {
@@ -469,7 +488,7 @@
       },
       getCoursesBySet (courseSetID) {
         console.log(this.famousPlayCoursesBySet)
-        return this.$store.dispatch('famous/getCoursesBySet', {courseSetID}).then(data => {
+        return this.$store.dispatch('famous/getCoursesBySet', { courseSetID }).then(data => {
           if (!this.hasLoaded && !data.famousPlayCoursesBySet) {
             // 无缓存并且接口没返回数据 弹提示框
             this.errorHandling(data)
@@ -517,7 +536,7 @@
       /**
        * weex通知下载
        **/
-      weexDownload ({courseItem, index, isDownload}) {
+      weexDownload ({ courseItem, index, isDownload }) {
         console.log(courseItem, index, isDownload)
         this.index = index
         if (index === this.playIndex && isDownload) {
@@ -535,7 +554,7 @@
           }
           this.$find.sendMessage({
             method: 'weexPlayIndex',
-            params: {playIndex: index}
+            params: { playIndex: index }
           })
           this.playNow = true
           this.playIndex = index
@@ -559,7 +578,7 @@
         this.progressing = true
         this.$find.sendMessage({
           method: 'weexProgress',
-          params: {progress: 0, index}
+          params: { progress: 0, index }
         })
         return download.downloadAll([video, midi]).progress((process) => {
           let progress = 0
@@ -569,7 +588,7 @@
           }
           this.$find.sendMessage({
             method: 'weexProgress',
-            params: {progress: progress, index}
+            params: { progress: progress, index }
           })
         }).then((data) => {
           console.log(data)
@@ -622,7 +641,7 @@
           // 视频下载完成
           this.$find.sendMessage({
             method: 'controlButton',
-            params: {show: !this.weexHidden}
+            params: { show: !this.weexHidden }
           })
         }
       },
@@ -663,7 +682,7 @@
         // init fh-player volume
         const self = this
         this.$volume.getAllVolumeSize().then((data) => {
-          self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
+          self.$refs.player.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
           self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
           self.$refs.player.setElectronicOn(!data.electronic.mute)
         })
@@ -676,7 +695,7 @@
               filePath = this.playerSource['mp4'].videoMidiUrl
               errText = 'midi资源出错'
             }
-            this.errorHandling({desc: errText})
+            this.errorHandling({ desc: errText })
             modules.file.removeFile(filePath).then(res => {
               if (res) {
                 // 删除成功 回退到上个页面
@@ -723,7 +742,7 @@
       },
       sendMessage () {
         if (this.$refs.weex) this.$refs.weex.focus()
-        this.$find.sendMessage({method: 'getVideoList', params: {videoList: this.famousPlayCoursesBySet}})
+        this.$find.sendMessage({ method: 'getVideoList', params: { videoList: this.famousPlayCoursesBySet } })
       }
     },
     computed: {
@@ -734,7 +753,7 @@
             // 有缓存
             this.hasLoaded = true
           }
-          return famousPlayCoursesBySet || {courseList: []}
+          return famousPlayCoursesBySet || { courseList: [] }
         },
         pianoType: state => state.storage.pianoType
       }),

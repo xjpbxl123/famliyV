@@ -1730,7 +1730,7 @@
         // init fh-player volume
         const self = this
         this.$volume.getAllVolumeSize().then((data) => {
-          self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
+          self.$refs.player.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
           self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
           self.$refs.player.setElectronicOn(!data.electronic.mute)
         })
@@ -1848,7 +1848,7 @@
         this.$volume.volumeWatcher((data) => {
           switch (data.type) {
             case 'media': {
-              self.$refs.player.setVolume(data.realValue ? data.realValue / 100 : 0)
+              self.$refs.player.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
               break
             }
             case 'autoPlay': {

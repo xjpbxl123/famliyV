@@ -5,49 +5,61 @@
     <div class="videoBox" v-if="!isPlaying">
       <div class="videoName" v-text="videoName"></div>
       <div class="time">
-        <span class="currentTime" > {{currentTime | timer}}</span> /
-        <span class="totalTime" > {{totalTime | timer}}</span>
+        <span class="currentTime"> {{currentTime | timer}}</span> /
+        <span class="totalTime"> {{totalTime | timer}}</span>
       </div>
     </div>
     <div class="halfScreen" v-if="screenIndex !== 0" :class="screenType">
       <div class="halfMess">
         <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
-        <div class="mess">分辨率：<span class="screenR" >1200*600</span></div>
+        <div class="mess">分辨率：<span class="screenR">1200*600</span></div>
         <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
     <toolbar :darkBgHidden="true" :hidden="toolbarHidden">
-        <icon-item v-for="(button) in controlButtons"
-            :id="button.id"
-            :key="button.id"
-            :hidden="toolbarHidden || isPlaying"
-            :icon="button.icon"
-            :pianoKey="button.pianoKey"
-            :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
-         <icon-item id="899"
-            key="899"
-            icon="0xe60d"
-            text="调音台"
-            pianoKey="97"
-            titlePosition="below"
-            :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
-        <icon-item v-for="(button,index) in textButtons"
-            :key="index"
-            :id="button.id"
-            :icon="button.icon"
-            :hidden="toolbarHidden || isPlaying"
-            :text="button.text"
-            :pianoKey="button.pianoKey"
-            titlePosition="below"
-            :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
+      <icon-item v-for="(button) in controlButtons"
+                 :id="button.id"
+                 :key="button.id"
+                 :hidden="toolbarHidden || isPlaying"
+                 :icon="button.icon"
+                 :pianoKey="button.pianoKey"
+                 :style="{backgroundColor:'#4000',dotColor: '#fff'}"/>
+      <icon-item id="899"
+                 key="899"
+                 icon="0xe60d"
+                 text="调音台"
+                 pianoKey="97"
+                 titlePosition="below"
+                 :style="{backgroundColor:'#4000',textColor: '#fff'}"/>
+      <icon-item v-for="(button,index) in textButtons"
+                 :key="index"
+                 :id="button.id"
+                 :icon="button.icon"
+                 :hidden="toolbarHidden || isPlaying"
+                 :text="button.text"
+                 :pianoKey="button.pianoKey"
+                 titlePosition="below"
+                 :style="{backgroundColor:button.backgroundColor,color: '#fff',textColor: '#fff'}"/>
     </toolbar>
   </div>
 </template>
 <script type="text/javascript">
-  import { KEY54, KEY56, KEY58, KEY61, KEY97, BACK_PRESSED, KEY42, PEDAL_PRESSED, receiveMsgFromWeex, TOOLBAR_PRESSED } from 'vue-find'
+  import {
+    KEY54,
+    KEY56,
+    KEY58,
+    KEY61,
+    KEY97,
+    BACK_PRESSED,
+    KEY42,
+    PEDAL_PRESSED,
+    receiveMsgFromWeex,
+    TOOLBAR_PRESSED
+  } from 'vue-find'
   import statusBar from '../../common/find-status-bar/find-status-bar'
-  import {timeFilter} from '../../../scripts/utils'
+  import { timeFilter } from '../../../scripts/utils'
   import mixerMixin from '../../common/mixer-mixin.js'
+
   export default {
     data () {
       return {
@@ -74,8 +86,7 @@
           {
             pianoKey: 61,
             icon: '0xe681',
-            id: 203
-        }],
+            id: 203}],
         textButtons: [{
           pianoKey: 42,
           icon: '0xe6e2',
@@ -133,7 +144,7 @@
       [KEY97] () {
         this.buttonActions('mixer')
       },
-      [receiveMsgFromWeex] ({method, params}) {
+      [receiveMsgFromWeex] ({ method, params }) {
         this[method] && this[method](params)
       },
       [PEDAL_PRESSED] (key) {
@@ -146,7 +157,7 @@
             return this.buttonActions('fastForward')
         }
       },
-      [TOOLBAR_PRESSED] ({hidden}) {
+      [TOOLBAR_PRESSED] ({ hidden }) {
         this.toolbarHidden = hidden
       },
       [BACK_PRESSED] () {
@@ -238,15 +249,15 @@
         this.$volume.volumeWatcher((data) => {
           switch (data.type) {
             case 'media': {
-              self.$refs.player.setVolume(data.realValue ? data.realValue / 100 : 0)
+              self.$refs.video.setVolume(data.realValue ? data.realValue / 100 : 0)
               break
             }
             case 'autoPlay': {
-              self.$refs.player.setAutoPlayOn(!data.mute)
+              self.$refs.video.setAutoPlayOn(!data.mute)
               break
             }
             case 'electronic': {
-              self.$refs.player.setElectronicOn(!data.mute)
+              self.$refs.video.setElectronicOn(!data.mute)
               break
             }
             default: {
@@ -276,9 +287,7 @@
       // init fh-player volume
       const self = this
       this.$volume.getAllVolumeSize().then((data) => {
-        self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
-        self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
-        self.$refs.player.setElectronicOn(!data.electronic.mute)
+        self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
       })
     },
     beforeDestroyed () {
@@ -290,67 +299,78 @@
   }
 </script>
 <style lang="scss" scoped>
-    .openVideo {
+  .openVideo {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    position: relative;
+
+    video {
+      height: 100%;
+      position: absolute;
+
+      &.full {
         width: 100%;
-        height: 100%;
-        background-color: #000;
-        position: relative;
-        video {
-          height: 100%;
-          position: absolute;
-          &.full {
-            width: 100%;
-          }
-          &.half-left {
-            width: 50%;
-            left: 0;
-          }
-          &.half-right {
-            width: 50%;
-            left: 50%;
-          }
-        }
-        .videoBox {
-          position: absolute;
-          top: 50px;
-          left: 40px;
-          .videoName {
-            font-size:48px;
-            font-family:PingFangSC-Semibold;
-            font-weight:600;
-            color:rgba(255,255,255,1);
-          }
-          .time {
-            margin-top: 17px;
-            font-size:20px;
-            font-family:PingFangSC-Regular;
-            font-weight:400;
-            color:rgba(255,255,255,1);
-          }
-        }
-        .halfScreen {
-          width: 50%;
-          height: 100%;
-          position: absolute;
-          left: 50%;
-          top: 0;
-          background: url('../images/halfScreen_bg.png') no-repeat;
-          background-size: cover;
-          &.half-right {
-            left: 0;
-          }
-          .halfMess {
-            position: absolute;
-            top: 476px;
-            left: 115px;
-            color: #fff;
-            .mess {
-              font-size:28px;
-              font-family:PingFangSC-Regular;
-              font-weight:400;
-              margin-top: 22px;
-            }
-          }
-        }
+      }
+
+      &.half-left {
+        width: 50%;
+        left: 0;
+      }
+
+      &.half-right {
+        width: 50%;
+        left: 50%;
+      }
     }
+
+    .videoBox {
+      position: absolute;
+      top: 50px;
+      left: 40px;
+
+      .videoName {
+        font-size: 48px;
+        font-family: PingFangSC-Semibold;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 1);
+      }
+
+      .time {
+        margin-top: 17px;
+        font-size: 20px;
+        font-family: PingFangSC-Regular;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+
+    .halfScreen {
+      width: 50%;
+      height: 100%;
+      position: absolute;
+      left: 50%;
+      top: 0;
+      background: url('../images/halfScreen_bg.png') no-repeat;
+      background-size: cover;
+
+      &.half-right {
+        left: 0;
+      }
+
+      .halfMess {
+        position: absolute;
+        top: 476px;
+        left: 115px;
+        color: #fff;
+
+        .mess {
+          font-size: 28px;
+          font-family: PingFangSC-Regular;
+          font-weight: 400;
+          margin-top: 22px;
+        }
+      }
+    }
+  }
 </style>
