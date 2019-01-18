@@ -210,7 +210,7 @@
             pianoKey: 39,
             text: '我的资源',
             icon: '0xe763',
-            // positionPixels: -10,
+            positionPixels: -10,
             style: { backgroundColor: '#FD7778,#EB3256', dotColor: '#EB3256' }
           },
           {
@@ -226,7 +226,7 @@
             pianoKey: 46,
             text: '乐理&技巧',
             icon: '0xe71e',
-            positionPixels: -20,
+            positionPixels: -40,
             style: { backgroundColor: '#F2C82D,#B47119', dotColor: '#B47119' }
           },
           {
@@ -234,7 +234,7 @@
             pianoKey: 49,
             text: '最新&最热',
             icon: '0xe761',
-            positionPixels: -20,
+            positionPixels: -30,
             style: { backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED' }
           },
           {
@@ -242,7 +242,7 @@
             pianoKey: 51,
             text: '名师课程',
             icon: '0xe69d',
-            positionPixels: 10,
+            positionPixels: 30,
             style: { backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1' }
           }
           // {
