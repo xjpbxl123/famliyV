@@ -1047,7 +1047,7 @@
             break
           case 'yidiaoReset':
             this.yidiaoValue = 0
-            modules.volume.setKeyBoardOffset(0)
+            modules.global.transposeKeyboard(this.yidiaoValue)
             break
           case 'left':
             if (this.listIndex - 1 < 0) {
