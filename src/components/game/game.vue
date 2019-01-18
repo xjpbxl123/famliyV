@@ -195,6 +195,10 @@
         this.buttonActions('ok')
       },
       [keys.BACK_PRESSED] () {
+        // 如果正在下载，返回键失效，必须取消下载才能返回
+        if (this.isDownloading) {
+          return false
+        }
         if (this.chooseUpdate) {
           eventsHub.$emit('closeToast')
           this.chooseUpdate = false
@@ -422,7 +426,6 @@
           self.gameButtons[2].hidden = true
         }
         modules.file.pathComplement('$downLoadHtmls').then((result) => {
-          console.log(result)
           localPath = result.path
           return modules.file.pathComplement('$game/' + appName)
         }).then((result) => {

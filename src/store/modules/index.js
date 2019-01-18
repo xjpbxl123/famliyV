@@ -135,7 +135,6 @@ export default {
       return modules.file.readFile(path).then((data) => {
         let res = JSON.parse(data)
         if (res.version) {
-          console.log(11111)
           let version = res.version
           let build = res.build
           let versionObj = {}
