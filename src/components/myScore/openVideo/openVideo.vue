@@ -273,6 +273,13 @@
         this.videoUrl = this.$route.query.url
         this.addEventListeners()
       }
+      // init fh-player volume
+      const self = this
+      this.$volume.getAllVolumeSize().then((data) => {
+        self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
+        self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
+        self.$refs.player.setElectronicOn(!data.electronic.mute)
+      })
     },
     beforeDestroyed () {
       this.removeEventListeners()

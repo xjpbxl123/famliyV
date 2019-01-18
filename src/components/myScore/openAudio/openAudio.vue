@@ -270,6 +270,13 @@
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.$refs.audio.loadUrl(this.$route.query.url).then(data => {
+          // init fh-player volume
+          const self = this
+          this.$volume.getAllVolumeSize().then((data) => {
+            self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
+            self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
+            self.$refs.player.setElectronicOn(!data.electronic.mute)
+          })
           console.log(data, '加载完成')
           this.hasLoaded = data
           if (data.result) {

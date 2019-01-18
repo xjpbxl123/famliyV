@@ -660,6 +660,13 @@
        */
       playerInitComplete (data) {
         console.log(data)
+        // init fh-player volume
+        const self = this
+        this.$volume.getAllVolumeSize().then((data) => {
+          self.$refs.player.setVolume(data.media.realValue ? data.media.realValue / 100 : 0)
+          self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
+          self.$refs.player.setElectronicOn(!data.electronic.mute)
+        })
         if (!data.result) {
           if (data.code && data.code === 30000) {
             // 文件出错 根据type类型 删除该文件 回到上一级页面
