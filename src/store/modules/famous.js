@@ -94,12 +94,12 @@ export default {
       })
       midPromise = download.fileIsExistsAll(midiHighBitRateArr).then((data) => {
         return newBody.courseList.map((item, index) => {
-          item.midiDownload = data[index]
+          item.midiDownload = data[index].path
         })
       })
       videoPromise = download.fileIsExistsAll(videoHighBitRateArr).then((data) => {
         return newBody.courseList.map((item, index) => {
-          item.videoDownload = data[index]
+          item.videoDownload = data[index].path
         })
       })
       return Promise.all([midPromise, videoPromise]).then(() => {
