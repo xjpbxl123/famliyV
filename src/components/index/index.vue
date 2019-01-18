@@ -242,7 +242,7 @@
             pianoKey: 51,
             text: '名师课程',
             icon: '0xe69d',
-            positionPixels: 0,
+            positionPixels: 10,
             style: { backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1' }
           }
           // {
