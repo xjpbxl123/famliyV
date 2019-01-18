@@ -1,18 +1,22 @@
 <template>
   <div class="openVideo">
     <statusBar/>
-    <video :src="videoUrl" class="video" ref="video" preload :class="screenType"></video>
-    <div class="videoBox" v-if="!isPlaying">
-      <div class="videoName" v-text="videoName"></div>
-      <div class="time">
-        <span class="currentTime"> {{currentTime | timer}}</span> /
-        <span class="totalTime"> {{totalTime | timer}}</span>
-      </div>
-    </div>
+    <!--<video :src="videoUrl" class="video" ref="video" preload :class="screenType"></video>-->
+    <!--<fh-video ref="video"></fh-video>-->
+    <fh-video ref="video" :source="videoUrl" :style="videoStyle" @initComplete="videoInitComplete"/>
+    <!--<fh-label :style="labelStyle"/>-->
+    <!--<fh-label :style="labelStyle2"/>-->
+    <!--<div class="videoBox" v-if="!isPlaying">-->
+    <!--<div class="videoName" v-text="videoName"></div>-->
+    <!--<div class="time">-->
+    <!--<span class="currentTime"> {{currentTime | timer}}111</span> /-->
+    <!--<span class="totalTime"> {{totalTime | timer}}111</span>-->
+    <!--</div>-->
+    <!--</div>-->
     <div class="halfScreen" v-if="screenIndex !== 0" :class="screenType">
       <div class="halfMess">
         <div class="mess">文件名：<span class="fileName" v-text="fileName"></span></div>
-        <div class="mess">分辨率：<span class="screenR">1200*600</span></div>
+        <div class="mess">分辨率：<span class="screenR">{{screenDPR}}</span></div>
         <div class="mess">持续时间：<span class="duration">{{totalTime | timer}}</span></div>
       </div>
     </div>
@@ -63,30 +67,55 @@
   export default {
     data () {
       return {
+        labelStyle: {
+          left: 20,
+          top: 50,
+          width: 1000,
+          height: 60,
+          text: '未知',
+          color: '#ffffff',
+          fontSize: 70,
+          alignment: 'left'
+        },
+        labelStyle2: {
+          left: 0,
+          top: 120,
+          width: 150,
+          height: 150,
+          text: 'hahah',
+          color: '#ffffff',
+          fontSize: 30
+        },
+        videoStyle: {
+          width: 3840,
+          height: 1080
+        },
+        videoFrameStyle: {
+          width: 3840,
+          height: 1080
+        },
+        screenDPR: '未知',
         videoUrl: '',
         toolbarHidden: false,
         videoName: '',
         fileName: '',
-        controlButtons: [
-          {
-            pianoKey: 54,
-            icon: '0xe627',
-            id: 200
-          },
-          {
-            pianoKey: 56,
-            icon: '0xe680',
-            id: 201
-          },
-          {
-            pianoKey: 58,
-            icon: '0xe626',
-            id: 202
-          },
-          {
-            pianoKey: 61,
-            icon: '0xe681',
-            id: 203}],
+        controlButtons: [{
+          pianoKey: 54,
+          icon: '0xe627',
+          id: 200
+        }, {
+          pianoKey: 56,
+          icon: '0xe680',
+          id: 201
+        }, {
+          pianoKey: 58,
+          icon: '0xe626',
+          id: 202
+        }, {
+          pianoKey: 61,
+          icon: '0xe681',
+          id: 203
+        }],
         textButtons: [{
           pianoKey: 42,
           icon: '0xe6e2',
@@ -111,12 +140,12 @@
       screenType (val) {
         switch (val) {
           case 'full':
-            this.textButtons[1].icon = '0xe6e2'
-            this.textButtons[1].text = '全屏'
+            this.textButtons[0].icon = '0xe6e2'
+            this.textButtons[0].text = '全屏'
             break
           case 'half-left':
-            this.textButtons[1].icon = '0xe6e4'
-            this.textButtons[1].text = '左半屏'
+            this.textButtons[0].icon = '0xe6e4'
+            this.textButtons[0].text = '左半屏'
             break
           case 'half-right':
           //   this.textButtons[1].icon = '0xe6e4'
@@ -175,33 +204,101 @@
       }
     },
     methods: {
+      videoInitComplete (data) {
+        // init fh-player volume
+        const self = this
+        this.$volume.getAllVolumeSize().then((data) => {
+          self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
+        })
+        console.log(data, '加载完成')
+        this.$refs.video.getTotalTime().then((data) => {
+          this.totalTime = data
+        })
+        this.$refs.video.getVideoSize().then((data) => {
+          this.screenDPR = `${data.width} * ${data.height}`
+        })
+        // this.$refs.video.get
+        this.labelStyle = {
+          left: 20,
+          top: 50,
+          width: 1000,
+          height: 60,
+          text: this.fileName,
+          color: '#ffffff',
+          fontSize: 70,
+          alignment: 'left'
+        }
+        console.log(111111)
+        this.hasLoaded = data
+        // if (data.result) {
+        //   window.fp.uis.video.info().then(data => {
+        //     if (data) {
+        //       console.log(77777, data)
+        //       this.singer = data.artist || '未知'
+        //       this.album = data.albumName || '未知'
+        //       if (data.title) {
+        //         this.songName = data.title
+        //       }
+        //     }
+        //   })
+        // }
+      },
       buttonActions (type) {
         switch (type) {
           case 'play':
-            this.$refs.video.play()
-            this.isPlaying = !this.isPlaying
+            this.$refs.video.play().then(() => {
+              this.$refs.video.reset()
+              this.isPlaying = false
+            })
+            this.isPlaying = true
             break
           case 'changeScreen':
             // 切换屏幕
             let screen = ['full', 'half-left', 'half-right']
+            let videoStyles = [{
+              width: 3840,
+              height: 1080
+            }, {
+              width: 1920,
+              height: 1080
+            }, {
+              width: 1920,
+              height: 1080,
+              left: 1920
+            }]
+            let videoFrameStyles = [{
+              width: 3840,
+              height: 1080
+            }, {
+              width: 1920,
+              height: 1080
+            }, {
+              width: 1920,
+              height: 1080
+            }]
             let screenIndex = this.screenIndex
             screenIndex = screenIndex + 1
             if (screenIndex > 1) screenIndex = 0
             this.screenIndex = screenIndex
             this.screenType = screen[screenIndex]
+            this.videoStyle = videoStyles[screenIndex]
+            this.videoFrameStyle = videoFrameStyles[screenIndex]
+            this.$refs.video.setVideoFrame(Object.assign({ x: 0, y: 0 }, this.videoFrameStyle))
             break
           case 'fastBackward':
             // 快退
-            this.currentTime = Math.max(this.currentTime - 10, 0)
-            this.$refs.video.currentTime = this.currentTime
+            this.$refs.video.fastBackward(10)
+            // this.currentTime = Math.max(this.currentTime - 10, 0)
+            // this.$refs.video.currentTime = this.currentTime
             break
           case 'fastForward':
             // 快进
-            this.currentTime = Math.min(this.currentTime + 10, this.totalTime)
-            if (this.currentTime === this.totalTime) {
-              this.isPlaying = false
-            }
-            this.$refs.video.currentTime = this.currentTime
+            this.$refs.video.fastForward(10)
+            // this.currentTime = Math.min(this.currentTime + 10, this.totalTime)
+            // if (this.currentTime === this.totalTime) {
+            //   this.isPlaying = false
+            // }
+            // this.$refs.video.currentTime = this.currentTime
             break
           case 'restart':
             // 回到最初
@@ -249,7 +346,7 @@
         this.$volume.volumeWatcher((data) => {
           switch (data.type) {
             case 'media': {
-              self.$refs.video.setVolume(data.realValue ? data.realValue / 100 : 0)
+              self.$refs.video.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
               break
             }
             case 'autoPlay': {
@@ -282,13 +379,18 @@
       if (this.$route.query.url) {
         this.filterUrl(this.$route.query.fileName)
         this.videoUrl = this.$route.query.url
-        this.addEventListeners()
       }
-      // init fh-player volume
-      const self = this
-      this.$volume.getAllVolumeSize().then((data) => {
-        self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
-      })
+      this.$refs.video.setVideoFrame(Object.assign({ x: 0, y: 0 }, this.videoFrameStyle))
+      // if (this.$route.query.url) {
+      //   this.filterUrl(this.$route.query.fileName)
+      //   this.videoUrl = this.$route.query.url
+      //   this.addEventListeners()
+      // }
+      // // init fh-player volume
+      // const self = this
+      // this.$volume.getAllVolumeSize().then((data) => {
+      //   self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
+      // })
     },
     beforeDestroyed () {
       this.removeEventListeners()

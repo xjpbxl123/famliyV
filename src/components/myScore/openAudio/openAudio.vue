@@ -2,7 +2,7 @@
   <div class="openAudio">
     <statusBar/>
     <!-- <audio :src="audioUrl" class="audio" ref="audio" preload></audio> -->
-    <fh-audio ref="audio" :style="{top: 0, widht: 0, height: 0}"/>
+    <fh-audio ref="audio" :style="{top: 0, width: 0, height: 0}"/>
     <div class="audioBox">
       <div class="audioMenu">
         <span class="audioName" v-text="songName"></span>

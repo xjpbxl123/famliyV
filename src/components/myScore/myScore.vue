@@ -769,7 +769,12 @@
                     this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
                   })
                 } else if (data.typeName === 'video') {
-                  this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
+                  modules.file.pathComplement(this.localSourcePath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openVideo', query: {url: res.path, fileName: data.name}})
+                  })
                 }
               }
             }
@@ -950,7 +955,12 @@
                     this.$router.push({path: '/openAudio', query: {url: res.path, fileName: data.name}})
                   })
                 } else if (data.typeName === 'video') {
-                  this.$router.push({path: '/openVideo', query: {url: data.http, fileName: data.name}})
+                  modules.file.pathComplement(this.uPanPath + '/' + data.name).then((res) => {
+                    if (!res.path) {
+                      return
+                    }
+                    this.$router.push({path: '/openVideo', query: {url: res.path, fileName: data.name}})
+                  })
                 }
               }
             }
