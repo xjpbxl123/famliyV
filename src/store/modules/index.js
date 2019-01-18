@@ -1,5 +1,5 @@
 import http from '../../scripts/http'
-import axios from 'axios'
+// import axios from 'axios'
 import { getUsedTime, modules } from 'find-sdk'
 
 const SELECTED_INDEX = 'SELECTED_INDEX' /// 设置选中的项
@@ -128,12 +128,14 @@ export default {
     /**
      * @desc 获取本地app版本数据
      * */
-    getLocalAppVersion ({ dispatch }, { url, appName }) {
+    getLocalAppVersion ({ dispatch }, { url, appName, path }) {
       let appNameLocal = appName + 'Local'
       dispatch('setCacheFromTable', appNameLocal, { root: true })
-      return axios.get(url, {}).then(data => {
-        let res = data.data
+      // return axios.get(url, {}).then(data => {
+      return modules.file.readFile(path).then((data) => {
+        let res = JSON.parse(data)
         if (res.version) {
+          console.log(11111)
           let version = res.version
           let build = res.build
           let versionObj = {}

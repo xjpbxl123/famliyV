@@ -227,7 +227,7 @@
               if (res.path) {
                 modules.file.fileExists(res.path).then((res1) => {
                   if (res1) {
-                    this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: value.appName}).then((data) => {
+                    this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: value.appName, path: res.path}).then((data) => {
                       console.log(data)
                       if (data && data[value.appName + 'Local'] && data[value.appName + 'Local'].version) {
                         this.list[index].status = 'installed'
@@ -282,7 +282,7 @@
               // 判断文件是否存在
               modules.file.fileExists(res.path).then((res1) => {
                 if (res1) {
-                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName}).then((data1) => {
+                  return this.$store.dispatch('index/getLocalAppVersion', {url: res.http, appName: appName, path: res.path}).then((data1) => {
                     if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
                       // 本地有 去判断线上版本
                       console.log('本地有 去判断线上版本')
@@ -448,7 +448,8 @@
                   self.chooseUpdate = false
                   self.gameButtonsHidden = true
                   self.list[self.listIndex].status = 'installed'
-                  self.openApp()
+                  // 解压成功不直接打开，考虑多个App同时下载的问题
+                  // self.openApp()
                 }
               })
             }
