@@ -4,7 +4,7 @@
     <!--<video :src="videoUrl" class="video" ref="video" preload :class="screenType"></video>-->
     <!--<fh-video ref="video"></fh-video>-->
     <fh-video ref="video" :source="videoUrl" :style="videoStyle" @initComplete="videoInitComplete"/>
-    <!--<fh-label :style="labelStyle"/>-->
+    <fh-label ref="nameLabel" :style="labelStyle"/>
     <!--<fh-label :style="labelStyle2"/>-->
     <!--<div class="videoBox" v-if="!isPlaying">-->
     <!--<div class="videoName" v-text="videoName"></div>-->
@@ -68,13 +68,13 @@
     data () {
       return {
         labelStyle: {
-          left: 20,
+          left: 50,
           top: 50,
           width: 1000,
           height: 60,
           text: '未知',
           color: '#ffffff',
-          fontSize: 70,
+          fontSize: 60,
           alignment: 'left'
         },
         labelStyle2: {
@@ -217,18 +217,7 @@
         this.$refs.video.getVideoSize().then((data) => {
           this.screenDPR = `${data.width} * ${data.height}`
         })
-        // this.$refs.video.get
-        this.labelStyle = {
-          left: 20,
-          top: 50,
-          width: 1000,
-          height: 60,
-          text: this.fileName,
-          color: '#ffffff',
-          fontSize: 70,
-          alignment: 'left'
-        }
-        console.log(111111)
+        this.labelStyle.text = this.fileName
         this.hasLoaded = data
         // if (data.result) {
         //   window.fp.uis.video.info().then(data => {
