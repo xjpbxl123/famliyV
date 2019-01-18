@@ -1038,12 +1038,12 @@
           case 'yidiaoDown':
             // 电子键盘移调
             this.yidiaoValue = Math.max(this.yidiaoValue - 1, -5)
-            modules.volume.setKeyBoardOffset(this.yidiaoValue)
+            modules.global.transposeKeyboard(this.yidiaoValue)
             break
           case 'yidiaoUp':
             // 电子键盘移调
             this.yidiaoValue = Math.min(this.yidiaoValue + 1, 7)
-            modules.volume.setKeyBoardOffset(this.yidiaoValue)
+            modules.global.transposeKeyboard(this.yidiaoValue)
             break
           case 'yidiaoReset':
             this.yidiaoValue = 0
