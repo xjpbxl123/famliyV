@@ -366,14 +366,42 @@
           params: data
         })
       },
+      muteVolume (type, mute) {
+
+      },
+      otherVolumeChange (type, value, offset) {
+        //         case all        = "all"       //总音量
+        // case electronic = "electronic" //电子音源
+        // case media      = "media"     //视频
+        // case autoPlay   = "autoPlay"       // 自动演奏
+        // case mediaAccompany =  "mediaAccompany" // 音频伴奏
+        // case humanVolume =  "humanVolume" // 人声
+        let maxValue = 15
+        if (type === 'humanVolume' || type === 'mediaAccompany') {
+          maxValue = 10
+        }
+        if (value > maxValue || value <= 0) {
+          return false
+        }
+        find.volumeSet({type, value, showAlert: false}, data => {
+            if (data.code && data.code === -1) {
+                find.alert('异常' + type + value, 1)
+            } else {
+
+            }
+        })
+      },
       allVolumeChange (n) {
         let value = this.value1 + n
         if (value > 15 || value <= 0) {
           return false
         }
         find.volumeSet({type: 'all', value, showAlert: false}, (data) => {
-          find.debug('allVolumeChange' + JSON.stringify(data))
-          this.allVolumeSize(data)
+            if (data.code && data.code === -1) {
+                  find.alert('异常' + value, 1)
+            } else {
+              this.allVolumeSize(data)
+            }
         })
         // let val = this.value1
         // if (n > 0) {
@@ -510,17 +538,20 @@
             break
           case 85:
             // 重置
-            this.mute1 = this.mute2 = this.mute3 = this.mute4 = this.mute5 = this.mute6 = false
-            this.value1 = 8
-            this.value2 = 8
-            this.value3 = 8
-            this.value4 = 8
-            this.value5 = 80
-            this.value6 = 80
-            find.sendMsgToWeb({
-              method: 'vioceControl',
-              params: {name: 'volumeSet', type: 'resetAll'}
+            find.resetVolume(data => {
+              this.allVolumeSize(data)
             })
+            // this.mute1 = this.mute2 = this.mute3 = this.mute4 = this.mute5 = this.mute6 = false
+            // this.value1 = 8
+            // this.value2 = 8
+            // this.value3 = 8
+            // this.value4 = 8
+            // this.value5 = 80
+            // this.value6 = 80
+            // find.sendMsgToWeb({
+            //   method: 'vioceControl',
+            //   params: {name: 'volumeSet', type: 'resetAll'}
+            // })
             break
         }
       }, 200))
@@ -550,6 +581,7 @@
       value1: function (val, oldval) {
         console.log('weex value1 change' + val)
         this.sliderTop1 = 506 - val * 34
+        this.otherVolumeChange('all', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
@@ -564,8 +596,8 @@
         // }
       },
       value2: function (val, oldval) {
-        this.offset1 = this.value1 - val
         this.sliderTop2 = 506 - val * 34
+        this.otherVolumeChange('autoPlay', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
@@ -580,9 +612,8 @@
         // }
       },
       value3: function (val, oldval) {
-        console.warn('electronic val watch', this.reset, !this.notAutoSet)
-        this.offset2 = this.value1 - val
         this.sliderTop3 = 506 - val * 34
+        this.otherVolumeChange('electronic', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
@@ -597,9 +628,8 @@
         // }
       },
       value4: function (val, oldval) {
-        console.log('weex value4 change' + val)
-        this.offset3 = this.value1 - val
         this.sliderTop4 = 506 - val * 34
+        this.otherVolumeChange('media', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
@@ -615,6 +645,7 @@
       },
       value5: function (val, oldval) {
         this.sliderTop5 = (10 - val / 10) * 46
+        this.otherVolumeChange('mediaAccompany', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
@@ -630,6 +661,7 @@
       },
       value6: function (val, oldval) {
         this.sliderTop6 = (10 - val / 10) * 46
+        this.otherVolumeChange('humanVolume', val)
         // if (this.reset) {
         //   return find.sendMsgToWeb({
         //     method: 'vioceControl',
