@@ -3,7 +3,7 @@
     <div class="box">
       <image :src="back" class="back" />
       <div class="vioceBox vioceBox1" :style="{left: left1 + 'px'}">
-        <text class="text1"  :style="{color: mute1 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute1 ? '啊' : '总音量 '}}</text>
+        <text class="text1"  :style="{color: mute1 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}" >{{mute1 ? '总音量' : '总音量 '}}</text>
         <text class="value" :style="{color: mute1 ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,1)'}">{{mute1 ? value1 : value1 + ' '}}</text>
         <image :src="bar" class="vioceBar"/>
         <div class="bar">
@@ -275,7 +275,14 @@
         this.show = show
         this.pianoType = pianoType
       },
-      allVolumeSize ({electronic, media, autoPlay, all, humanVolume, mediaAccompany}) {
+      allVolumeSize (data) {
+        let defaultData = {realValue: 0, value: 0, mute: true}
+        let electronic = data.electronic || defaultData
+        let autoPlay = data.autoPlay || defaultData
+        let media = data.media || defaultData
+        let all = data.all || defaultData
+        let humanVolume = data.humanVolume || defaultData
+        let mediaAccompany = data.mediaAccompany || defaultData
         // 初始化数据
         this.notAutoSet = true
         this.value1 = all.value
@@ -360,40 +367,51 @@
         })
       },
       allVolumeChange (n) {
-        let val = this.value1
-        if (n > 0) {
-          this.value1 = Math.min(this.value1 + 1, 15)
-          if (val + 1 > 15) {
-            return
-          }
-        } else {
-          this.value1 = Math.max(this.value1 - 1, 1)
-          if (val - 1 < 1) {
-            return
-          }
+        let value = this.value1 + n
+        if (value > 15 || value <= 0) {
+          return false
         }
-        if (this.offset1 > 0) {
-          this.value2 = Math.max(this.value1 - this.offset1, 1)
-        } else {
-          this.value2 = Math.min(this.value1 - this.offset1, 15)
-        }
-        if (this.offset2 > 0) {
-          this.value3 = Math.max(this.value1 - this.offset2, 1)
-        } else {
-          this.value3 = Math.min(this.value1 - this.offset2, 15)
-        }
-        if (this.offset3 > 0) {
-          this.value4 = Math.max(this.value1 - this.offset3, 1)
-        } else {
-          this.value4 = Math.min(this.value1 - this.offset3, 15)
-        }
+        find.volumeSet({type: 'all', value, showAlert: false}, (data) => {
+          find.debug('allVolumeChange' + JSON.stringify(data))
+          this.allVolumeSize(data)
+        })
+        // let val = this.value1
+        // if (n > 0) {
+        //   this.value1 = Math.min(this.value1 + 1, 15)
+        //   if (val + 1 > 15) {
+        //     return
+        //   }
+        // } else {
+        //   this.value1 = Math.max(this.value1 - 1, 1)
+        //   if (val - 1 < 1) {
+        //     return
+        //   }
+        // }
+        // if (this.offset1 > 0) {
+        //   this.value2 = Math.max(this.value1 - this.offset1, 1)
+        // } else {
+        //   this.value2 = Math.min(this.value1 - this.offset1, 15)
+        // }
+        // if (this.offset2 > 0) {
+        //   this.value3 = Math.max(this.value1 - this.offset2, 1)
+        // } else {
+        //   this.value3 = Math.min(this.value1 - this.offset2, 15)
+        // }
+        // if (this.offset3 > 0) {
+        //   this.value4 = Math.max(this.value1 - this.offset3, 1)
+        // } else {
+        //   this.value4 = Math.min(this.value1 - this.offset3, 15)
+        // }
       }
     },
     computed: {
     },
     created () {
       this.setLocation(weex.config.location)
-      this.allVolumeSize(weex.config.volumeValue)
+      find.getVolume('all', (data) => {
+        find.debug('getVolume' + JSON.stringify(data))
+        this.allVolumeSize(data)
+      })
       this.pianoType = weex.config.pianoType || ''
       this.showAll = weex.config.showAll
       globalEvent.addEventListener('pianoKeyPressed', throttle((arg) => {
@@ -532,106 +550,106 @@
       value1: function (val, oldval) {
         console.log('weex value1 change' + val)
         this.sliderTop1 = 506 - val * 34
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll', showAlert: false}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'all', value: val}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll', showAlert: false}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'all', value: val}
+        //   })
+        // }
       },
       value2: function (val, oldval) {
         this.offset1 = this.value1 - val
         this.sliderTop2 = 506 - val * 34
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'autoPlay', value: val}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll'}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'autoPlay', value: val}
+        //   })
+        // }
       },
       value3: function (val, oldval) {
         console.warn('electronic val watch', this.reset, !this.notAutoSet)
         this.offset2 = this.value1 - val
         this.sliderTop3 = 506 - val * 34
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'electronic', value: val}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll'}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'electronic', value: val}
+        //   })
+        // }
       },
       value4: function (val, oldval) {
         console.log('weex value4 change' + val)
         this.offset3 = this.value1 - val
         this.sliderTop4 = 506 - val * 34
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'media', value: val}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll'}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'media', value: val}
+        //   })
+        // }
       },
       value5: function (val, oldval) {
         this.sliderTop5 = (10 - val / 10) * 46
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'humanVolume', value: val / 10}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll'}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'humanVolume', value: val / 10}
+        //   })
+        // }
       },
       value6: function (val, oldval) {
         this.sliderTop6 = (10 - val / 10) * 46
-        if (this.reset) {
-          return find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'resetAll'}
-          })
-        }
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'volumeSet', type: 'mediaAccompany', value: val / 10}
-          })
-        }
+        // if (this.reset) {
+        //   return find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'resetAll'}
+        //   })
+        // }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'volumeSet', type: 'mediaAccompany', value: val / 10}
+        //   })
+        // }
       },
       mute1: function (val, oldval) {
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'all', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'all', value: val}
+        //   })
+        // }
         if (!val) {
           // 放音
           this.buttons1[1].icon = '0xe603'
@@ -641,12 +659,12 @@
         }
       },
       mute2: function (val, oldval) {
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'autoPlay', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'autoPlay', value: val}
+        //   })
+        // }
         if (!val) {
           // 放音
           this.buttons2[1].icon = '0xe603'
@@ -656,12 +674,12 @@
         }
       },
       mute3: function (val, oldval) {
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'electronic', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'electronic', value: val}
+        //   })
+        // }
         if (!val) {
           //  放音
           this.buttons3[1].icon = '0xe603'
@@ -671,12 +689,12 @@
         }
       },
       mute4: function (val, oldval) {
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'media', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'media', value: val}
+        //   })
+        // }
         if (!val) {
           // 放音
           this.buttons4[1].icon = '0xe603'
@@ -686,12 +704,12 @@
         }
       },
       mute5: function (val, oldval) {
-        if (!this.notAutoSet) {
-           find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'humanVolume', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //    find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'humanVolume', value: val}
+        //   })
+        // }
         if (!val) {
           // 放音
           this.buttons5[1].icon = '0xe603'
@@ -701,12 +719,12 @@
         }
       },
       mute6: function (val, oldval) {
-        if (!this.notAutoSet) {
-          find.sendMsgToWeb({
-            method: 'vioceControl',
-            params: {name: 'setMute', type: 'mediaAccompany', value: val}
-          })
-        }
+        // if (!this.notAutoSet) {
+        //   find.sendMsgToWeb({
+        //     method: 'vioceControl',
+        //     params: {name: 'setMute', type: 'mediaAccompany', value: val}
+        //   })
+        // }
         if (!val) {
           // 放音
           this.buttons6[1].icon = '0xe603'
