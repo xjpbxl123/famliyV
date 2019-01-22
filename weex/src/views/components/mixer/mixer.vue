@@ -458,7 +458,7 @@
             this.volumeChange({type: 'autoPlay', value: this.value2 - 1})
             break
           case 57:
-            find.volumeMute({type: 'all', mute: !this.mute2})
+            find.volumeMute({type: 'autoPlay', mute: !this.mute2})
             break
           case 58:
             this.volumeChange({type: 'autoPlay', value: this.value2 + 1})
@@ -468,7 +468,7 @@
             this.volumeChange({type: 'electronic', value: this.value3 - 1})
             break
           case 62:
-            find.volumeMute({type: 'all', mute: !this.mute3})
+            find.volumeMute({type: 'electronic', mute: !this.mute3})
             break
           case 63:
             this.volumeChange({type: 'electronic', value: this.value3 + 1})
@@ -478,7 +478,7 @@
             this.volumeChange({type: 'media', value: this.value4 - 1})
             break
           case 69:
-            find.volumeMute({type: 'all', mute: !this.mute4})
+            find.volumeMute({type: 'media', mute: !this.mute4})
             break
           case 70:
              this.volumeChange({type: 'media', value: this.value4 + 1})
@@ -488,7 +488,7 @@
             this.volumeChange({type: 'humanVolume', value: this.value5 / 10 - 1})
             break
           case 74:
-            find.volumeMute({type: 'all', mute: !this.mute5})
+            find.volumeMute({type: 'humanVolume', mute: !this.mute5})
             break
           case 75:
             this.volumeChange({type: 'humanVolume', value: this.value5 / 10 + 1})
@@ -498,7 +498,7 @@
             this.volumeChange({type: 'mediaAccompany', value: this.value6 / 10 - 1})
             break
           case 79:
-            find.volumeMute({type: 'all', mute: !this.mute6})
+            find.volumeMute({type: 'mediaAccompany', mute: !this.mute6})
             break
           case 80:
             this.volumeChange({type: 'mediaAccompany', value: this.value6 / 10 + 1})
