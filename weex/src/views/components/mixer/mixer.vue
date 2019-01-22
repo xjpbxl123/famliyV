@@ -276,30 +276,38 @@
         this.pianoType = pianoType
       },
       allVolumeSize (data) {
-        let defaultData = {realValue: 0, value: 0, mute: true}
-        let electronic = data.electronic || defaultData
-        let autoPlay = data.autoPlay || defaultData
-        let media = data.media || defaultData
-        let all = data.all || defaultData
-        let humanVolume = data.humanVolume || defaultData
-        let mediaAccompany = data.mediaAccompany || defaultData
+        let electronic = data.electronic
+        let autoPlay = data.autoPlay
+        let media = data.media
+        let all = data.all
+        let humanVolume = data.humanVolume
+        let mediaAccompany = data.mediaAccompany
         // 初始化数据
         this.notAutoSet = true
-        this.value1 = all.value
-        this.value2 = autoPlay.value
-        this.value3 = electronic.value
-        this.value4 = media.value
-        this.value5 = humanVolume.value * 10
-        this.value6 = mediaAccompany.value * 10
-        this.mute1 = all.mute
-        this.mute2 = autoPlay.mute
-        this.mute3 = electronic.mute
-        this.mute4 = media.mute
-        this.mute5 = humanVolume.mute
-        this.mute6 = mediaAccompany.mute
-        this.offset1 = autoPlay.offsetValue
-        this.offset2 = electronic.offsetValue
-        this.offset3 = media.offsetValue
+        if (all) {
+          this.value1 = all.value
+          this.mute1 = all.mute
+        }
+        if (autoPlay) {
+          this.value2 = autoPlay.value
+          this.mute2 = autoPlay.mute
+        }
+        if (electronic) {
+          this.value3 = electronic.value
+          this.mute3 = electronic.mute
+        }
+        if (media) {
+          this.value4 = media.value
+          this.mute4 = media.mute
+        }
+        if (humanVolume) {
+          this.value5 = humanVolume.value * 10
+          this.mute5 = humanVolume.mute
+        }
+        if (mediaAccompany) {
+          this.value6 = mediaAccompany.value * 10
+          this.mute6 = mediaAccompany.mute
+        }
       },
       setLocation (data) {
         this.left1 = data[0] - 103
@@ -391,45 +399,17 @@
             }
         })
       },
-      allVolumeChange (n) {
-        let value = this.value1 + n
-        if (value > 15 || value <= 0) {
+      /// 音量改变
+      volumeChange ({type, value}) {
+        let maxValue = (type === 'humanVolume' || type === 'mediaAccompany') ? 10 : 15
+        if (value > maxValue || value <= 0) {
           return false
         }
-        find.volumeSet({type: 'all', value, showAlert: false}, (data) => {
-            if (data.code && data.code === -1) {
-                  find.alert('异常' + value, 1)
-            } else {
-              this.allVolumeSize(data)
-            }
+        find.volumeSet({type, value, showAlert: false}, (data) => {
+          if (data.code && data.code === -1) {
+            find.alert('异常' + value, 1)
+          }
         })
-        // let val = this.value1
-        // if (n > 0) {
-        //   this.value1 = Math.min(this.value1 + 1, 15)
-        //   if (val + 1 > 15) {
-        //     return
-        //   }
-        // } else {
-        //   this.value1 = Math.max(this.value1 - 1, 1)
-        //   if (val - 1 < 1) {
-        //     return
-        //   }
-        // }
-        // if (this.offset1 > 0) {
-        //   this.value2 = Math.max(this.value1 - this.offset1, 1)
-        // } else {
-        //   this.value2 = Math.min(this.value1 - this.offset1, 15)
-        // }
-        // if (this.offset2 > 0) {
-        //   this.value3 = Math.max(this.value1 - this.offset2, 1)
-        // } else {
-        //   this.value3 = Math.min(this.value1 - this.offset2, 15)
-        // }
-        // if (this.offset3 > 0) {
-        //   this.value4 = Math.max(this.value1 - this.offset3, 1)
-        // } else {
-        //   this.value4 = Math.min(this.value1 - this.offset3, 15)
-        // }
       }
     },
     computed: {
@@ -437,7 +417,6 @@
     created () {
       this.setLocation(weex.config.location)
       find.getVolume('all', (data) => {
-        find.debug('getVolume' + JSON.stringify(data))
         this.allVolumeSize(data)
       })
       this.pianoType = weex.config.pianoType || ''
@@ -466,81 +445,67 @@
         switch (keyEvent) {
           // 总音量
           case 49:
-            this.allVolumeChange(-1)
+            this.volumeChange({type: 'all', value: this.value1 - 1})
             break
           case 50:
-            this.mute1 = !this.mute1
-            this.mute2 = this.mute1
-            this.mute3 = this.mute1
-            this.mute4 = this.mute1
-            this.mute5 = this.mute1
-            this.mute6 = this.mute1
+            find.volumeMute({type: 'all', mute: !this.mute1})
             break
           case 51:
-            this.allVolumeChange(1)
+            this.volumeChange({type: 'all', value: this.value1 + 1})
             break
           // 自动演奏音量
           case 56:
-            this.value2 = Math.max(this.value2 - 1, 1)
+            this.volumeChange({type: 'autoPlay', value: this.value2 - 1})
             break
           case 57:
-            this.mute2 = !this.mute2
-            this.mute1 = this.mute2 && this.mute3 && this.mute4
+            find.volumeMute({type: 'all', mute: !this.mute2})
             break
           case 58:
-            this.value2 = Math.min(this.value2 + 1, 15)
+            this.volumeChange({type: 'autoPlay', value: this.value2 + 1})
             break
           // 电子音源音量
           case 61:
-            this.value3 = Math.max(this.value3 - 1, 1)
+            this.volumeChange({type: 'electronic', value: this.value3 - 1})
             break
           case 62:
-            this.mute3 = !this.mute3
-            this.mute1 = this.mute2 && this.mute3 && this.mute4
+            find.volumeMute({type: 'all', mute: !this.mute3})
             break
           case 63:
-            this.value3 = Math.min(this.value3 + 1, 15)
+            this.volumeChange({type: 'electronic', value: this.value3 + 1})
             break
           // 音频音量（视频/伴奏）
           case 68:
-            this.value4 = Math.max(this.value4 - 1, 1)
+            this.volumeChange({type: 'media', value: this.value4 - 1})
             break
           case 69:
-            this.mute4 = this.mute5 = this.mute6 = !this.mute4
-            this.mute1 = this.mute2 && this.mute3 && this.mute4
+            find.volumeMute({type: 'all', mute: !this.mute4})
             break
           case 70:
-            this.value4 = Math.min(this.value4 + 1, 15)
+             this.volumeChange({type: 'media', value: this.value4 + 1})
             break
           // 音频分音量（人声）
           case 73:
-            this.value5 = Math.max(this.value5 - 10, 0)
+            this.volumeChange({type: 'humanVolume', value: this.value5 / 10 - 1})
             break
           case 74:
-            this.mute5 = !this.mute5
-            this.mute4 = this.mute5 && this.mute6
-            this.mute1 = this.mute2 && this.mute3 && this.mute4
+            find.volumeMute({type: 'all', mute: !this.mute5})
             break
           case 75:
-            this.value5 = Math.min(this.value5 + 10, 100)
+            this.volumeChange({type: 'humanVolume', value: this.value5 / 10 + 1})
             break
           // 音频分音量（配乐）
           case 78:
-            this.value6 = Math.max(this.value6 - 10, 0)
+            this.volumeChange({type: 'mediaAccompany', value: this.value6 / 10 - 1})
             break
           case 79:
-            this.mute6 = !this.mute6
-            this.mute4 = this.mute5 && this.mute6
-            this.mute1 = this.mute2 && this.mute3 && this.mute4
+            find.volumeMute({type: 'all', mute: !this.mute6})
             break
           case 80:
-            this.value6 = Math.min(this.value6 + 10, 100)
+            this.volumeChange({type: 'mediaAccompany', value: this.value6 / 10 + 1})
             break
           case 85:
             // 重置
-            find.resetVolume(data => {
-              this.allVolumeSize(data)
-            })
+            find.resetVolume()
             // this.mute1 = this.mute2 = this.mute3 = this.mute4 = this.mute5 = this.mute6 = false
             // this.value1 = 8
             // this.value2 = 8
@@ -555,19 +520,21 @@
             break
         }
       }, 200))
-      globalEvent.addEventListener('volumeWheel', (data) => {
-        this.notAutoSet = false
-        let type = data.type
-        let diffValue = data.value
-        if (type === 'all') {
-          this.allVolumeChange(diffValue)
-        }
-        if (type === 'electronic') {
-          diffValue > 0 ? this.value3 = Math.min(this.value3 + diffValue, 15) : this.value3 = Math.max(this.value3 + diffValue, 1)
-        }
-        if (type === 'media') {
-          diffValue > 0 ? this.value4 = Math.max(this.value4 + diffValue, 1) : this.value4 = Math.max(this.value4 + diffValue, 1)
-        }
+      globalEvent.addEventListener('volumeChange', (data) => {
+        find.debug('volumeChange' + JSON.stringify(data))
+        this.allVolumeSize(data)
+        // this.notAutoSet = false
+        // let type = data.type
+        // let diffValue = data.value
+        // if (type === 'all') {
+        //   this.allVolumeChange(diffValue)
+        // }
+        // if (type === 'electronic') {
+        //   diffValue > 0 ? this.value3 = Math.min(this.value3 + diffValue, 15) : this.value3 = Math.max(this.value3 + diffValue, 1)
+        // }
+        // if (type === 'media') {
+        //   diffValue > 0 ? this.value4 = Math.max(this.value4 + diffValue, 1) : this.value4 = Math.max(this.value4 + diffValue, 1)
+        // }
       })
     },
     destroyed () {
@@ -581,99 +548,21 @@
       value1: function (val, oldval) {
         console.log('weex value1 change' + val)
         this.sliderTop1 = 506 - val * 34
-        this.otherVolumeChange('all', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll', showAlert: false}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'all', value: val}
-        //   })
-        // }
       },
       value2: function (val, oldval) {
         this.sliderTop2 = 506 - val * 34
-        this.otherVolumeChange('autoPlay', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll'}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'autoPlay', value: val}
-        //   })
-        // }
       },
       value3: function (val, oldval) {
         this.sliderTop3 = 506 - val * 34
-        this.otherVolumeChange('electronic', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll'}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'electronic', value: val}
-        //   })
-        // }
       },
       value4: function (val, oldval) {
         this.sliderTop4 = 506 - val * 34
-        this.otherVolumeChange('media', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll'}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'media', value: val}
-        //   })
-        // }
       },
       value5: function (val, oldval) {
         this.sliderTop5 = (10 - val / 10) * 46
-        this.otherVolumeChange('mediaAccompany', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll'}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'humanVolume', value: val / 10}
-        //   })
-        // }
       },
       value6: function (val, oldval) {
         this.sliderTop6 = (10 - val / 10) * 46
-        this.otherVolumeChange('humanVolume', val)
-        // if (this.reset) {
-        //   return find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'resetAll'}
-        //   })
-        // }
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'volumeSet', type: 'mediaAccompany', value: val / 10}
-        //   })
-        // }
       },
       mute1: function (val, oldval) {
         // if (!this.notAutoSet) {
