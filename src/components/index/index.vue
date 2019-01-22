@@ -1728,12 +1728,12 @@
         // 播放器加载成功
         console.log(data, '播放器加载成功')
         // init fh-player volume
-        const self = this
-        this.$volume.getAllVolumeSize().then((data) => {
-          self.$refs.player.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
-          self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
-          self.$refs.player.setElectronicOn(!data.electronic.mute)
-        })
+        // const self = this
+        // this.$volume.getAllVolumeSize().then((data) => {
+        //   self.$refs.player.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
+        //   self.$refs.player.setAutoPlayOn(!data.autoPlay.mute)
+        //   self.$refs.player.setElectronicOn(!data.electronic.mute)
+        // })
         if (!data.result) {
           if (this.loading) {
             eventsHub.$emit('toast', { text: '曲谱播放失败', icon: 'icon-sync-info', iconLoading: false, allExit: false })
@@ -1843,27 +1843,27 @@
       },
       registVloume () {
         //   监听音量设置
-        let self = this
+        // let self = this
         // 监听方法 volumeWatcher
-        this.$volume.volumeWatcher((data) => {
-          switch (data.type) {
-            case 'media': {
-              self.$refs.player.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
-              break
-            }
-            case 'autoPlay': {
-              self.$refs.player.setAutoPlayOn(!data.mute)
-              break
-            }
-            case 'electronic': {
-              self.$refs.player.setElectronicOn(!data.mute)
-              break
-            }
-            default: {
-              console.log('no data.type')
-            }
-          }
-        })
+        // this.$volume.volumeWatcher((data) => {
+        //   switch (data.type) {
+        //     case 'media': {
+        //       self.$refs.player.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
+        //       break
+        //     }
+        //     case 'autoPlay': {
+        //       self.$refs.player.setAutoPlayOn(!data.mute)
+        //       break
+        //     }
+        //     case 'electronic': {
+        //       self.$refs.player.setElectronicOn(!data.mute)
+        //       break
+        //     }
+        //     default: {
+        //       console.log('no data.type')
+        //     }
+        //   }
+        // })
         // window.fp.utils.volumeManager.registVolumeChange((data) => {
         //   if (data && data.type === 1) {
         //     if (data.mute !== undefined && data.mute === true) {

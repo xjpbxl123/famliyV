@@ -206,10 +206,10 @@
     methods: {
       videoInitComplete (data) {
         // init fh-player volume
-        const self = this
-        this.$volume.getAllVolumeSize().then((data) => {
-          self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
-        })
+        // const self = this
+        // this.$volume.getAllVolumeSize().then((data) => {
+        //   self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
+        // })
         console.log(data, '加载完成')
         this.$refs.video.getTotalTime().then((data) => {
           this.totalTime = data
@@ -330,27 +330,27 @@
       },
       registVloume () {
         // 监听音量设置
-        let self = this
+        // let self = this
         // 监听方法 volumeWatcher
-        this.$volume.volumeWatcher((data) => {
-          switch (data.type) {
-            case 'media': {
-              self.$refs.video.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
-              break
-            }
-            case 'autoPlay': {
-              self.$refs.video.setAutoPlayOn(!data.mute)
-              break
-            }
-            case 'electronic': {
-              self.$refs.video.setElectronicOn(!data.mute)
-              break
-            }
-            default: {
-              console.log('no data.type')
-            }
-          }
-        })
+        // this.$volume.volumeWatcher((data) => {
+        //   switch (data.type) {
+        //     case 'media': {
+        //       self.$refs.video.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
+        //       break
+        //     }
+        //     case 'autoPlay': {
+        //       self.$refs.video.setAutoPlayOn(!data.mute)
+        //       break
+        //     }
+        //     case 'electronic': {
+        //       self.$refs.video.setElectronicOn(!data.mute)
+        //       break
+        //     }
+        //     default: {
+        //       console.log('no data.type')
+        //     }
+        //   }
+        // })
         // window.fp.utils.volumeManager.registVolumeChange((data) => {
         //   console.log(data, 'volumeData')
         //   if (data && data.type === 1) {
@@ -375,11 +375,6 @@
       //   this.videoUrl = this.$route.query.url
       //   this.addEventListeners()
       // }
-      // // init fh-player volume
-      // const self = this
-      // this.$volume.getAllVolumeSize().then((data) => {
-      //   self.$refs.video.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
-      // })
     },
     beforeDestroyed () {
       this.removeEventListeners()

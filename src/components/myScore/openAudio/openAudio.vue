@@ -233,27 +233,27 @@
       },
       registVloume () {
         // 监听音量设置
-        let self = this
+        // let self = this
         // 监听方法 volumeWatcher
-        this.$volume.volumeWatcher((data) => {
-          switch (data.type) {
-            case 'media': {
-              self.$refs.audio.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
-              break
-            }
-            case 'autoPlay': {
-              self.$refs.audio.setAutoPlayOn(!data.mute)
-              break
-            }
-            case 'electronic': {
-              self.$refs.audio.setElectronicOn(!data.mute)
-              break
-            }
-            default: {
-              console.log('no data.type')
-            }
-          }
-        })
+        // this.$volume.volumeWatcher((data) => {
+        //   switch (data.type) {
+        //     case 'media': {
+        //       self.$refs.audio.setVolume(data.mute ? 0 : (data.realValue ? data.realValue / 100 : 0))
+        //       break
+        //     }
+        //     case 'autoPlay': {
+        //       self.$refs.audio.setAutoPlayOn(!data.mute)
+        //       break
+        //     }
+        //     case 'electronic': {
+        //       self.$refs.audio.setElectronicOn(!data.mute)
+        //       break
+        //     }
+        //     default: {
+        //       console.log('no data.type')
+        //     }
+        //   }
+        // })
         // window.fp.utils.volumeManager.registVolumeChange((data) => {
         //   console.log(data, 'volumeData')
         //   if (data && data.type === 1) {
@@ -272,10 +272,10 @@
         this.filterUrl(this.$route.query.fileName)
         this.$refs.audio.loadUrl(this.$route.query.url).then(data => {
           // init fh-player volume
-          const self = this
-          this.$volume.getAllVolumeSize().then((data) => {
-            self.$refs.audio.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
-          })
+          // const self = this
+          // this.$volume.getAllVolumeSize().then((data) => {
+          //   self.$refs.audio.setVolume(data.media.mute ? 0 : (data.media.realValue ? data.media.realValue / 100 : 0))
+          // })
           console.log(data, '加载完成')
           this.hasLoaded = data
           if (data.result) {
