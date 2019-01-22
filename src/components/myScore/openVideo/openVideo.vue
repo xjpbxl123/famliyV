@@ -73,18 +73,17 @@
           width: 1000,
           height: 60,
           text: '未知',
-          color: '#ffffff',
-          fontSize: 60,
+          textColor: '#ffffff',
+          fontSize: 30,
           alignment: 'left'
         },
         labelStyle2: {
-          left: 0,
-          top: 120,
-          width: 150,
+          left: 50,
+          top: 150,
+          width: 1000,
           height: 150,
-          text: 'hahah',
-          color: '#ffffff',
-          fontSize: 30
+          textColor: '#ffffff',
+          fontSize: 40
         },
         videoStyle: {
           width: 3840,
@@ -219,6 +218,8 @@
         })
         this.labelStyle.text = this.fileName
         this.hasLoaded = data
+        this.$refs.video.setProgressViewHidden(false)
+        this.$refs.video.setProgressViewStyle(this.labelStyle2)
         // if (data.result) {
         //   window.fp.uis.video.info().then(data => {
         //     if (data) {

@@ -7226,10 +7226,10 @@ vue-find-hybrid@^1.2.9:
     lodash "^4.17.10"
     vue "^2.5.2"
 
-vue-find-hybrid@^1.6.7:
-  version "1.6.7"
-  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.6.7.tgz#52fc1de90024afd71ec87fb49cce67f59ae6c8e0"
-  integrity sha1-Uvwd6QAkr9ceyH+0nM5n9ZrmyOA=
+vue-find-hybrid@^1.7.2:
+  version "1.7.2"
+  resolved "http://192.168.200.235:8282/repository/findnpmgroup/vue-find-hybrid/-/vue-find-hybrid-1.7.2.tgz#4bd59895ea06b94b3601405840423589ff212053"
+  integrity sha1-S9WYleoGuUs2AUBYQEI1if8hIFM=
   dependencies:
     find-toolbar "^1.2.6"
     lodash.differencewith "^4.5.0"

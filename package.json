@@ -42,7 +42,7 @@
     "qrcode": "^1.2.2",
     "vue": "^2.2.1",
     "vue-find": "^1.3.3",
-    "vue-find-hybrid": "^1.6.7",
+    "vue-find-hybrid": "^1.7.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
