@@ -36,7 +36,7 @@ export default {
       this.$volume.getAllVolumeSize().then((data1) => {
         let weexUrl = info.weexUrl
         let pianoType = info.pianoType
-        let showAll = true // info.showAll || false
+        let showAll = info.showAll || false
         if ((weexUrl === undefined) || (pianoType === undefined)) {
           console.warn('openSoundMix 参数错误' + info)
           return
