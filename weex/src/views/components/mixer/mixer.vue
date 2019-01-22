@@ -419,10 +419,12 @@
       find.getVolume('all', (data) => {
         this.allVolumeSize(data)
       })
+      find.setForbidVolumeShow(true) // 禁止音量弹窗
       this.pianoType = weex.config.pianoType || ''
       this.showAll = weex.config.showAll
       globalEvent.addEventListener('pianoKeyPressed', throttle((arg) => {
         find.debug(JSON.stringify(arg))
+        find.setForbidVolumeShow(false) // 允许音量弹窗
         if (arg.type === 'backPressed') {
           if (this.toolbarHidden) {
             this.toolbarHidden = false
