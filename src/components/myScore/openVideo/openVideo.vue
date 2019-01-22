@@ -79,11 +79,11 @@
         },
         labelStyle2: {
           left: 50,
-          top: 150,
+          top: 100,
           width: 1000,
           height: 150,
           textColor: '#ffffff',
-          fontSize: 40
+          fontSize: 25
         },
         videoStyle: {
           width: 3840,
