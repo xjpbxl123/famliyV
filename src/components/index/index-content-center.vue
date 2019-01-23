@@ -3,7 +3,7 @@
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
-        <span class="tips" v-if="index === 2">限时免费</span>
+        <span class="tips" v-if="index === 2">限时体验</span>
         <div class="icon"></div>
         <div class="bottom" v-if="selectedIndex !== index"></div>
         <div class="wave" v-else>
