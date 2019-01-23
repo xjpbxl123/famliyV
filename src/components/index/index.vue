@@ -1069,7 +1069,7 @@
                     allExit: false
                   })
                 }
-                if (this.isLogin) {
+                if (!this.isLogin) {
                   return this.$store.dispatch({ type: 'getUserInfo' }).then((data) => {
                     if (!data.userInfo && !data.message) {
                       // 请求不到用户信息 并且不是网络情况
@@ -1247,7 +1247,8 @@
                 if (res1) {
                   return this.$store.dispatch('index/getLocalAppVersion', {
                     url: res.http,
-                    appName: appName
+                    appName: appName,
+                    path: res.path
                   }).then((data1) => {
                     if (data1 && data1[appName + 'Local'] && data1[appName + 'Local'].version) {
                       // 本地有 去判断线上版本
