@@ -55,60 +55,60 @@
       <toolbar :hidden="toolbarHidden">
         <group id="400">
           <icon-item v-for="button in buttons1"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <group id="500" :hidden="pianoType !== 'real'">
           <icon-item v-for="button in buttons2"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <group id="600">
           <icon-item v-for="button in buttons3"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <group id="700">
           <icon-item v-for="button in buttons4"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <group id="800" :hidden="!showAll">
           <icon-item v-for="button in buttons5"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <group id="900" :hidden="!showAll">
           <icon-item v-for="button in buttons6"
-                  :pianoKey="button.pianoKey"
-                  :key="button.id"
-                  :id="button.id"
-                  :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
-                  :icon="button.icon"/>
+                     :pianoKey="button.pianoKey"
+                     :key="button.id"
+                     :id="button.id"
+                     :style="{color:'#fff',backgroundColor:'#6000',dotColor:'#767676'}"
+                     :icon="button.icon"/>
         </group>
         <icon-item
-                  pianoKey="85"
-                  key="100"
-                  id="100"
-                  :style="{color:'#fff',backgroundColor:'#6000',textColor: '#fff',fontSize: '14'}"
-                  titlePosition='below'
-                  icon="0xe676"
-                  text="重置"/>
+          pianoKey="85"
+          key="100"
+          id="100"
+          :style="{color:'#fff',backgroundColor:'#6000',textColor: '#fff',fontSize: '14'}"
+          titlePosition='below'
+          icon="0xe676"
+          text="重置"/>
       </toolbar>
     </div>
   </div>
@@ -392,11 +392,11 @@
           return false
         }
         find.volumeSet({type, value, showAlert: false}, data => {
-            if (data.code && data.code === -1) {
-                find.alert('异常' + type + value, 1)
-            } else {
+          if (data.code && data.code === -1) {
+            find.alert('异常' + type + value, 1)
+          } else {
 
-            }
+          }
         })
       },
       /// 音量改变
@@ -484,7 +484,7 @@
             find.volumeMute({type: 'media', mute: !this.mute4})
             break
           case 70:
-             this.volumeChange({type: 'media', value: this.value4 + 1})
+            this.volumeChange({type: 'media', value: this.value4 + 1})
             break
           // 音频分音量（人声）
           case 73:
@@ -509,35 +509,11 @@
           case 85:
             // 重置
             find.resetVolume()
-            // this.mute1 = this.mute2 = this.mute3 = this.mute4 = this.mute5 = this.mute6 = false
-            // this.value1 = 8
-            // this.value2 = 8
-            // this.value3 = 8
-            // this.value4 = 8
-            // this.value5 = 80
-            // this.value6 = 80
-            // find.sendMsgToWeb({
-            //   method: 'vioceControl',
-            //   params: {name: 'volumeSet', type: 'resetAll'}
-            // })
             break
         }
       }, 200))
       globalEvent.addEventListener('volumeChange', (data) => {
-        find.debug('volumeChange' + JSON.stringify(data))
         this.allVolumeSize(data)
-        // this.notAutoSet = false
-        // let type = data.type
-        // let diffValue = data.value
-        // if (type === 'all') {
-        //   this.allVolumeChange(diffValue)
-        // }
-        // if (type === 'electronic') {
-        //   diffValue > 0 ? this.value3 = Math.min(this.value3 + diffValue, 15) : this.value3 = Math.max(this.value3 + diffValue, 1)
-        // }
-        // if (type === 'media') {
-        //   diffValue > 0 ? this.value4 = Math.max(this.value4 + diffValue, 1) : this.value4 = Math.max(this.value4 + diffValue, 1)
-        // }
       })
     },
     destroyed () {
@@ -550,30 +526,27 @@
     watch: {
       value1: function (val, oldval) {
         console.log('weex value1 change' + val)
-        this.sliderTop1 = 506 - val * 34
+        this.sliderTop1 = 518 - val * 34
       },
       value2: function (val, oldval) {
-        this.sliderTop2 = 506 - val * 34
+        this.sliderTop2 = 518 - val * 34
       },
       value3: function (val, oldval) {
-        this.sliderTop3 = 506 - val * 34
+        this.sliderTop3 = 518 - val * 34
       },
       value4: function (val, oldval) {
-        this.sliderTop4 = 506 - val * 34
+        this.sliderTop4 = 518 - val * 34
       },
       value5: function (val, oldval) {
-        this.sliderTop5 = (10 - val / 10) * 46
+        // this.sliderTop5 = 8
+        // this.sliderTop5 = 53
+        find.debug('value5====' + val)
+        this.sliderTop5 = (10 - val / 10) * 45 + 8 + (10 - val / 10)
       },
       value6: function (val, oldval) {
-        this.sliderTop6 = (10 - val / 10) * 46
+        this.sliderTop6 = (10 - val / 10) * 45 + 8 + (10 - val / 10)
       },
       mute1: function (val, oldval) {
-        // if (!this.notAutoSet) {
-        //   find.sendMsgToWeb({
-        //     method: 'vioceControl',
-        //     params: {name: 'setMute', type: 'all', value: val}
-        //   })
-        // }
         if (!val) {
           // 放音
           this.buttons1[1].icon = '0xe603'
@@ -663,134 +636,133 @@
 </script>
 
 <style lang='css' type="text/css">
-.mixer {
-  width: 3840px;
-  height: 1080px;
-}
+  .mixer {
+    width: 3840px;
+    height: 1080px;
+  }
 
-.box {
-  width: 3840px;
-  height: 800px;
-  top: 280px;
-  left: 0;
-}
-.back {
-  width: 3840px;
-  height: 800px;
-  position: absolute;
-}
-.vioceBox {
-  position: absolute;
-  width: 214px;
-  height: 660px;
-  top: 80px;
-  flex-direction: column;
-}
+  .box {
+    width: 3840px;
+    height: 800px;
+    top: 280px;
+    left: 0;
+  }
+  .back {
+    width: 3840px;
+    height: 800px;
+    position: absolute;
+  }
+  .vioceBox {
+    position: absolute;
+    width: 214px;
+    height: 660px;
+    top: 80px;
+    flex-direction: column;
+  }
 
-.vioceBox5 {
-  left: 2203px;
-  height: 680px;
-  top: 62px;
-}
+  .vioceBox5 {
+    left: 2203px;
+    height: 680px;
+    top: 62px;
+  }
 
-.vioceBox6 {
-  left: 2419px;
-  height: 680px;
-  top: 62px;
-}
+  .vioceBox6 {
+    left: 2419px;
+    height: 680px;
+    top: 62px;
+  }
 
-.vioceBar {
-  left: 0px;
-  top: 0;
-  width: 168px;
-  height: 495px;
-  background-size: cover;
-}
+  .vioceBar {
+    left: 0px;
+    top: 0;
+    width: 168px;
+    height: 495px;
+    background-size: cover;
+  }
 
-.text1{
-  width: 214px;
-  text-align: center;
-  font-size: 28px;
-  height: 35px;
-  text-indent: 40px;
-  font-family: Adobe Heiti Std R;
-  margin-bottom: 30px;
-}
+  .text1{
+    width: 214px;
+    text-align: center;
+    font-size: 28px;
+    height: 35px;
+    text-indent: 40px;
+    font-family: Adobe Heiti Std R;
+    margin-bottom: 30px;
+  }
 
-.textA {
-  margin-bottom: 10px;
-}
+  .textA {
+    margin-bottom: 10px;
+  }
 
-.text2 {
-  margin-bottom: 10px;
-  width:214px;
-  height:24px;
-  text-align: center;
-  font-size:22px;
-  font-family:Adobe Heiti Std R;
-  color:rgba(255,255,255,1);
-}
+  .text2 {
+    margin-bottom: 10px;
+    width:214px;
+    height:24px;
+    text-align: center;
+    font-size:22px;
+    font-family:Adobe Heiti Std R;
+    color:rgba(255,255,255,1);
+  }
 
-.value {
-  width:214px;
-  text-align: center;
-  height:30px;
-  font-size:30px;
-  font-family:ArialMT;
-  color:rgba(255,255,255,1);
-  line-height:51px;
-  margin-bottom: 30px;
-}
+  .value {
+    width:214px;
+    text-align: center;
+    height:40px;
+    font-size:30px;
+    font-family:ArialMT;
+    color:rgba(255,255,255,1);
+    margin-bottom: 30px;
+  }
 
-.vioceBox5 .text1 {
-  margin-bottom: 32px;
-}
+  .vioceBox5 .text1 {
+    margin-bottom: 32px;
+  }
 
-.vioceBox6 .text1 {
-  margin-bottom: 32px;
-}
+  .vioceBox6 .text1 {
+    margin-bottom: 32px;
+  }
 
-.vioceBox5 .text2 {
-  margin-bottom: 32px;
-}
+  .vioceBox5 .text2 {
+    margin-bottom: 32px;
+  }
 
-.vioceBox6 .text2 {
-  margin-bottom: 16px;
-}
+  .vioceBox6 .text2 {
+    margin-bottom: 16px;
+  }
 
-.valueA {
-  margin-bottom: 26px;
-  margin-top: 4px;
-}
+  .valueA {
+    margin-bottom: 26px;
+    margin-top: 4px;
+  }
 
-.bar {
-  position: absolute;
-  left: 0px;
-  bottom: 12px;
-  width: 168px;
-  height: 545px;
-}
+  .bar {
+    position: absolute;
+    left: 0px;
+    bottom: 12px;
+    width: 168px;
+    height: 545px;
+  }
 
-.barA {
-  bottom: 12px;
-}
+  .barA {
+    bottom: 12px;
+  }
 
-.slider1 {
-  position: absolute;
-  width: 72px;
-  height: 84px;
-  left:70px;
-}
+  .slider1 {
+    position: absolute;
+    width: 72px;
+    height: 84px;
+    left:70px;
+  }
 
-.slider2 {
-  left: 92px;
-}
+  .slider2 {
+    left: 92px;
+  }
 
-.mute {
-  color:rgba(255,255,255,0.4);
-}
+  .mute {
+    color:rgba(255,255,255,0.4);
+  }
 
-.unmute {
-  color:rgba(255,255,255,1);
-}
+  .unmute {
+    color:rgba(255,255,255,1);
+  }
 </style>

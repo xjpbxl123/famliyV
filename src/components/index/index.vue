@@ -1812,7 +1812,7 @@
           }
           if (data.case === 'resume') {
             // update volume values after resume to native
-            this.$volume.asyncCacheToVolume()
+            // this.$volume.asyncCacheToVolume()
             console.log('关闭原生界面 释放模块锁定状态')
             this.canEnterModule = true
             if (!this.mixerIsOpen) {
