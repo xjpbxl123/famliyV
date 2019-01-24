@@ -4,7 +4,7 @@
     <!--<video :src="videoUrl" class="video" ref="video" preload :class="screenType"></video>-->
     <!--<fh-video ref="video"></fh-video>-->
     <fh-video ref="video" :source="videoUrl" :style="videoStyle" @initComplete="videoInitComplete"/>
-    <!--<fh-label ref="nameLabel" :style="labelStyle"/>-->
+    <fh-label ref="nameLabel" :style="labelStyle"/>
     <!--<fh-label :style="labelStyle2"/>-->
     <!--<div class="videoBox" v-if="!isPlaying">-->
     <!--<div class="videoName" v-text="videoName"></div>-->
@@ -219,7 +219,7 @@
         this.labelStyle.text = this.fileName
         this.hasLoaded = data
         this.$refs.video.setProgressViewHidden(false)
-        // this.$refs.video.setProgressViewStyle(this.labelStyle2)
+        this.$refs.video.setProgressViewStyle(this.labelStyle2)
         // if (data.result) {
         //   window.fp.uis.video.info().then(data => {
         //     if (data) {
