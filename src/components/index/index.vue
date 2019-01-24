@@ -1075,7 +1075,7 @@
                     allExit: false
                   })
                 }
-                if (!this.isLogin) {
+                if (this.isLogin) {
                   return this.$store.dispatch({ type: 'getUserInfo' }).then((data) => {
                     if (!data.userInfo && !data.message) {
                       // 请求不到用户信息 并且不是网络情况
