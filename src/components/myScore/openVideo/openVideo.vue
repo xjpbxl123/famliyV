@@ -219,7 +219,7 @@
         this.labelStyle.text = this.fileName
         this.hasLoaded = data
         this.$refs.video.setProgressViewHidden(false)
-        this.$refs.video.setProgressViewStyle(this.labelStyle2)
+        // this.$refs.video.setProgressViewStyle(this.labelStyle2)
         // if (data.result) {
         //   window.fp.uis.video.info().then(data => {
         //     if (data) {
