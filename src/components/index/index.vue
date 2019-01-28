@@ -236,15 +236,15 @@
             icon: '0xe761',
             positionPixels: -30,
             style: { backgroundColor: '#C499FF,#9B4BED', dotColor: '#9B4BED' }
-          },
-          {
-            id: 9,
-            pianoKey: 51,
-            text: '名师课程',
-            icon: '0xe69d',
-            positionPixels: 30,
-            style: { backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1' }
           }
+          // {
+          //   id: 9,
+          //   pianoKey: 51,
+          //   text: '名师课程',
+          //   icon: '0xe69d',
+          //   positionPixels: 30,
+          //   style: { backgroundColor: '#5F89FC,#4E59E1', dotColor: '#4E59E1' }
+          // }
           // {
           //   id: 9,
           //   pianoKey: 54,
@@ -490,16 +490,16 @@
         this.canEnterModule = false
         this.buttonActions('indexMore')
       },
-      [keys.KEY51] () {
-        // 名师课程
-        if (!this.canEnterModule) {
-          console.log('return')
-          return
-        }
-        this.canEnterModule = false
-        // return modules.nativeRouter.openArtistCourseView()
-        return this.go('/famous')
-      },
+      // [keys.KEY51] () {
+      //   // 名师课程
+      //   if (!this.canEnterModule) {
+      //     console.log('return')
+      //     return
+      //   }
+      //   this.canEnterModule = false
+      //   // return modules.nativeRouter.openArtistCourseView()
+      //   return this.go('/famous')
+      // },
       // [keys.KEY54] () {
       //   return this.go('/game')
       // },
@@ -1057,9 +1057,15 @@
               case 1:
                 return this.go('/material')
               case 2:
+                // return this.buttonActions('peilian')
+                // 名师课程
+                if (!this.canEnterModule) {
+                  console.log('return')
+                  return
+                }
+                this.canEnterModule = false
                 // return modules.nativeRouter.openArtistCourseView()
-                // return this.go('/famous')
-                return this.buttonActions('peilian')
+                return this.go('/famous')
               case 3:
                 if (!this.isLogin) {
                   return eventsHub.$emit('toast', {
@@ -1069,7 +1075,7 @@
                     allExit: false
                   })
                 }
-                if (!this.isLogin) {
+                if (this.isLogin) {
                   return this.$store.dispatch({ type: 'getUserInfo' }).then((data) => {
                     if (!data.userInfo && !data.message) {
                       // 请求不到用户信息 并且不是网络情况
@@ -1812,7 +1818,7 @@
           }
           if (data.case === 'resume') {
             // update volume values after resume to native
-            this.$volume.asyncCacheToVolume()
+            // this.$volume.asyncCacheToVolume()
             console.log('关闭原生界面 释放模块锁定状态')
             this.canEnterModule = true
             if (!this.mixerIsOpen) {

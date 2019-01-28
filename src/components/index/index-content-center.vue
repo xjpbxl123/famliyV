@@ -3,7 +3,7 @@
     <ul class="pages">
       <li v-for="(item, index) in pages" :key="index" :class="{'active': selectedIndex === index}" @click="setCenterSelect(index)">
         <div class="img"></div>
-        <span class="tips" v-if="index === 2">限时免费</span>
+        <!--<span class="tips" v-if="index === 2">限时体验</span>-->
         <div class="icon"></div>
         <div class="bottom" v-if="selectedIndex !== index"></div>
         <div class="wave" v-else>
@@ -36,7 +36,7 @@
         }, {
           text: '教材练习'
         }, {
-          text: '智能陪练'
+          text: '名师课程'
         }, {
           text: '音乐王国'
         }]
@@ -257,7 +257,7 @@
           }
           .img {
             position: absolute;
-            background: url('./images/cat01.png') no-repeat;
+            background: url('./images/deer01.png') no-repeat;
             background-size: cover;
             width: 415px;
             height: 573px;
@@ -267,7 +267,7 @@
           }
           &.active {
             .img {
-              background: url('./images/cat02.png') no-repeat;
+              background: url('./images/deer02.png') no-repeat;
               background-size: cover;
               width: 471px;
               height: 677px;

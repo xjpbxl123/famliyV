@@ -14,14 +14,12 @@ import VueRouter from 'vue-router'
 import routes from './routers'
 import App from './App.vue'
 import './components/common/volume.js'
-import { Volume } from 'find-sdk'
 
 const isDev = process.env.NODE_ENV === 'development'
 const devEnvVars = process.env['development']
 Vue.use(vueFindHybrid)
 Vue.use(VueRouter)
 Vue.use(Vuex)
-Vue.use(Volume, new Volume())
 let vue = {}
 
 /// In find client

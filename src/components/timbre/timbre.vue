@@ -853,7 +853,7 @@
             backgroundColor: '#4000',
             dotColor: '#fff',
             id: 16,
-            hidden: true
+            hidden: false
           }
         ]
       }
